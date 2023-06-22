@@ -1,0 +1,28 @@
+# Download Bullet
+FetchContent_Declare(
+	bullet3
+	GIT_REPOSITORY https://github.com/bulletphysics/bullet3.git
+	GIT_TAG 3.25
+	GIT_SHALLOW ON
+)
+
+set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
+
+set(BUILD_SHARED_LIBS OFF)
+set(BUILD_CPU_DEMOS OFF)
+set(USE_GLUT OFF)
+set(BUILD_PYBULLET OFF)
+set(BUILD_OPENGL3_DEMOS OFF)
+set(BUILD_BULLET2_DEMOS OFF)
+set(BUILD_EXTRAS OFF)
+set(BUILD_UNIT_TESTS OFF)
+set(BUILD_CLSOCKET OFF)
+set(BUILD_ENET OFF)
+
+set(BUILD_BULLET3 ON)
+
+set(CMAKE_FOLDER ${CMAKE_FOLDER}/Bullet)
+FetchContent_MakeAvailable(bullet3)
+
+set(BULLET_LIBRARIES Bullet3Common Bullet3Collision Bullet3Dynamics)
+set(BULLET_INCLUDE_DIR ${bullet3_SOURCE_DIR}/src PARENT_SCOPE)

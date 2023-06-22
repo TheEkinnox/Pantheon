@@ -1,0 +1,23 @@
+cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
+
+set(USE_FOLDERS ON)
+project(Pantheon LANGUAGES CXX CSharp)
+
+# Setup cpp version
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+
+# Setup output directories.
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/Engine/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/Engine/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/Engine/lib)
+
+set(CMAKE_FOLDER deps)
+add_subdirectory(Dependencies)
+
+set(CMAKE_FOLDER Pantheon)
+add_subdirectory(Source)
+
+if (MSVC)
+	set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Editor)
+endif()
