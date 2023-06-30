@@ -4,7 +4,7 @@
 set(BUILD_SHARED_LIBS ON)
 
 # Core
-#add_subdirectory(Core)
+add_subdirectory(Core)
 set(ENGINE_TARGETS ${CORE_NAME})
 set(ENGINE_INCLUDE_DIRS ${CORE_INCLUDE_DIR})
 
