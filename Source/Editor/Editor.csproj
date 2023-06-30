@@ -6,12 +6,18 @@
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+        <RootNamespace>PantheonEngine.Editor</RootNamespace>
+        <IsPackable>false</IsPackable>
+        <Company>Nox Corporation</Company>
+        <Product>Pantheon Editor</Product>
+        <IntermediateOutputPath>$(SolutionDir)obj\Editor\$(Configuration)\</IntermediateOutputPath>
+        <OutputPath>$(SolutionDir)bin\Editor\$(Configuration)\</OutputPath>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <OutputPath>$(SolutionDir)bin\Editor\Debug\</OutputPath>
+      <DefineConstants>TRACE;PANTHEON_EDITOR</DefineConstants>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <OutputPath>$(SolutionDir)bin\Editor\Release\</OutputPath>
+      <DefineConstants>TRACE;PANTHEON_EDITOR</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>
@@ -37,4 +43,8 @@
       <ProjectReference Include="..\API\PantheonEditor\PantheonEditor.csproj" />
       <ProjectReference Include="..\API\PantheonEngine\PantheonEngine.csproj" />
     </ItemGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+      <Exec Command="cmake -E copy_directory &quot;$(SolutionDir)bin\Engine\$(ConfigurationName)\./&quot; &quot;$(TargetDir)engine\./&quot;" />
+    </Target>
 </Project>
