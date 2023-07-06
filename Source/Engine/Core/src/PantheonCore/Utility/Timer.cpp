@@ -9,14 +9,15 @@ namespace PantheonEngine::Core::Utility
 {
 #pragma region BINDINGS
 
-    extern "C" {
-    EXPORT_SERVICE_FUNC_NO_PARAMS(/**/, /**/, Timer, float, getTime)
-    EXPORT_SERVICE_FUNC_NO_PARAMS(/**/, /**/, Timer, float, getDeltaTime)
-    EXPORT_SERVICE_FUNC_NO_PARAMS(/**/, /**/, Timer, float, getUnscaledTime)
-    EXPORT_SERVICE_FUNC_NO_PARAMS(/**/, /**/, Timer, float, getUnscaledDeltaTime)
-    EXPORT_SERVICE_FUNC_NO_PARAMS(/**/, /**/, Timer, uint64_t, getFrameCount)
-    EXPORT_SERVICE_FUNC_NO_PARAMS(/**/, /**/, Timer, float, getTimeScale)
-    EXPORT_SERVICE_FUNC(/**/, /**/, Timer, void, setTimeScale, const float timeScale, (timeScale))
+    extern "C"
+    {
+        EXPORT_SERVICE_FUNC_NO_PARAMS(/**/, /**/, Timer, float, getTime)
+        EXPORT_SERVICE_FUNC_NO_PARAMS(/**/, /**/, Timer, float, getDeltaTime)
+        EXPORT_SERVICE_FUNC_NO_PARAMS(/**/, /**/, Timer, float, getUnscaledTime)
+        EXPORT_SERVICE_FUNC_NO_PARAMS(/**/, /**/, Timer, float, getUnscaledDeltaTime)
+        EXPORT_SERVICE_FUNC_NO_PARAMS(/**/, /**/, Timer, uint64_t, getFrameCount)
+        EXPORT_SERVICE_FUNC_NO_PARAMS(/**/, /**/, Timer, float, getTimeScale)
+        EXPORT_SERVICE_FUNC(/**/, /**/, Timer, void, setTimeScale, const float timeScale, (timeScale))
     }
 
 #pragma endregion

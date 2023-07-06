@@ -13,7 +13,7 @@
 namespace PantheonEngine::Core::Debug
 {
     inline Logger::Logger(Logger&& other) noexcept
-        : m_file{std::move(other.m_file)}
+        : m_file{ std::move(other.m_file) }
     {
     }
 
