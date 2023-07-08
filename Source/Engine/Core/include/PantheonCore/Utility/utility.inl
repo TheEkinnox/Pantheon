@@ -36,4 +36,10 @@ namespace PantheonEngine::Core::Utility
             return message;
         }
     }
+
+    constexpr uint64_t readBits(const uint64_t data, const int bitCount, const int offset)
+    {
+        const uint64_t mask = (1LLU << bitCount) - 1;
+        return data >> offset & mask;
+    }
 }
