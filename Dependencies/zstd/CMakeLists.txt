@@ -1,0 +1,32 @@
+# Download zstd
+FetchContent_Declare(
+	zstd
+	GIT_REPOSITORY https://github.com/facebook/zstd
+	GIT_TAG v1.5.5
+	GIT_SHALLOW ON
+)
+
+set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
+
+set(ZSTD_BUILD_SHARED OFF)
+set(ZSTD_BUILD_STATIC ON)
+
+set(ZSTD_BUILD_DEPRECATED OFF)
+set(ZSTD_BUILD_PROGRAMS OFF)
+set(ZSTD_BUILD_TESTS OFF)
+set(ZSTD_LZ4_SUPPORT OFF)
+set(ZSTD_LZMA_SUPPORT OFF)
+set(ZSTD_ZLIB_SUPPORT OFF)
+set(ZSTD_PROGRAMS_LINK_SHARED OFF)
+
+set(ZSTD_BUILD_COMPRESSION ON)
+set(ZSTD_BUILD_DECOMPRESSION ON)
+
+set(CMAKE_FOLDER ${CMAKE_FOLDER}/zstd)
+
+FetchContent_MakeAvailable(zstd)
+
+add_subdirectory(${zstd_SOURCE_DIR}/build/cmake build)
+
+set(ZSTD_NAME libzstd_static PARENT_SCOPE)
+set(ZSTD_INCLUDE_DIR ${zstd_SOURCE_DIR}/lib PARENT_SCOPE)
