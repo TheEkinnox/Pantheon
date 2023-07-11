@@ -77,7 +77,7 @@ PANTHEON_API ReturnType Prefix##Type##_##FuncName##Suffix(Type* ptr)            
 #ifndef EXPORT_SERVICE
 
 #define EXPORT_SERVICE(Prefix, Suffix, Type)                            \
-static void PANTHEON_API Prefix##Type##_##provideService##Suffix(Type* ptr)    \
+PANTHEON_API void Prefix##Type##_##provideService##Suffix(Type* ptr)    \
 {                                                                       \
     ASSERT(ptr);                                                        \
     PantheonEngine::Core::Utility::ServiceLocator::provide(*ptr);       \

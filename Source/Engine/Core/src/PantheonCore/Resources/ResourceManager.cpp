@@ -50,7 +50,9 @@ namespace PantheonEngine::Core::Resources
 
             if (ptr == nullptr)
             {
-                DEBUG_LOG("[WARNING] Skipped asset at path \"%s\" - Unable to create resource of type \"%s\"", asset.getPath(), type);
+                DEBUG_LOG("[WARNING] Skipped asset at path \"%s\" - Unable to create resource of type \"%s\"",
+                    asset.getPath(), type);
+
                 continue;
             }
 
