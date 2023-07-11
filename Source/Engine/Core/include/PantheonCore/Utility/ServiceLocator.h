@@ -10,12 +10,22 @@ namespace PantheonEngine::Core::Utility
     class ServiceLocator
     {
     public:
+        /**
+         * \brief Provides a service of the given type to the service locator.
+         * \tparam T The provided service's type
+         * \param service The provided service
+         */
         template <typename T>
         static void provide(T& service)
         {
             s_services[typeid(T).hash_code()] = &service;
         }
 
+        /**
+         * \brief Gets the service of the given type.
+         * \tparam T The service's type
+         * \return A reference to the previously provided service.
+         */
         template <typename T>
         static T& get()
         {
