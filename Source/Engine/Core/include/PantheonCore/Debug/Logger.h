@@ -33,6 +33,7 @@ namespace PantheonEngine::Core::Debug
 
         /**
          * \brief Logs a message with the given format following printf's syntax.
+         * \tparam Args The arguments to insert into the format string
          * \param format The format of the message
          * \param isError Whether the message is an error message or not
          * \param args Additional arguments to insert into the message
@@ -43,6 +44,7 @@ namespace PantheonEngine::Core::Debug
         /**
          * \brief Logs a message with the given format following printf's syntax.
          * Appends the given file path and line at the beginning of the message
+         * \tparam Args The arguments to insert into the format string
          * \param file The file for which the function was called
          * \param line The line for which the function was called
          * \param format The format of the message
