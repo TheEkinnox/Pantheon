@@ -40,6 +40,7 @@
     <ItemGroup>
         <Compile Include="Core\Debug.cs" />
         <Compile Include="Core\EngineLibs.cs" />
+        <Compile Include="Core\NativeObject.cs" />
         <Compile Include="Core\Time.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
