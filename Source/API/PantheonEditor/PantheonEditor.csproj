@@ -40,6 +40,12 @@
     <ItemGroup>
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\PantheonEngine\PantheonEngine.csproj">
+        <Project>{d022bb76-6cbb-4b2e-914c-d1b33595cb41}</Project>
+        <Name>PantheonEngine</Name>
+      </ProjectReference>
+    </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
          Other similar extension points exist, see Microsoft.Common.targets.
