@@ -11,6 +11,7 @@ namespace PantheonEngine
         internal const string PantheonRendering = Directory + "PantheonRenderingd";
         internal const string PantheonUI = Directory + "PantheonUId";
         internal const string PantheonApp = Directory + "PantheonAppd";
+        internal const string PantheonScripting = Directory + "PantheonScriptingd";
 #else
         internal const string PantheonCore = Directory + "PantheonCore";
         internal const string PantheonAudio = Directory + "PantheonAudio";
@@ -18,6 +19,7 @@ namespace PantheonEngine
         internal const string PantheonRendering = Directory + "PantheonRendering";
         internal const string PantheonUI = Directory + "PantheonUI";
         internal const string PantheonApp = Directory + "PantheonApp";
+        internal const string PantheonScripting = Directory + "PantheonScripting";
 #endif
     }
 }
