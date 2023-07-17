@@ -4,7 +4,6 @@
 
 #include <ranges>
 
-#include "PantheonCore/Utility/ServiceLocator.h"
 #include "PantheonCore/Debug/Logger.h"
 
 namespace PantheonEngine::Core::Resources

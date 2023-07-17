@@ -3,9 +3,10 @@
 #include <filesystem>
 #include <fstream>
 
-#ifdef PTH_SERVICE
+#ifndef DEBUG_LOG
+#include "PantheonCore/Utility/ServiceLocator.h"
 #define DEBUG_LOG(format, ...) PTH_SERVICE(PantheonEngine::Core::Debug::Logger).debugLog(__FILE__, __LINE__, format, ##__VA_ARGS__)
-#endif //PTH_SERVICE
+#endif //DEBUG_LOG
 
 namespace PantheonEngine::Core::Debug
 {
@@ -39,7 +40,7 @@ namespace PantheonEngine::Core::Debug
          * \param args Additional arguments to insert into the message
          */
         template <typename... Args>
-        void print(const char* format, bool isError, Args... args);
+        void print(const char* format, bool isError = false, Args... args);
 
         /**
          * \brief Logs a message with the given format following printf's syntax.
