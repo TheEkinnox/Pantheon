@@ -42,6 +42,9 @@
         <Compile Include="Core\EngineLibs.cs" />
         <Compile Include="Core\NativeObject.cs" />
         <Compile Include="Core\Time.cs" />
+        <Compile Include="Input\EKey.cs" />
+        <Compile Include="Input\EMouseButton.cs" />
+        <Compile Include="Input\Input.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
