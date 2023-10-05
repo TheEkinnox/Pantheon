@@ -19,7 +19,7 @@ namespace PantheonEngine::Application::Core
             onUpdate();
         });
 
-        const auto fixedUpdateListenerId = timer.m_onUpdate.subscribe([this]
+        const auto fixedUpdateListenerId = timer.m_onFixedUpdate.subscribe([this]
         {
             onFixedUpdate();
         });
@@ -28,7 +28,7 @@ namespace PantheonEngine::Application::Core
             m_context->update();
 
         timer.m_onUpdate.unsubscribe(updateListenerId);
-        timer.m_onUpdate.unsubscribe(fixedUpdateListenerId);
+        timer.m_onFixedUpdate.unsubscribe(fixedUpdateListenerId);
 
         onStop();
     }
