@@ -66,7 +66,7 @@ namespace PantheonEngine::Core::Debug
         print(message.c_str(), isError);
 
 #ifdef _WINDOWS_
-        OutputDebugString(message.c_str());
+        OutputDebugStringA(message.c_str());
 #endif
     }
 }
