@@ -26,10 +26,15 @@ namespace PantheonEngine::Core::Assets
         AssetBundle();
 
         /**
+         * \brief Creates an asset bundle and loads it from the given path
+         */
+        explicit AssetBundle(const std::string& path);
+
+        /**
          * \brief Loads the asset bundle from the given path
          * \param path The path of the asset bundle to load
          */
-        void load(const char* path);
+        void load(const std::string& path);
 
         /**
          * \brief Saves the asset bundle at the given path
@@ -43,6 +48,18 @@ namespace PantheonEngine::Core::Assets
          * \param asset The asset to add to the bundle
          */
         void add(const Asset& asset);
+
+        /**
+         * \brief Removes the asset with the given path from the asset bundle
+         * \param path The path of the asset to remove from the bundle
+         */
+        void removeAssetAtPath(const std::string& path);
+
+        /**
+         * \brief Removes the asset with the given guid from the asset bundle
+         * \param guid The guid of the asset to remove from the bundle
+         */
+        void removeAssetWithGuid(const std::string& guid);
 
         /**
          * \brief Provides read access to the bundle's assets list
@@ -61,30 +78,37 @@ namespace PantheonEngine::Core::Assets
          * \param path The path of the asset to find
          * \return A vector containing the asset's data on success or an empty vector otherwise
          */
-        std::vector<char> getAssetAtPath(const char* path) const;
+        std::vector<char> getAssetAtPath(const std::string& path) const;
 
         /**
          * \brief Tries to find the asset with the given guid
          * \param guid The guid of the asset to find
          * \return A vector containing the asset's data on success or an empty vector otherwise
          */
-        std::vector<char> getAssetWithGuid(const char* guid) const;
+        std::vector<char> getAssetWithGuid(const std::string& guid) const;
 
         /**
          * \brief Finds the path of the asset with the given guid
          * \param guid The guid of the asset of which path should be found
          * \return The asset's path on success, nullptr otherwise
          */
-        const char* getAssetPathFromGuid(const char* guid) const;
+        const char* getAssetPathFromGuid(const std::string& guid) const;
 
     private:
-        const char* m_path;
-        // 2 bits. Max value is 3 (4 possible options)
-        Utility::ECompressionMode m_compressionMode:COMPRESSION_MODE_BITS; // 62 bits. Max value is 524 288 TB (2^62-1 bits)
-        block_t m_compressedDataSize:DATA_SIZE_BITS; // 62 bits. Max value is 524 288 TB (2^62-1 bits)
-        std::vector<BundleAsset> m_assets;
+        std::string m_path;
+
+        Utility::ECompressionMode m_compressionMode    : COMPRESSION_MODE_BITS; // 2 bits. Max value is 3 (4 possible options)
+        block_t                   m_compressedDataSize : DATA_SIZE_BITS;        // 62 bits. Max value is 524 288 TB (2^62-1 bits)
+        std::vector<BundleAsset>  m_assets;
 
         std::unordered_map<std::string, size_t> m_guidMap;
         std::unordered_map<std::string, size_t> m_pathMap;
+
+        /**
+         * \brief Tries to read the given bundle asset's data
+         * \param bundleAsset The bundle asset of which data should be read
+         * \return A vector containing the asset's data on success or an empty vector otherwise
+         */
+        std::vector<char> getAssetData(const BundleAsset& bundleAsset) const;
     };
 }

@@ -1,43 +1,48 @@
 ﻿#include "PantheonCore/Assets/AssetBundle.h"
 
+#include <fstream>
+
 #include "PantheonCore/Assets/BundleAsset.h"
+#include "PantheonCore/Debug/Assertion.h"
+#include "PantheonCore/Debug/Logger.h"
 #include "PantheonCore/Utility/Compression.h"
 #include "PantheonCore/Utility/utility.h"
-
-#include <fstream>
-#include <iostream>
 
 using namespace PantheonEngine::Core::Utility;
 
 namespace PantheonEngine::Core::Assets
 {
-    AssetBundle::AssetBundle() :
-        m_path(nullptr), m_compressionMode(ECompressionMode::NONE), m_compressedDataSize(0)
+    AssetBundle::AssetBundle()
+        : m_compressionMode(ECompressionMode::NONE), m_compressedDataSize(0)
     {
     }
 
-    void AssetBundle::load(const char* path)
+    AssetBundle::AssetBundle(const std::string& path)
+    {
+        load(path);
+    }
+
+    void AssetBundle::load(const std::string& path)
     {
         // Reset the bundle's data before loading
         *this = AssetBundle();
 
-        std::cout << "Loading asset bundle at \"" << path << "\"" << std::endl;
+        ASSERT(!path.empty(), "Unable to load asset bundle - empty path");
 
-        if (path == nullptr)
-            throw std::runtime_error("Unable to load asset bundle - null path");
+        DEBUG_LOG("Loading asset bundle from path \"%s\"", path.c_str());
 
         std::ifstream ifs(path, std::ifstream::in | std::ifstream::binary);
 
-        if (!ifs.is_open())
-            throw std::runtime_error("Unable to load asset bundle - couldn't open file");
+        ASSERT(ifs.is_open(), "Unable to load asset bundle - couldn't open file");
 
         header_t headerData;
         ifs.read(reinterpret_cast<char*>(&headerData), HEADER_SIZE);
 
         m_compressionMode = static_cast<ECompressionMode>(readBits(headerData, COMPRESSION_MODE_BITS, 0));
         m_compressedDataSize = readBits(headerData, DATA_SIZE_BITS, COMPRESSION_MODE_BITS);
-        std::cout << "Header: " << headerData << " | Compression Mode: " << static_cast<int>(m_compressionMode) <<
-            " | Compressed Size: " << m_compressedDataSize << std::endl;
+
+        DEBUG_LOG("Header: %d | Compression Mode: %d | Compressed Size: %d", headerData, static_cast<int>(m_compressionMode),
+            m_compressedDataSize);
 
         const std::ifstream::off_type offset = static_cast<std::ifstream::off_type>(m_compressedDataSize + sizeof
             headerData);
@@ -50,15 +55,10 @@ namespace PantheonEngine::Core::Assets
 
             ifs >> bundleAsset;
 
-            std::cout << "Loaded bundle asset :\n\t- Start: " << bundleAsset.getBlockStart() <<
-                "\n\t- Compressed Size: " <<
-                bundleAsset.getBlockSize() <<
-                "\n\t- Uncompressed Size: " << bundleAsset.getAsset().getSize() << "\n\t- GUID: " << bundleAsset.
-                getAsset().
-                getGuid() <<
-                "\n\t- Type: " << bundleAsset.getAsset().getType() << "\n\t- Path: " << bundleAsset.getAsset().getPath()
-                <<
-                std::endl;
+            DEBUG_LOG("Loaded bundle asset :\n\t- Start: %d\n\t- Compressed Size: %d\n\t- Uncompressed Size: %d"
+                "\n\t- GUID: %s\n\t- Type: %s\n\t- Path: %s", bundleAsset.getBlockStart(), bundleAsset.getBlockSize(),
+                bundleAsset.getAsset().getSize(), bundleAsset.getAsset().getGuid(), bundleAsset.getAsset().getType(),
+                bundleAsset.getAsset().getPath());
 
             m_guidMap[bundleAsset.getAsset().getGuid()] = m_assets.size();
             m_pathMap[bundleAsset.getAsset().getPath()] = m_assets.size();
@@ -68,22 +68,21 @@ namespace PantheonEngine::Core::Assets
         m_path = path;
 
         ifs.close();
-        std::cout << "Successfully loaded asset bundle" << std::endl;
+        DEBUG_LOG("Successfully loaded asset bundle");
     }
 
     void AssetBundle::save(const char* path, ECompressionMode compressionMode)
     {
-        std::cout << "Saving asset bundle at \"" << path << "\"" << std::endl;
-
         if (path == nullptr)
-            path = m_path;
+            path = m_path.c_str();
+
+        DEBUG_LOG("Saving asset bundle at path \"%s\"", path);
 
         m_compressedDataSize = 0;
 
         std::ofstream ofs(path, std::ifstream::out | std::ifstream::trunc | std::ifstream::binary);
 
-        if (!ofs.is_open())
-            throw std::runtime_error("Unable to save asset bundle - couldn't open file");
+        ASSERT(ofs.is_open(), "Unable to save asset bundle - couldn't open file");
 
         uint64_t header = 0;
 
@@ -94,8 +93,8 @@ namespace PantheonEngine::Core::Assets
         {
             bundleAsset.setBlockStart(m_compressedDataSize);
 
-            const Asset& asset = bundleAsset.getAsset();
-            std::ifstream file(asset.getPath(), std::ifstream::in | std::ifstream::binary);
+            const Asset&      asset = bundleAsset.getAsset();
+            std::ifstream     file(asset.getPath(), std::ifstream::in | std::ifstream::binary);
             std::vector<char> fileBuffer, blockBuffer;
 
             // get file size
@@ -136,12 +135,36 @@ namespace PantheonEngine::Core::Assets
         m_path = path;
         m_compressionMode = compressionMode;
 
-        std::cout << "Successfully saved asset bundle" << std::endl;
+        DEBUG_LOG("Successfully saved asset bundle");
     }
 
     void AssetBundle::add(const Asset& asset)
     {
         m_assets.emplace_back(asset);
+    }
+
+    void AssetBundle::removeAssetAtPath(const std::string& path)
+    {
+        const auto it = m_pathMap.find(path);
+        if (it == m_pathMap.end())
+            return;
+
+        auto& asset = m_assets[it->second].getAsset();
+        m_guidMap.erase(asset.getGuid());
+        m_assets.erase(m_assets.begin() + static_cast<ptrdiff_t>(it->second));
+        m_pathMap.erase(it);
+    }
+
+    void AssetBundle::removeAssetWithGuid(const std::string& guid)
+    {
+        const auto it = m_guidMap.find(guid);
+        if (it == m_guidMap.end())
+            return;
+
+        auto& asset = m_assets[it->second].getAsset();
+        m_pathMap.erase(asset.getPath());
+        m_assets.erase(m_assets.begin() + static_cast<ptrdiff_t>(it->second));
+        m_guidMap.erase(it);
     }
 
     std::vector<Asset> AssetBundle::getAssets() const
@@ -157,28 +180,53 @@ namespace PantheonEngine::Core::Assets
 
     const char* AssetBundle::getPath() const
     {
-        return m_path;
+        return m_path.c_str();
     }
 
-    std::vector<char> AssetBundle::getAssetAtPath(const char* path) const
+    std::vector<char> AssetBundle::getAssetAtPath(const std::string& path) const
     {
-        if (path == nullptr)
+        if (path.empty() || m_path.empty())
             return {};
 
-        if (!m_pathMap.contains(path))
+        const auto it = m_pathMap.find(path);
+        if (it == m_pathMap.end())
             return {};
 
-        if (m_path == nullptr)
+        return getAssetData(m_assets[it->second]);
+    }
+
+    std::vector<char> AssetBundle::getAssetWithGuid(const std::string& guid) const
+    {
+        if (guid.empty() || m_path.empty())
             return {};
 
+        const auto it = m_guidMap.find(guid);
+        if (it == m_guidMap.end())
+            return {};
+
+        return getAssetData(m_assets[it->second]);
+    }
+
+    const char* AssetBundle::getAssetPathFromGuid(const std::string& guid) const
+    {
+        if (guid.empty())
+            return nullptr;
+
+        const auto it = m_guidMap.find(guid);
+        if (it == m_guidMap.end())
+            return nullptr;
+
+        return m_assets[it->second].getAsset().getPath();
+    }
+
+    std::vector<char> AssetBundle::getAssetData(const BundleAsset& bundleAsset) const
+    {
         std::ifstream fs(m_path, std::ifstream::in | std::ifstream::binary);
 
         if (!fs.good())
             return {};
 
-        const BundleAsset bundleAsset = m_assets[m_pathMap.at(path)];
-
-        const std::streamoff blockStart = static_cast<std::streamoff>(HEADER_SIZE + bundleAsset.getBlockStart());
+        const std::streamoff       blockStart = static_cast<std::streamoff>(HEADER_SIZE + bundleAsset.getBlockStart());
         const BundleAsset::block_t blockSize = bundleAsset.getBlockSize();
 
         if (blockSize == 0)
@@ -206,24 +254,5 @@ namespace PantheonEngine::Core::Assets
         fileBuffer.resize(fileSize);
 
         return fileBuffer;
-    }
-
-    std::vector<char> AssetBundle::getAssetWithGuid(const char* guid) const
-    {
-        if (!m_guidMap.contains(guid))
-            return {};
-
-        return getAssetAtPath(m_assets[m_guidMap.at(guid)].getAsset().getPath());
-    }
-
-    const char* AssetBundle::getAssetPathFromGuid(const char* guid) const
-    {
-        if (guid == nullptr)
-            return nullptr;
-
-        if (!m_guidMap.contains(guid))
-            return nullptr;
-
-        return m_assets[m_guidMap.at(guid)].getAsset().getPath();
     }
 }
