@@ -6,7 +6,7 @@
 #ifndef DEBUG_LOG
 #include "PantheonCore/Utility/ServiceLocator.h"
 #define DEBUG_LOG(format, ...) PTH_SERVICE(PantheonEngine::Core::Debug::Logger).debugLog(__FILE__, __LINE__, format, false, ##__VA_ARGS__)
-#define DEBUG_LOG_ERROR(format, isError, ...) PTH_SERVICE(PantheonEngine::Core::Debug::Logger).debugLog(__FILE__, __LINE__, format, true, ##__VA_ARGS__)
+#define DEBUG_LOG_ERROR(format, ...) PTH_SERVICE(PantheonEngine::Core::Debug::Logger).debugLog(__FILE__, __LINE__, format, true, ##__VA_ARGS__)
 #endif //DEBUG_LOG
 
 namespace PantheonEngine::Core::Debug
