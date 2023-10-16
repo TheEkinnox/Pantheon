@@ -1,7 +1,10 @@
 #pragma once
-#include "Logger.h"
-#include "PantheonCore/Utility/utility.h"
+#include <cassert>
+#include <fstream>
 #include <iostream>
+
+#include "PantheonCore/Debug/Logger.h"
+#include "PantheonCore/Utility/utility.h"
 
 #ifdef _WINDOWS
 #define WIN32_LEAN_AND_MEAN	// Disables unnecessary windows features
@@ -12,38 +15,15 @@
 
 namespace PantheonEngine::Core::Debug
 {
-    inline Logger::Logger(Logger&& other) noexcept
-        : m_file{ std::move(other.m_file) }
+    inline void Logger::setFile(const std::filesystem::path& filePath)
     {
+        m_filePath = filePath;
     }
 
-    inline Logger& Logger::operator=(Logger&& other) noexcept
+    inline Logger& Logger::getInstance()
     {
-        if (this == &other)
-            return *this;
-
-        m_file = std::move(other.m_file);
-
-        return *this;
-    }
-
-    inline Logger::~Logger()
-    {
-        if (m_file.is_open())
-            m_file.close();
-    }
-
-    inline void Logger::openFile(const std::filesystem::path& filePath)
-    {
-        closeFile();
-
-        m_file.open(filePath);
-    }
-
-    inline void Logger::closeFile()
-    {
-        if (m_file.is_open())
-            m_file.close();
+        static Logger instance;
+        return instance;
     }
 
     template <typename... Args>
@@ -53,8 +33,12 @@ namespace PantheonEngine::Core::Debug
 
         (isError ? std::cerr : std::cout) << message << std::flush;
 
-        if (m_file.is_open())
-            m_file << message << std::flush;
+        if (m_filePath.empty())
+            return;
+
+        std::ofstream file(m_filePath);
+        assert(file.is_open());
+        file << message << std::flush;
     }
 
     template <typename... Args>

@@ -1,6 +1,4 @@
 #include "PantheonCore/Debug/Logger.h"
-
-#include "PantheonCore/Utility/ServiceLocator.h"
 #include "PantheonCore/Utility/macros.h"
 
 namespace PantheonEngine::Core::Debug
@@ -9,10 +7,15 @@ namespace PantheonEngine::Core::Debug
 
     extern "C"
     {
-        EXPORT_SERVICE_FUNC(/**/, /**/, Logger, void, print, ARGS(const char* message, bool isError),
-            ARGS(message, isError))
-        EXPORT_SERVICE_FUNC(/**/, /**/, Logger, void, openFile, const char* filePath, filePath)
-        EXPORT_SERVICE_FUNC_NO_PARAMS(/**/, /**/, Logger, void, closeFile)
+        PANTHEON_API void Logger_print(const char* message, const bool isError)
+        {
+            return Logger::getInstance().print(message, isError);
+        }
+
+        PANTHEON_API void Logger_setFile(const char* filePath)
+        {
+            return Logger::getInstance().setFile(filePath);
+        }
     }
 
 #pragma endregion

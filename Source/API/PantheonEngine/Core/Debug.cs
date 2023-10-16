@@ -1,10 +1,7 @@
 using System;
-using System.Diagnostics;
 using System.Text;
 
-#if PANTHEON_EDITOR || DEBUG
 using System.Runtime.InteropServices;
-#endif
 
 namespace PantheonEngine
 {
@@ -12,12 +9,12 @@ namespace PantheonEngine
     {
         public static void SetLogFile(string path)
         {
-            Internal_OpenFile(new StringBuilder(path));
+            Internal_SetFile(new StringBuilder(path));
         }
 
         public static void DisableLogFile()
         {
-            Internal_CloseFile();
+            Internal_SetFile(new StringBuilder());
         }
 
         public static void Log(string message)
@@ -61,11 +58,8 @@ namespace PantheonEngine
         [DllImport(EngineLibs.PantheonCore, CallingConvention = CallingConvention.Cdecl, EntryPoint = "Logger_print")]
         private static extern void Internal_Print(StringBuilder message, bool isError);
 
-        [DllImport(EngineLibs.PantheonCore, CallingConvention = CallingConvention.Cdecl, EntryPoint = "Logger_openFile")]
-        private static extern void Internal_OpenFile(StringBuilder filePath);
-
-        [DllImport(EngineLibs.PantheonCore, CallingConvention = CallingConvention.Cdecl, EntryPoint = "Logger_closeFile")]
-        private static extern void Internal_CloseFile();
+        [DllImport(EngineLibs.PantheonCore, CallingConvention = CallingConvention.Cdecl, EntryPoint = "Logger_setFile")]
+        private static extern void Internal_SetFile(StringBuilder filePath);
 
         #endregion
     }

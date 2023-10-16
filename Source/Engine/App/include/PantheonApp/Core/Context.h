@@ -1,7 +1,6 @@
 #pragma once
 #include <memory>
 
-#include "PantheonCore/Debug/Logger.h"
 #include "PantheonCore/Utility/Timer.h"
 
 namespace PantheonEngine::Application::Core
@@ -34,7 +33,6 @@ namespace PantheonEngine::Application::Core
         static constexpr unsigned int PANTHEON_OPENGL_VERSION_MINOR = 6;
 
     public:
-        std::unique_ptr<PantheonEngine::Core::Debug::Logger> m_logger;
         std::unique_ptr<PantheonEngine::Core::Utility::Timer> m_timer;
 
         /**

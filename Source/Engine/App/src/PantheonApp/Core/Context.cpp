@@ -3,6 +3,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "PantheonCore/Debug/Logger.h"
+#include "PantheonCore/Utility/ServiceLocator.h"
+
 using namespace PantheonEngine::Core::Debug;
 using namespace PantheonEngine::Core::Utility;
 using namespace PantheonEngine::Application::Core::Exceptions;
@@ -24,7 +27,6 @@ namespace PantheonEngine::Application::Core
                                 const char* message, const void* userParam);
 
     Context::Context(const bool useVsync, const int sampleCount) :
-        m_logger(std::make_unique<Logger>()),
         m_timer(std::make_unique<Timer>()),
         m_useVsync(useVsync)
     {
@@ -47,7 +49,6 @@ namespace PantheonEngine::Application::Core
 
         m_isInitialized = true;
 
-        ServiceLocator::provide<Logger>(*m_logger);
         ServiceLocator::provide<Timer>(*m_timer);
     }
 
@@ -108,7 +109,7 @@ namespace PantheonEngine::Application::Core
         if (id == 131169 || id == 131185 || id == 131218 || id == 131204)
             return;
 
-        Logger& logger = PTH_SERVICE(Logger);
+        Logger& logger = Logger::getInstance();
 
         logger.print("---------------\n");
         logger.print("Debug message (%u): %s\n", id, message);

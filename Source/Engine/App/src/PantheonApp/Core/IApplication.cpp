@@ -1,5 +1,7 @@
 #include "PantheonApp/Core/IApplication.h"
 
+#include "PantheonCore/Debug/Assertion.h"
+
 using namespace PantheonEngine::Core::Utility;
 
 namespace PantheonEngine::Application::Core
@@ -41,7 +43,6 @@ namespace PantheonEngine::Application::Core
     const Context& IApplication::getContext() const
     {
         ASSERT(m_context);
-
         return *m_context;
     }
 }

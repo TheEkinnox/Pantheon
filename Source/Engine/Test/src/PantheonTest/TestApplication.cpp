@@ -1,5 +1,8 @@
 ﻿#include "PantheonTest/TestApplication.h"
 
+#include "PantheonCore/Debug/Logger.h"
+#include "PantheonCore/Utility/ServiceLocator.h"
+
 using namespace PantheonEngine::Core::Utility;
 using namespace PantheonEngine::Application::Core;
 using namespace PantheonEngine::Application::Input;

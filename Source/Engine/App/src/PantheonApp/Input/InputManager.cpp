@@ -6,6 +6,7 @@
 #include "PantheonApp/Input/EKeyState.h"
 #include "PantheonApp/Windowing/Window.h"
 
+#include "PantheonCore/Utility/ServiceLocator.h"
 #include "PantheonCore/Utility/macros.h"
 
 using namespace PantheonEngine::Application::Windowing::Exceptions;
