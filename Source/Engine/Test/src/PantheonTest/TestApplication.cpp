@@ -46,7 +46,7 @@ namespace PantheonEngine::Test
         }
         else if (m_inputManager->isKeyPressed(EKey::KEY_SPACE))
         {
-            DEBUG_LOG("Time since last space : %i\n", timeSinceLastSpace);
+            DEBUG_LOG("Time since last space : %i", timeSinceLastSpace);
             timeSinceLastSpace = 0;
         }
     }

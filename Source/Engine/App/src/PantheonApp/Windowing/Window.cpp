@@ -32,7 +32,7 @@ namespace PantheonEngine::Application::Windowing
 
         if (m_glfwWindow == nullptr)
         {
-            DEBUG_LOG("Failed to create GLFW window\n");
+            DEBUG_LOG_ERROR("Failed to create GLFW window");
             throw WindowCreationFailed("Failed to create GLFW window");
         }
 
@@ -62,7 +62,7 @@ namespace PantheonEngine::Application::Windowing
         // Load GLAD's OpenGL function pointers
         if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
         {
-            DEBUG_LOG("Failed to initialize GLAD\n");
+            DEBUG_LOG_ERROR("Failed to initialize GLAD");
             throw std::runtime_error("Failed to initialize GLAD");
         }
     }

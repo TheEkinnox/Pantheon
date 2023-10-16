@@ -45,7 +45,7 @@ namespace PantheonEngine::Core::Debug
     void Logger::debugLog(const char* file, const size_t line, const char* format, const bool isError, Args... args)
     {
         std::string message = Utility::formatString(format, args...);
-        message = Utility::formatString("%s(%d): %s", file, line, message.c_str());
+        message = Utility::formatString("%s(%d): %s\n", file, line, message.c_str());
 
         print(message.c_str(), isError);
 
