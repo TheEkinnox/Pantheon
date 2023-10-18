@@ -50,4 +50,4 @@ else()
   target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
 endif()
 
-set(EDITOR_NAME ${PROJECT_NAME} PARENT_SCOPE)
+set(TEST_NAME ${PROJECT_NAME} PARENT_SCOPE)

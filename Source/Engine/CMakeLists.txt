@@ -1,14 +1,6 @@
 # Include sub directories
 # Merge and cache the externally accessible include directories
 
-option(PANTHEON_BUILD_ENGINE_TEST "Enable to include engine test application" OFF)
-
-if(PANTHEON_BUILD_ENGINE_TEST)
-	set(BUILD_SHARED_LIBS OFF)
-else()
-	set(BUILD_SHARED_LIBS ON)
-endif()
-
 # Core
 add_subdirectory(Core)
 set(ENGINE_TARGETS ${CORE_NAME})
@@ -43,11 +35,6 @@ list(APPEND ENGINE_INCLUDE_DIRS ${APP_INCLUDE_DIR})
 #add_subdirectory(Scripting)
 list(APPEND ENGINE_TARGETS ${SCRIPTING_NAME})
 list(APPEND ENGINE_INCLUDE_DIRS ${SCRIPTING_INCLUDE_DIR})
-
-# Test
-if (PANTHEON_BUILD_ENGINE_TEST)
-	add_subdirectory(Test)
-endif()
 
 message(STATUS "ENGINE_TARGETS: ${ENGINE_TARGETS}")
 message(STATUS "ENGINE_INCLUDE_DIRS: ${ENGINE_INCLUDE_DIRS}")
