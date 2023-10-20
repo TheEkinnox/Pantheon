@@ -1,17 +1,17 @@
 #pragma once
 #include <stdexcept>
 
-#include "PantheonApp/Windowing/WindowSettings.h"
+#include <PantheonCore/Eventing/Event.h>
+
+#include <Vector/Vector2.h>
 
 #include "PantheonApp/Core/Context.h"
-
 #include "PantheonApp/Input/EInputModifier.h"
 #include "PantheonApp/Input/EKey.h"
 #include "PantheonApp/Input/EKeyState.h"
 #include "PantheonApp/Input/EMouseButton.h"
 #include "PantheonApp/Input/EMouseButtonState.h"
-
-#include "PantheonCore/Eventing/Event.h"
+#include "PantheonApp/Windowing/WindowSettings.h"
 
 // Forward declaration of GLFWwindow to avoid including glfw in the header
 using GLFWwindow = struct GLFWwindow;
@@ -43,22 +43,22 @@ namespace PantheonEngine::Application::Windowing
     class Window
     {
     public:
-        using DimensionsT = std::pair<int, int>;
-        using PosT = std::pair<int, int>;
-        using CursorPosT = std::pair<double, double>;
+        using DimensionsT = LibMath::Vector2I;
+        using PosT = LibMath::Vector2I;
+        using CursorPosT = LibMath::TVector2<double>;
 
         PantheonEngine::Core::Eventing::Event<Input::EKey, int, Input::EKeyState, Input::EInputModifier> m_keyEvent;
         PantheonEngine::Core::Eventing::Event<Input::EMouseButton, Input::EMouseButtonState, Input::EInputModifier> m_mouseButtonEvent;
 
         PantheonEngine::Core::Eventing::Event<DimensionsT> m_resizeEvent;
         PantheonEngine::Core::Eventing::Event<DimensionsT> m_framebufferResizeEvent;
-        PantheonEngine::Core::Eventing::Event<PosT> m_moveEvent;
-        PantheonEngine::Core::Eventing::Event<CursorPosT> m_cursorMoveEvent;
-        PantheonEngine::Core::Eventing::Event<> m_minimizeEvent;
-        PantheonEngine::Core::Eventing::Event<> m_maximizeEvent;
-        PantheonEngine::Core::Eventing::Event<> m_gainFocusEvent;
-        PantheonEngine::Core::Eventing::Event<> m_lostFocusEvent;
-        PantheonEngine::Core::Eventing::Event<> m_closeEvent;
+        PantheonEngine::Core::Eventing::Event<PosT>        m_moveEvent;
+        PantheonEngine::Core::Eventing::Event<CursorPosT>  m_cursorMoveEvent;
+        PantheonEngine::Core::Eventing::Event<>            m_minimizeEvent;
+        PantheonEngine::Core::Eventing::Event<>            m_maximizeEvent;
+        PantheonEngine::Core::Eventing::Event<>            m_gainFocusEvent;
+        PantheonEngine::Core::Eventing::Event<>            m_lostFocusEvent;
+        PantheonEngine::Core::Eventing::Event<>            m_closeEvent;
 
         /**
          * \brief Creates a GLFW window
@@ -115,6 +115,12 @@ namespace PantheonEngine::Application::Windowing
         std::string getTitle() const;
 
         /**
+         * \brief Sets the window's title
+         * \return The window's title
+         */
+        void setTitle(const std::string& title);
+
+        /**
          * \brief Gets the window's current position
          * \return The window's current position
          */
@@ -165,6 +171,12 @@ namespace PantheonEngine::Application::Windowing
         CursorPosT getCursorPosition() const;
 
         /**
+         * \brief Sets the cursor's position
+         * \param cursorPos The new cursor position
+         */
+        void setCursorPosition(CursorPosT cursorPos) const;
+
+        /**
          * \brief Shows the mouse cursor
          */
         void showCursor() const;
@@ -202,7 +214,34 @@ namespace PantheonEngine::Application::Windowing
          */
         float getAspect() const;
 
+        /**
+         * \brief Gets the window's refresh rate
+         * \return The window's refresh rate
+         */
+        int getRefreshRate() const;
 
+        /**
+         * \brief Sets the window's refresh rate
+         * \param refreshRate The window's new refresh rate
+         */
+        void setRefreshRate(int refreshRate);
+
+        /**
+         * \brief Gets the window's refresh rate
+         * \return The window's refresh rate
+         */
+        bool isFullScreen() const;
+
+        /**
+         * \brief Sets the window's fullscreen mode
+         * \param shouldEnable Whether the fullscreen mode should be enabled or not
+         */
+        void setFullScreen(bool shouldEnable);
+
+        /**
+         * \brief Toggles the window's fullscreen mode
+         */
+        void toggleFullScreen();
 
     private:
         inline static std::unordered_map<GLFWwindow*, Window*> s_windowsMap;
@@ -211,12 +250,12 @@ namespace PantheonEngine::Application::Windowing
         DimensionsT m_size;
         DimensionsT m_minSize;
         DimensionsT m_maxSize;
-        PosT m_pos;
+        PosT        m_pos;
 
         const Core::Context& m_context;
-        GLFWwindow* m_glfwWindow;
+        GLFWwindow*          m_glfwWindow;
 
-        int m_refreshRate;
+        int  m_refreshRate;
         bool m_isFullScreen;
 
         /**

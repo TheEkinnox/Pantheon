@@ -89,8 +89,8 @@ namespace PantheonEngine::Application::Input
             m_isFirstMouse = false;
         }
 
-        m_mouseDelta.first = m_mousePos.first - m_lastMousePos.first;
-        m_mouseDelta.second = m_mousePos.second - m_lastMousePos.second;
+        m_mouseDelta.m_x = m_mousePos.m_x - m_lastMousePos.m_x;
+        m_mouseDelta.m_y = m_mousePos.m_y - m_lastMousePos.m_y;
 
         m_lastMousePos = m_mousePos;
         ++m_currentFrame;

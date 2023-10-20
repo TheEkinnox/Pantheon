@@ -3,6 +3,8 @@
 #include <PantheonCore/Debug/Logger.h>
 #include <PantheonCore/Utility/ServiceLocator.h>
 
+#include "PantheonTest/Tests/WindowTest.h"
+
 using namespace PantheonEngine::Core::Utility;
 using namespace PantheonEngine::Application::Core;
 using namespace PantheonEngine::Application::Input;
@@ -19,21 +21,28 @@ namespace PantheonTest
         ServiceLocator::provide<InputManager>(*m_inputManager);
     }
 
-    void TestApplication::onStart([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
+    void TestApplication::onStart(int, char*[])
     {
         m_window->makeCurrentContext();
+        WindowTest().run();
     }
 
     void TestApplication::preUpdate()
     {
         if (m_inputManager->isKeyPressed(EKey::KEY_ESCAPE))
             m_window->setShouldClose(true);
+
+        if (m_inputManager->isKeyPressed(EKey::KEY_F11))
+            m_window->toggleFullScreen();
     }
 
     int timeSinceLastSpace = 0;
 
     void TestApplication::update()
     {
+        const bool isShiftDown = m_inputManager->isKeyDown(EKey::KEY_LEFT_SHIFT)
+            || m_inputManager->isKeyDown(EKey::KEY_RIGHT_SHIFT);
+
         if (m_inputManager->isKeyDown(EKey::KEY_P))
             std::cout << "A";
 
@@ -48,6 +57,25 @@ namespace PantheonTest
         {
             DEBUG_LOG("Time since last space : %i", timeSinceLastSpace);
             timeSinceLastSpace = 0;
+        }
+
+        if (m_inputManager->isKeyPressed(EKey::KEY_C))
+            m_window->setCursorPosition(m_window->getSize() / 2);
+
+        if (m_inputManager->isKeyPressed(EKey::KEY_H))
+        {
+            if (isShiftDown)
+                m_window->showCursor();
+            else
+                m_window->hideCursor();
+        }
+
+        if (m_inputManager->isKeyPressed(EKey::KEY_X))
+        {
+            if (isShiftDown)
+                m_window->showCursor();
+            else
+                m_window->disableCursor();
         }
     }
 
