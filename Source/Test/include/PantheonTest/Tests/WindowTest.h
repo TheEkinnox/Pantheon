@@ -8,7 +8,7 @@ namespace PantheonEngine::Application::Windowing
 
 namespace PantheonTest
 {
-    class WindowTest : public ITest
+    class WindowTest final : public ITest
     {
     public:
         WindowTest();

@@ -22,7 +22,7 @@ namespace PantheonTest
         testCursorPosition();
         testCursorMode();
         testExtra();
-        DEBUG_LOG("= Window tests executed successfully =");
+        DEBUG_LOG("= Window tests executed successfully =\n");
     }
 
     void WindowTest::testExtra() const
