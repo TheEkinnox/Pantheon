@@ -3,6 +3,7 @@
 #include <PantheonCore/Debug/Logger.h>
 #include <PantheonCore/Utility/ServiceLocator.h>
 
+#include "PantheonTest/Tests/ThreadPoolTest.h"
 #include "PantheonTest/Tests/WindowTest.h"
 
 using namespace PantheonEngine::Core::Utility;
@@ -15,16 +16,19 @@ namespace PantheonTest
     TestApplication::TestApplication() :
         IApplication(std::make_unique<Context>(true, 4)),
         m_window(std::make_unique<Window>(getContext(), WindowSettings{ "Pantheon Test", 800, 600 })),
-        m_inputManager(std::make_unique<InputManager>(*m_window))
+        m_inputManager(std::make_unique<InputManager>(*m_window)),
+        m_threadPool(std::make_unique<ThreadPool>())
     {
         ServiceLocator::provide<Window>(*m_window);
         ServiceLocator::provide<InputManager>(*m_inputManager);
+        ServiceLocator::provide<ThreadPool>(*m_threadPool);
     }
 
     void TestApplication::onStart(int, char*[])
     {
         m_window->makeCurrentContext();
         WindowTest().run();
+        ThreadPoolTest().run();
     }
 
     void TestApplication::preUpdate()
