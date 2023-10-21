@@ -2,8 +2,7 @@
 
 namespace PantheonEngine::Core::Utility
 {
-    std::vector<std::string> splitString(const std::string& str, const char* delimiter,
-                                         const bool includeEmpty)
+    std::vector<std::string> splitString(const std::string& str, const char* delimiter, const bool includeEmpty)
     {
         std::vector<std::string> result{};
 
