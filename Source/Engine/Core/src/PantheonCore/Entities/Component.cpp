@@ -5,15 +5,14 @@
 namespace PantheonEngine::Core::Entities
 {
     Component::Component(const Component& other) :
-        m_owner(other.getOwner()), m_id(s_currentId++),
-        m_isActive(other.isActive())
+        m_owner(other.m_owner), m_id(s_currentId++), m_isActive(other.m_isActive)
     {
     }
 
     Component::Component(Component&& other) noexcept :
-        m_owner(other.getOwner()), m_id(other.m_id),
-        m_isActive(other.isActive())
+        m_owner(other.m_owner), m_id(other.m_id), m_isActive(other.m_isActive)
     {
+        other.m_id = 0;
     }
 
     Component& Component::operator=(const Component& other)
@@ -33,7 +32,7 @@ namespace PantheonEngine::Core::Entities
         if (&other == this)
             return *this;
 
-        m_owner = std::move(other.m_owner);
+        m_owner = other.m_owner;
         m_isActive = other.m_isActive;
         m_id = other.m_id;
 
@@ -54,12 +53,13 @@ namespace PantheonEngine::Core::Entities
 
     Component::~Component()
     {
-        m_owner.removeComponent(m_id);
+        if (*m_owner)
+            m_owner->removeComponent(m_id);
     }
 
     bool Component::isActive() const
     {
-        return m_isActive;
+        return m_isActive && m_owner->isActive();
     }
 
     void Component::setActive(const bool active)
@@ -79,11 +79,11 @@ namespace PantheonEngine::Core::Entities
 
     Entity& Component::getOwner() const
     {
-        return m_owner;
+        return *m_owner;
     }
 
     Component::Component(Entity& owner) :
-        m_owner(owner), m_id(s_currentId++)
+        m_owner(&owner), m_id(s_currentId++)
     {
     }
 }

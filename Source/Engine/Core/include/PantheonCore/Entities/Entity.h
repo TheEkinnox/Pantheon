@@ -20,6 +20,12 @@ namespace PantheonEngine::Core::Entities
         Entity(Entity&& other) noexcept;
         ~Entity() override;
 
+        /**
+         * \brief Checks whether the entity is valid or not
+         * \return True if the entity is valid. False otherwise.
+         */
+        explicit operator bool() const;
+
         Entity& operator=(const Entity& other);
         Entity& operator=(Entity&& other) noexcept;
 
@@ -64,8 +70,22 @@ namespace PantheonEngine::Core::Entities
          */
         virtual void update();
 
+        /**
+         * \brief Checks whether the entity is active or not
+         * \return True if the entity is currently active. False otherwise.
+         */
+        bool isActive() const;
+
+        /**
+         * \brief Sets whether the entity is active or not
+         * \param active The entity's new active state
+         */
+        void setActive(bool active);
+
     private:
         ComponentList m_components;
+        bool          m_isActive;
+        bool          m_isDestroyed;
     };
 }
 

@@ -3,22 +3,21 @@
 namespace PantheonEngine::Core::Entities
 {
     Entity::Entity(Entity* parent, const Transform& transform) :
-        Node(parent), Transform(transform)
+        Node(parent), Transform(transform), m_isActive(true), m_isDestroyed(false)
     {
     }
 
     Entity::Entity(const Entity& other) :
-        Node(other), Transform(other),
-        m_components(other.m_components)
+        Node(other), Transform(other), m_components(other.m_components), m_isActive(other.m_isActive), m_isDestroyed(false)
     {
         if (!m_components.empty())
             for (const auto& component : m_components)
-                component->m_owner = *this;
+                component->m_owner = this;
     }
 
     Entity::Entity(Entity&& other) noexcept :
-        Node(std::move(other)), Transform(std::move(other)),
-        m_components(std::move(other.m_components))
+        Node(std::forward<Node&&>(other)), Transform(std::forward<Transform&&>(other)),
+        m_components(std::move(other.m_components)), m_isActive(other.m_isActive), m_isDestroyed(false)
     {
         if (!m_components.empty())
             for (const auto& component : m_components)
@@ -27,8 +26,15 @@ namespace PantheonEngine::Core::Entities
 
     Entity::~Entity()
     {
+        m_isDestroyed = true;
+
         if (!m_components.empty())
             m_components.clear();
+    }
+
+    Entity::operator bool() const
+    {
+        return !m_isDestroyed;
     }
 
     Entity& Entity::operator=(const Entity& other)
@@ -45,7 +51,9 @@ namespace PantheonEngine::Core::Entities
 
         if (!m_components.empty())
             for (const auto& component : m_components)
-                component->m_owner = *this;
+                component->m_owner = this;
+
+        m_isActive = other.m_isActive;
 
         return *this;
     }
@@ -64,7 +72,9 @@ namespace PantheonEngine::Core::Entities
 
         if (!m_components.empty())
             for (const auto& component : m_components)
-                component->m_owner = *this;
+                component->m_owner = this;
+
+        m_isActive = other.m_isActive;
 
         return *this;
     }
@@ -97,8 +107,14 @@ namespace PantheonEngine::Core::Entities
 
     void Entity::update()
     {
+        if (!isActive())
+            return;
+
         for (const auto& component : m_components)
-            component->update();
+        {
+            if (component->isActive())
+                component->update();
+        }
 
         for (Node* child : getChildren())
             reinterpret_cast<Entity*>(child)->update();
@@ -115,4 +131,16 @@ namespace PantheonEngine::Core::Entities
         Node::removeChild(child);
         reinterpret_cast<Entity&>(child).removeParent();
     }
+
+    bool Entity::isActive() const
+    {
+        const auto* parent = reinterpret_cast<const Entity*>(Node::getParent());
+        return !m_isDestroyed && m_isActive && (parent == nullptr || parent->isActive());
+    }
+
+    void Entity::setActive(bool active)
+    {
+        m_isActive = active;
+    }
+
 }
