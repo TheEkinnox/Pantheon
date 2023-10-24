@@ -21,7 +21,7 @@ namespace PantheonEngine::Core::Entities
     {
         if (!m_components.empty())
             for (const auto& component : m_components)
-                component->m_owner = *this;
+                component->m_owner = this;
     }
 
     Entity::~Entity()
@@ -116,20 +116,8 @@ namespace PantheonEngine::Core::Entities
                 component->update();
         }
 
-        for (Node* child : getChildren())
-            reinterpret_cast<Entity*>(child)->update();
-    }
-
-    void Entity::addChild(Node& child)
-    {
-        Node::addChild(child);
-        reinterpret_cast<Entity&>(child).setParent(*this);
-    }
-
-    void Entity::removeChild(Node& child)
-    {
-        Node::removeChild(child);
-        reinterpret_cast<Entity&>(child).removeParent();
+        for (NodePtr& child : getChildren())
+            reinterpret_cast<Entity&>(*child).update();
     }
 
     bool Entity::isActive() const
@@ -143,4 +131,13 @@ namespace PantheonEngine::Core::Entities
         m_isActive = active;
     }
 
+    void Entity::onChildAdded(Node& child)
+    {
+        reinterpret_cast<Entity&>(child).setParent(*this);
+    }
+
+    void Entity::onRemoveChild(Node& child)
+    {
+        reinterpret_cast<Entity&>(child).removeParent();
+    }
 }

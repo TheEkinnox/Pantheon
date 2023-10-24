@@ -54,18 +54,6 @@ namespace PantheonEngine::Core::Entities
         std::vector<std::shared_ptr<T>> getComponents();
 
         /**
-         * \brief Adds the given node as a child of the current node
-         * \param child A pointer to the child to add to the current node
-         */
-        void addChild(Node& child) override;
-
-        /**
-         * \brief Removes the given node from this node's children
-         * \param child A pointer to the child to remove from the node's children
-         */
-        void removeChild(Node& child) override;
-
-        /**
          * \brief Updates the entity (does nothing by default)
          */
         virtual void update();
@@ -81,6 +69,19 @@ namespace PantheonEngine::Core::Entities
          * \param active The entity's new active state
          */
         void setActive(bool active);
+
+    protected:
+        /**
+         * \brief Adds the given node as a child of the current node
+         * \param child A pointer to the child to add to the current node
+         */
+        void onChildAdded(Node& child) override;
+
+        /**
+         * \brief Removes the given node from this node's children
+         * \param child A pointer to the child to remove from the node's children
+         */
+        void onRemoveChild(Node& child) override;
 
     private:
         ComponentList m_components;

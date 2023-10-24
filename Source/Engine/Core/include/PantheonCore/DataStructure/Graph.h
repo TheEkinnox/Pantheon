@@ -49,6 +49,12 @@ namespace PantheonEngine::Core::DataStructure
         std::vector<std::shared_ptr<NodeT>> getNodes();
 
         /**
+         * \brief Gets the graph's root nodes list
+         * \return The graph's root nodes list
+         */
+        std::vector<std::shared_ptr<const NodeT>> getNodes() const;
+
+        /**
          * \brief Checks whether or not the graph is empty
          * \return True if the graph is empty. False otherwise
          */

@@ -39,6 +39,18 @@ namespace PantheonEngine::Core::DataStructure
     }
 
     template <class NodeT>
+    std::vector<std::shared_ptr<const NodeT>> Graph<NodeT>::getNodes() const
+    {
+        std::vector<std::shared_ptr<const NodeT>> nodes;
+        nodes.reserve(m_nodes.size());
+
+        for (const auto& node : m_nodes)
+            nodes.push_back(std::dynamic_pointer_cast<const NodeT>(node));
+
+        return nodes;
+    }
+
+    template <class NodeT>
     bool Graph<NodeT>::isEmpty() const
     {
         return m_nodes.empty();
