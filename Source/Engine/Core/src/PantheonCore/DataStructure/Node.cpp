@@ -30,6 +30,17 @@ namespace PantheonEngine::Core::DataStructure
         return m_children;
     }
 
+    std::vector<Node::ConstNodePtr> Node::getChildren() const
+    {
+        std::vector<ConstNodePtr> children;
+        children.reserve(m_children.size());
+
+        for (const auto& child : m_children)
+            children.push_back(std::dynamic_pointer_cast<const Node>(child));
+
+        return children;
+    }
+
     void Node::removeChild(Node& child)
     {
         const auto findFunc = [child](const NodePtr& ptr)

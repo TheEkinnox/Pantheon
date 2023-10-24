@@ -7,6 +7,7 @@ namespace PantheonEngine::Core::DataStructure
     {
     public:
         using NodePtr = std::shared_ptr<Node>;
+        using ConstNodePtr = std::shared_ptr<const Node>;
 
         Node() = default;
         explicit Node(Node* parent);
@@ -34,6 +35,12 @@ namespace PantheonEngine::Core::DataStructure
          * \return The node's children
          */
         std::vector<NodePtr> getChildren();
+
+        /**
+         * \brief Gets the node's children
+         * \return The node's children
+         */
+        std::vector<ConstNodePtr> getChildren() const;
 
         /**
          * \brief Removes all the node's children
