@@ -14,7 +14,8 @@ namespace PantheonEngine::Core::Entities
 
         ASSERT(s_componentTypes.contains(name), "Component type \"%s\" has already been registered", name.c_str());
 
-        s_componentTypes[name] = [](Entity& owner) -> Component* {
+        s_componentTypes[name] = [](Entity& owner) -> std::shared_ptr<Component>
+        {
             return std::make_shared<T>(owner);
         };
     }
