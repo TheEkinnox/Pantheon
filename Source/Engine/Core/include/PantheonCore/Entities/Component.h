@@ -4,11 +4,14 @@
 #include <string>
 #include <unordered_map>
 
-#define REGISTER_COMPONENT_TYPE(Type)                                                                  \
-static uint8_t reg_##Type = (PantheonEngine::Core::Entities::Component::registerType<Type>(#Type), 0); \
-std::string Type::getTypeName() const                                                                  \
-{                                                                                                      \
-    return PantheonEngine::Core::Entities::Component::getRegisteredTypeName<Type>();                   \
+#define REGISTER_COMPONENT_TYPE(Name, Type)                                                            \
+static uint8_t reg_##Name = (PantheonEngine::Core::Entities::Component::registerType<Type>(#Name), 0);
+
+#define REGISTERED_COMPONENT_BODY(Type)                                              \
+public:                                                                              \
+inline std::string Type::getTypeName() const override                                \
+{                                                                                    \
+    return PantheonEngine::Core::Entities::Component::getRegisteredTypeName<Type>(); \
 }
 
 namespace PantheonEngine::Core::Entities

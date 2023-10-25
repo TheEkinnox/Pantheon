@@ -17,7 +17,7 @@ namespace PantheonEngine::Core::Resources
     {
         static_assert(std::is_base_of_v<IResource, T>);
 
-        ASSERT(s_resourceTypes.contains(name), "Resource type \"%s\" has already been registered", name.c_str());
+        ASSERT(!s_resourceTypes.contains(name), "Resource type \"%s\" has already been registered", name.c_str());
 
         s_resourceTypes[name] = []() -> IResource* {
             return new T();

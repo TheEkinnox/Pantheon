@@ -9,7 +9,7 @@ namespace PantheonEngine::Core::Entities
     {
         static_assert(std::is_base_of_v<Component, T>);
 
-        ASSERT(s_componentTypes.contains(name), "Component type \"%s\" has already been registered", name.c_str());
+        ASSERT(!s_componentTypes.contains(name), "Component type \"%s\" has already been registered", name.c_str());
 
         s_componentTypes[name] = [](Entity& owner) -> std::shared_ptr<Component>
         {
