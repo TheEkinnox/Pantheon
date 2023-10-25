@@ -20,8 +20,6 @@
 #define PANTHEON_API __declspec(dllexport)
 #endif //!PANTHEON_API
 
-#define TYPE_NAME(T) typeid(T).raw_name()
-
 #ifndef ARGS
 #define ARGS(...) __VA_ARGS__
 #endif //!ARGS
