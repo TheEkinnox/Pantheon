@@ -42,6 +42,14 @@ namespace PantheonEngine::Core::Entities
         static constexpr void registerType(const std::string& name);
 
         /**
+         * \brief Gets the registered name for the given component type
+         * \tparam T The component type
+         * \return The registered name for the given component type
+         */
+        template <typename T>
+        static std::string getRegisteredTypeName();
+
+        /**
          * \brief Tries to allocate a component of the given registered component type.
          * \param type The type of the component to create
          * \param owner The created component's owner
@@ -88,14 +96,6 @@ namespace PantheonEngine::Core::Entities
 
     protected:
         explicit Component(Entity& owner);
-
-        /**
-         * \brief Gets the registered name for the given component type
-         * \tparam T The component type
-         * \return The registered name for the given component type
-         */
-        template <typename T>
-        static std::string getRegisteredTypeName();
 
     private:
         friend class Entity;

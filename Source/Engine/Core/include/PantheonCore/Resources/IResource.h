@@ -33,6 +33,14 @@ namespace PantheonEngine::Core::Resources
         static constexpr void registerType(const std::string& name);
 
         /**
+         * \brief Gets the registered name for the given resource type
+         * \tparam T The resource type
+         * \return The registered name for the given resource type
+         */
+        template <typename T>
+        static std::string getRegisteredTypeName();
+
+        /**
          * \brief Tries to allocate a resource of the given registered resource type.
          * \param type The type of the resource to create
          * \return A pointer to the allocated resource on success, nullptr otherwise
@@ -67,14 +75,6 @@ namespace PantheonEngine::Core::Resources
          */
         bool load(const std::string& fileName);
 
-    protected:
-        /**
-         * \brief Gets the registered name for the given resource type
-         * \tparam T The resource type
-         * \return The registered name for the given resource type
-         */
-        template <typename T>
-        static std::string getRegisteredTypeName();
 
     private:
         using AllocFunc = IResource* (*)();

@@ -24,11 +24,6 @@ namespace PantheonEngine::Core::Resources
         };
     }
 
-    inline IResource* IResource::create(const std::string& type)
-    {
-        return s_resourceTypes.contains(type) ? s_resourceTypes[type]() : nullptr;
-    }
-
     template <typename T>
     std::string IResource::getRegisteredTypeName()
     {
@@ -38,5 +33,10 @@ namespace PantheonEngine::Core::Resources
         ASSERT(it != s_resourceTypeNames.end());
 
         return it->second;
+    }
+
+    inline IResource* IResource::create(const std::string& type)
+    {
+        return s_resourceTypes.contains(type) ? s_resourceTypes[type]() : nullptr;
     }
 }

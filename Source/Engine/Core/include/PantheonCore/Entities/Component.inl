@@ -17,11 +17,6 @@ namespace PantheonEngine::Core::Entities
         };
     }
 
-    inline std::shared_ptr<Component> Component::create(const std::string& type, Entity& owner)
-    {
-        return s_componentTypes.contains(type) ? s_componentTypes[type](owner) : nullptr;
-    }
-
     template <typename T>
     std::string Component::getRegisteredTypeName()
     {
@@ -31,5 +26,10 @@ namespace PantheonEngine::Core::Entities
         ASSERT(it != s_componentTypeNames.end());
 
         return it->second;
+    }
+
+    inline std::shared_ptr<Component> Component::create(const std::string& type, Entity& owner)
+    {
+        return s_componentTypes.contains(type) ? s_componentTypes[type](owner) : nullptr;
     }
 }
