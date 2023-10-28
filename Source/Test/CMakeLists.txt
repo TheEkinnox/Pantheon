@@ -1,6 +1,6 @@
-# set project
+# set target
 get_filename_component(CURRENT_FOLDER_NAME ${CMAKE_CURRENT_LIST_DIR} NAME)
-set(PROJECT_NAME Pantheon${CURRENT_FOLDER_NAME})
+set(TARGET_NAME Pantheon${CURRENT_FOLDER_NAME})
 
 
 ###############################
@@ -19,7 +19,7 @@ file(GLOB_RECURSE SOURCE_FILES
 )
 
 # Add header files
-set(PROJECT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(TARGET_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 file(GLOB_RECURSE HEADER_FILES
 	${CMAKE_CURRENT_SOURCE_DIR}/*.h
 	${CMAKE_CURRENT_SOURCE_DIR}/*.hpp
@@ -35,19 +35,23 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${HEADER_FILES} ${SOURCE_FIL
 #                             #
 ###############################
 
-add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
+add_executable(${TARGET_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
-include_directories(${PROJECT_INCLUDE_DIR} ${LIBMATH_INCLUDE_DIR} ${ENGINE_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME}
-    PRIVATE
-    ${LIBMATH_NAME}
+target_include_directories(${TARGET_NAME} PRIVATE ${TARGET_INCLUDE_DIR}
+	${LIBMATH_INCLUDE_DIR} ${ENGINE_INCLUDE_DIRS}
+)
+
+target_link_libraries(${TARGET_NAME}
+	PRIVATE
+	${LIBMATH_NAME}
 	${ENGINE_TARGETS}
 )
 
 if(MSVC)
-  target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
+	set_property(TARGET ${TARGET_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${TARGET_NAME}>")
+	target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
 else()
-  target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
+	target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
 endif()
 
-set(TEST_NAME ${PROJECT_NAME} PARENT_SCOPE)
+set(TEST_NAME ${TARGET_NAME} PARENT_SCOPE)
