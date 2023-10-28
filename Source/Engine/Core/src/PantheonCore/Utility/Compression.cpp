@@ -80,7 +80,7 @@ namespace PantheonEngine::Core::Utility
                 return decompressData(dest, destSize, data, dataSize, ECompressionMode::NONE);
 
             uint64_t decompressedSize = destSize;
-            const int result = BrotliDecoderDecompress(dataSize, reinterpret_cast<const uint8_t*>(data),
+            const BrotliDecoderResult result = BrotliDecoderDecompress(dataSize, reinterpret_cast<const uint8_t*>(data),
                 &decompressedSize, reinterpret_cast<uint8_t*>(dest));
 
             if (result != BROTLI_DECODER_RESULT_SUCCESS)
