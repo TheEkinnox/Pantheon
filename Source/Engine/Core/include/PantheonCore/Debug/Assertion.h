@@ -6,11 +6,12 @@
 #ifndef ASSERT
 #ifdef _DEBUG
 
-#define ASSERT(condition, ...) if (!(condition))    \
-{                                                   \
-    __VA_OPT__(DEBUG_LOG_ERROR(__VA_ARGS__);)       \
-    __debugbreak();                                 \
-    abort();                                        \
+#define ASSERT(condition, ...) if (!(condition))      \
+{                                                     \
+    DEBUG_LOG_ERROR("Assertion failed: " #condition); \
+    __VA_OPT__(DEBUG_LOG_ERROR(__VA_ARGS__);)         \
+    __debugbreak();                                   \
+    abort();                                          \
 } ((void)0)
 
 #else
