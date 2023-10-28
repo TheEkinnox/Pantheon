@@ -17,13 +17,13 @@ inline std::string Type::getTypeName() const                                    
 
 namespace PantheonEngine::Core::Resources
 {
-    class IResource
+    class IResource : public Serialization::IByteSerializable
     {
     public:
         /**
          * \brief Destroys the resource
          */
-        virtual ~IResource() = default;
+        ~IResource() override = default;
 
         /**
          * \brief Registers the given resource type (required for the create function)
@@ -52,14 +52,6 @@ namespace PantheonEngine::Core::Resources
          * \return The resource's registered type name
          */
         virtual std::string getTypeName() const = 0;
-
-        /**
-         * \brief Tries to load the resource from the given memory buffer
-         * \param data A pointer to the beginning of the memory buffer
-         * \param length The memory buffer's length
-         * \return True if the resource was successfully loaded. False otherwise.
-         */
-        virtual bool load(const void* data, size_t length) = 0;
 
         /**
          * \brief Tries to load the resource from the given file

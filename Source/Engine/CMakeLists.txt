@@ -4,7 +4,7 @@
 # Core
 add_subdirectory(Core)
 set(ENGINE_TARGETS ${CORE_NAME})
-set(ENGINE_INCLUDE_DIRS ${CORE_INCLUDE_DIR})
+set(ENGINE_INCLUDE_DIRS ${CORE_INCLUDE_DIR} ${RAPIDJSON_INCLUDE_DIR})
 
 # Audio
 #add_subdirectory(Audio)

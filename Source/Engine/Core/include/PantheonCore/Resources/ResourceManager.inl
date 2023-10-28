@@ -42,7 +42,7 @@ namespace PantheonEngine::Core::Resources
 
         T* ptr = new T();
 
-        if (!ptr->load(data, length))
+        if (!ptr->deserialize(data, length))
         {
             delete ptr;
             return nullptr;

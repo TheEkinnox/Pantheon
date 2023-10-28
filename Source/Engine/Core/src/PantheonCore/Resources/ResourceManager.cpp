@@ -64,7 +64,7 @@ namespace PantheonEngine::Core::Resources
                 continue;
             }
 
-            if (!ptr->load(assetData.data()))
+            if (!ptr->deserialize(assetData.data(), assetData.size()))
             {
                 DEBUG_LOG("[WARNING] Skipped asset at path \"%s\" - Unable to load resource", asset.getPath());
                 remove(guid);
