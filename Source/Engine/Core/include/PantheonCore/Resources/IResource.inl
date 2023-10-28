@@ -7,11 +7,6 @@
 
 namespace PantheonEngine::Core::Resources
 {
-    inline bool IResource::load(const std::string& fileName)
-    {
-        return load(fileName.c_str());
-    }
-
     template <typename T>
     constexpr void IResource::registerType(const std::string& name)
     {

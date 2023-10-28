@@ -66,14 +66,7 @@ namespace PantheonEngine::Core::Resources
          * \param fileName The resource file's path
          * \return True if the resource was successfully loaded. False otherwise.
          */
-        virtual bool load(const char* fileName) = 0;
-
-        /**
-         * \brief Tries to load the resource from the given file
-         * \param fileName The resource file's path
-         * \return True if the resource was successfully loaded. False otherwise.
-         */
-        bool load(const std::string& fileName);
+        virtual bool load(const std::string& fileName) = 0;
 
 
     private:
