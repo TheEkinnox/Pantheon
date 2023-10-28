@@ -67,10 +67,13 @@ namespace PantheonEngine::Core::Utility
 
             return dataSize;
         case ECompressionMode::ZSTD:
+        {
             if (destSize == dataSize)
                 return decompressData(dest, destSize, data, dataSize, ECompressionMode::NONE);
 
-            return ZSTD_decompress(dest, destSize, data, dataSize);
+            const size_t result = ZSTD_decompress(dest, destSize, data, dataSize);
+            return ZSTD_isError(result) ? 0 : result;
+        }
         case ECompressionMode::BROTLI:
         {
             if (destSize == dataSize)
