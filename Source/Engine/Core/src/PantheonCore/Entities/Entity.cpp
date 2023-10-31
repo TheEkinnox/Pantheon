@@ -84,7 +84,7 @@ namespace PantheonEngine::Core::Entities
         if (m_components.empty())
             return;
 
-        const auto findFunc = [component](const ComponentPtr& ptr)
+        const auto findFunc = [&component](const ComponentPtr& ptr)
         {
             return *ptr == component;
         };
