@@ -1,12 +1,11 @@
 #pragma once
-
 #include "PantheonCore/Resources/IResource.h"
 #include "PantheonCore/Resources/ResourceManager.h"
 
 namespace PantheonEngine::Core::Resources
 {
     template <typename T>
-    T* ResourceManager::load(const std::string& key, const std::string& resourcePath)
+    T* ResourceManager::load(const std::string& key, const std::string& path)
     {
         static_assert(std::is_same_v<IResource, T> || std::is_base_of_v<IResource, T>);
 
@@ -18,49 +17,50 @@ namespace PantheonEngine::Core::Resources
 
         T* ptr = new T();
 
-        if (!ptr->load(resourcePath))
+        if (!ptr->load(path))
         {
             delete ptr;
+            m_resourceKeys.erase(path);
             return nullptr;
         }
 
         m_resources[key] = ptr;
+        m_resourceKeys[path] = key;
 
         return ptr;
     }
 
     template <typename T>
-    T* ResourceManager::load(const std::string& key, const void* data, const size_t length)
+    T* ResourceManager::get(const std::string& keyOrPath) const
     {
         static_assert(std::is_same_v<IResource, T> || std::is_base_of_v<IResource, T>);
 
-        if (m_resources.contains(key))
+        auto it = m_resources.find(keyOrPath);
+
+        if (it == m_resources.end())
         {
-            delete m_resources[key];
-            m_resources[key] = nullptr;
+            const auto keyIt = m_resourceKeys.find(keyOrPath);
+
+            if (keyIt == m_resourceKeys.end())
+                return nullptr;
+
+            it = m_resources.find(keyIt->second);
+
+            if (it == m_resources.end())
+                return nullptr;
         }
 
-        T* ptr = new T();
-
-        if (!ptr->deserialize(data, length))
-        {
-            delete ptr;
-            return nullptr;
-        }
-
-        m_resources[key] = ptr;
-
-        return ptr;
+        return reinterpret_cast<T*>(it->second);
     }
 
     template <typename T>
-    T* ResourceManager::get(const std::string& key) const
+    T* ResourceManager::getOrCreate(const std::string& key, const std::string& path)
     {
-        static_assert(std::is_same_v<IResource, T> || std::is_base_of_v<IResource, T>);
+        T* resource = get<T>(key);
 
-        if (!m_resources.contains(key))
-            return nullptr;
+        if (!resource)
+            resource = get<T>(path);
 
-        return reinterpret_cast<T*>(m_resources.at(key));
+        return resource ? resource : load<T>(key, path);
     }
 }

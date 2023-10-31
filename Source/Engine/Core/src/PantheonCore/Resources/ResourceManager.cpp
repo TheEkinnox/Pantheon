@@ -44,8 +44,9 @@ namespace PantheonEngine::Core::Resources
         {
             const char* type = asset.getType();
             const char* guid = asset.getGuid();
+            const char* path = asset.getPath();
 
-            IResource* ptr = create(type, guid);
+            IResource* ptr = create(type, guid, path, false);
 
             if (ptr == nullptr)
             {
@@ -72,10 +73,12 @@ namespace PantheonEngine::Core::Resources
             }
 
             m_resources[guid] = ptr;
+            m_resourceKeys[path] = guid;
         }
     }
 
-    IResource* ResourceManager::create(const std::string& type, const std::string& key)
+    IResource* ResourceManager::create(const std::string& type, const std::string& key, const std::string& path,
+        const bool shouldLoad)
     {
         if (m_resources.contains(key))
         {
@@ -83,13 +86,36 @@ namespace PantheonEngine::Core::Resources
             m_resources[key] = nullptr;
         }
 
+        const auto it = m_resourceKeys.find(path);
+        if (it != m_resourceKeys.end())
+        {
+            const std::string& pathKey = it->second;
+            if (m_resources.contains(pathKey))
+            {
+                delete m_resources[pathKey];
+                m_resources[pathKey] = nullptr;
+            }
+
+            m_resourceKeys.erase(it);
+        }
+
         IResource* resource = IResource::create(type);
 
-        if (resource == nullptr)
+        if (resource == nullptr || (shouldLoad && !resource->load(path)))
             return nullptr;
 
         m_resources[key] = resource;
         return resource;
+    }
+
+    IResource* ResourceManager::getOrCreate(const std::string& type, const std::string& key, const std::string& path)
+    {
+        IResource* resource = get<IResource>(key);
+
+        if (!resource)
+            resource = get<IResource>(path);
+
+        return resource ? resource : create(type, key, path, true);
     }
 
     void ResourceManager::remove(const std::string& key)

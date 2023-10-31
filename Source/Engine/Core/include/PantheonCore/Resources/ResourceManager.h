@@ -16,6 +16,7 @@ namespace PantheonEngine::Core::Resources
     {
         using ResourcePtr = IResource*;
         using ResourceMap = std::unordered_map<std::string, ResourcePtr>;
+        using KeyMap = std::unordered_map<std::string, std::string>;
 
     public:
         /**
@@ -53,7 +54,7 @@ namespace PantheonEngine::Core::Resources
         ResourceManager& operator=(ResourceManager&& other) noexcept;
 
         /**
-         * \brief Adds all the resources contained in the given asset bundle
+         * \brief Loads all the resources contained in the given asset bundle
          * \param bundle The asset bundle from which resources should be loaded
          */
         void importBundle(const Assets::AssetBundle& bundle);
@@ -63,41 +64,50 @@ namespace PantheonEngine::Core::Resources
          * and stores it in the resource map with the given key.
          * \tparam T The resource's type
          * \param key The resource's key in the resource map
-         * \param resourcePath The path of the resource's file
+         * \param path The path of the resource's file
          * \return A pointer to the resource on success, nullptr otherwise.
          */
         template <typename T>
-        T* load(const std::string& key, const std::string& resourcePath);
-
-        /**
-         * \brief Tries to load the resource with the given path
-         * and stores it in the resource map with the given key.
-         * \tparam T The resource's type
-         * \param key The resource's key in the resource map
-         * \param data A pointer to the beginning of the resource's memory buffer
-         * \param length The length of the resource's memory buffer
-         * \return A pointer to the resource on success, nullptr otherwise.
-         */
-        template <typename T>
-        T* load(const std::string& key, const void* data, size_t length);
+        T* load(const std::string& key, const std::string& path);
 
         /**
          * \brief Tries to create an empty resource of the given type
          * and stores it in the resource map with the given key.
          * \param type The resource's type
          * \param key The resource's key
+         * \param path The resource's path
+         * \param shouldLoad Whether the resource should be loaded on creation
          * \return A pointer to the created resource on success, nullptr otherwise.
          */
-        IResource* create(const std::string& type, const std::string& key);
+        IResource* create(const std::string& type, const std::string& key, const std::string& path, bool shouldLoad = true);
 
         /**
          * \brief Tries to find the resource with the given key.
          * \tparam T The resource's type
-         * \param key The resource's key
+         * \param keyOrPath The resource's key
          * \return A pointer to the resource on success, nullptr otherwise.
          */
         template <typename T>
-        T* get(const std::string& key) const;
+        T* get(const std::string& keyOrPath) const;
+
+        /**
+         * \brief Tries to find the resource with the given key or path. If not found, tries to load it from the given path
+         * \tparam T The resource's type
+         * \param key The resource's key
+         * \param path The resource's path
+         * \return A pointer to the resource on success, nullptr otherwise.
+         */
+        template <typename T>
+        T* getOrCreate(const std::string& key, const std::string& path);
+
+        /**
+         * \brief Tries to find the resource with the given key or path. If not found, tries to load it from the given path
+         * \param type The resource's type
+         * \param key The resource's key
+         * \param path The resource's path
+         * \return A pointer to the resource on success, nullptr otherwise.
+         */
+        IResource* getOrCreate(const std::string& type, const std::string& key, const std::string& path);
 
         /**
          * \brief Removes the resource with the given key from the manager
@@ -112,6 +122,7 @@ namespace PantheonEngine::Core::Resources
 
     private:
         ResourceMap m_resources;
+        KeyMap      m_resourceKeys;
     };
 }
 
