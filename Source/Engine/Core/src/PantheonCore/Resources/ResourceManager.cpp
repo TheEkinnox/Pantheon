@@ -42,16 +42,16 @@ namespace PantheonEngine::Core::Resources
 
         for (const auto& asset : assets)
         {
-            const char* type = asset.getType();
-            const char* guid = asset.getGuid();
-            const char* path = asset.getPath();
+            const char* type = asset->getType();
+            const char* guid = asset->getGuid();
+            const char* path = asset->getPath();
 
             IResource* ptr = create(type, guid, path, false);
 
             if (ptr == nullptr)
             {
                 DEBUG_LOG("[WARNING] Skipped asset at path \"%s\" - Unable to create resource of type \"%s\"",
-                    asset.getPath(), type);
+                    asset->getPath(), type);
 
                 continue;
             }
@@ -60,14 +60,14 @@ namespace PantheonEngine::Core::Resources
 
             if (assetData.empty())
             {
-                DEBUG_LOG("[WARNING] Skipped asset at path \"%s\" - Empty data", asset.getPath());
+                DEBUG_LOG("[WARNING] Skipped asset at path \"%s\" - Empty data", asset->getPath());
                 remove(guid);
                 continue;
             }
 
             if (!ptr->deserialize(assetData.data(), assetData.size()))
             {
-                DEBUG_LOG("[WARNING] Skipped asset at path \"%s\" - Unable to load resource", asset.getPath());
+                DEBUG_LOG("[WARNING] Skipped asset at path \"%s\" - Unable to load resource", asset->getPath());
                 remove(guid);
                 continue;
             }

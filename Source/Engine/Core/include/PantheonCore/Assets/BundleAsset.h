@@ -10,8 +10,8 @@ namespace PantheonEngine::Core::Assets
     class BundleAsset
     {
     public:
-        static constexpr int BLOCK_SIZE_BITS = ALIGN(62, CHAR_BIT);
-        static constexpr int BLOCK_START_BITS = BLOCK_SIZE_BITS;
+        static constexpr int BLOCK_SIZE_BITS = 62;
+        static constexpr int BLOCK_START_BITS = BLOCK_SIZE_BITS + 1;
 
         using block_t = SMALLEST_UNSIGNED_TYPE(BLOCK_SIZE_BITS);
 
@@ -24,7 +24,7 @@ namespace PantheonEngine::Core::Assets
          * \brief Creates a bundle asset from the given asset
          * \param asset The asset of which this bundle asset depends
          */
-        explicit BundleAsset(Asset asset);
+        explicit BundleAsset(const std::shared_ptr<Asset>& asset);
 
         /**
          * \brief Provides read access to the bundle asset's block start in it's containing bundle
@@ -54,7 +54,13 @@ namespace PantheonEngine::Core::Assets
          * \brief Provides read access to the asset linked to this bundle asset
          * \return A reference to the asset linked to this bundle asset
          */
-        const Asset& getAsset() const;
+        std::shared_ptr<Asset> getAsset();
+
+        /**
+         * \brief Provides read access to the asset linked to this bundle asset
+         * \return A reference to the asset linked to this bundle asset
+         */
+        std::shared_ptr<const Asset> getAsset() const;
 
         /**
          * \brief Reads the bundle asset's data from the given input stream
@@ -73,8 +79,8 @@ namespace PantheonEngine::Core::Assets
         friend std::ostream& operator<<(std::ostream& os, const BundleAsset& bundleAsset);
 
     private:
-        block_t m_blockStart;
-        block_t m_blockSize;
-        Asset m_asset;
+        block_t                m_blockStart;
+        block_t                m_blockSize;
+        std::shared_ptr<Asset> m_asset;
     };
 }

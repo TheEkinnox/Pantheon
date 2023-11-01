@@ -32,6 +32,14 @@ namespace PantheonEngine::Core::Utility
      * \return The extracted bits
      */
     constexpr uint64_t readBits(uint64_t data, int bitCount, int offset);
+
+    /**
+     * \brief Creates a string representation of the given size
+     * \param size The size to convert to a string
+     * \param addInitialValue Whether the initial size should be added to the string
+     * \return A string representation of the given size
+     */
+    std::string sizeToStr(double size, bool addInitialValue = false);
 }
 
 #include "PantheonCore/Utility/utility.inl"

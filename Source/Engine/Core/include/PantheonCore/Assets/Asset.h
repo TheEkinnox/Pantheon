@@ -1,11 +1,12 @@
 ﻿#pragma once
 #include <istream>
+#include <vector>
 
 namespace PantheonEngine::Core::Assets
 {
     class Asset
     {
-        static constexpr int SIZE_BITS = 64;
+        static constexpr int  SIZE_BITS = 64;
         static constexpr char DATA_SEPARATOR = '\f';
         static constexpr char ENTRY_SEPARATOR = '\0';
 
@@ -17,11 +18,11 @@ namespace PantheonEngine::Core::Assets
 
         /**
          * \brief Creates an asset with the given values
-         * \param guid The asset's guid
          * \param type The asset's type
+         * \param guid The asset's guid
          * \param path The asset's path
          */
-        Asset(const char* guid, const char* type, const char* path);
+        Asset(std::string type, std::string guid, std::string path);
 
         /**
          * \brief Creates a copy of the given asset
@@ -38,7 +39,7 @@ namespace PantheonEngine::Core::Assets
         /**
          * \brief Destroys the asset
          */
-        ~Asset() = default;
+        virtual ~Asset() = default;
 
         /**
          * \brief Creates a copy of the given asset
@@ -77,6 +78,26 @@ namespace PantheonEngine::Core::Assets
         const char* getPath() const;
 
         /**
+         * \brief Checks whether the asset is valid or not
+         * \return True if the asset is valid. False otherwise
+         */
+        virtual bool isValid() const;
+
+        /**
+         * \brief Writes the asset's data in a memory buffer and updates the asset's size
+         * \param output The target memory buffer
+         * \return True if the data could be read. False otherwise
+         */
+        virtual bool getData(std::vector<char>& output);
+
+        /**
+         * \brief Writes the asset's data in a memory buffer
+         * \param output The target memory buffer
+         * \return True if the data could be read. False otherwise
+         */
+        virtual bool getData(std::vector<char>& output) const;
+
+        /**
          * \brief Reads the asset's data from the given input stream
          * \param is The stream to read the asset data from
          * \param asset The asset in which the data should be read
@@ -92,10 +113,10 @@ namespace PantheonEngine::Core::Assets
          */
         friend std::ostream& operator<<(std::ostream& os, const Asset& asset);
 
-    private:
-        uint64_t m_size;
+    protected:
         std::string m_guid;
         std::string m_type;
         std::string m_path;
+        uint64_t    m_size;
     };
 }

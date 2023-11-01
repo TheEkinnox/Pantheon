@@ -15,10 +15,10 @@ namespace PantheonEngine::Core::Assets
     public:
         static constexpr int COMPRESSION_MODE_BITS = 2;
         static constexpr int DATA_SIZE_BITS = 62;
-        static constexpr int HEADER_SIZE = (COMPRESSION_MODE_BITS + DATA_SIZE_BITS) / CHAR_BIT;
+        static constexpr int HEADER_SIZE = ALIGN(COMPRESSION_MODE_BITS + DATA_SIZE_BITS, CHAR_BIT) / CHAR_BIT;
 
         using block_t = SMALLEST_UNSIGNED_TYPE(DATA_SIZE_BITS);
-        using header_t = SMALLEST_UNSIGNED_TYPE(HEADER_SIZE * CHAR_BIT);
+        using header_t = SMALLEST_UNSIGNED_TYPE(COMPRESSION_MODE_BITS + DATA_SIZE_BITS);
 
         /**
          * \brief Creates an empty asset bundle
@@ -33,21 +33,25 @@ namespace PantheonEngine::Core::Assets
         /**
          * \brief Loads the asset bundle from the given path
          * \param path The path of the asset bundle to load
+         * \return True on success. False otherwise
          */
-        void load(const std::string& path);
+        bool load(const std::string& path);
 
         /**
          * \brief Saves the asset bundle at the given path
          * \param path The path at which the asset bundle should be saved
          * \param compressionMode The asset bundle's compression mode
+         * \return True on success. False otherwise
          */
-        void save(const char* path, Utility::ECompressionMode compressionMode);
+        bool save(const char* path, Utility::ECompressionMode compressionMode);
 
         /**
          * \brief Adds the given asset to the asset bundle
          * \param asset The asset to add to the bundle
+         * \return True on success. False otherwise
          */
-        void add(const Asset& asset);
+        template <typename T>
+        bool add(const T& asset);
 
         /**
          * \brief Removes the asset with the given path from the asset bundle
@@ -65,7 +69,7 @@ namespace PantheonEngine::Core::Assets
          * \brief Provides read access to the bundle's assets list
          * \return A vector containing the bundle's assets
          */
-        std::vector<Asset> getAssets() const;
+        std::vector<std::shared_ptr<const Asset>> getAssets() const;
 
         /**
          * \brief Provides read access to the bundle's path
@@ -112,3 +116,5 @@ namespace PantheonEngine::Core::Assets
         std::vector<char> getAssetData(const BundleAsset& bundleAsset) const;
     };
 }
+
+#include "AssetBundle.inl"
