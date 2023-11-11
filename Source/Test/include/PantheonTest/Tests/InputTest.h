@@ -9,10 +9,14 @@ namespace PantheonTest
         InputTest();
         explicit InputTest(const std::string& name);
 
+    protected:
         void onUpdate() override;
         void onPostUpdate() override;
 
     private:
         int m_frameCount = 0;
+
+        void testKeyboard() const;
+        void testMouse() const;
     };
 }
