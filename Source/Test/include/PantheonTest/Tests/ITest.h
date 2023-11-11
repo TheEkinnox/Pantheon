@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 namespace PantheonTest
 {
@@ -7,6 +8,41 @@ namespace PantheonTest
     public:
         virtual ~ITest() = default;
 
-        virtual void run() = 0;
+        void start();
+
+        void preUpdate();
+
+        void update();
+
+        void postUpdate();
+
+        void fixedUpdate();
+
+        void stop();
+
+        bool isDone() const;
+
+    protected:
+        ITest();
+
+        explicit ITest(std::string name);
+
+        virtual void onStart();
+
+        virtual void onPreUpdate();
+
+        virtual void onUpdate();
+
+        virtual void onPostUpdate();
+
+        virtual void onFixedUpdate();
+
+        virtual void onStop();
+
+        void complete();
+
+    private:
+        std::string m_name;
+        bool        m_isDone;
     };
 }

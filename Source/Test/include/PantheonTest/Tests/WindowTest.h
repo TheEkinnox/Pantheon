@@ -12,7 +12,9 @@ namespace PantheonTest
     {
     public:
         WindowTest();
-        void run() override;
+        explicit WindowTest(const std::string& name);
+
+        void onStart() override;
 
     private:
         PantheonEngine::Application::Windowing::Window* m_window;

@@ -7,11 +7,16 @@ using namespace PantheonEngine::Core::Utility;
 namespace PantheonTest
 {
     ThreadPoolTest::ThreadPoolTest(const size_t taskCount, const size_t taskDuration)
-        : m_threadPool(&PTH_SERVICE(ThreadPool)), m_taskCount(taskCount), m_taskDuration(taskDuration)
+        : ThreadPoolTest("Thread Pool", taskCount, taskDuration)
     {
     }
 
-    void ThreadPoolTest::run()
+    ThreadPoolTest::ThreadPoolTest(const std::string& name, const size_t taskCount, const size_t taskDuration)
+        : ITest(name), m_threadPool(&PTH_SERVICE(ThreadPool)), m_taskCount(taskCount), m_taskDuration(taskDuration)
+    {
+    }
+
+    void ThreadPoolTest::onStart()
     {
         DEBUG_LOG("Testing thread pool - Executing %llu tasks of %llums", m_taskCount, m_taskDuration);
 
@@ -43,6 +48,6 @@ namespace PantheonTest
         end = std::chrono::high_resolution_clock::now();
         DEBUG_LOG("Multi thread: %dms", std::chrono::duration_cast<std::chrono::milliseconds>(end - start));
 
-        DEBUG_LOG("= ThreadPool tests executed successfully =\n");
+        complete();
     }
 }

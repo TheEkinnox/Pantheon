@@ -5,6 +5,8 @@
 
 #include <PantheonCore/Utility/ThreadPool.h>
 
+#include "PantheonTest/Tests/ITest.h"
+
 namespace PantheonTest
 {
     class TestApplication final : public PantheonEngine::Application::Core::IApplication
@@ -28,5 +30,7 @@ namespace PantheonTest
         std::unique_ptr<PantheonEngine::Application::Windowing::Window>   m_window;
         std::unique_ptr<PantheonEngine::Application::Input::InputManager> m_inputManager;
         std::unique_ptr<PantheonEngine::Core::Utility::ThreadPool>        m_threadPool;
+
+        std::vector<std::shared_ptr<ITest>> m_tests;
     };
 }

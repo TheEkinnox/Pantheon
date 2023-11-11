@@ -3,6 +3,7 @@
 #include <PantheonCore/Debug/Logger.h>
 #include <PantheonCore/Utility/ServiceLocator.h>
 
+#include "PantheonTest/Tests/InputTest.h"
 #include "PantheonTest/Tests/ThreadPoolTest.h"
 #include "PantheonTest/Tests/WindowTest.h"
 
@@ -22,69 +23,36 @@ namespace PantheonTest
         ServiceLocator::provide<Window>(*m_window);
         ServiceLocator::provide<InputManager>(*m_inputManager);
         ServiceLocator::provide<ThreadPool>(*m_threadPool);
+        m_tests.push_back(std::make_shared<WindowTest>());
+        m_tests.push_back(std::make_shared<InputTest>());
+        m_tests.push_back(std::make_shared<ThreadPoolTest>());
     }
 
     void TestApplication::onStart(int, char*[])
     {
         m_window->makeCurrentContext();
-        WindowTest().run();
-        ThreadPoolTest().run();
+
+        for (const auto& test : m_tests)
+            test->start();
     }
 
     void TestApplication::preUpdate()
     {
-        if (m_inputManager->isKeyPressed(EKey::KEY_ESCAPE))
-            m_window->setShouldClose(true);
-
-        if (m_inputManager->isKeyPressed(EKey::KEY_F11))
-            m_window->toggleFullScreen();
+        for (const auto& test : m_tests)
+            test->preUpdate();
     }
-
-    int timeSinceLastSpace = 0;
 
     void TestApplication::update()
     {
-        const bool isShiftDown = m_inputManager->isKeyDown(EKey::KEY_LEFT_SHIFT)
-            || m_inputManager->isKeyDown(EKey::KEY_RIGHT_SHIFT);
-
-        if (m_inputManager->isKeyDown(EKey::KEY_P))
-            std::cout << "A";
-
-        if (m_inputManager->isKeyReleased(EKey::KEY_P))
-            std::cout << "H\n" << std::endl;
-
-        if (m_inputManager->isKeyUp(EKey::KEY_SPACE))
-        {
-            timeSinceLastSpace++;
-        }
-        else if (m_inputManager->isKeyPressed(EKey::KEY_SPACE))
-        {
-            DEBUG_LOG("Time since last space : %i", timeSinceLastSpace);
-            timeSinceLastSpace = 0;
-        }
-
-        if (m_inputManager->isKeyPressed(EKey::KEY_C))
-            m_window->setCursorPosition(m_window->getSize() / 2);
-
-        if (m_inputManager->isKeyPressed(EKey::KEY_H))
-        {
-            if (isShiftDown)
-                m_window->showCursor();
-            else
-                m_window->hideCursor();
-        }
-
-        if (m_inputManager->isKeyPressed(EKey::KEY_X))
-        {
-            if (isShiftDown)
-                m_window->showCursor();
-            else
-                m_window->disableCursor();
-        }
+        for (const auto& test : m_tests)
+            test->update();
     }
 
     void TestApplication::postUpdate()
     {
+        for (const auto& test : m_tests)
+            test->postUpdate();
+
         m_window->swapBuffers();
         m_inputManager->update();
     }
@@ -98,14 +66,23 @@ namespace PantheonTest
 
     void TestApplication::onFixedUpdate()
     {
+        for (const auto& test : m_tests)
+            test->fixedUpdate();
     }
 
     void TestApplication::onStop()
     {
+        for (const auto& test : m_tests)
+            test->stop();
     }
 
     bool TestApplication::isRunning() const
     {
-        return !m_window->shouldClose();
+        const auto isInProgress = [](const std::shared_ptr<ITest>& test)
+        {
+            return !test->isDone();
+        };
+
+        return !m_window->shouldClose() && std::ranges::find_if(m_tests, isInProgress) != m_tests.end();
     }
 }

@@ -9,8 +9,9 @@ namespace PantheonTest
     {
     public:
         explicit ThreadPoolTest(size_t taskCount = 50, size_t taskDuration = 200);
+        explicit ThreadPoolTest(const std::string& name, size_t taskCount = 50, size_t taskDuration = 200);
 
-        void run() override;
+        void onStart() override;
 
     private:
         PantheonEngine::Core::Utility::ThreadPool* m_threadPool;

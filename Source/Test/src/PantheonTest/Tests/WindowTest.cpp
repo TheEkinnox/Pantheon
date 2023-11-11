@@ -10,19 +10,27 @@ using namespace PantheonEngine::Application::Windowing;
 namespace PantheonTest
 {
     WindowTest::WindowTest()
-        : m_window(&PTH_SERVICE(Window))
+        : WindowTest("Window")
     {
     }
 
-    void WindowTest::run()
+    WindowTest::WindowTest(const std::string& name)
+        : ITest(name), m_window(nullptr)
     {
+    }
+
+    void WindowTest::onStart()
+    {
+        m_window = &PTH_SERVICE(Window);
+
         testSize();
         testPosition();
         testFullscreen();
         testCursorPosition();
         testCursorMode();
         testExtra();
-        DEBUG_LOG("= Window tests executed successfully =\n");
+
+        complete();
     }
 
     void WindowTest::testExtra() const
