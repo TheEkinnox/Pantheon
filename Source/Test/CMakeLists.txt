@@ -36,6 +36,7 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${HEADER_FILES} ${SOURCE_FIL
 ###############################
 
 add_executable(${TARGET_NAME} ${HEADER_FILES} ${SOURCE_FILES})
+add_compile_definitions(PTH_VERBOSE_LOG)
 
 target_include_directories(${TARGET_NAME} PRIVATE ${TARGET_INCLUDE_DIR}
 	${LIBMATH_INCLUDE_DIR} ${ENGINE_INCLUDE_DIRS}

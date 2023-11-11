@@ -4,7 +4,7 @@
 #include "PantheonCore/Debug/Logger.h"
 
 #ifndef ASSERT
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(PTH_VERBOSE_LOG)
 
 #define ASSERT(condition, ...) if (!(condition))      \
 {                                                     \
@@ -22,5 +22,5 @@
     abort();                                        \
 } ((void)0)
 
-#endif // _DEBUG
+#endif // _DEBUG || PTH_VERBOSE_LOG
 #endif // !ASSERT

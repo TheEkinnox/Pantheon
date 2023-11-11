@@ -46,13 +46,13 @@ namespace PantheonEngine::Core::Debug
     {
         std::string message = Utility::formatString(format, args...);
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(PTH_VERBOSE_LOG)
         message = Utility::formatString("%s(%d): %s\n", file, line, message.c_str());
 #else
         message += '\n';
         (void)sizeof(file);
         (void)sizeof(line);
-#endif
+#endif // _DEBUG || PTH_VERBOSE_LOG
 
         print(message.c_str(), isError);
 
