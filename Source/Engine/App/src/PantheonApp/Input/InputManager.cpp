@@ -124,80 +124,80 @@ namespace PantheonEngine::Application::Input
     bool InputManager::isKeyUp(const EKey key) const
     {
         return !m_keyInfos.contains(key)
-            || m_keyInfos.at(key).m_keyState == EKeyState::KEY_RELEASED;
+            || m_keyInfos.at(key).m_keyState == EKeyState::RELEASED;
     }
 
     bool InputManager::isKeyUp(const int scanCode) const
     {
         return !m_scanCodeInfo.contains(scanCode)
-            || m_scanCodeInfo.at(scanCode).m_keyState == EKeyState::KEY_RELEASED;
+            || m_scanCodeInfo.at(scanCode).m_keyState == EKeyState::RELEASED;
     }
 
     bool InputManager::isKeyDown(const EKey key) const
     {
         return m_keyInfos.contains(key)
-            && (m_keyInfos.at(key).m_keyState == EKeyState::KEY_PRESSED
-                || m_keyInfos.at(key).m_keyState == EKeyState::KEY_REPEATED);
+            && (m_keyInfos.at(key).m_keyState == EKeyState::PRESSED
+                || m_keyInfos.at(key).m_keyState == EKeyState::REPEATED);
     }
 
     bool InputManager::isKeyDown(const int scanCode) const
     {
         return m_scanCodeInfo.contains(scanCode)
-            && (m_scanCodeInfo.at(scanCode).m_keyState == EKeyState::KEY_PRESSED
-                || m_scanCodeInfo.at(scanCode).m_keyState == EKeyState::KEY_REPEATED);
+            && (m_scanCodeInfo.at(scanCode).m_keyState == EKeyState::PRESSED
+                || m_scanCodeInfo.at(scanCode).m_keyState == EKeyState::REPEATED);
     }
 
     bool InputManager::isKeyPressed(const EKey key) const
     {
         return m_keyInfos.contains(key)
-            && m_keyInfos.at(key).m_keyState == EKeyState::KEY_PRESSED
+            && m_keyInfos.at(key).m_keyState == EKeyState::PRESSED
             && m_keyInfos.at(key).m_stateChangeFrame == m_currentFrame;
     }
 
     bool InputManager::isKeyPressed(const int scanCode) const
     {
         return m_scanCodeInfo.contains(scanCode)
-            && m_scanCodeInfo.at(scanCode).m_keyState == EKeyState::KEY_PRESSED
+            && m_scanCodeInfo.at(scanCode).m_keyState == EKeyState::PRESSED
             && m_scanCodeInfo.at(scanCode).m_stateChangeFrame == m_currentFrame;
     }
 
     bool InputManager::isKeyReleased(const EKey key) const
     {
         return m_keyInfos.contains(key)
-            && m_keyInfos.at(key).m_keyState == EKeyState::KEY_RELEASED
+            && m_keyInfos.at(key).m_keyState == EKeyState::RELEASED
             && m_keyInfos.at(key).m_stateChangeFrame == m_currentFrame;
     }
 
     bool InputManager::isKeyReleased(const int scanCode) const
     {
         return m_scanCodeInfo.contains(scanCode)
-            && m_scanCodeInfo.at(scanCode).m_keyState == EKeyState::KEY_RELEASED
+            && m_scanCodeInfo.at(scanCode).m_keyState == EKeyState::RELEASED
             && m_scanCodeInfo.at(scanCode).m_stateChangeFrame == m_currentFrame;
     }
 
     bool InputManager::isMouseButtonUp(const EMouseButton button) const
     {
         return !m_mouseButtonInfo.contains(button)
-            || m_mouseButtonInfo.at(button).m_buttonState == EMouseButtonState::MOUSE_RELEASED;
+            || m_mouseButtonInfo.at(button).m_buttonState == EMouseButtonState::RELEASED;
     }
 
     bool InputManager::isMouseButtonDown(const EMouseButton button) const
     {
         return m_mouseButtonInfo.contains(button)
-            && m_mouseButtonInfo.at(button).m_buttonState == EMouseButtonState::MOUSE_PRESSED;
+            && m_mouseButtonInfo.at(button).m_buttonState == EMouseButtonState::PRESSED;
     }
 
     bool InputManager::isMouseButtonPressed(const EMouseButton button) const
     {
         return m_mouseButtonInfo.contains(button)
-            && m_mouseButtonInfo.at(button).m_buttonState == EMouseButtonState::MOUSE_PRESSED
+            && m_mouseButtonInfo.at(button).m_buttonState == EMouseButtonState::PRESSED
             && m_mouseButtonInfo.at(button).m_stateChangeFrame == m_currentFrame;
     }
 
     bool InputManager::isMouseButtonReleased(const EMouseButton button) const
     {
         return m_mouseButtonInfo.contains(button)
-            && m_mouseButtonInfo.at(button).m_buttonState == EMouseButtonState::MOUSE_RELEASED
+            && m_mouseButtonInfo.at(button).m_buttonState == EMouseButtonState::RELEASED
             && m_mouseButtonInfo.at(button).m_stateChangeFrame == m_currentFrame;
     }
 
