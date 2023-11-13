@@ -76,6 +76,25 @@ namespace PantheonEngine::Core::Serialization
          */
         template <typename SizeT = size_t>
         static bool deserializeString(std::string& out, const char* data, size_t length);
+
+#ifdef __LIBMATH__VECTOR__VECTOR3_H__
+     /**
+      * \brief Serializes the given 3d vector to a byte array
+      * \param vec3 The vector to serialize
+      * \param output The output memory buffer
+      * \return True on success. False otherwise.
+      */
+     inline static bool serializeVector3(LibMath::Vector3 vec3, std::vector<char>& output);
+
+     /**
+      * \brief Deserializes the given 3d vector from a byte array
+      * \param out The output vector
+      * \param data A pointer to the beginning of the memory buffer
+      * \param length The memory buffer's length
+      * \return True on success. False otherwise.
+      */
+     inline static bool deserializeVector3(LibMath::Vector3& out, const char* data, size_t length);
+#endif
     };
 }
 

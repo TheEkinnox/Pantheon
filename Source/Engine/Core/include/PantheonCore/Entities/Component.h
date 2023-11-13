@@ -4,6 +4,9 @@
 #include <string>
 #include <unordered_map>
 
+#include "PantheonCore/Serialization/IByteSerializable.h"
+#include "PantheonCore/Serialization/IJsonSerializable.h"
+
 #define REGISTER_COMPONENT_TYPE(Name, Type)                                                            \
 static uint8_t reg_##Name = (PantheonEngine::Core::Entities::Component::registerType<Type>(#Name), 0);
 
@@ -18,7 +21,7 @@ namespace PantheonEngine::Core::Entities
 {
     class Entity;
 
-    class Component
+    class Component : public Serialization::IByteSerializable, public Serialization::IJsonSerializable
     {
     public:
         using ComponentId = uint64_t;
@@ -29,10 +32,10 @@ namespace PantheonEngine::Core::Entities
         Component& operator=(const Component& other);
         Component& operator=(Component&& other) noexcept;
 
-        bool operator==(const Component&) const;
-        bool operator!=(const Component&) const;
+        bool operator==(const Component& other) const;
+        bool operator!=(const Component& other) const;
 
-        virtual ~Component();
+        ~Component() override;
 
         /**
          * \brief Registers the given component type (required for the create function)
