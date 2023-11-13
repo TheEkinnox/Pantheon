@@ -65,7 +65,7 @@ namespace PantheonEngine::Core::Resources
                 continue;
             }
 
-            if (!ptr->deserialize(assetData.data(), assetData.size()))
+            if (!ptr->deserialize(assetData.data(), assetData.size()) || !ptr->init())
             {
                 DEBUG_LOG("[WARNING] Skipped asset at path \"%s\" - Unable to load resource", asset->getPath());
                 remove(guid);
@@ -101,7 +101,7 @@ namespace PantheonEngine::Core::Resources
 
         IResource* resource = IResource::create(type);
 
-        if (resource == nullptr || (shouldLoad && !resource->load(path)))
+        if (resource == nullptr || (shouldLoad && (!resource->load(path) || !resource->init())))
             return nullptr;
 
         m_resources[key] = resource;

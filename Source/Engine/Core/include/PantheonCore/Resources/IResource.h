@@ -60,6 +60,14 @@ namespace PantheonEngine::Core::Resources
          */
         virtual bool load(const std::string& fileName) = 0;
 
+        /**
+         * \brief Initializes the resource
+         * \return True on success. False otherwise.
+         */
+        virtual bool init()
+        {
+            return true;
+        }
 
     private:
         using AllocFunc = IResource* (*)();

@@ -17,7 +17,7 @@ namespace PantheonEngine::Core::Resources
 
         T* ptr = new T();
 
-        if (!ptr->load(path))
+        if (!ptr->load(path) || !ptr->init())
         {
             delete ptr;
             m_resourceKeys.erase(path);
