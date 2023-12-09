@@ -91,7 +91,7 @@ namespace PantheonEngine::Core::Serialization
     }
 
 #ifdef __LIBMATH__VECTOR__VECTOR3_H__
-    inline bool serializeVector3(LibMath::Vector3 vec3, std::vector<char>& output)
+    inline bool IByteSerializable::serializeVector3(LibMath::Vector3 vec3, std::vector<char>& output)
     {
         vec3.m_x = Utility::toBigEndian(vec3.m_x);
         vec3.m_y = Utility::toBigEndian(vec3.m_y);
@@ -102,7 +102,7 @@ namespace PantheonEngine::Core::Serialization
         return memcpy_s(output.data() + startSize, output.size() - startSize, vec3.getArray(), sizeof(LibMath::Vector3)) == 0;
     }
 
-    inline bool deserializeVector3(LibMath::Vector3& out, const char* data, const size_t length)
+    inline bool IByteSerializable::deserializeVector3(LibMath::Vector3& out, const char* data, const size_t length)
     {
         if (data == nullptr || length < sizeof(LibMath::Vector3))
             return false;
