@@ -25,3 +25,33 @@
 
 #endif // _DEBUG || PTH_VERBOSE_LOG
 #endif // !ASSERT
+
+#ifndef CHECK
+#if defined(_DEBUG) || defined(PTH_VERBOSE_LOG)
+
+#define CHECK(condition, ...) [&]() -> bool             \
+{                                                       \
+    if (!(condition))                                   \
+    {                                                   \
+        DEBUG_LOG_ERROR("Check failed: " #condition);   \
+        __VA_OPT__(DEBUG_LOG_ERROR(__VA_ARGS__);)       \
+        DEBUG_BREAK();                                  \
+        return false;                                   \
+    }                                                   \
+    return true;                                        \
+}()
+
+#else
+
+#define CHECK(condition, ...) []() -> bool              \
+{                                                       \
+    if (!(condition))                                   \
+    {                                                   \
+        __VA_OPT__(DEBUG_LOG_ERROR(__VA_ARGS__);)       \
+        return false;                                   \
+    }                                                   \
+    return true;                                        \
+}()
+
+#endif // _DEBUG || PTH_VERBOSE_LOG
+#endif // !ASSERT
