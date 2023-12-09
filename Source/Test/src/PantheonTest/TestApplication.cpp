@@ -82,9 +82,14 @@ namespace PantheonTest
         }
 
         if (passedCount == m_tests.size())
-            DEBUG_LOG("All tests passed");
+        {
+            DEBUG_LOG("All %llu tests passed", passedCount);
+        }
         else
+        {
             DEBUG_LOG_ERROR("%llu/%llu Tests passed", passedCount, m_tests.size());
+            std::quick_exit(-1);
+        }
     }
 
     bool TestApplication::isRunning() const
