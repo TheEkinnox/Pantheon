@@ -35,7 +35,7 @@ namespace PantheonTest
             complete();
     }
 
-    void InputTest::testKeyboard() const
+    void InputTest::testKeyboard()
     {
         const auto& inputManager = PTH_SERVICE(InputManager);
         const auto& window = PTH_SERVICE(Window);
@@ -44,51 +44,50 @@ namespace PantheonTest
         {
         case 0:
         {
-            // Keyboard
             window.m_keyEvent.invoke(EKey::P, 0, EKeyState::PRESSED, EInputModifier::NONE);
 
-            ASSERT(inputManager.isKeyPressed(EKey::P));
-            ASSERT(inputManager.isKeyDown(EKey::P));
-            ASSERT(!inputManager.isKeyReleased(EKey::P));
-            ASSERT(!inputManager.isKeyUp(EKey::P));
+            TEST_CHECK(inputManager.isKeyPressed(EKey::P));
+            TEST_CHECK(inputManager.isKeyDown(EKey::P));
+            TEST_CHECK(!inputManager.isKeyReleased(EKey::P));
+            TEST_CHECK(!inputManager.isKeyUp(EKey::P));
             break;
         }
         case 1:
         {
-            ASSERT(!inputManager.isKeyPressed(EKey::P));
-            ASSERT(inputManager.isKeyDown(EKey::P));
-            ASSERT(!inputManager.isKeyReleased(EKey::P));
-            ASSERT(!inputManager.isKeyUp(EKey::P));
+            TEST_CHECK(!inputManager.isKeyPressed(EKey::P));
+            TEST_CHECK(inputManager.isKeyDown(EKey::P));
+            TEST_CHECK(!inputManager.isKeyReleased(EKey::P));
+            TEST_CHECK(!inputManager.isKeyUp(EKey::P));
 
             window.m_keyEvent.invoke(EKey::P, 0, EKeyState::REPEATED, EInputModifier::NONE);
 
-            ASSERT(!inputManager.isKeyPressed(EKey::P));
-            ASSERT(inputManager.isKeyDown(EKey::P));
-            ASSERT(!inputManager.isKeyReleased(EKey::P));
-            ASSERT(!inputManager.isKeyUp(EKey::P));
+            TEST_CHECK(!inputManager.isKeyPressed(EKey::P));
+            TEST_CHECK(inputManager.isKeyDown(EKey::P));
+            TEST_CHECK(!inputManager.isKeyReleased(EKey::P));
+            TEST_CHECK(!inputManager.isKeyUp(EKey::P));
             break;
         }
         case 2:
         {
-            ASSERT(!inputManager.isKeyPressed(EKey::P));
-            ASSERT(inputManager.isKeyDown(EKey::P));
-            ASSERT(!inputManager.isKeyReleased(EKey::P));
-            ASSERT(!inputManager.isKeyUp(EKey::P));
+            TEST_CHECK(!inputManager.isKeyPressed(EKey::P));
+            TEST_CHECK(inputManager.isKeyDown(EKey::P));
+            TEST_CHECK(!inputManager.isKeyReleased(EKey::P));
+            TEST_CHECK(!inputManager.isKeyUp(EKey::P));
 
             window.m_keyEvent.invoke(EKey::P, 0, EKeyState::RELEASED, EInputModifier::NONE);
 
-            ASSERT(!inputManager.isKeyPressed(EKey::P));
-            ASSERT(!inputManager.isKeyDown(EKey::P));
-            ASSERT(inputManager.isKeyReleased(EKey::P));
-            ASSERT(inputManager.isKeyUp(EKey::P));
+            TEST_CHECK(!inputManager.isKeyPressed(EKey::P));
+            TEST_CHECK(!inputManager.isKeyDown(EKey::P));
+            TEST_CHECK(inputManager.isKeyReleased(EKey::P));
+            TEST_CHECK(inputManager.isKeyUp(EKey::P));
             break;
         }
         case 3:
         {
-            ASSERT(!inputManager.isKeyPressed(EKey::P));
-            ASSERT(!inputManager.isKeyDown(EKey::P));
-            ASSERT(!inputManager.isKeyReleased(EKey::P));
-            ASSERT(inputManager.isKeyUp(EKey::P));
+            TEST_CHECK(!inputManager.isKeyPressed(EKey::P));
+            TEST_CHECK(!inputManager.isKeyDown(EKey::P));
+            TEST_CHECK(!inputManager.isKeyReleased(EKey::P));
+            TEST_CHECK(inputManager.isKeyUp(EKey::P));
             break;
         }
         default:
@@ -96,7 +95,7 @@ namespace PantheonTest
         }
     }
 
-    void InputTest::testMouse() const
+    void InputTest::testMouse()
     {
         const auto& inputManager = PTH_SERVICE(InputManager);
         const auto& window = PTH_SERVICE(Window);
@@ -107,33 +106,33 @@ namespace PantheonTest
         {
             window.m_mouseButtonEvent.invoke(EMouseButton::LEFT, EMouseButtonState::PRESSED, EInputModifier::NONE);
 
-            ASSERT(inputManager.isMouseButtonPressed(EMouseButton::LEFT));
-            ASSERT(inputManager.isMouseButtonDown(EMouseButton::LEFT));
-            ASSERT(!inputManager.isMouseButtonReleased(EMouseButton::LEFT));
-            ASSERT(!inputManager.isMouseButtonUp(EMouseButton::LEFT));
+            TEST_CHECK(inputManager.isMouseButtonPressed(EMouseButton::LEFT));
+            TEST_CHECK(inputManager.isMouseButtonDown(EMouseButton::LEFT));
+            TEST_CHECK(!inputManager.isMouseButtonReleased(EMouseButton::LEFT));
+            TEST_CHECK(!inputManager.isMouseButtonUp(EMouseButton::LEFT));
             break;
         }
         case 1:
         {
-            ASSERT(!inputManager.isMouseButtonPressed(EMouseButton::LEFT));
-            ASSERT(inputManager.isMouseButtonDown(EMouseButton::LEFT));
-            ASSERT(!inputManager.isMouseButtonReleased(EMouseButton::LEFT));
-            ASSERT(!inputManager.isMouseButtonUp(EMouseButton::LEFT));
+            TEST_CHECK(!inputManager.isMouseButtonPressed(EMouseButton::LEFT));
+            TEST_CHECK(inputManager.isMouseButtonDown(EMouseButton::LEFT));
+            TEST_CHECK(!inputManager.isMouseButtonReleased(EMouseButton::LEFT));
+            TEST_CHECK(!inputManager.isMouseButtonUp(EMouseButton::LEFT));
 
             window.m_mouseButtonEvent.invoke(EMouseButton::LEFT, EMouseButtonState::RELEASED, EInputModifier::NONE);
 
-            ASSERT(!inputManager.isMouseButtonPressed(EMouseButton::LEFT));
-            ASSERT(!inputManager.isMouseButtonDown(EMouseButton::LEFT));
-            ASSERT(inputManager.isMouseButtonReleased(EMouseButton::LEFT));
-            ASSERT(inputManager.isMouseButtonUp(EMouseButton::LEFT));
+            TEST_CHECK(!inputManager.isMouseButtonPressed(EMouseButton::LEFT));
+            TEST_CHECK(!inputManager.isMouseButtonDown(EMouseButton::LEFT));
+            TEST_CHECK(inputManager.isMouseButtonReleased(EMouseButton::LEFT));
+            TEST_CHECK(inputManager.isMouseButtonUp(EMouseButton::LEFT));
             break;
         }
         case 2:
         {
-            ASSERT(!inputManager.isMouseButtonPressed(EMouseButton::LEFT));
-            ASSERT(!inputManager.isMouseButtonDown(EMouseButton::LEFT));
-            ASSERT(!inputManager.isMouseButtonReleased(EMouseButton::LEFT));
-            ASSERT(inputManager.isMouseButtonUp(EMouseButton::LEFT));
+            TEST_CHECK(!inputManager.isMouseButtonPressed(EMouseButton::LEFT));
+            TEST_CHECK(!inputManager.isMouseButtonDown(EMouseButton::LEFT));
+            TEST_CHECK(!inputManager.isMouseButtonReleased(EMouseButton::LEFT));
+            TEST_CHECK(inputManager.isMouseButtonUp(EMouseButton::LEFT));
             break;
         }
         default:

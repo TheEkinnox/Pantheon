@@ -40,7 +40,7 @@ namespace PantheonTest
             }));
         }
 
-        ASSERT(tasks.size() == m_taskCount, "ThreadPool tasks count should be %llu - Received %llu", m_taskCount, tasks.size());
+        TEST_CHECK(tasks.size() == m_taskCount, "ThreadPool tasks count should be %llu - Received %llu", m_taskCount, tasks.size());
 
         for (auto& task : tasks)
             task.wait();

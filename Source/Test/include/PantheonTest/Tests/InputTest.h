@@ -16,7 +16,7 @@ namespace PantheonTest
     private:
         int m_frameCount = 0;
 
-        void testKeyboard() const;
-        void testMouse() const;
+        void testKeyboard();
+        void testMouse();
     };
 }

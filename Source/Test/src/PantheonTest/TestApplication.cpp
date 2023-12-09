@@ -72,8 +72,19 @@ namespace PantheonTest
 
     void TestApplication::onStop()
     {
+        size_t passedCount = 0;
         for (const auto& test : m_tests)
+        {
             test->stop();
+
+            if (test->isSuccess())
+                ++passedCount;
+        }
+
+        if (passedCount == m_tests.size())
+            DEBUG_LOG("All tests passed");
+        else
+            DEBUG_LOG_ERROR("%llu/%llu Tests passed", passedCount, m_tests.size());
     }
 
     bool TestApplication::isRunning() const

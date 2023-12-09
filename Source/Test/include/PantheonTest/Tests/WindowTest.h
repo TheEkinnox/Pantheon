@@ -19,11 +19,11 @@ namespace PantheonTest
     private:
         PantheonEngine::Application::Windowing::Window* m_window;
 
-        void testSize() const;
-        void testPosition() const;
-        void testFullscreen() const;
-        void testCursorPosition() const;
+        void testSize();
+        void testPosition();
+        void testFullscreen();
+        void testCursorPosition();
         void testCursorMode() const;
-        void testExtra() const;
+        void testExtra();
     };
 }

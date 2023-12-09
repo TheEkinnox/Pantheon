@@ -48,11 +48,17 @@ namespace PantheonTest
         return m_isDone;
     }
 
+    bool ITest::isSuccess() const
+    {
+        return m_isSuccess;
+    }
+
     ITest::ITest() : ITest("Unnamed")
     {
     }
 
-    ITest::ITest(std::string name) : m_name(std::move(name)), m_isDone(false)
+    ITest::ITest(std::string name)
+        : m_executedCount(0), m_passedCount(0), m_failedCount(0), m_name(std::move(name)), m_isDone(false), m_isSuccess(false)
     {
     }
 
@@ -83,6 +89,12 @@ namespace PantheonTest
     void ITest::complete()
     {
         m_isDone = true;
-        DEBUG_LOG("= %s tests completed succesfully =", m_name.c_str());
+        m_isSuccess = m_passedCount == m_executedCount;
+
+        if (m_isSuccess)
+            DEBUG_LOG("= %s tests completed succesfully =", m_name.c_str());
+        else
+            DEBUG_LOG_ERROR("= %s tests failed =\n- %d executed\n- %d passed\n- %d failed",
+            m_name.c_str(), m_executedCount, m_passedCount, m_failedCount);
     }
 }
