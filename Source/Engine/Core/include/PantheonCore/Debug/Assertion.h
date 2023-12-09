@@ -2,6 +2,7 @@
 #include <cstdlib>
 
 #include "PantheonCore/Debug/Logger.h"
+#include "PantheonCore/Debug/DebugBreak.h"
 
 #ifndef ASSERT
 #if defined(_DEBUG) || defined(PTH_VERBOSE_LOG)
@@ -10,7 +11,7 @@
 {                                                     \
     DEBUG_LOG_ERROR("Assertion failed: " #condition); \
     __VA_OPT__(DEBUG_LOG_ERROR(__VA_ARGS__);)         \
-    __debugbreak();                                   \
+    DEBUG_BREAK();                                    \
     abort();                                          \
 } ((void)0)
 
