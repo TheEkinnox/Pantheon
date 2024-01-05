@@ -117,4 +117,34 @@ namespace PantheonEngine::Core::Serialization
         return true;
     }
 #endif
+
+#ifdef __LIBMATH__QUATERNION_H__
+    inline bool IByteSerializable::serializeQuaternion(LibMath::Quaternion quat, std::vector<char>& output)
+    {
+        quat.m_x = Utility::toBigEndian(quat.m_x);
+        quat.m_y = Utility::toBigEndian(quat.m_y);
+        quat.m_z = Utility::toBigEndian(quat.m_z);
+        quat.m_w = Utility::toBigEndian(quat.m_w);
+
+        const size_t startSize = output.size();
+        output.resize(startSize + sizeof(LibMath::Quaternion));
+        return memcpy_s(output.data() + startSize, output.size() - startSize, quat.getArray(), sizeof(LibMath::Quaternion)) == 0;
+    }
+
+    inline bool IByteSerializable::deserializeQuaternion(LibMath::Quaternion& out, const char* data, const size_t length)
+    {
+        if (data == nullptr || length < sizeof(LibMath::Quaternion))
+            return false;
+
+        if (memcpy_s(out.getArray(), sizeof(LibMath::Quaternion), data, sizeof(LibMath::Quaternion)) != 0)
+            return false;
+
+        out.m_x = Utility::fromBigEndian(out.m_x);
+        out.m_y = Utility::fromBigEndian(out.m_y);
+        out.m_z = Utility::fromBigEndian(out.m_z);
+        out.m_w = Utility::fromBigEndian(out.m_w);
+
+        return true;
+    }
+#endif
 }
