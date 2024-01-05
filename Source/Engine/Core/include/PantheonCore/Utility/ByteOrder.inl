@@ -39,15 +39,15 @@ namespace PantheonEngine::Core::Utility
         {
             return value;
         }
-        else if constexpr (sizeof(T) == sizeof(uint16_t))
+        else if constexpr (std::is_integral_v<T> && sizeof(T) == sizeof(uint16_t))
         {
             return static_cast<T>(byteSwap16(static_cast<uint16_t>(value)));
         }
-        else if constexpr (sizeof(T) == sizeof(uint32_t))
+        else if constexpr (std::is_integral_v<T> && sizeof(T) == sizeof(uint32_t))
         {
             return static_cast<T>(byteSwap32(static_cast<unsigned long>(value)));
         }
-        else if constexpr (sizeof(T) == sizeof(uint64_t))
+        else if constexpr (std::is_integral_v<T> && sizeof(T) == sizeof(uint64_t))
         {
             return static_cast<T>(byteSwap64(static_cast<uint64_t>(value)));
         }
