@@ -14,9 +14,14 @@ namespace PantheonEngine::Core::Resources
 
         ASSERT(!s_resourceTypes.contains(name), "Resource type \"%s\" has already been registered", name.c_str());
 
+        const size_t typeHash = typeid(T).hash_code();
+        ASSERT(!s_resourceTypeNames.contains(typeHash), "Resource type \"%s\" has already been registered", name.c_str());
+
         s_resourceTypes[name] = []() -> IResource* {
             return new T();
         };
+
+        s_resourceTypeNames[typeHash] = name;
     }
 
     template <typename T>
@@ -32,6 +37,7 @@ namespace PantheonEngine::Core::Resources
 
     inline IResource* IResource::create(const std::string& type)
     {
-        return s_resourceTypes.contains(type) ? s_resourceTypes[type]() : nullptr;
+        const auto it = s_resourceTypes.find(type);
+        return it != s_resourceTypes.end() ? it->second() : nullptr;
     }
 }
