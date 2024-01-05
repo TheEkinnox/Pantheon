@@ -163,26 +163,12 @@ namespace PantheonTest
     {
         m_window->setCursorPosition(m_window->getSize() * .5);
         m_window->showCursor();
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
         m_window->hideCursor();
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
         m_window->setCursorPosition({ m_window->getSize().m_x + 32., m_window->getSize().m_y * .5 });
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
         m_window->setCursorPosition(m_window->getSize() * .5);
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
         m_window->showCursor();
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
         m_window->disableCursor();
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
         m_window->setCursorPosition({ m_window->getSize().m_x + 256., m_window->getSize().m_y * .5 });
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
         m_window->showCursor();
     }
 }
