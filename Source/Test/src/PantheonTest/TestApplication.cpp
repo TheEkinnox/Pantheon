@@ -8,6 +8,7 @@
 #include "PantheonTest/Tests/WindowTest.h"
 
 using namespace PantheonEngine::Core::Utility;
+using namespace PantheonEngine::Core::Resources;
 using namespace PantheonEngine::Application::Core;
 using namespace PantheonEngine::Application::Input;
 using namespace PantheonEngine::Application::Windowing;
@@ -18,11 +19,14 @@ namespace PantheonTest
         IApplication(std::make_unique<Context>(true, 4)),
         m_window(std::make_unique<Window>(getContext(), WindowSettings{ "Pantheon Test", 800, 600 })),
         m_inputManager(std::make_unique<InputManager>(*m_window)),
-        m_threadPool(std::make_unique<ThreadPool>())
+        m_threadPool(std::make_unique<ThreadPool>()),
+        m_resourceManager(std::make_unique<ResourceManager>())
     {
         ServiceLocator::provide<Window>(*m_window);
         ServiceLocator::provide<InputManager>(*m_inputManager);
         ServiceLocator::provide<ThreadPool>(*m_threadPool);
+        ServiceLocator::provide<ResourceManager>(*m_resourceManager);
+
         m_tests.push_back(std::make_shared<WindowTest>());
         m_tests.push_back(std::make_shared<InputTest>());
         m_tests.push_back(std::make_shared<ThreadPoolTest>());

@@ -3,6 +3,7 @@
 #include <PantheonApp/Input/InputManager.h>
 #include <PantheonApp/Windowing/Window.h>
 
+#include <PantheonCore/Resources/ResourceManager.h>
 #include <PantheonCore/Utility/ThreadPool.h>
 
 #include "PantheonTest/Tests/ITest.h"
@@ -30,6 +31,7 @@ namespace PantheonTest
         std::unique_ptr<PantheonEngine::Application::Windowing::Window>   m_window;
         std::unique_ptr<PantheonEngine::Application::Input::InputManager> m_inputManager;
         std::unique_ptr<PantheonEngine::Core::Utility::ThreadPool>        m_threadPool;
+        std::unique_ptr<PantheonEngine::Core::Resources::ResourceManager> m_resourceManager;
 
         std::vector<std::shared_ptr<ITest>> m_tests;
     };
