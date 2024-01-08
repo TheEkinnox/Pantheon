@@ -1,0 +1,41 @@
+name: Build and test
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        type: [Debug, Release]
+        info:
+          - { os: windows, cxx: cl, cc: cl }
+          - { os: linux, cxx: g++, cc: gcc }
+
+    runs-on:
+      - self-hosted
+      - ${{ matrix.info.os }}
+    steps:
+      - uses: actions/checkout@v3.6.0
+      - uses: TheEkinnox/actions-setup-cpp@main
+        with:
+          os: ${{ matrix.info.os }}
+      - name: Configure CMake
+        run: >
+          cmake -S "${{ github.workspace }}" -B "${{ github.workspace }}/build" -G Ninja
+          -DCMAKE_BUILD_TYPE=${{ matrix.type }}
+          -DCMAKE_CXX_COMPILER=${{ matrix.info.cxx }}
+          -DCMAKE_C_COMPILER=${{ matrix.info.cc }}
+      - name: Build
+        run: cmake --build "${{ github.workspace }}/build" --config ${{ matrix.type }}
+      - name: Test
+        run: ctest --output-on-failure --test-dir "${{ github.workspace }}/build"
