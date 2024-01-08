@@ -43,7 +43,7 @@
 
 #else
 
-#define CHECK(condition, ...) []() -> bool              \
+#define CHECK(condition, ...) [&]() -> bool              \
 {                                                       \
     if (!(condition))                                   \
     {                                                   \
