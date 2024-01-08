@@ -54,4 +54,16 @@ else()
 	target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
 endif()
 
+
+###############################
+#                             #
+# CTest                       #
+#                             #
+###############################
+
+add_test(
+	NAME ${TARGET_NAME}
+	COMMAND $<TARGET_FILE:${TARGET_NAME}>
+)
+
 set(TEST_NAME ${TARGET_NAME} PARENT_SCOPE)
