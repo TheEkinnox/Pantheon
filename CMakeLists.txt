@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
 
 set(USE_FOLDERS ON)
-project(Pantheon LANGUAGES CXX)
+project(Pantheon LANGUAGES CXX C)
 
 # Setup cpp version
 set(CMAKE_CXX_STANDARD 20)
