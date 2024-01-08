@@ -96,13 +96,15 @@ namespace PantheonTest
                 ++passedCount;
         }
 
+        const float elapsedTime = getContext().m_timer->getUnscaledTime();
+
         if (passedCount == m_tests.size())
         {
-            DEBUG_LOG("All %llu tests passed", passedCount);
+            DEBUG_LOG("All %llu tests passed | Total execution time: %f", passedCount, elapsedTime);
         }
         else
         {
-            DEBUG_LOG_ERROR("%llu/%llu Tests passed", passedCount, m_tests.size());
+            DEBUG_LOG_ERROR("%llu/%llu Tests passed | Total execution time: %f", passedCount, m_tests.size(), elapsedTime);
             std::quick_exit(-1);
         }
     }
