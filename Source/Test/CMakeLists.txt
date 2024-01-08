@@ -49,7 +49,6 @@ target_link_libraries(${TARGET_NAME}
 )
 
 if(MSVC)
-	set_property(TARGET ${TARGET_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${TARGET_NAME}>")
 	target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
 else()
 	target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)

@@ -1,6 +1,7 @@
 ﻿#include "PantheonTest/TestApplication.h"
 
 #include <PantheonCore/Debug/Logger.h>
+#include <PantheonCore/Utility/FileSystem.h>
 #include <PantheonCore/Utility/ServiceLocator.h>
 
 #include "PantheonTest/Tests/InputTest.h"
@@ -34,6 +35,16 @@ namespace PantheonTest
 
     void TestApplication::onStart(int, char*[])
     {
+        const char* appDir = getApplicationDirectory();
+        std::string workingDir = getWorkingDirectory();
+
+        DEBUG_LOG("Changing working directory from \"%s\" to \"%s\"", workingDir.c_str(), appDir);
+        changeDirectory(appDir);
+
+        workingDir = getWorkingDirectory();
+        DEBUG_LOG("Current working directory: \"%s\"", workingDir.c_str());
+        ASSERT(workingDir == appDir, "Invalid working directory - Expected: \"%s\"", appDir);
+
         m_window->makeCurrentContext();
 
         for (const auto& test : m_tests)
