@@ -20,10 +20,8 @@ namespace PantheonEngine::Core::Entities
     {
         static_assert(std::is_same_v<Component, T> || std::is_base_of_v<Component, T>);
 
-        const T* firstComponent = getComponent<T>();
-
-        if (nullptr != firstComponent)
-            removeComponent(*firstComponent);
+        if (const T* firstComponent = getComponent<T>())
+            removeComponent(firstComponent->getId());
     }
 
     template <typename T>

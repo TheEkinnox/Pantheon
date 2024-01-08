@@ -89,15 +89,7 @@ namespace PantheonEngine::Core::Entities
 
     void Entity::removeComponent(const Component& component)
     {
-        if (m_components.empty())
-            return;
-
-        const auto findFunc = [&component](const ComponentPtr& ptr)
-        {
-            return *ptr == component;
-        };
-
-        std::erase_if(m_components, findFunc);
+        removeComponent(component.getId());
     }
 
     void Entity::removeComponent(const Component::ComponentId id)
@@ -107,7 +99,7 @@ namespace PantheonEngine::Core::Entities
 
         const auto findFunc = [id](const ComponentPtr& ptr)
         {
-            return ptr->getId() == id;
+            return ptr && ptr->getId() == id;
         };
 
         std::erase_if(m_components, findFunc);
