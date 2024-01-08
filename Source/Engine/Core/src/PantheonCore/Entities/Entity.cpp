@@ -237,10 +237,10 @@ namespace PantheonEngine::Core::Entities
 
     bool Entity::serialize(std::vector<char>& output) const
     {
-        size_t offset = output.size();
         if (!serializeTransform(output))
             return false;
 
+        size_t     offset = output.size();
         ElemCountT elemCount = static_cast<ElemCountT>(m_components.size());
         output.resize(offset + sizeof(ElemCountT));
 
@@ -293,17 +293,21 @@ namespace PantheonEngine::Core::Entities
             return false;
         }
 
-        if (!deserializeTransform(static_cast<const char*>(data), length))
+        const char* charData = static_cast<const char*>(data);
+
+        if (!deserializeTransform(charData, length))
             return false;
 
+        size_t     offset = sizeof(Vector3) * 2 + sizeof(Quaternion);
         ElemCountT elemCount = 0;
-        if (length < sizeof(ElemCountT) || memcpy_s(&elemCount, sizeof(ElemCountT), data, sizeof(ElemCountT)) != 0)
+        if (length <= offset || length - offset < sizeof(ElemCountT)
+            || memcpy_s(&elemCount, sizeof(ElemCountT), charData + offset, sizeof(ElemCountT)) != 0)
         {
             DEBUG_LOG_ERROR("Unable to deserialize entity - Failed to read component count");
             return false;
         }
 
-        size_t offset = sizeof(ElemCountT);
+        offset += sizeof(ElemCountT);
         for (ElemCountT i = 0; i < Utility::fromBigEndian(elemCount); ++i)
         {
             if (length <= offset)
@@ -312,7 +316,7 @@ namespace PantheonEngine::Core::Entities
                 return false;
             }
 
-            const size_t readBytes = addComponentFromMemory(static_cast<const char*>(data) + offset, length - offset);
+            const size_t readBytes = addComponentFromMemory(charData + offset, length - offset);
             if (readBytes == 0)
             {
                 DEBUG_LOG_ERROR("Unable to deserialize entity - Failed to deserialize component [%d]", i);
@@ -324,7 +328,7 @@ namespace PantheonEngine::Core::Entities
 
         elemCount = 0;
         if (length <= offset || length - offset < sizeof(ElemCountT)
-            || memcpy_s(&elemCount, sizeof(ElemCountT), data, sizeof(ElemCountT)) != 0)
+            || memcpy_s(&elemCount, sizeof(ElemCountT), charData + offset, sizeof(ElemCountT)) != 0)
         {
             DEBUG_LOG_ERROR("Unable to deserialize entity - Failed to read child count");
             return false;
@@ -339,7 +343,7 @@ namespace PantheonEngine::Core::Entities
                 return false;
             }
 
-            const size_t readBytes = addChildFromMemory(static_cast<const char*>(data) + offset, length - offset);
+            const size_t readBytes = addChildFromMemory(charData + offset, length - offset);
             if (readBytes == 0)
             {
                 DEBUG_LOG_ERROR("Unable to deserialize entity - Failed to deserialize child [%d]", i);
@@ -349,17 +353,17 @@ namespace PantheonEngine::Core::Entities
             offset += readBytes;
         }
 
-        return false;
+        return true;
     }
 
     void Entity::onChildAdded(Node& child)
     {
-        reinterpret_cast<Entity&>(child).setParent(*this);
+        reinterpret_cast<Entity&>(child).setParent(this);
     }
 
     void Entity::onRemoveChild(Node& child)
     {
-        reinterpret_cast<Entity&>(child).removeParent();
+        reinterpret_cast<Entity&>(child).setParent(nullptr);
     }
 
     bool Entity::serializeTransform(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
@@ -374,7 +378,7 @@ namespace PantheonEngine::Core::Entities
         str = getRotation().string();
         writer.String(str.c_str(), static_cast<rapidjson::SizeType>(str.size()));
 
-        writer.Key("position");
+        writer.Key("scale");
         str = getScale().string();
         writer.String(str.c_str(), static_cast<rapidjson::SizeType>(str.size()));
 
@@ -398,7 +402,7 @@ namespace PantheonEngine::Core::Entities
             return false;
         }
 
-        LibMath::Vector3 vec3;
+        Vector3 vec3;
         {
             std::stringstream str(it->value.GetString());
             str >> vec3;
@@ -413,9 +417,10 @@ namespace PantheonEngine::Core::Entities
         }
 
         {
+            Quaternion        rotation;
             std::stringstream str(it->value.GetString());
-            str >> vec3;
-            setRotation(vec3);
+            str >> rotation;
+            setRotation(rotation);
         }
 
         it = jsonTransform.FindMember("scale");
@@ -489,7 +494,7 @@ namespace PantheonEngine::Core::Entities
 
     bool Entity::serializeTransform(std::vector<char>& output) const
     {
-        output.reserve(output.size() + sizeof(Vector3) * 3);
+        output.reserve(output.size() + sizeof(Vector3) * 2 + sizeof(Quaternion));
 
         if (!serializeVector3(getPosition(), output))
         {
@@ -497,7 +502,7 @@ namespace PantheonEngine::Core::Entities
             return false;
         }
 
-        if (!serializeVector3(getRotation(), output))
+        if (!serializeQuaternion(getRotation(), output))
         {
             DEBUG_LOG_ERROR("Unable to serialize transform - Failed to write rotation");
             return false;
@@ -524,14 +529,15 @@ namespace PantheonEngine::Core::Entities
         setPosition(tmp);
         size_t offset = sizeof(Vector3);
 
-        if (!deserializeVector3(tmp, data + offset, length - offset))
+        Quaternion quat;
+        if (!deserializeQuaternion(quat, data + offset, length - offset))
         {
             DEBUG_LOG_ERROR("Unable to deserialize transform - Failed to read rotation");
             return false;
         }
 
-        setRotation(tmp);
-        offset += sizeof(Vector3);
+        setRotation(quat);
+        offset += sizeof(Quaternion);
 
         if (!deserializeVector3(tmp, data + offset, length - offset))
         {
