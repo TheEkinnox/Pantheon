@@ -17,6 +17,7 @@ namespace PantheonEngine::Core::Resources
         using ResourcePtr = IResource*;
         using ResourceMap = std::unordered_map<std::string, ResourcePtr>;
         using KeyMap = std::unordered_map<std::string, std::string>;
+        using BundlesMap = std::unordered_map<std::string, Assets::AssetBundle>;
 
     public:
         /**
@@ -54,10 +55,19 @@ namespace PantheonEngine::Core::Resources
         ResourceManager& operator=(ResourceManager&& other) noexcept;
 
         /**
-         * \brief Loads all the resources contained in the given asset bundle
-         * \param bundle The asset bundle from which resources should be loaded
+         * \brief Adds the asset bundle at the given path to the manager
+         * \param path The bundle's file path
+         * \param shouldLoadResources Whether the bundle's assets should be loaded
+         * \return True on success. False otherwise.
          */
-        void importBundle(const Assets::AssetBundle& bundle);
+        bool includeBundle(const std::string& path, bool shouldLoadResources = true);
+
+        /**
+         * \brief Removes the bundle and all it's resources with the given path from the manager
+         * \param path The bundle's path
+         * \return True if the bundle was removed. False otherwise
+         */
+        bool removeBundle(const std::string& path);
 
         /**
          * \brief Tries to load the resource with the given path
@@ -116,13 +126,35 @@ namespace PantheonEngine::Core::Resources
         void remove(const std::string& key);
 
         /**
+         * \brief Removes the resource with the given path from the manager
+         * \param path The resource's path
+         */
+        void removePath(const std::string& path);
+
+        /**
          * \brief Removes all loaded resources from the manager
          */
         void clear();
 
     private:
+        BundlesMap  m_bundles;
         ResourceMap m_resources;
         KeyMap      m_resourceKeys;
+
+        /**
+         * \brief Loads all the resources contained in the given asset bundle
+         * \param bundle The asset bundle from which resources should be loaded
+         */
+        void importBundle(const Assets::AssetBundle& bundle);
+
+        /**
+         * \brief Loads and initializes the given resource
+         * \param resource The resource to load
+         * \param key The resource's key
+         * \param path The resource's path
+         * \return True on success. False otherwise.
+         */
+        bool loadResource(IResource* resource, const std::string& key, const std::string& path);
     };
 }
 
