@@ -34,5 +34,7 @@ namespace PantheonTest
         std::unique_ptr<PantheonEngine::Core::Resources::ResourceManager> m_resourceManager;
 
         std::vector<std::shared_ptr<ITest>> m_tests;
+
+        std::chrono::high_resolution_clock::time_point m_startTime;
     };
 }

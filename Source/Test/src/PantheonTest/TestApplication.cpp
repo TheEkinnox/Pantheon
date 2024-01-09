@@ -21,7 +21,8 @@ namespace PantheonTest
         m_window(std::make_unique<Window>(getContext(), WindowSettings{ "Pantheon Test", 800, 600 })),
         m_inputManager(std::make_unique<InputManager>(*m_window)),
         m_threadPool(std::make_unique<ThreadPool>()),
-        m_resourceManager(std::make_unique<ResourceManager>())
+        m_resourceManager(std::make_unique<ResourceManager>()),
+        m_startTime(std::chrono::high_resolution_clock::now())
     {
         ServiceLocator::provide<Window>(*m_window);
         ServiceLocator::provide<InputManager>(*m_inputManager);
@@ -96,15 +97,16 @@ namespace PantheonTest
                 ++passedCount;
         }
 
-        const float elapsedTime = getContext().m_timer->getUnscaledTime();
+        const auto      endTime = std::chrono::high_resolution_clock::now();
+        const long long elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - m_startTime).count();
 
         if (passedCount == m_tests.size())
         {
-            DEBUG_LOG("All %llu tests passed | Total execution time: %f", passedCount, elapsedTime);
+            DEBUG_LOG("All %llu tests passed | Total execution time: %dms", passedCount, elapsedTime);
         }
         else
         {
-            DEBUG_LOG_ERROR("%llu/%llu Tests passed | Total execution time: %f", passedCount, m_tests.size(), elapsedTime);
+            DEBUG_LOG_ERROR("%llu/%llu Tests passed | Total execution time: %dms", passedCount, m_tests.size(), elapsedTime);
             std::quick_exit(-1);
         }
     }
