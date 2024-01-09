@@ -3,10 +3,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace PantheonEngine::Core::Assets
-{
-    class AssetBundle;
-}
+#include "PantheonCore/Assets/AssetBundle.h"
 
 namespace PantheonEngine::Core::Resources
 {

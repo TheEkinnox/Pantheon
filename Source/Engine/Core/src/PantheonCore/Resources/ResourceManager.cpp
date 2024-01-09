@@ -1,6 +1,5 @@
 #include "PantheonCore/Resources/ResourceManager.h"
 #include "PantheonCore/Resources/IResource.h"
-#include "PantheonCore/Assets/AssetBundle.h"
 
 #include <ranges>
 
