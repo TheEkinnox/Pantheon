@@ -39,16 +39,43 @@ namespace PantheonCore::Entities
     }
 
     template <typename T>
+    const T* Entity::getComponent() const
+    {
+        static_assert(std::is_same_v<Component, T> || std::is_base_of_v<Component, T>);
+
+        for (const auto& component : m_components)
+        {
+            if (typeid(component.get()) == typeid(T*) || dynamic_cast<const T*>(component.get()) != nullptr)
+                return dynamic_cast<const T*>(component.get());
+        }
+
+        return nullptr;
+    }
+
+    template <typename T>
     T* Entity::getComponent(const Component::ComponentId id)
     {
         static_assert(std::is_same_v<Component, T> || std::is_base_of_v<Component, T>);
 
         for (const auto& component : m_components)
         {
-            if (id == component->getId() &&
-                (typeid(component.get()) == typeid(T*) ||
-                    dynamic_cast<T*>(component.get()) != nullptr))
+            if (id == component->getId() && (typeid(component.get()) == typeid(T*) || dynamic_cast<T*>(component.get()) != nullptr))
                 return dynamic_cast<T*>(component.get());
+        }
+
+        return nullptr;
+    }
+
+    template <typename T>
+    const T* Entity::getComponent(const Component::ComponentId id) const
+    {
+        static_assert(std::is_same_v<Component, T> || std::is_base_of_v<Component, T>);
+
+        for (const auto& component : m_components)
+        {
+            if (id == component->getId() &&
+                (typeid(component.get()) == typeid(T*) || dynamic_cast<const T*>(component.get()) != nullptr))
+                return dynamic_cast<const T*>(component.get());
         }
 
         return nullptr;
@@ -65,6 +92,22 @@ namespace PantheonCore::Entities
         {
             if (typeid(component.get()) == typeid(T*) || dynamic_cast<T*>(component.get()) != nullptr)
                 components.push_back(std::dynamic_pointer_cast<T>(component));
+        }
+
+        return components;
+    }
+
+    template <typename T>
+    std::vector<std::shared_ptr<const T>> Entity::getComponents() const
+    {
+        static_assert(std::is_same_v<Component, T> || std::is_base_of_v<Component, T>);
+
+        std::vector<std::shared_ptr<const T>> components;
+
+        for (const auto& component : m_components)
+        {
+            if (typeid(component.get()) == typeid(T*) || dynamic_cast<const T*>(component.get()) != nullptr)
+                components.push_back(std::dynamic_pointer_cast<const T>(component));
         }
 
         return components;

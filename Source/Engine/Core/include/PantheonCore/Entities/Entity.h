@@ -51,10 +51,19 @@ namespace PantheonCore::Entities
         T* getComponent();
 
         template <typename T>
+        const T* getComponent() const;
+
+        template <typename T>
         T* getComponent(Component::ComponentId id);
 
         template <typename T>
+        const T* getComponent(Component::ComponentId id) const;
+
+        template <typename T>
         std::vector<std::shared_ptr<T>> getComponents();
+
+        template <typename T>
+        std::vector<std::shared_ptr<const T>> getComponents() const;
 
         /**
          * \brief Updates the entity's components and children
