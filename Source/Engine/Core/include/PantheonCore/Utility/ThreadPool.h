@@ -6,7 +6,7 @@
 #include <thread>
 #include <type_traits>
 
-namespace PantheonEngine::Core::Utility
+namespace PantheonCore::Utility
 {
     class ThreadPool
     {

@@ -8,7 +8,7 @@
 #include "PantheonCore/DataStructure/Node.h"
 #include "PantheonCore/Entities/Component.h"
 
-namespace PantheonEngine::Core::Entities
+namespace PantheonCore::Entities
 {
     class Entity final : public DataStructure::Node, public LibMath::Transform, public Serialization::IByteSerializable,
                          public Serialization::IJsonSerializable

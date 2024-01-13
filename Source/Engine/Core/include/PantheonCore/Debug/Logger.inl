@@ -13,7 +13,7 @@
 #include <Windows.h>
 #endif
 
-namespace PantheonEngine::Core::Debug
+namespace PantheonCore::Debug
 {
     inline void Logger::setFile(const std::filesystem::path& filePath)
     {

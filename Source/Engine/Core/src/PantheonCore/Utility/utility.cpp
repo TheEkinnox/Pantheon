@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-namespace PantheonEngine::Core::Utility
+namespace PantheonCore::Utility
 {
     std::vector<std::string> splitString(const std::string& str, const char* delimiter, const bool includeEmpty)
     {

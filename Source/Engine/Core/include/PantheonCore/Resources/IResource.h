@@ -5,17 +5,17 @@
 
 #include "PantheonCore/Serialization/IByteSerializable.h"
 
-#define REGISTER_RESOURCE_TYPE(Name, Type)                                                              \
-static uint8_t reg_##Name = (PantheonEngine::Core::Resources::IResource::registerType<Type>(#Name), 0);
+#define REGISTER_RESOURCE_TYPE(Name, Type)                                                      \
+static uint8_t reg_##Name = (PantheonCore::Resources::IResource::registerType<Type>(#Name), 0);
 
-#define REGISTERED_RESOURCE_BODY(Type)                                                \
-public:                                                                               \
-inline std::string Type::getTypeName() const                                          \
-{                                                                                     \
-    return PantheonEngine::Core::Resources::IResource::getRegisteredTypeName<Type>(); \
+#define REGISTERED_RESOURCE_BODY(Type)                                        \
+public:                                                                       \
+inline std::string Type::getTypeName() const                                  \
+{                                                                             \
+    return PantheonCore::Resources::IResource::getRegisteredTypeName<Type>(); \
 }
 
-namespace PantheonEngine::Core::Resources
+namespace PantheonCore::Resources
 {
     class IResource : public Serialization::IByteSerializable
     {

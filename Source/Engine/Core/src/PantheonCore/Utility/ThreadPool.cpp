@@ -1,6 +1,6 @@
 ﻿#include "PantheonCore/Utility/ThreadPool.h"
 
-namespace PantheonEngine::Core::Utility
+namespace PantheonCore::Utility
 {
     ThreadPool::ThreadPool()
         : ThreadPool(std::thread::hardware_concurrency() - 1)

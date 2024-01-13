@@ -4,7 +4,7 @@
 #include "PantheonCore/Resources/ResourceRef.h"
 #include "PantheonCore/Utility/ServiceLocator.h"
 
-namespace PantheonEngine::Core::Resources
+namespace PantheonCore::Resources
 {
     inline ResourceRefBase::ResourceRefBase(std::string key, std::string path)
         : m_key(std::move(key)), m_path(std::move(path))

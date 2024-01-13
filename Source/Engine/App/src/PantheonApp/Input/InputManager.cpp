@@ -9,11 +9,11 @@
 #include "PantheonCore/Utility/ServiceLocator.h"
 #include "PantheonCore/Utility/macros.h"
 
-using namespace PantheonEngine::Application::Windowing::Exceptions;
-using namespace PantheonEngine::Application::Windowing;
-using namespace PantheonEngine::Core::Utility;
+using namespace PantheonApp::Windowing::Exceptions;
+using namespace PantheonApp::Windowing;
+using namespace PantheonCore::Utility;
 
-namespace PantheonEngine::Application::Input
+namespace PantheonApp::Input
 {
 #pragma region BINDINGS
     extern "C"

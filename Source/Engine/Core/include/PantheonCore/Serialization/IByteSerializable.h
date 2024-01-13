@@ -1,6 +1,6 @@
 #pragma once
 
-namespace PantheonEngine::Core::Serialization
+namespace PantheonCore::Serialization
 {
     class IByteSerializable
     {

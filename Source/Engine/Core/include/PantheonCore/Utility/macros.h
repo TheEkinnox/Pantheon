@@ -80,7 +80,7 @@ PANTHEON_API ReturnType Prefix##Type##_##FuncName##Suffix(Type* ptr)            
 PANTHEON_API void Prefix##Type##_##provideService##Suffix(Type* ptr)    \
 {                                                                       \
     ASSERT(ptr);                                                        \
-    PantheonEngine::Core::Utility::ServiceLocator::provide(*ptr);       \
+    PantheonCore::Utility::ServiceLocator::provide(*ptr);               \
 }
 
 #endif //!EXPORT_SERVICE

@@ -2,7 +2,7 @@
 
 #include "PantheonCore/Entities/Entity.h"
 
-namespace PantheonEngine::Core::Entities
+namespace PantheonCore::Entities
 {
     Component::Component(const Component& other) :
         m_owner(other.m_owner), m_id(s_currentId++), m_isActive(other.m_isActive)

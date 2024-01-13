@@ -5,7 +5,7 @@
 
 #include "PantheonCore/Assets/AssetBundle.h"
 
-namespace PantheonEngine::Core::Resources
+namespace PantheonCore::Resources
 {
     class IResource;
 

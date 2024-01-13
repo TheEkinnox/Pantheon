@@ -4,7 +4,7 @@
 
 #include "PantheonCore/DataStructure/Node.h"
 
-namespace PantheonEngine::Core::DataStructure
+namespace PantheonCore::DataStructure
 {
     template <class NodeT>
     class Graph

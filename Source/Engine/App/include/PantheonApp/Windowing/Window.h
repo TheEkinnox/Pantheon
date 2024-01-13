@@ -16,7 +16,7 @@
 // Forward declaration of GLFWwindow to avoid including glfw in the header
 using GLFWwindow = struct GLFWwindow;
 
-namespace PantheonEngine::Application::Windowing
+namespace PantheonApp::Windowing
 {
     namespace Exceptions
     {
@@ -47,18 +47,18 @@ namespace PantheonEngine::Application::Windowing
         using PosT = LibMath::Vector2I;
         using CursorPosT = LibMath::TVector2<double>;
 
-        PantheonEngine::Core::Eventing::Event<Input::EKey, int, Input::EKeyState, Input::EInputModifier> m_keyEvent;
-        PantheonEngine::Core::Eventing::Event<Input::EMouseButton, Input::EMouseButtonState, Input::EInputModifier> m_mouseButtonEvent;
+        PantheonCore::Eventing::Event<Input::EKey, int, Input::EKeyState, Input::EInputModifier> m_keyEvent;
+        PantheonCore::Eventing::Event<Input::EMouseButton, Input::EMouseButtonState, Input::EInputModifier> m_mouseButtonEvent;
 
-        PantheonEngine::Core::Eventing::Event<DimensionsT> m_resizeEvent;
-        PantheonEngine::Core::Eventing::Event<DimensionsT> m_framebufferResizeEvent;
-        PantheonEngine::Core::Eventing::Event<PosT>        m_moveEvent;
-        PantheonEngine::Core::Eventing::Event<CursorPosT>  m_cursorMoveEvent;
-        PantheonEngine::Core::Eventing::Event<>            m_minimizeEvent;
-        PantheonEngine::Core::Eventing::Event<>            m_maximizeEvent;
-        PantheonEngine::Core::Eventing::Event<>            m_gainFocusEvent;
-        PantheonEngine::Core::Eventing::Event<>            m_lostFocusEvent;
-        PantheonEngine::Core::Eventing::Event<>            m_closeEvent;
+        PantheonCore::Eventing::Event<DimensionsT> m_resizeEvent;
+        PantheonCore::Eventing::Event<DimensionsT> m_framebufferResizeEvent;
+        PantheonCore::Eventing::Event<PosT>        m_moveEvent;
+        PantheonCore::Eventing::Event<CursorPosT>  m_cursorMoveEvent;
+        PantheonCore::Eventing::Event<>            m_minimizeEvent;
+        PantheonCore::Eventing::Event<>            m_maximizeEvent;
+        PantheonCore::Eventing::Event<>            m_gainFocusEvent;
+        PantheonCore::Eventing::Event<>            m_lostFocusEvent;
+        PantheonCore::Eventing::Event<>            m_closeEvent;
 
         /**
          * \brief Creates a GLFW window

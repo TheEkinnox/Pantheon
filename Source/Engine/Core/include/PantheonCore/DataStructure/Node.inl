@@ -1,7 +1,7 @@
 #pragma once
 #include "PantheonCore/DataStructure/Node.h"
 
-namespace PantheonEngine::Core::DataStructure
+namespace PantheonCore::DataStructure
 {
     template <typename T, typename... Args>
     T& Node::addChild(Args&&... args)

@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "ThreadPool.h"
 
-namespace PantheonEngine::Core::Utility
+namespace PantheonCore::Utility
 {
     template <typename Func, typename... Args>
     std::future<std::invoke_result_t<Func, Args...>> ThreadPool::enqueue(Func&& func, Args&&... args)

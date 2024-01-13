@@ -2,7 +2,7 @@
 #include <vector>
 #include <string>
 
-namespace PantheonEngine::Core::Utility
+namespace PantheonCore::Utility
 {
     /**
      * \brief Reads the lines of the given text file

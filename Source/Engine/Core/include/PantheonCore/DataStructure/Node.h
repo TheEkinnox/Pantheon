@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 
-namespace PantheonEngine::Core::DataStructure
+namespace PantheonCore::DataStructure
 {
     class Node
     {

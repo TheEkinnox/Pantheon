@@ -3,7 +3,7 @@
 
 #include "PantheonCore/Utility/Timer.h"
 
-namespace PantheonEngine::Application::Core
+namespace PantheonApp::Core
 {
     namespace Exceptions
     {
@@ -33,7 +33,7 @@ namespace PantheonEngine::Application::Core
         static constexpr unsigned int PANTHEON_OPENGL_VERSION_MINOR = 6;
 
     public:
-        std::unique_ptr<PantheonEngine::Core::Utility::Timer> m_timer;
+        std::unique_ptr<PantheonCore::Utility::Timer> m_timer;
 
         /**
          * \brief Creates and initializes the application context

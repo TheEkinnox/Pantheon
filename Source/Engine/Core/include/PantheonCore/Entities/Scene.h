@@ -3,7 +3,7 @@
 #include "PantheonCore/DataStructure/Graph.h"
 #include "PantheonCore/Resources/IResource.h"
 
-namespace PantheonEngine::Core::Entities
+namespace PantheonCore::Entities
 {
     class Scene : public DataStructure::Graph<Entity>, public Resources::IResource, public Serialization::IJsonSerializable
     {

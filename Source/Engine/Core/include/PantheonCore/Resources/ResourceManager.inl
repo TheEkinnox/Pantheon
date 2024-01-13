@@ -2,7 +2,7 @@
 #include "PantheonCore/Resources/IResource.h"
 #include "PantheonCore/Resources/ResourceManager.h"
 
-namespace PantheonEngine::Core::Resources
+namespace PantheonCore::Resources
 {
     template <typename T>
     T* ResourceManager::load(const std::string& key, const std::string& path)

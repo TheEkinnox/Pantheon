@@ -4,7 +4,7 @@
 
 #include <ranges>
 
-namespace PantheonEngine::Core::Eventing
+namespace PantheonCore::Eventing
 {
     template <class... ArgTypes>
     IEvent::ListenerId Event<ArgTypes...>::subscribe(Action action)

@@ -5,7 +5,7 @@
 #include "PantheonCore/Serialization/IByteSerializable.h"
 #include "PantheonCore/Serialization/IJsonSerializable.h"
 
-namespace PantheonEngine::Core::Resources
+namespace PantheonCore::Resources
 {
     class ResourceRefBase : public Serialization::IJsonSerializable, public Serialization::IByteSerializable
     {

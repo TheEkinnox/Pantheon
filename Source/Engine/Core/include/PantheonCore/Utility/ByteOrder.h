@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 
-namespace PantheonEngine::Core::Utility
+namespace PantheonCore::Utility
 {
     /**
      * \brief Checks whether the current system uses a big endian architecture

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace PantheonEngine::Application::Input
+namespace PantheonApp::Input
 {
     enum class EKeyState
     {

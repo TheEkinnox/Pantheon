@@ -1,7 +1,7 @@
 #pragma once
 #include "PantheonCore/DataStructure/Graph.h"
 
-namespace PantheonEngine::Core::DataStructure
+namespace PantheonCore::DataStructure
 {
     template <class NodeT>
     template <typename DataT>

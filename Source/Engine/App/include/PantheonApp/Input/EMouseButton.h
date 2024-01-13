@@ -1,6 +1,6 @@
 #pragma once
 
-namespace PantheonEngine::Application::Input
+namespace PantheonApp::Input
 {
     /**
      * \brief Wrapper for GLFW_MOUSE_BUTTON_*

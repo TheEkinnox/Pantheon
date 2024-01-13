@@ -3,9 +3,9 @@
 
 #include "PantheonCore/Debug/Assertion.h"
 
-#define PTH_SERVICE(Type) PantheonEngine::Core::Utility::ServiceLocator::get<Type>()
+#define PTH_SERVICE(Type) PantheonCore::Utility::ServiceLocator::get<Type>()
 
-namespace PantheonEngine::Core::Utility
+namespace PantheonCore::Utility
 {
     class ServiceLocator
     {

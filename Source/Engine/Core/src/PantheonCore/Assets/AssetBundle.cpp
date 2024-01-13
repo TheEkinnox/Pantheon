@@ -8,9 +8,9 @@
 #include "PantheonCore/Utility/ByteOrder.h"
 #include "PantheonCore/Utility/Compression.h"
 
-using namespace PantheonEngine::Core::Utility;
+using namespace PantheonCore::Utility;
 
-namespace PantheonEngine::Core::Assets
+namespace PantheonCore::Assets
 {
     AssetBundle::AssetBundle()
         : m_compressionMode(ECompressionMode::NONE), m_compressedDataSize(0)

@@ -8,16 +8,16 @@
 #include "PantheonCore/Serialization/IJsonSerializable.h"
 
 #define REGISTER_COMPONENT_TYPE(Name, Type)                                                            \
-static uint8_t reg_##Name = (PantheonEngine::Core::Entities::Component::registerType<Type>(#Name), 0);
+static uint8_t reg_##Name = (PantheonCore::Entities::Component::registerType<Type>(#Name), 0);
 
 #define REGISTERED_COMPONENT_BODY(Type)                                              \
 public:                                                                              \
 inline std::string Type::getTypeName() const override                                \
 {                                                                                    \
-    return PantheonEngine::Core::Entities::Component::getRegisteredTypeName<Type>(); \
+    return PantheonCore::Entities::Component::getRegisteredTypeName<Type>(); \
 }
 
-namespace PantheonEngine::Core::Entities
+namespace PantheonCore::Entities
 {
     class Entity;
 

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace PantheonEngine::Application::Windowing
+namespace PantheonApp::Windowing
 {
     struct WindowSettings
     {

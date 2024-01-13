@@ -4,10 +4,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-using namespace PantheonEngine::Application::Input;
-using namespace PantheonEngine::Application::Windowing::Exceptions;
+using namespace PantheonApp::Input;
+using namespace PantheonApp::Windowing::Exceptions;
 
-namespace PantheonEngine::Application::Windowing
+namespace PantheonApp::Windowing
 {
     Window::Window(const Core::Context& context, const WindowSettings& settings) :
         m_title(settings.m_title),

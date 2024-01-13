@@ -4,7 +4,7 @@
 
 #include <PantheonCore/Utility/ServiceLocator.h>
 
-using namespace PantheonEngine::Application::Windowing;
+using namespace PantheonApp::Windowing;
 
 namespace PantheonTest
 {

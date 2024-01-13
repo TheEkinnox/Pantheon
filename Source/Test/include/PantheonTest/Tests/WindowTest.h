@@ -1,7 +1,7 @@
 #pragma once
 #include "PantheonTest/Tests/ITest.h"
 
-namespace PantheonEngine::Application::Windowing
+namespace PantheonApp::Windowing
 {
     class Window;
 }
@@ -17,7 +17,7 @@ namespace PantheonTest
         void onStart() override;
 
     private:
-        PantheonEngine::Application::Windowing::Window* m_window;
+        PantheonApp::Windowing::Window* m_window;
 
         void testSize();
         void testPosition();

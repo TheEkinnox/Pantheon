@@ -14,7 +14,7 @@ namespace PantheonTest
         void onStart() override;
 
     private:
-        PantheonEngine::Core::Utility::ThreadPool* m_threadPool;
+        PantheonCore::Utility::ThreadPool* m_threadPool;
 
         size_t m_taskCount;
         size_t m_taskDuration;

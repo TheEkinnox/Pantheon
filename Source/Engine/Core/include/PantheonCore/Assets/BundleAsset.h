@@ -5,7 +5,7 @@
 #include "PantheonCore/Assets/Asset.h"
 #include "PantheonCore/utility/macros.h"
 
-namespace PantheonEngine::Core::Assets
+namespace PantheonCore::Assets
 {
     class BundleAsset
     {

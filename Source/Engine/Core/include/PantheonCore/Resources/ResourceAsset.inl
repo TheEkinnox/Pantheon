@@ -3,7 +3,7 @@
 
 #include "ResourceAsset.h"
 
-namespace PantheonEngine::Core::Resources
+namespace PantheonCore::Resources
 {
     inline ResourceAsset::ResourceAsset(std::string type, std::string guid, const std::string& path)
         : Asset(std::move(type), std::move(guid), path)

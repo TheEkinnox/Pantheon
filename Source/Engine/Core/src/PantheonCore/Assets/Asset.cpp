@@ -5,7 +5,7 @@
 #include "PantheonCore/Debug/Logger.h"
 #include "PantheonCore/Utility/ByteOrder.inl"
 
-namespace PantheonEngine::Core::Assets
+namespace PantheonCore::Assets
 {
     Asset::Asset() : m_size(0)
     {

@@ -5,7 +5,7 @@
 #include "PantheonCore/Debug/Assertion.h"
 #include "PantheonCore/Resources/IResource.h"
 
-namespace PantheonEngine::Core::Resources
+namespace PantheonCore::Resources
 {
     template <typename T>
     constexpr void IResource::registerType(const std::string& name)

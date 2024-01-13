@@ -2,7 +2,7 @@
 #include "PantheonCore/Serialization/IByteSerializable.h"
 #include "PantheonCore/Utility/ByteOrder.h"
 
-namespace PantheonEngine::Core::Serialization
+namespace PantheonCore::Serialization
 {
     inline bool IByteSerializable::serializeWithSize(std::vector<char>& output) const
     {

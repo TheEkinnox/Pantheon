@@ -37,7 +37,7 @@ __declspec(dllimport) int __stdcall WideCharToMultiByte(unsigned int cp, unsigne
 #endif
 #endif
 
-namespace PantheonEngine::Core::Utility
+namespace PantheonCore::Utility
 {
     std::vector<std::string> readLines(const std::string& fileName)
     {

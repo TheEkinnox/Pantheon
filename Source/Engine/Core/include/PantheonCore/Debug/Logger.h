@@ -3,11 +3,11 @@
 #include <filesystem>
 
 #ifndef DEBUG_LOG
-#define DEBUG_LOG(format, ...) PantheonEngine::Core::Debug::Logger::getInstance().debugLog(__FILE__, __LINE__, format, false, ##__VA_ARGS__)
-#define DEBUG_LOG_ERROR(format, ...) PantheonEngine::Core::Debug::Logger::getInstance().debugLog(__FILE__, __LINE__, format, true, ##__VA_ARGS__)
+#define DEBUG_LOG(format, ...) PantheonCore::Debug::Logger::getInstance().debugLog(__FILE__, __LINE__, format, false, ##__VA_ARGS__)
+#define DEBUG_LOG_ERROR(format, ...) PantheonCore::Debug::Logger::getInstance().debugLog(__FILE__, __LINE__, format, true, ##__VA_ARGS__)
 #endif //DEBUG_LOG
 
-namespace PantheonEngine::Core::Debug
+namespace PantheonCore::Debug
 {
     class Logger
     {

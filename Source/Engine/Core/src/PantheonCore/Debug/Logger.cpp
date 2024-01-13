@@ -1,7 +1,7 @@
 #include "PantheonCore/Debug/Logger.h"
 #include "PantheonCore/Utility/macros.h"
 
-namespace PantheonEngine::Core::Debug
+namespace PantheonCore::Debug
 {
 #pragma region BINDINGS
 

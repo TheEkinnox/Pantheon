@@ -7,7 +7,7 @@
 
 #include <stdexcept>
 
-namespace PantheonEngine::Core::Utility
+namespace PantheonCore::Utility
 {
     uint64_t compressData(char* dest, const uint64_t destSize, const char* data, const uint64_t dataSize,
                           const ECompressionMode compressionMode)

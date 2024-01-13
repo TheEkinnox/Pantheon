@@ -2,7 +2,7 @@
 #include "PantheonCore/Assets/AssetBundle.h"
 #include "PantheonCore/Debug/Assertion.h"
 
-namespace PantheonEngine::Core::Assets
+namespace PantheonCore::Assets
 {
     template <typename T>
     bool AssetBundle::add(const T& asset)

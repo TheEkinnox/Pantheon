@@ -2,7 +2,7 @@
 #include "PantheonCore/Debug/Assertion.h"
 #include "PantheonCore/Entities/Component.h"
 
-namespace PantheonEngine::Core::Entities
+namespace PantheonCore::Entities
 {
     template <typename T>
     constexpr void Component::registerType(const std::string& name)

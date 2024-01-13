@@ -9,7 +9,7 @@
 
 #include "PantheonApp/Windowing/Window.h"
 
-namespace PantheonEngine::Application::Input
+namespace PantheonApp::Input
 {
     class InputManager
     {

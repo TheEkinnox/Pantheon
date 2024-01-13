@@ -4,7 +4,7 @@
 
 #include "PantheonCore/Eventing/Event.h"
 
-namespace PantheonEngine::Core::Eventing
+namespace PantheonCore::Eventing
 {
     class EventManager
     {

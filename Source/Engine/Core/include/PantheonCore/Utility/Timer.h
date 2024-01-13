@@ -3,7 +3,7 @@
 
 #include "PantheonCore/Eventing/Event.h"
 
-namespace PantheonEngine::Core::Utility
+namespace PantheonCore::Utility
 {
     class Timer
     {

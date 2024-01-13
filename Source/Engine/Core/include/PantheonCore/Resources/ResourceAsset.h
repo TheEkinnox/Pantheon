@@ -3,7 +3,7 @@
 
 #include "PantheonCore/Assets/Asset.h"
 
-namespace PantheonEngine::Core::Resources
+namespace PantheonCore::Resources
 {
     class ResourceAsset final : public Assets::Asset
     {

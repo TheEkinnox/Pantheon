@@ -2,7 +2,7 @@
 #include <rapidjson/document.h>
 #include <rapidjson/writer.h>
 
-namespace PantheonEngine::Core::Serialization
+namespace PantheonCore::Serialization
 {
     class IJsonSerializable
     {

@@ -2,7 +2,7 @@
 
 #include "PantheonApp/Core/Context.h"
 
-namespace PantheonEngine::Application::Core
+namespace PantheonApp::Core
 {
     class IApplication
     {

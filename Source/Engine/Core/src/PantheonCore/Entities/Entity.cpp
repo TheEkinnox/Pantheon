@@ -4,7 +4,7 @@
 
 using namespace LibMath;
 
-namespace PantheonEngine::Core::Entities
+namespace PantheonCore::Entities
 {
     Entity::Entity() : Entity(nullptr, {})
     {

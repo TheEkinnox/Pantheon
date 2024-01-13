@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-namespace PantheonEngine::Core::Utility
+namespace PantheonCore::Utility
 {
     /**
      * \brief Formats a string using the printf syntax

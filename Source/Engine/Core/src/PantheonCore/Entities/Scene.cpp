@@ -4,7 +4,7 @@
 
 #include "PantheonCore/Utility/ByteOrder.h"
 
-namespace PantheonEngine::Core::Entities
+namespace PantheonCore::Entities
 {
     void Scene::update()
     {

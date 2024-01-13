@@ -7,7 +7,7 @@
 #include "PantheonCore/Utility/ServiceLocator.h"
 #include "PantheonCore/Utility/macros.h"
 
-namespace PantheonEngine::Core::Utility
+namespace PantheonCore::Utility
 {
 #pragma region BINDINGS
 

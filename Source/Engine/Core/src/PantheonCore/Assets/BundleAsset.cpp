@@ -5,7 +5,7 @@
 #include "PantheonCore/Resources/ResourceAsset.h"
 #include "PantheonCore/Utility/utility.h"
 
-namespace PantheonEngine::Core::Assets
+namespace PantheonCore::Assets
 {
     BundleAsset::BundleAsset() : m_blockStart(0), m_blockSize(0)
     {

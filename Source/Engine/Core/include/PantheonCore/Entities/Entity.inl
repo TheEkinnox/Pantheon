@@ -3,7 +3,7 @@
 #include "PantheonCore/Entities/Component.h"
 #include "PantheonCore/Entities/Entity.h"
 
-namespace PantheonEngine::Core::Entities
+namespace PantheonCore::Entities
 {
     template <typename T, typename... Args>
     T& Entity::addComponent(Args&&... args)

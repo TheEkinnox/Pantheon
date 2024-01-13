@@ -5,7 +5,7 @@
 
 #include "PantheonCore/Debug/Logger.h"
 
-namespace PantheonEngine::Core::Resources
+namespace PantheonCore::Resources
 {
     ResourceManager::~ResourceManager()
     {

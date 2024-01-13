@@ -8,11 +8,11 @@
 #include "PantheonTest/Tests/ThreadPoolTest.h"
 #include "PantheonTest/Tests/WindowTest.h"
 
-using namespace PantheonEngine::Core::Utility;
-using namespace PantheonEngine::Core::Resources;
-using namespace PantheonEngine::Application::Core;
-using namespace PantheonEngine::Application::Input;
-using namespace PantheonEngine::Application::Windowing;
+using namespace PantheonCore::Utility;
+using namespace PantheonCore::Resources;
+using namespace PantheonApp::Core;
+using namespace PantheonApp::Input;
+using namespace PantheonApp::Windowing;
 
 namespace PantheonTest
 {

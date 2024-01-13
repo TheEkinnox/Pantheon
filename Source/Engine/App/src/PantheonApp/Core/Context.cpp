@@ -6,11 +6,11 @@
 #include "PantheonCore/Debug/Logger.h"
 #include "PantheonCore/Utility/ServiceLocator.h"
 
-using namespace PantheonEngine::Core::Debug;
-using namespace PantheonEngine::Core::Utility;
-using namespace PantheonEngine::Application::Core::Exceptions;
+using namespace PantheonCore::Debug;
+using namespace PantheonCore::Utility;
+using namespace PantheonApp::Core::Exceptions;
 
-namespace PantheonEngine::Application::Core
+namespace PantheonApp::Core
 {
     /**
      * \brief OpenGL debug output callback

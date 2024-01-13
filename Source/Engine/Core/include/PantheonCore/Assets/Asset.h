@@ -2,7 +2,7 @@
 #include <istream>
 #include <vector>
 
-namespace PantheonEngine::Core::Assets
+namespace PantheonCore::Assets
 {
     class Asset
     {

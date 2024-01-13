@@ -1,6 +1,6 @@
 #pragma once
 
-namespace PantheonEngine::Core::Utility
+namespace PantheonCore::Utility
 {
     enum class ECompressionMode : unsigned char
     {

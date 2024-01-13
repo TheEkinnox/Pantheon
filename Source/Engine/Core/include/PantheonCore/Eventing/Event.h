@@ -2,7 +2,7 @@
 
 #include <functional>
 
-namespace PantheonEngine::Core::Eventing
+namespace PantheonCore::Eventing
 {
     class IEvent
     {

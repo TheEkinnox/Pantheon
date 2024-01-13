@@ -2,7 +2,7 @@
 
 #include "PantheonCore/Utility/ServiceLocator.h"
 
-using namespace PantheonEngine::Core::Utility;
+using namespace PantheonCore::Utility;
 
 namespace PantheonTest
 {

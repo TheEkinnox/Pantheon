@@ -8,8 +8,8 @@
 #include <PantheonCore/Debug/Logger.h>
 #include <PantheonCore/Utility/ServiceLocator.h>
 
-using namespace PantheonEngine::Application::Input;
-using namespace PantheonEngine::Application::Windowing;
+using namespace PantheonApp::Input;
+using namespace PantheonApp::Windowing;
 
 namespace PantheonTest
 {

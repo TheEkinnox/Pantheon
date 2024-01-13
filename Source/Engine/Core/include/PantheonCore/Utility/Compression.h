@@ -16,7 +16,7 @@
 #define LZ4_COMPRESSION_LEVEL 6
 #endif
 
-namespace PantheonEngine::Core::Utility
+namespace PantheonCore::Utility
 {
     /**
      * \brief Compresses the given data block and writes the resulting compressed data

@@ -2,9 +2,9 @@
 
 #include "PantheonCore/Debug/Assertion.h"
 
-using namespace PantheonEngine::Core::Utility;
+using namespace PantheonCore::Utility;
 
-namespace PantheonEngine::Application::Core
+namespace PantheonApp::Core
 {
     void IApplication::run(const int argc, char* argv[])
     {

@@ -5,7 +5,7 @@
 #include <bit>
 #endif
 
-namespace PantheonEngine::Core::Utility
+namespace PantheonCore::Utility
 {
     constexpr uint16_t byteSwap16(const uint16_t value)
     {

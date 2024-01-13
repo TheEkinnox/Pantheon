@@ -1,6 +1,6 @@
 #pragma once
 
-namespace PantheonEngine::Application::Input
+namespace PantheonApp::Input
 {
 #undef MOD_SHIFT
 #undef MOD_CONTROL

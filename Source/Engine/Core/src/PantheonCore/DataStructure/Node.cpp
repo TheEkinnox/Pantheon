@@ -1,6 +1,6 @@
 #include "PantheonCore/DataStructure/Graph.h"
 
-namespace PantheonEngine::Core::DataStructure
+namespace PantheonCore::DataStructure
 {
     Node::Node(Node* parent)
         : m_parent(parent)

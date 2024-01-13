@@ -4,7 +4,7 @@
 
 #include "PantheonCore/Utility/utility.h"
 
-namespace PantheonEngine::Core::Utility
+namespace PantheonCore::Utility
 {
     template <typename... Args>
     std::string formatString(const std::string& format, Args&&... args)

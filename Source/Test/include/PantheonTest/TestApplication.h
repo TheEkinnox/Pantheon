@@ -10,7 +10,7 @@
 
 namespace PantheonTest
 {
-    class TestApplication final : public PantheonEngine::Application::Core::IApplication
+    class TestApplication final : public PantheonApp::Core::IApplication
     {
     public:
         TestApplication();
@@ -28,10 +28,10 @@ namespace PantheonTest
         bool isRunning() const override;
 
     private:
-        std::unique_ptr<PantheonEngine::Application::Windowing::Window>   m_window;
-        std::unique_ptr<PantheonEngine::Application::Input::InputManager> m_inputManager;
-        std::unique_ptr<PantheonEngine::Core::Utility::ThreadPool>        m_threadPool;
-        std::unique_ptr<PantheonEngine::Core::Resources::ResourceManager> m_resourceManager;
+        std::unique_ptr<PantheonApp::Windowing::Window>           m_window;
+        std::unique_ptr<PantheonApp::Input::InputManager>         m_inputManager;
+        std::unique_ptr<PantheonCore::Utility::ThreadPool>        m_threadPool;
+        std::unique_ptr<PantheonCore::Resources::ResourceManager> m_resourceManager;
 
         std::vector<std::shared_ptr<ITest>> m_tests;
 

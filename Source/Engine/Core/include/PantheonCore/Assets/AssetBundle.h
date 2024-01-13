@@ -6,7 +6,7 @@
 #include "PantheonCore/Utility/ECompressionMode.h"
 #include "PantheonCore/Utility/macros.h"
 
-namespace PantheonEngine::Core::Assets
+namespace PantheonCore::Assets
 {
     class Asset;
 
