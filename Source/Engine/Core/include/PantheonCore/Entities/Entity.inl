@@ -18,8 +18,6 @@ namespace PantheonCore::Entities
     template <typename T>
     void Entity::removeComponent()
     {
-        static_assert(std::is_same_v<Component, T> || std::is_base_of_v<Component, T>);
-
         if (const T* firstComponent = getComponent<T>())
             removeComponent(firstComponent->getId());
     }
@@ -27,8 +25,6 @@ namespace PantheonCore::Entities
     template <typename T>
     T* Entity::getComponent()
     {
-        static_assert(std::is_same_v<Component, T> || std::is_base_of_v<Component, T>);
-
         for (const auto& component : m_components)
         {
             if (typeid(component.get()) == typeid(T*) || dynamic_cast<T*>(component.get()) != nullptr)
@@ -41,8 +37,6 @@ namespace PantheonCore::Entities
     template <typename T>
     const T* Entity::getComponent() const
     {
-        static_assert(std::is_same_v<Component, T> || std::is_base_of_v<Component, T>);
-
         for (const auto& component : m_components)
         {
             if (typeid(component.get()) == typeid(T*) || dynamic_cast<const T*>(component.get()) != nullptr)
@@ -55,8 +49,6 @@ namespace PantheonCore::Entities
     template <typename T>
     T* Entity::getComponent(const Component::ComponentId id)
     {
-        static_assert(std::is_same_v<Component, T> || std::is_base_of_v<Component, T>);
-
         for (const auto& component : m_components)
         {
             if (id == component->getId() && (typeid(component.get()) == typeid(T*) || dynamic_cast<T*>(component.get()) != nullptr))
@@ -69,8 +61,6 @@ namespace PantheonCore::Entities
     template <typename T>
     const T* Entity::getComponent(const Component::ComponentId id) const
     {
-        static_assert(std::is_same_v<Component, T> || std::is_base_of_v<Component, T>);
-
         for (const auto& component : m_components)
         {
             if (id == component->getId() &&
@@ -84,8 +74,6 @@ namespace PantheonCore::Entities
     template <typename T>
     std::vector<std::shared_ptr<T>> Entity::getComponents()
     {
-        static_assert(std::is_same_v<Component, T> || std::is_base_of_v<Component, T>);
-
         std::vector<std::shared_ptr<T>> components;
 
         for (const auto& component : m_components)
@@ -100,8 +88,6 @@ namespace PantheonCore::Entities
     template <typename T>
     std::vector<std::shared_ptr<const T>> Entity::getComponents() const
     {
-        static_assert(std::is_same_v<Component, T> || std::is_base_of_v<Component, T>);
-
         std::vector<std::shared_ptr<const T>> components;
 
         for (const auto& component : m_components)
