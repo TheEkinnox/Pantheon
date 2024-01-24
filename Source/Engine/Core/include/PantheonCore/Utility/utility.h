@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -23,6 +24,27 @@ namespace PantheonCore::Utility
      * \return A vector containing the sub-strings
      */
     std::vector<std::string> splitString(const std::string& str, const char* delimiter, bool includeEmpty);
+
+    /**
+     * \brief Trims the beginning of the given string using the given compare func
+     * \param str The string to trim
+     * \param compareFunc The function used to check if a character should be trimmed
+     */
+    inline void trimStringStart(std::string& str, const std::function<bool(char)>& compareFunc = &isspace);
+
+    /**
+     * \brief Trims the end of the given string using the given compare func
+     * \param str The string to trim
+     * \param compareFunc The function used to check if a character should be trimmed
+     */
+    inline void trimStringEnd(std::string& str, const std::function<bool(char)>& compareFunc = &isspace);
+
+    /**
+     * \brief Trims the given string using the given compare func
+     * \param str The string to trim
+     * \param compareFunc The function used to check if a character should be trimmed
+     */
+    inline void trimString(std::string& str, const std::function<bool(char)>& compareFunc = &isspace);
 
     /**
      * \brief Extracts the indicated number of bits from the given packed data

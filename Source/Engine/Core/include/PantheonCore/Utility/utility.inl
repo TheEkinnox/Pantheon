@@ -1,8 +1,9 @@
 #pragma once
 
-#include <stdexcept>
-
 #include "PantheonCore/Utility/utility.h"
+
+#include <algorithm>
+#include <stdexcept>
 
 namespace PantheonCore::Utility
 {
@@ -32,6 +33,22 @@ namespace PantheonCore::Utility
 
             return message;
         }
+    }
+
+    inline void trimStringStart(std::string& str, const std::function<bool(char)>& compareFunc)
+    {
+        str.erase(str.begin(), std::ranges::find_if_not(str, compareFunc));
+    }
+
+    inline void trimStringEnd(std::string& str, const std::function<bool(char)>& compareFunc)
+    {
+        str.erase(std::find_if_not(str.rbegin(), str.rend(), compareFunc).base(), str.end());
+    }
+
+    inline void trimString(std::string& str, const std::function<bool(char)>& compareFunc)
+    {
+        trimStringEnd(str, compareFunc);
+        trimStringStart(str, compareFunc);
     }
 
     constexpr uint64_t readBits(const uint64_t data, const int bitCount, const int offset)
