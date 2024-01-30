@@ -17,11 +17,7 @@
 
 #else
 
-#define ASSERT(condition, ...) if (!(condition))    \
-{                                                   \
-    __VA_OPT__(DEBUG_LOG_ERROR(__VA_ARGS__);)       \
-    abort();                                        \
-} ((void)0)
+#define ASSERT(condition, ...) ((void)0)
 
 #endif // _DEBUG || PTH_VERBOSE_LOG
 #endif // !ASSERT
@@ -43,15 +39,10 @@
 
 #else
 
-#define CHECK(condition, ...) [&]() -> bool              \
-{                                                       \
-    if (!(condition))                                   \
-    {                                                   \
-        __VA_OPT__(DEBUG_LOG_ERROR(__VA_ARGS__);)       \
-        return false;                                   \
-    }                                                   \
-    return true;                                        \
-}()
+#define CHECK(condition, ...) [](const bool b) -> bool \
+{                                                      \
+    return b;                                          \
+}(condition)
 
 #endif // _DEBUG || PTH_VERBOSE_LOG
-#endif // !ASSERT
+#endif // !CHECK
