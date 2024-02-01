@@ -1,7 +1,7 @@
 #include "PantheonApp/Windowing/Window.h"
 #include "PantheonCore/Debug/Logger.h"
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
 using namespace PantheonApp::Input;
@@ -9,8 +9,8 @@ using namespace PantheonApp::Windowing::Exceptions;
 
 namespace PantheonApp::Windowing
 {
-    Window::Window(const Core::Context& context, const WindowSettings& settings) :
-        m_title(settings.m_title),
+    Window::Window(const Core::Context& context, const WindowSettings& settings)
+        : m_title(settings.m_title),
         m_size({ settings.m_width, settings.m_height }),
         m_minSize({ settings.m_minWidth, settings.m_minHeight }),
         m_maxSize({ settings.m_maxWidth, settings.m_maxHeight }),
@@ -59,8 +59,8 @@ namespace PantheonApp::Windowing
     {
         glfwMakeContextCurrent(m_glfwWindow);
 
-        // Load GLAD's OpenGL function pointers
-        if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
+        // Load GLAD's OpenGL function pointers (TODO: Handle this in the RHI)
+        if (!gladLoadGL(glfwGetProcAddress))
         {
             DEBUG_LOG_ERROR("Failed to initialize GLAD");
             throw std::runtime_error("Failed to initialize GLAD");

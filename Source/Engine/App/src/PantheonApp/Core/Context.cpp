@@ -1,6 +1,6 @@
 #include "PantheonApp/Core/Context.h"
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
 #include "PantheonCore/Debug/Logger.h"
@@ -23,11 +23,11 @@ namespace PantheonApp::Core
      * \param message The debug message
      * \param userParam Addition user parameters
      */
-    void APIENTRY glDebugOutput(uint32_t source, uint32_t type, uint32_t id, uint32_t severity, int length,
-                                const char* message, const void* userParam);
+    void GLAPIENTRY glDebugOutput(uint32_t source, uint32_t type, uint32_t id, uint32_t severity, int length, const char* message,
+                                  const void* userParam);
 
-    Context::Context(const bool useVsync, const int sampleCount) :
-        m_timer(std::make_unique<Timer>()),
+    Context::Context(const bool useVsync, const int sampleCount)
+        : m_timer(std::make_unique<Timer>()),
         m_useVsync(useVsync)
     {
         // Initialize and configure glfw
@@ -94,9 +94,8 @@ namespace PantheonApp::Core
         }
     }
 
-    void APIENTRY glDebugOutput(const uint32_t source, const uint32_t type,
-                                const uint32_t id, const uint32_t severity, const int,
-                                const char* message, const void*)
+    void GLAPIENTRY glDebugOutput(const uint32_t source, const uint32_t type, const uint32_t id, const uint32_t severity, const int,
+                                  const char*    message, const void*)
     {
         // ignore non-significant error/warning codes
         // NOTE: Here there are the details with a sample output:
