@@ -6,13 +6,6 @@
 #include "PantheonCore/Debug/Logger.h"
 #include "PantheonCore/Utility/utility.h"
 
-#ifdef _WINDOWS
-#define WIN32_LEAN_AND_MEAN	// Disables unnecessary windows features
-#define NOMINMAX			// Avoids conflicts with LibMath's min and max
-#undef APIENTRY				// Avoids conflicts with some other libs (e.g: GLAD)
-#include <Windows.h>
-#endif
-
 namespace PantheonCore::Debug
 {
     inline void Logger::setFile(const std::filesystem::path& filePath)
@@ -55,9 +48,5 @@ namespace PantheonCore::Debug
 #endif // _DEBUG || PTH_VERBOSE_LOG
 
         print(message.c_str(), isError);
-
-#ifdef _WINDOWS_
-        OutputDebugStringA(message.c_str());
-#endif
     }
 }

@@ -2,6 +2,9 @@
 
 #ifdef _DEBUG
     #if defined(_WIN32)
+        #define WIN32_LEAN_AND_MEAN	// Disables unnecessary windows features
+        #define NOMINMAX			// Avoids conflicts with LibMath's min and max
+        #include <windows.h>
         #include <intrin.h>
 
         inline bool isDebuggerPresent()
