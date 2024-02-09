@@ -28,8 +28,7 @@ namespace PantheonCore::Utility
      * \param compressionMode The compression algorithm to use
      * \return The resulting compressed data's size on success, 0 otherwise.
      */
-    uint64_t compressData(char* dest, uint64_t destSize, const char* data, uint64_t dataSize,
-                          ECompressionMode compressionMode);
+    uint64_t compressData(char* dest, uint64_t destSize, const char* data, uint64_t dataSize, ECompressionMode compressionMode);
 
     /**
      * \brief Decompresses the given data block and writes the resulting decompressed data
@@ -41,6 +40,5 @@ namespace PantheonCore::Utility
      * \param compressionMode The compression algorithm used to compress the data
      * \return The number of bytes decompressed into the destination buffer on success, 0 otherwise.
      */
-    uint64_t decompressData(char* dest, uint64_t destSize, const char* data, uint64_t dataSize,
-                            ECompressionMode compressionMode);
+    uint64_t decompressData(char* dest, uint64_t destSize, const char* data, uint64_t dataSize, ECompressionMode compressionMode);
 }
