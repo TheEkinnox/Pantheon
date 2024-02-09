@@ -3,7 +3,7 @@
 #include "PantheonCore/Utility/utility.h"
 
 #include <algorithm>
-#include <stdexcept>
+#include <cassert>
 
 namespace PantheonCore::Utility
 {
@@ -21,8 +21,7 @@ namespace PantheonCore::Utility
             // get the formatted text's size
             const int bufferSize = std::snprintf(nullptr, 0, format.c_str(), std::forward<Args>(args)...) + 1;
 
-            if (bufferSize <= 0)
-                throw std::runtime_error("Unable to format string.");
+            assert(bufferSize > 0 && "Unable to format string.");
 
             // Create a buffer of the computed size
             std::string message;

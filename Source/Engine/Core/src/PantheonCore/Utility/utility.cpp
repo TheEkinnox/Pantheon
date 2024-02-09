@@ -17,7 +17,7 @@ namespace PantheonCore::Utility
         }
 
         size_t start = 0;
-        size_t end = str.find(delimiter, start);
+        size_t end   = str.find(delimiter, start);
 
         while (start < str.size())
         {
@@ -30,7 +30,7 @@ namespace PantheonCore::Utility
                 break;
 
             start = end + strlen(delimiter);
-            end = str.find(delimiter, start);
+            end   = str.find(delimiter, start);
         }
 
         return result;
@@ -68,7 +68,7 @@ namespace PantheonCore::Utility
     {
         const uint64_t initialValue = static_cast<uint64_t>(size);
 
-        constexpr int         unitsCount = 5;
+        constexpr int         unitsCount        = 5;
         constexpr const char* units[unitsCount] = { "B", "KB", "MB", "GB", "TB" };
 
         int unitIndex = 0;
