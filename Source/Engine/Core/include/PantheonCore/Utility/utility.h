@@ -49,6 +49,32 @@ namespace PantheonCore::Utility
     void trimString(std::string& str, CompareFunc compareFunc = &isspace);
 
     /**
+     * \brief Converts a string to upper case
+     * \param str The string to convert to upper case
+     */
+    void toUpperInPlace(std::string& str);
+
+    /**
+     * \brief Converts a string to lower case
+     * \param str The string to convert to lower case
+     */
+    void toLowerInPlace(std::string& str);
+
+    /**
+     * \brief Converts a string to upper case
+     * \param str The string to convert to upper case
+     * \return The string converted to upper case
+     */
+    std::string toUpper(std::string str);
+
+    /**
+     * \brief Converts a string to lower case
+     * \param str The string to convert to lower case
+     * \return The string converted to lower case
+     */
+    std::string toLower(std::string str);
+
+    /**
      * \brief Extracts the indicated number of bits from the given packed data
      * \param data The packed data
      * \param bitCount The number of bits to read

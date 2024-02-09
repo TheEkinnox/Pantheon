@@ -36,6 +36,34 @@ namespace PantheonCore::Utility
         return result;
     }
 
+    void toUpperInPlace(std::string& str)
+    {
+        std::ranges::transform(str, str.begin(), [](const char c)
+        {
+            return static_cast<char>(std::toupper(c));
+        });
+    }
+
+    void toLowerInPlace(std::string& str)
+    {
+        std::ranges::transform(str, str.begin(), [](const char c)
+        {
+            return static_cast<char>(std::tolower(c));
+        });
+    }
+
+    std::string toUpper(std::string str)
+    {
+        toUpperInPlace(str);
+        return str;
+    }
+
+    std::string toLower(std::string str)
+    {
+        toLowerInPlace(str);
+        return str;
+    }
+
     std::string sizeToStr(double size, const bool addInitialValue)
     {
         const uint64_t initialValue = static_cast<uint64_t>(size);
