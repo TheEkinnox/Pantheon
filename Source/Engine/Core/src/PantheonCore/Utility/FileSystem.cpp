@@ -4,10 +4,14 @@
 
 // Platform specific defines to handle getApplicationDirectory()
 #if defined(_WIN32)
-__declspec(dllimport) unsigned long __stdcall GetModuleFileNameA(void* hModule, void* lpFilename, unsigned long nSize);
-__declspec(dllimport) unsigned long __stdcall GetModuleFileNameW(void* hModule, void* lpFilename, unsigned long nSize);
-__declspec(dllimport) int __stdcall WideCharToMultiByte(unsigned int cp, unsigned long flags, void* widestr, int cchwide, void* str,
-                                                        int cbmb, void* defchar, int* used_default);
+extern "C"
+{
+    __declspec(dllimport) unsigned long __stdcall GetModuleFileNameA(void* hModule, void* lpFilename, unsigned long nSize);
+    __declspec(dllimport) unsigned long __stdcall GetModuleFileNameW(void* hModule, void* lpFilename, unsigned long nSize);
+    __declspec(dllimport) int __stdcall WideCharToMultiByte(unsigned int cp, unsigned long flags, void* widestr, int cchwide,
+                                                            void* str,
+                                                            int cbmb, void* defchar, int* used_default);
+}
 #elif defined(__linux__)
 #include <unistd.h>
 #elif defined(__APPLE__)
@@ -19,6 +23,7 @@ __declspec(dllimport) int __stdcall WideCharToMultiByte(unsigned int cp, unsigne
 #include <direct.h>     // Required for: _getcwd(), _chdir()
 #define GETCWD _getcwd  // NOTE: MSDN recommends not to use getcwd(), chdir()
 #define CHDIR _chdir
+#define MAX_PATH 260
 #else
 #include <unistd.h>     // Required for: getch(), chdir() (POSIX), access()
 #define GETCWD getcwd
@@ -90,7 +95,6 @@ namespace PantheonCore::Utility
 
 #ifdef __cpp_lib_filesystem
         const auto tmp = std::filesystem::canonical(len > 0 ? appDir : "./").remove_filename();
-        // const auto tmp = std::filesystem::canonical(len > 0 ? "./" : appDir).remove_filename();
         strcpy_s(appDir, MAX_PATH_LENGTH, tmp.string().c_str());
 #else
         if (len > 0)
