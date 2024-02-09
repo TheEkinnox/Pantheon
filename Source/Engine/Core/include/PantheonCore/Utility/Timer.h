@@ -24,7 +24,7 @@ namespace PantheonCore::Utility
         /**
          * \brief Creates a move copy of the given timer
          */
-        Timer(Timer&&) = default;
+        Timer(Timer&&) noexcept = default;
 
         /**
          * \brief Creates a timer with the given time scale
@@ -40,7 +40,7 @@ namespace PantheonCore::Utility
         /**
          * \brief Creates a move copy of the given timer
          */
-        Timer& operator=(Timer&&) = default;
+        Timer& operator=(Timer&&) noexcept = default;
 
         /**
          * \brief Destroys the timer
@@ -132,17 +132,17 @@ namespace PantheonCore::Utility
         using clock = std::chrono::steady_clock;
 
         clock::time_point m_currentTime = clock::now();
-        clock::time_point m_lastUpdate = clock::now();
+        clock::time_point m_lastUpdate  = clock::now();
 
         uint64_t m_frameCount = 0;
 
-        float m_time = 0;
-        float m_fixedTime = 0;
-        float m_unscaledTime = 0;
-        float m_deltaTime = 0;
+        float m_time           = 0;
+        float m_fixedTime      = 0;
+        float m_unscaledTime   = 0;
+        float m_deltaTime      = 0;
         float m_fixedDeltaTime = .02f;
-        float m_maxDeltaTime = .25f;
-        float m_timeScale = 1.f;
+        float m_maxDeltaTime   = .25f;
+        float m_timeScale      = 1.f;
 
         bool m_isFirstUpdate = true;
     };
