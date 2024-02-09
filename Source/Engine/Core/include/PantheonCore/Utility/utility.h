@@ -1,6 +1,5 @@
 #pragma once
 
-#include <functional>
 #include <string>
 #include <vector>
 
@@ -30,21 +29,24 @@ namespace PantheonCore::Utility
      * \param str The string to trim
      * \param compareFunc The function used to check if a character should be trimmed
      */
-    inline void trimStringStart(std::string& str, const std::function<bool(char)>& compareFunc = &isspace);
+    template <class CompareFunc>
+    void trimStringStart(std::string& str, CompareFunc compareFunc = &isspace);
 
     /**
      * \brief Trims the end of the given string using the given compare func
      * \param str The string to trim
      * \param compareFunc The function used to check if a character should be trimmed
      */
-    inline void trimStringEnd(std::string& str, const std::function<bool(char)>& compareFunc = &isspace);
+    template <class CompareFunc>
+    void trimStringEnd(std::string& str, CompareFunc compareFunc = &isspace);
 
     /**
      * \brief Trims the given string using the given compare func
      * \param str The string to trim
      * \param compareFunc The function used to check if a character should be trimmed
      */
-    inline void trimString(std::string& str, const std::function<bool(char)>& compareFunc = &isspace);
+    template <class CompareFunc>
+    void trimString(std::string& str, CompareFunc compareFunc = &isspace);
 
     /**
      * \brief Extracts the indicated number of bits from the given packed data
