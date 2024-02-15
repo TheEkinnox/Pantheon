@@ -66,4 +66,6 @@ add_test(
 	COMMAND $<TARGET_FILE:${TARGET_NAME}>
 )
 
+copy_resources(${TARGET_NAME})
+
 set(TEST_NAME ${TARGET_NAME} PARENT_SCOPE)
