@@ -16,8 +16,9 @@ namespace PantheonCore::Eventing
     template <class... ArgTypes>
     void Event<ArgTypes...>::unsubscribe(ListenerId listener)
     {
-        if (m_actions.contains(listener))
-            m_actions.erase(listener);
+        const auto it = m_actions.find(listener);
+        if (it != m_actions.end())
+            m_actions.erase(it);
     }
 
     template <class... ArgTypes>
