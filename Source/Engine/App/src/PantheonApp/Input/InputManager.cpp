@@ -1,15 +1,14 @@
 #include "PantheonApp/Input/InputManager.h"
 
-#include <GLFW/glfw3.h>
-#include <functional>
-
 #include "PantheonApp/Input/EKeyState.h"
 #include "PantheonApp/Windowing/Window.h"
 
-#include "PantheonCore/Utility/ServiceLocator.h"
-#include "PantheonCore/Utility/macros.h"
+#include <PantheonCore/Utility/ServiceLocator.h>
+#include <PantheonCore/Utility/macros.h>
 
-using namespace PantheonApp::Windowing::Exceptions;
+#include <functional>
+#include <GLFW/glfw3.h>
+
 using namespace PantheonApp::Windowing;
 using namespace PantheonCore::Utility;
 
@@ -21,6 +20,7 @@ namespace PantheonApp::Input
         PANTHEON_API void InputManager_getMousePosition(double& x, double& y)
         {
             const auto [mouseX, mouseY] = PTH_SERVICE(InputManager).getMousePosition();
+
             x = mouseX;
             y = mouseY;
         }
@@ -28,6 +28,7 @@ namespace PantheonApp::Input
         PANTHEON_API void InputManager_getMouseDelta(double& x, double& y)
         {
             const auto [mouseX, mouseY] = PTH_SERVICE(InputManager).getMousePosition();
+
             x = mouseX;
             y = mouseY;
         }
@@ -63,14 +64,21 @@ namespace PantheonApp::Input
     }
 #pragma endregion
 
-    InputManager::InputManager(Window& window) :
-        m_window(window), m_isFirstMouse(true)
+    InputManager::InputManager(Window& window)
+        : m_window(window), m_isFirstMouse(true)
     {
-        using namespace std::placeholders;
+        const auto keyDelegate = [this](const EKey key, const int scanCode, const EKeyState state, const EInputModifier mods)
+        {
+            this->keyCallback(key, scanCode, state, mods);
+        };
 
-        m_keyCallbackId = m_window.m_keyEvent.subscribe(std::bind(&InputManager::keyCallback, this, _1, _2, _3, _4));
-        m_mouseButtonCallbackId = m_window.m_mouseButtonEvent.subscribe(std::bind(&InputManager::mouseButtonCallback,
-            this, _1, _2, _3));
+        const auto mouseDelegate = [this](const EMouseButton button, const EMouseButtonState state, const EInputModifier mods)
+        {
+            this->mouseButtonCallback(button, state, mods);
+        };
+
+        m_keyCallbackId         = m_window.m_keyEvent.subscribe(keyDelegate);
+        m_mouseButtonCallbackId = m_window.m_mouseButtonEvent.subscribe(mouseDelegate);
     }
 
     InputManager::~InputManager()
@@ -210,7 +218,7 @@ namespace PantheonApp::Input
 
     void InputManager::keyCallback(const EKey key, const int scanCode, const EKeyState state, EInputModifier)
     {
-        m_keyInfos[key] = { state, m_currentFrame };
+        m_keyInfos[key]          = { state, m_currentFrame };
         m_scanCodeInfo[scanCode] = { state, m_currentFrame };
     }
 
