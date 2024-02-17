@@ -1,22 +1,27 @@
 ﻿#pragma once
+#include "PantheonCore/Serialization/IByteSerializable.h"
 
 #include <string>
 #include <unordered_map>
 
-#include "PantheonCore/Serialization/IByteSerializable.h"
-
-#define REGISTER_RESOURCE_TYPE(Name, Type)                                                      \
-static uint8_t reg_##Name = (PantheonCore::Resources::IResource::registerType<Type>(#Name), 0);
+#define REGISTER_RESOURCE_TYPE(Name, Type)                                                        \
+static uint8_t resReg_##Name = (PantheonCore::Resources::IResource::registerType<Type>(#Name), 0);
 
 #define REGISTERED_RESOURCE_BODY(Type)                                        \
 public:                                                                       \
-inline std::string Type::getTypeName() const                                  \
+inline const std::string& Type::getTypeName() const                           \
 {                                                                             \
     return PantheonCore::Resources::IResource::getRegisteredTypeName<Type>(); \
-}
+}                                                                             \
+private:
 
 namespace PantheonCore::Resources
 {
+    class IResource;
+
+    template <typename T, typename... Args>
+    T* createResource(Args&&... args);
+
     class IResource : public Serialization::IByteSerializable
     {
     public:
@@ -28,6 +33,7 @@ namespace PantheonCore::Resources
         /**
          * \brief Registers the given resource type (required for the create function)
          * \tparam T The Resource type to register
+         * \param name The name associated to the registered type
          */
         template <typename T>
         static constexpr void registerType(const std::string& name);
@@ -38,7 +44,7 @@ namespace PantheonCore::Resources
          * \return The registered name for the given resource type
          */
         template <typename T>
-        static std::string getRegisteredTypeName();
+        static const std::string& getRegisteredTypeName();
 
         /**
          * \brief Tries to allocate a resource of the given registered resource type.
@@ -51,7 +57,7 @@ namespace PantheonCore::Resources
          * \brief Gets the resource's registered type name
          * \return The resource's registered type name
          */
-        virtual std::string getTypeName() const = 0;
+        virtual const std::string& getTypeName() const = 0;
 
         /**
          * \brief Tries to load the resource from the given file
@@ -64,13 +70,10 @@ namespace PantheonCore::Resources
          * \brief Initializes the resource
          * \return True on success. False otherwise.
          */
-        virtual bool init()
-        {
-            return true;
-        }
+        virtual bool init() = 0;
 
     private:
-        using AllocFunc = IResource* (*)();
+        using AllocFunc = decltype(&createResource<IResource>);
         using TypeMap = std::unordered_map<std::string, AllocFunc>;
         using TypeNameMap = std::unordered_map<size_t, std::string>;
 

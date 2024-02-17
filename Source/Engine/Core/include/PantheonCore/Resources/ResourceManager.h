@@ -1,9 +1,8 @@
 #pragma once
-#include <filesystem>
+#include "PantheonCore/Assets/AssetBundle.h"
+
 #include <string>
 #include <unordered_map>
-
-#include "PantheonCore/Assets/AssetBundle.h"
 
 namespace PantheonCore::Resources
 {
@@ -117,6 +116,13 @@ namespace PantheonCore::Resources
         IResource* getOrCreate(const std::string& type, const std::string& key, const std::string& path);
 
         /**
+         * \brief Reads the content of the resource at the given path
+         * \param keyOrPath The key or path of the resource file to read
+         * \return The resource's file content
+         */
+        std::vector<char> readFile(const std::string& keyOrPath) const;
+
+        /**
          * \brief Removes the resource with the given key from the manager
          * \param key The resource's key
          */
@@ -152,6 +158,13 @@ namespace PantheonCore::Resources
          * \return True on success. False otherwise.
          */
         bool loadResource(IResource* resource, const std::string& key, const std::string& path);
+
+        /**
+         * \brief Gets the path of a resource from its key or path
+         * \param keyOrPath The resource's key or path
+         * \return The resource's path
+         */
+        std::string getResourcePath(const std::string& keyOrPath) const;
     };
 }
 

@@ -1,9 +1,11 @@
 #include "PantheonCore/Resources/ResourceManager.h"
+
+#include "PantheonCore/Debug/Logger.h"
 #include "PantheonCore/Resources/IResource.h"
 
 #include <ranges>
 
-#include "PantheonCore/Debug/Logger.h"
+using namespace PantheonCore::Assets;
 
 namespace PantheonCore::Resources
 {
@@ -37,7 +39,7 @@ namespace PantheonCore::Resources
         if (CHECK(!path.empty(), "Unable to include bundle - empty path"))
             return false;
 
-        Assets::AssetBundle& assetBundle = m_bundles[path];
+        AssetBundle& assetBundle = m_bundles[path];
 
         if (!assetBundle.load(path))
         {
@@ -80,7 +82,7 @@ namespace PantheonCore::Resources
         if (resource == nullptr || (shouldLoad && (!loadResource(resource, key, path))))
             return nullptr;
 
-        m_resources[key] = resource;
+        m_resources[key]     = resource;
         m_resourceKeys[path] = key;
 
         return resource;
@@ -96,8 +98,49 @@ namespace PantheonCore::Resources
         return resource ? resource : create(type, key, path, true);
     }
 
+    std::vector<char> ResourceManager::readFile(const std::string& keyOrPath) const
+    {
+        std::vector<char> resourceData;
+
+        for (auto& bundle : m_bundles | std::views::values)
+        {
+            resourceData = bundle.getAssetWithGuid(keyOrPath);
+
+            if (resourceData.empty())
+                resourceData = bundle.getAssetAtPath(keyOrPath);
+
+            if (resourceData.empty())
+                continue;
+
+            return resourceData;
+        }
+
+        std::ifstream fileStream(getResourcePath(keyOrPath), std::ios::binary | std::ios::ate);
+
+        if (!fileStream.is_open())
+            return {};
+
+        const std::ifstream::pos_type length = fileStream.tellg();
+        fileStream.seekg(0, std::ios::beg);
+
+        resourceData.resize(length);
+        fileStream.read(resourceData.data(), length);
+        fileStream.close();
+
+        return resourceData;
+    }
+
     void ResourceManager::remove(const std::string& key)
     {
+        {
+            const std::string resourcePath = getResourcePath(key);
+
+            const auto it = m_resourceKeys.find(resourcePath);
+
+            if (it != m_resourceKeys.end())
+                m_resourceKeys.erase(it);
+        }
+
         const auto it = m_resources.find(key);
 
         if (it == m_resources.end())
@@ -126,7 +169,7 @@ namespace PantheonCore::Resources
         m_resources.clear();
     }
 
-    void ResourceManager::importBundle(const Assets::AssetBundle& bundle)
+    void ResourceManager::importBundle(const AssetBundle& bundle)
     {
         const auto assets = bundle.getAssets();
 
@@ -184,5 +227,29 @@ namespace PantheonCore::Resources
         }
 
         return resource->load(path) && resource->init();
+    }
+
+    std::string ResourceManager::getResourcePath(const std::string& keyOrPath) const
+    {
+        const auto it = m_resourceKeys.find(keyOrPath);
+
+        if (it == m_resourceKeys.end())
+            for (const auto& [path, key] : m_resourceKeys)
+            {
+                if (key != keyOrPath)
+                    continue;
+
+                return path;
+            }
+
+        for (const AssetBundle& bundle : m_bundles | std::views::values)
+        {
+            const char* path = bundle.getAssetPathFromGuid(keyOrPath);
+
+            if (path != nullptr)
+                return path;
+        }
+
+        return keyOrPath;
     }
 }

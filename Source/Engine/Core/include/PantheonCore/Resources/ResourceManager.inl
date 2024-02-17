@@ -15,7 +15,7 @@ namespace PantheonCore::Resources
             m_resources[key] = nullptr;
         }
 
-        T* ptr = new T();
+        T* ptr = createResource<T>();
 
         if (!loadResource(ptr, key, path))
         {
@@ -24,7 +24,7 @@ namespace PantheonCore::Resources
             return nullptr;
         }
 
-        m_resources[key] = ptr;
+        m_resources[key]     = ptr;
         m_resourceKeys[path] = key;
 
         return ptr;
