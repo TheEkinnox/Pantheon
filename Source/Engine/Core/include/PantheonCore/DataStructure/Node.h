@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include <vector>
 
 namespace PantheonCore::DataStructure
@@ -11,11 +12,11 @@ namespace PantheonCore::DataStructure
 
         Node() = default;
         explicit Node(Node* parent);
-        Node(const Node& other) = default;
+        Node(const Node& other)     = default;
         Node(Node&& other) noexcept = default;
         virtual ~Node();
 
-        Node& operator=(const Node& other) = default;
+        Node& operator=(const Node& other)     = default;
         Node& operator=(Node&& other) noexcept = default;
 
         /**
