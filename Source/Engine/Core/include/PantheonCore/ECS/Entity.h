@@ -66,6 +66,42 @@ namespace PantheonCore::ECS
         template <typename T>
         std::vector<const T*> getComponents() const;
 
+        template <typename T>
+        T* getComponentInParent(bool includeInactive);
+
+        template <typename T>
+        const T* getComponentInParent(bool includeInactive) const;
+
+        template <typename T>
+        T* getComponentInParent(Component::ComponentId id, bool includeInactive);
+
+        template <typename T>
+        const T* getComponentInParent(Component::ComponentId id, bool includeInactive) const;
+
+        template <typename T>
+        std::vector<T*> getComponentsInParent(bool includeInactive);
+
+        template <typename T>
+        std::vector<const T*> getComponentsInParent(bool includeInactive) const;
+
+        template <typename T>
+        T* getComponentInChildren(bool includeInactive);
+
+        template <typename T>
+        const T* getComponentInChildren(bool includeInactive) const;
+
+        template <typename T>
+        T* getComponentInChildren(Component::ComponentId id, bool includeInactive);
+
+        template <typename T>
+        const T* getComponentInChildren(Component::ComponentId id, bool includeInactive) const;
+
+        template <typename T>
+        std::vector<T*> getComponentsInChildren(bool includeInactive);
+
+        template <typename T>
+        std::vector<const T*> getComponentsInChildren(bool includeInactive) const;
+
         /**
          * \brief Updates the entity's components and children
          */

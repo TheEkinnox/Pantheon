@@ -103,4 +103,214 @@ namespace PantheonCore::ECS
 
         return components;
     }
+
+    template <typename T>
+    T* Entity::getComponentInParent(const bool includeInactive)
+    {
+        if (T* component = getComponent<T>())
+            return component;
+
+        Entity* parent = static_cast<Entity*>(getParent());
+
+        if (!parent || !includeInactive && !parent->isActive())
+            return nullptr;
+
+        return parent->getComponentInParent<T>(includeInactive);
+    }
+
+    template <typename T>
+    const T* Entity::getComponentInParent(const bool includeInactive) const
+    {
+        if (T* component = getComponent<T>())
+            return component;
+
+        const Entity* parent = static_cast<const Entity*>(getParent());
+
+        if (!parent || !includeInactive && !parent->isActive())
+            return nullptr;
+
+        return parent->getComponentInParent<T>(includeInactive);
+    }
+
+    template <typename T>
+    T* Entity::getComponentInParent(const Component::ComponentId id, const bool includeInactive)
+    {
+        if (T* component = getComponent<T>(id))
+            return component;
+
+        Entity* parent = static_cast<Entity*>(getParent());
+
+        if (!parent || !includeInactive && !parent->isActive())
+            return nullptr;
+
+        return parent->getComponentInParent<T>(id, includeInactive);
+    }
+
+    template <typename T>
+    const T* Entity::getComponentInParent(const Component::ComponentId id, const bool includeInactive) const
+    {
+        if (T* component = getComponent<T>(id))
+            return component;
+
+        const Entity* parent = static_cast<const Entity*>(getParent());
+
+        if (!parent || !includeInactive && !parent->isActive())
+            return nullptr;
+
+        return parent->getComponentInParent<T>(id, includeInactive);
+    }
+
+    template <typename T>
+    std::vector<T*> Entity::getComponentsInParent(const bool includeInactive)
+    {
+        std::vector<T*> components(getComponents<T>());
+
+        Entity* parent = static_cast<Entity*>(getParent());
+
+        if (parent && (includeInactive || parent->isActive()))
+            components.insert(components.end(), parent->getComponentsInParent<T>(includeInactive));
+
+        return components;
+    }
+
+    template <typename T>
+    std::vector<const T*> Entity::getComponentsInParent(const bool includeInactive) const
+    {
+        std::vector<const T*> components(getComponents<T>());
+
+        const Entity* parent = static_cast<const Entity*>(getParent());
+
+        if (parent && (includeInactive || parent->isActive()))
+            components.insert(components.end(), parent->getComponentsInParent<T>(includeInactive));
+
+        return components;
+    }
+
+    template <typename T>
+    T* Entity::getComponentInChildren(const bool includeInactive)
+    {
+        T* component = getComponent<T>();
+
+        if (component)
+            return component;
+
+        for (const auto& child : getChildren())
+        {
+            Entity& childEntity = reinterpret_cast<Entity&>(*child);
+
+            if (!includeInactive && !childEntity.isActive())
+                continue;
+
+            component = childEntity.getComponentInChildren<T>(includeInactive);
+
+            if (component)
+                return component;
+        }
+
+        return nullptr;
+    }
+
+    template <typename T>
+    const T* Entity::getComponentInChildren(const bool includeInactive) const
+    {
+        const T* component = getComponent<T>();
+
+        if (component)
+            return component;
+
+        for (const auto& child : getChildren())
+        {
+            const Entity& childEntity = reinterpret_cast<const Entity&>(*child);
+
+            if (!includeInactive && !childEntity.isActive())
+                continue;
+
+            component = childEntity.getComponentInChildren<T>(includeInactive);
+
+            if (component)
+                return component;
+        }
+
+        return nullptr;
+    }
+
+    template <typename T>
+    T* Entity::getComponentInChildren(const Component::ComponentId id, const bool includeInactive)
+    {
+        T* component = getComponent<T>(id);
+
+        if (component)
+            return component;
+
+        for (const auto& child : getChildren())
+        {
+            Entity& childEntity = reinterpret_cast<Entity&>(*child);
+
+            if (!includeInactive && !childEntity.isActive())
+                continue;
+
+            component = childEntity.getComponentInChildren<T>(id, includeInactive);
+
+            if (component)
+                return component;
+        }
+
+        return nullptr;
+    }
+
+    template <typename T>
+    const T* Entity::getComponentInChildren(const Component::ComponentId id, const bool includeInactive) const
+    {
+        const T* component = getComponent<T>(id);
+
+        if (component)
+            return component;
+
+        for (const auto& child : getChildren())
+        {
+            const Entity& childEntity = reinterpret_cast<const Entity&>(*child);
+
+            if (!includeInactive && !childEntity.isActive())
+                continue;
+
+            component = childEntity.getComponentInChildren<T>(id, includeInactive);
+
+            if (component)
+                return component;
+        }
+
+        return nullptr;
+    }
+
+    template <typename T>
+    std::vector<T*> Entity::getComponentsInChildren(const bool includeInactive)
+    {
+        std::vector<T*> components(getComponents<T>());
+
+        for (const auto& child : getChildren())
+        {
+            Entity& childEntity = reinterpret_cast<Entity&>(*child);
+
+            if (includeInactive || childEntity.isActive())
+                components.insert(components.end(), childEntity.getComponentsInChildren<T>(includeInactive));
+        }
+
+        return components;
+    }
+
+    template <typename T>
+    std::vector<const T*> Entity::getComponentsInChildren(const bool includeInactive) const
+    {
+        std::vector<const T*> components(getComponents<T>());
+
+        for (const auto& child : getChildren())
+        {
+            const Entity& childEntity = reinterpret_cast<const Entity&>(*child);
+
+            if (includeInactive || childEntity.isActive())
+                components.insert(components.end(), childEntity.getComponentsInChildren<T>(includeInactive));
+        }
+
+        return components;
+    }
 }
