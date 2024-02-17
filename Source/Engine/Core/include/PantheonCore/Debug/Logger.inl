@@ -1,10 +1,10 @@
 #pragma once
+#include "PantheonCore/Debug/Logger.h"
+#include "PantheonCore/Utility/utility.h"
+
 #include <cassert>
 #include <fstream>
 #include <iostream>
-
-#include "PantheonCore/Debug/Logger.h"
-#include "PantheonCore/Utility/utility.h"
 
 namespace PantheonCore::Debug
 {
