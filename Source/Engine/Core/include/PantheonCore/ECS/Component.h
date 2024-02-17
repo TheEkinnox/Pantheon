@@ -1,25 +1,30 @@
 #pragma once
-#include <cstdint>
-#include <memory> // shared_ptr
-#include <string>
-#include <unordered_map>
-
 #include "PantheonCore/Serialization/IByteSerializable.h"
 #include "PantheonCore/Serialization/IJsonSerializable.h"
 
-#define REGISTER_COMPONENT_TYPE(Name, Type)                                                            \
-static uint8_t reg_##Name = (PantheonCore::Entities::Component::registerType<Type>(#Name), 0);
+#include <cstdint>
+#include <string>
+#include <unordered_map>
 
-#define REGISTERED_COMPONENT_BODY(Type)                                              \
-public:                                                                              \
-inline std::string Type::getTypeName() const override                                \
-{                                                                                    \
-    return PantheonCore::Entities::Component::getRegisteredTypeName<Type>(); \
-}
+#define REGISTER_COMPONENT_TYPE(Name, Type)                                                       \
+static uint8_t compReg_##Name = (PantheonCore::ECS::Component::registerType<Type>(#Name), 0);
 
-namespace PantheonCore::Entities
+#define REGISTERED_COMPONENT_BODY(Type)                                 \
+public:                                                                 \
+inline const std::string& Type::getTypeName() const override            \
+{                                                                       \
+    return PantheonCore::ECS::Component::getRegisteredTypeName<Type>(); \
+}                                                                       \
+private:
+
+
+namespace PantheonCore::ECS
 {
     class Entity;
+    class Component;
+
+    template <typename T, typename... Args>
+    T* createComponent(Entity& owner, Args&&... args);
 
     class Component : public Serialization::IByteSerializable, public Serialization::IJsonSerializable
     {
@@ -42,7 +47,7 @@ namespace PantheonCore::Entities
          * \tparam T The component type to register
          */
         template <typename T>
-        static constexpr void registerType(const std::string& name);
+        static void registerType(const std::string& name);
 
         /**
          * \brief Gets the registered name for the given component type
@@ -50,7 +55,7 @@ namespace PantheonCore::Entities
          * \return The registered name for the given component type
          */
         template <typename T>
-        static std::string getRegisteredTypeName();
+        static const std::string& getRegisteredTypeName();
 
         /**
          * \brief Tries to allocate a component of the given registered component type.
@@ -58,13 +63,13 @@ namespace PantheonCore::Entities
          * \param owner The created component's owner
          * \return A pointer to the allocated resource on success, nullptr otherwise
          */
-        inline static std::shared_ptr<Component> create(const std::string& type, Entity& owner);
+        inline static Component* create(const std::string& type, Entity& owner);
 
         /**
          * \brief Gets the component's registered type name
          * \return The component's registered type name
          */
-        virtual std::string getTypeName() const = 0;
+        virtual const std::string& getTypeName() const = 0;
 
         /**
          * \brief Updates the component
@@ -100,19 +105,19 @@ namespace PantheonCore::Entities
     protected:
         explicit Component(Entity& owner);
 
-    private:
-        friend class Entity;
-        using AllocFunc = std::shared_ptr<Component> (*)(Entity& owner);
-        using TypeMap = std::unordered_map<std::string, AllocFunc>;
-        using TypeNameMap = std::unordered_map<size_t, std::string>;
+        /**
+         * \brief The action to perform when the component is added
+         */
+        virtual void onAdd()
+        {
+        }
 
-        inline static TypeMap     s_componentTypes{};
-        inline static TypeNameMap s_componentTypeNames{};
-        inline static ComponentId s_currentId = 1;
-
-        Entity*     m_owner;
-        ComponentId m_id;
-        bool        m_isActive = true;
+        /**
+         * \brief The action to perform when the component is removed
+         */
+        virtual void onRemove()
+        {
+        }
 
         /**
          * \brief The action to perform when the components gets enabled
@@ -127,7 +132,22 @@ namespace PantheonCore::Entities
         virtual void onDisable()
         {
         }
+
+    private:
+        friend class Entity;
+
+        using AllocFunc = decltype(&createComponent<Component>);
+        using TypeMap = std::unordered_map<std::string, AllocFunc>;
+        using TypeNameMap = std::unordered_map<size_t, std::string>;
+
+        inline static TypeMap     s_componentTypes{};
+        inline static TypeNameMap s_componentTypeNames{};
+        inline static ComponentId s_currentId = 1;
+
+        Entity*     m_owner;
+        ComponentId m_id;
+        bool        m_isActive = true;
     };
 }
 
-#include "PantheonCore/Entities/Component.inl"
+#include "PantheonCore/ECS/Component.inl"

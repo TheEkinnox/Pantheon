@@ -1,10 +1,10 @@
-#include "PantheonCore/Entities/Scene.h"
+#include "PantheonCore/ECS/Scene.h"
 
 #include <rapidjson/istreamwrapper.h>
 
 #include "PantheonCore/Utility/ByteOrder.h"
 
-namespace PantheonCore::Entities
+namespace PantheonCore::ECS
 {
     void Scene::update()
     {
@@ -97,8 +97,8 @@ namespace PantheonCore::Entities
         const size_t startSize = output.size();
         output.resize(startSize + sizeof(ElemCountT));
 
-        const ElemCountT leEntityCount = Utility::toBigEndian(entityCount);
-        if (memcpy_s(output.data() + startSize, output.size() - startSize, &leEntityCount, sizeof(ElemCountT)) != 0)
+        const ElemCountT beEntityCount = Utility::toBigEndian(entityCount);
+        if (memcpy_s(output.data() + startSize, output.size() - startSize, &beEntityCount, sizeof(ElemCountT)) != 0)
         {
             DEBUG_LOG_ERROR("Unable to write scene entity count to memory buffer");
             return false;
@@ -116,22 +116,22 @@ namespace PantheonCore::Entities
         return true;
     }
 
-    bool Scene::deserialize(const void* data, const size_t length)
+    size_t Scene::deserialize(const void* data, const size_t length)
     {
         clear();
 
         if (data == nullptr || length == 0)
-            return false;
+            return 0;
 
         ElemCountT entityCount = 0;
 
         if (length < sizeof(ElemCountT) || memcpy_s(&entityCount, sizeof(ElemCountT), data, sizeof(ElemCountT)))
         {
             DEBUG_LOG_ERROR("Unable to deserialize scene - Failed to read entity count");
-            return false;
+            return 0;
         }
 
-        size_t      offset = sizeof(ElemCountT);
+        size_t      offset   = sizeof(ElemCountT);
         const char* byteData = static_cast<const char*>(data);
 
         for (ElemCountT i = 0; i < Utility::fromBigEndian(entityCount); ++i)
@@ -139,29 +139,29 @@ namespace PantheonCore::Entities
             if (length <= offset || length - offset < sizeof(ElemSizeT))
             {
                 DEBUG_LOG_ERROR("Unable to deserialize scene - Invalid offset");
-                return false;
+                return 0;
             }
 
-            const ElemSizeT bufferSize = readSize(byteData + offset, length - offset);
+            const ElemSizeT bufferSize = readNumber(byteData + offset, length - offset);
 
             if (bufferSize == INVALID_ELEMENT_SIZE)
             {
                 DEBUG_LOG_ERROR("Unable to deserialize scene - Failed to read size of entity [%d]", i);
-                return false;
+                return 0;
             }
 
             offset += sizeof(ElemSizeT);
             Entity& entity = addNode<Entity>();
 
-            if (length <= offset || length - offset < bufferSize || !entity.deserialize(byteData + offset, bufferSize))
+            if (length <= offset || length - offset < bufferSize || entity.deserialize(byteData + offset, bufferSize) == 0)
             {
                 DEBUG_LOG_ERROR("Unable to deserialize scene - Failed to deserialize entity [%d]", i);
-                return false;
+                return 0;
             }
 
             offset += bufferSize;
         }
 
-        return true;
+        return offset;
     }
 }

@@ -1,6 +1,5 @@
 #pragma once
-#include "ResourceManager.h"
-
+#include "PantheonCore/Resources/ResourceManager.h"
 #include "PantheonCore/Resources/ResourceRef.h"
 #include "PantheonCore/Utility/ServiceLocator.h"
 
@@ -27,7 +26,7 @@ namespace PantheonCore::Resources
         if (this == &other)
             return *this;
 
-        m_key = other.m_key;
+        m_key  = other.m_key;
         m_path = other.m_path;
 
         return *this;
@@ -104,7 +103,7 @@ namespace PantheonCore::Resources
 
     inline bool ResourceRefBase::serialize(std::vector<char>& output) const
     {
-        const KeySizeT  keySize = static_cast<KeySizeT>(m_key.size());
+        const KeySizeT  keySize  = static_cast<KeySizeT>(m_key.size());
         const PathSizeT pathSize = static_cast<PathSizeT>(m_path.size());
 
         output.reserve(output.size() + sizeof(KeySizeT) + keySize + sizeof(PathSizeT) + pathSize);
@@ -124,35 +123,28 @@ namespace PantheonCore::Resources
         return true;
     }
 
-    inline bool ResourceRefBase::deserialize(const void* data, const size_t length)
+    inline size_t ResourceRefBase::deserialize(const void* data, const size_t length)
     {
         if (data == nullptr || length == 0)
         {
             DEBUG_LOG_ERROR("Unable to deserialize resource ref - Invalid buffer");
-            return false;
+            return 0;
         }
 
         const char* byteData = static_cast<const char*>(data);
-        if (!deserializeString<KeySizeT>(m_key, byteData, length))
-        {
-            DEBUG_LOG_ERROR("Unable to deserialize resource ref - Key deserialization failed");
-            return false;
-        }
+        if (!CHECK(deserializeString<KeySizeT>(m_key, byteData, length) != 0,
+                "Unable to deserialize resource ref - Key deserialization failed"))
+            return 0;
 
         const size_t offset = sizeof(KeySizeT) + m_key.size();
-        if (length <= offset)
-        {
-            DEBUG_LOG_ERROR("Unable to deserialize resource ref - Invalid offset");
-            return false;
-        }
+        if (!CHECK(length > offset, "Unable to deserialize resource ref - Invalid offset"))
+            return 0;
 
-        if (!deserializeString<PathSizeT>(m_path, byteData + offset, length - offset))
-        {
-            DEBUG_LOG_ERROR("Unable to deserialize resource ref - Path deserialization failed");
-            return false;
-        }
+        if (!CHECK(deserializeString<PathSizeT>(m_path, byteData + offset, length - offset) != 0,
+                "Unable to deserialize resource ref - Path deserialization failed"))
+            return 0;
 
-        return true;
+        return offset + sizeof(PathSizeT) + m_path.size();
     }
 
     template <class T>
@@ -170,6 +162,18 @@ namespace PantheonCore::Resources
         return PTH_SERVICE(ResourceManager).getOrCreate<T>(m_key, m_path);
     }
 
+    template <class T>
+    T* ResourceRef<T>::operator*() const
+    {
+        return static_cast<T*>(*this);
+    }
+
+    template <class T>
+    T* ResourceRef<T>::operator->() const
+    {
+        return static_cast<T*>(*this);
+    }
+
     inline GenericResourceRef::GenericResourceRef(std::string type, const std::string& key, const std::string& path)
         : ResourceRefBase(key, path), m_type(std::move(type))
     {
@@ -181,6 +185,16 @@ namespace PantheonCore::Resources
             return nullptr;
 
         return PTH_SERVICE(ResourceManager).getOrCreate(m_type, m_key, m_path);
+    }
+
+    inline IResource* GenericResourceRef::operator*() const
+    {
+        return *this;
+    }
+
+    inline IResource* GenericResourceRef::operator->() const
+    {
+        return *this;
     }
 
     inline bool GenericResourceRef::hasValue() const
@@ -234,27 +248,25 @@ namespace PantheonCore::Resources
         return ResourceRefBase::serialize(output);
     }
 
-    inline bool GenericResourceRef::deserialize(const void* data, size_t length)
+    inline size_t GenericResourceRef::deserialize(const void* data, size_t length)
     {
         if (data == nullptr || length == 0)
         {
             DEBUG_LOG_ERROR("Unable to deserialize resource ref - Invalid buffer");
-            return false;
+            return 0;
         }
 
         const char* byteData = static_cast<const char*>(data);
-        if (!deserializeString<TypeSizeT>(m_type, byteData, length))
-        {
-            DEBUG_LOG_ERROR("Unable to deserialize resource ref - Key deserialization failed");
-            return false;
-        }
+        if (!CHECK(deserializeString<TypeSizeT>(m_type, byteData, length) != 0,
+                "Unable to deserialize resource ref - Key deserialization failed"))
+            return 0;
 
         const size_t offset = sizeof(TypeSizeT) + m_type.size();
 
         if (length <= offset)
         {
             DEBUG_LOG_ERROR("Unable to deserialize resource ref - Invalid offset");
-            return false;
+            return 0;
         }
 
         return ResourceRefBase::deserialize(byteData + offset, length - offset);

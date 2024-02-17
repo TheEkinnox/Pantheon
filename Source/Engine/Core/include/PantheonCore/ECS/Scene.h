@@ -1,9 +1,9 @@
 #pragma once
-#include "PantheonCore/Entities/Entity.h"
 #include "PantheonCore/DataStructure/Graph.h"
+#include "PantheonCore/ECS/Entity.h"
 #include "PantheonCore/Resources/IResource.h"
 
-namespace PantheonCore::Entities
+namespace PantheonCore::ECS
 {
     class Scene : public DataStructure::Graph<Entity>, public Resources::IResource, public Serialization::IJsonSerializable
     {
@@ -18,6 +18,15 @@ namespace PantheonCore::Entities
          * \return True if the resource was successfully loaded. False otherwise.
          */
         bool load(const std::string& fileName) override;
+
+        /**
+         * \brief Initializes the resource
+         * \return True on success. False otherwise.
+         */
+        bool init() override
+        {
+            return true;
+        }
 
         /**
          * \brief Serializes the scene to json
@@ -44,8 +53,8 @@ namespace PantheonCore::Entities
          * \brief Tries to load the resource from the given memory buffer
          * \param data A pointer to the beginning of the memory buffer
          * \param length The memory buffer's length
-         * \return True if the resource was successfully loaded. False otherwise.
+         * \return The number of deserialized bytes on success. 0 otherwise.
          */
-        bool deserialize(const void* data, size_t length) override;
+        size_t deserialize(const void* data, size_t length) override;
     };
 }

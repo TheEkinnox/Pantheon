@@ -157,7 +157,7 @@ namespace PantheonCore::Resources
                 continue;
             }
 
-            if (!ptr->deserialize(assetData.data(), assetData.size()) || !ptr->init())
+            if (ptr->deserialize(assetData.data(), assetData.size()) == 0 || !ptr->init())
             {
                 DEBUG_LOG("[WARNING] Skipped asset at path \"%s\" - Unable to load resource", path);
                 remove(guid);
@@ -180,7 +180,7 @@ namespace PantheonCore::Resources
             if (bundleData.empty())
                 continue;
 
-            return resource->deserialize(bundleData.data(), bundleData.size()) && resource->init();
+            return resource->deserialize(bundleData.data(), bundleData.size()) != 0 && resource->init();
         }
 
         return resource->load(path) && resource->init();

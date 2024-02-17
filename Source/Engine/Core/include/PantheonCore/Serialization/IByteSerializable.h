@@ -28,34 +28,40 @@ namespace PantheonCore::Serialization
          * \brief Deserializes the object from the given memory buffer
          * \param data A pointer to the beginning of the memory buffer
          * \param length The memory buffer's length
-         * \return True on success. False otherwise.
+         * \return The number of deserialized bytes on success. 0 otherwise.
          */
-        virtual bool deserialize(const void* data, size_t length) = 0;
+        virtual size_t deserialize(const void* data, size_t length) = 0;
 
         /**
          * \brief Serializes the object to a byte array preceded by it's buffer size
+         * \tparam SizeT The size's type
          * \param output The output memory buffer
          * \return True on success. False otherwise.
          */
-        inline bool serializeWithSize(std::vector<char>& output) const;
+        template <typename SizeT = ElemSizeT>
+        bool serializeWithSize(std::vector<char>& output) const;
 
         /**
          * \brief Writes the given size to a byte array
+         * \tparam SizeT The size's type
          * \param size The size to write
          * \param output The output memory buffer
          * \return True on success. False otherwise
          */
-        inline static bool writeSize(ElemSizeT size, std::vector<char>& output);
+        template <typename SizeT = ElemSizeT>
+        static bool writeNumber(SizeT size, std::vector<char>& output);
 
         /**
          * \brief Reads an element size from the given buffer
          * \note IMPORTANT: This function is guaranteed to work ONLY for values serialized using IByteSerializable::writeSize
-         * or IByteSerializable::serializeWithSize
+         * or IByteSerializable::serializeWithSize and the SAME Size Type
+         * \tparam SizeT The size's type
          * \param data A pointer to the beginning of the memory buffer
          * \param length The memory buffer's length
          * \return The deserialized size on success. INVALID_ELEMENT_SIZE otherwise
          */
-        inline static ElemSizeT readSize(const void* data, size_t length);
+        template <typename SizeT = ElemSizeT>
+        static SizeT readNumber(const void* data, size_t length);
 
         /**
          * \brief Serializes the given string to a byte array
@@ -74,10 +80,24 @@ namespace PantheonCore::Serialization
          * \param out The output string
          * \param data A pointer to the beginning of the memory buffer
          * \param length The memory buffer's length
-         * \return True on success. False otherwise.
+         * \return The number of deserialized bytes on success. 0 otherwise.
          */
         template <typename SizeT = size_t>
-        static bool deserializeString(std::string& out, const char* data, size_t length);
+        static size_t deserializeString(std::string& out, const char* data, size_t length);
+
+#ifdef __LIBMATH__VECTOR__VECTOR2_H__
+        /**
+         * \brief Converts the vector's members to big endian
+         * \param vec2 The vector to convert to big endian
+         */
+        inline static void vec2ToBigEndian(LibMath::Vector2& vec2);
+
+        /**
+         * \brief Converts the vector's members from big endian to the system's byte order
+         * \param vec2 The vector to convert from big endian
+         */
+        inline static void vec2FromBigEndian(LibMath::Vector2& vec2);
+#endif
 
 #ifdef __LIBMATH__VECTOR__VECTOR3_H__
         /**
@@ -96,6 +116,18 @@ namespace PantheonCore::Serialization
          * \return True on success. False otherwise.
          */
         inline static bool deserializeVector3(LibMath::Vector3& out, const char* data, size_t length);
+
+        /**
+         * \brief Converts the vector's members to big endian
+         * \param vec3 The vector to convert to big endian
+         */
+        inline static void vec3ToBigEndian(LibMath::Vector3& vec3);
+
+        /**
+         * \brief Converts the vector's members from big endian to the system's byte order
+         * \param vec3 The vector to convert from big endian
+         */
+        inline static void vec3FromBigEndian(LibMath::Vector3& vec3);
 #endif
 
 #ifdef __LIBMATH__QUATERNION_H__

@@ -1,9 +1,9 @@
 #pragma once
-#include <type_traits>
-
 #include "PantheonCore/Resources/IResource.h"
 #include "PantheonCore/Serialization/IByteSerializable.h"
 #include "PantheonCore/Serialization/IJsonSerializable.h"
+
+#include <type_traits>
 
 namespace PantheonCore::Resources
 {
@@ -67,9 +67,9 @@ namespace PantheonCore::Resources
          * \note On success the read bytes will always be sizeof(KeySizeT) + getKey().size() + sizeof(PathSizeT) + getPath().size()
          * \param data A pointer to the beginning of the memory buffer
          * \param length The memory buffer's length
-         * \return True on success. False otherwise.
+         * \return The number of deserialized bytes on success. 0 otherwise.
          */
-        bool deserialize(const void* data, size_t length) override;
+        size_t deserialize(const void* data, size_t length) override;
 
     protected:
         std::string m_key;
@@ -84,15 +84,17 @@ namespace PantheonCore::Resources
     public:
         ResourceRef() = default;
         ResourceRef(const std::string& key, const std::string& path);
-        ResourceRef(const ResourceRef& other) = default;
+        ResourceRef(const ResourceRef& other)     = default;
         ResourceRef(ResourceRef&& other) noexcept = default;
 
-        ResourceRef& operator=(const ResourceRef& other) = default;
+        ResourceRef& operator=(const ResourceRef& other)     = default;
         ResourceRef& operator=(ResourceRef&& other) noexcept = default;
 
         ~ResourceRef() override = default;
 
         operator T*() const;
+        T* operator*() const;
+        T* operator->() const;
     };
 
     class GenericResourceRef final : public ResourceRefBase
@@ -102,22 +104,25 @@ namespace PantheonCore::Resources
 
         GenericResourceRef() = default;
         GenericResourceRef(std::string type, const std::string& key, const std::string& path);
-        GenericResourceRef(const GenericResourceRef& other) = default;
+        GenericResourceRef(const GenericResourceRef& other)     = default;
         GenericResourceRef(GenericResourceRef&& other) noexcept = default;
 
-        GenericResourceRef& operator=(const GenericResourceRef& other) = default;
+        GenericResourceRef& operator=(const GenericResourceRef& other)     = default;
         GenericResourceRef& operator=(GenericResourceRef&& other) noexcept = default;
 
         ~GenericResourceRef() override = default;
 
         operator IResource*() const;
+        IResource* operator*() const;
+        IResource* operator->() const;
+
         bool hasValue() const override;
 
         bool serialize(rapidjson::Writer<rapidjson::StringBuffer>& writer) const override;
         bool deserialize(const rapidjson::Value& json) override;
 
-        bool serialize(std::vector<char>& output) const override;
-        bool deserialize(const void* data, size_t length) override;
+        bool   serialize(std::vector<char>& output) const override;
+        size_t deserialize(const void* data, size_t length) override;
 
     private:
         std::string m_type;

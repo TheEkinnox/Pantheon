@@ -1,16 +1,16 @@
-#include "PantheonCore/Entities/Component.h"
+#include "PantheonCore/ECS/Component.h"
 
-#include "PantheonCore/Entities/Entity.h"
+#include "PantheonCore/ECS/Entity.h"
 
-namespace PantheonCore::Entities
+namespace PantheonCore::ECS
 {
-    Component::Component(const Component& other) :
-        m_owner(other.m_owner), m_id(s_currentId++), m_isActive(other.m_isActive)
+    Component::Component(const Component& other)
+        : m_owner(other.m_owner), m_id(s_currentId++), m_isActive(other.m_isActive)
     {
     }
 
-    Component::Component(Component&& other) noexcept :
-        m_owner(other.m_owner), m_id(other.m_id), m_isActive(other.m_isActive)
+    Component::Component(Component&& other) noexcept
+        : m_owner(other.m_owner), m_id(other.m_id), m_isActive(other.m_isActive)
     {
         other.m_id = 0;
     }
@@ -20,9 +20,9 @@ namespace PantheonCore::Entities
         if (&other == this)
             return *this;
 
-        m_owner = other.m_owner;
+        m_owner    = other.m_owner;
         m_isActive = other.m_isActive;
-        m_id = s_currentId++;
+        m_id       = s_currentId++;
 
         return *this;
     }
@@ -32,9 +32,9 @@ namespace PantheonCore::Entities
         if (&other == this)
             return *this;
 
-        m_owner = other.m_owner;
+        m_owner    = other.m_owner;
         m_isActive = other.m_isActive;
-        m_id = other.m_id;
+        m_id       = other.m_id;
 
         other.m_id = 0;
 
@@ -53,7 +53,7 @@ namespace PantheonCore::Entities
 
     Component::~Component()
     {
-        if (*m_owner)
+        if (m_owner && *m_owner)
             m_owner->removeComponent(m_id);
     }
 
@@ -82,8 +82,8 @@ namespace PantheonCore::Entities
         return *m_owner;
     }
 
-    Component::Component(Entity& owner) :
-        m_owner(&owner), m_id(s_currentId++)
+    Component::Component(Entity& owner)
+        : m_owner(&owner), m_id(s_currentId++)
     {
     }
 }

@@ -1,11 +1,17 @@
 #pragma once
 #include "PantheonCore/Debug/Assertion.h"
-#include "PantheonCore/Entities/Component.h"
+#include "PantheonCore/ECS/Component.h"
 
-namespace PantheonCore::Entities
+namespace PantheonCore::ECS
 {
+    template <typename T, typename... Args>
+    T* createComponent(Entity& owner, Args&&... args)
+    {
+        return new T(owner, std::forward<Args>(args)...);
+    }
+
     template <typename T>
-    constexpr void Component::registerType(const std::string& name)
+    void Component::registerType(const std::string& name)
     {
         static_assert(std::is_base_of_v<Component, T>);
 
@@ -14,16 +20,16 @@ namespace PantheonCore::Entities
         const size_t typeHash = typeid(T).hash_code();
         ASSERT(!s_componentTypeNames.contains(typeHash), "Component type \"%s\" has already been registered", name.c_str());
 
-        s_componentTypes[name] = [](Entity& owner) -> std::shared_ptr<Component>
+        s_componentTypes[name] = [](Entity& owner)
         {
-            return std::make_shared<T>(owner);
+            return static_cast<Component*>(createComponent<T>(owner));
         };
 
         s_componentTypeNames[typeHash] = name;
     }
 
     template <typename T>
-    std::string Component::getRegisteredTypeName()
+    const std::string& Component::getRegisteredTypeName()
     {
         static_assert(std::is_base_of_v<Component, T>);
 
@@ -33,7 +39,7 @@ namespace PantheonCore::Entities
         return it->second;
     }
 
-    inline std::shared_ptr<Component> Component::create(const std::string& type, Entity& owner)
+    inline Component* Component::create(const std::string& type, Entity& owner)
     {
         const auto it = s_componentTypes.find(type);
         return it != s_componentTypes.end() ? it->second(owner) : nullptr;
