@@ -2,9 +2,6 @@
 
 namespace PantheonApp::Input
 {
-#undef MOD_SHIFT
-#undef MOD_CONTROL
-#undef MOD_ALT
     enum class EInputModifier
     {
         SHIFT     = 1 << 0,
