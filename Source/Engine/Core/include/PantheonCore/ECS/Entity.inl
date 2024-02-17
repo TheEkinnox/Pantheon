@@ -9,10 +9,13 @@ namespace PantheonCore::ECS
     {
         static_assert(std::is_same_v<Component, T> || std::is_base_of_v<Component, T>);
 
-        T* component = createComponent<T>(*this, std::forward<Args>(args)...);
-        component->onAdd();
+        Component* component = createComponent<T>(*this, std::forward<Args>(args)...);
 
-        return reinterpret_cast<T*>(m_components.emplace_back(component));
+        if (component->onAdd())
+            return reinterpret_cast<T*>(m_components.emplace_back(component));
+
+        delete component;
+        return nullptr;
     }
 
     template <typename T>

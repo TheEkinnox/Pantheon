@@ -108,8 +108,9 @@ namespace PantheonCore::ECS
         /**
          * \brief The action to perform when the component is added
          */
-        virtual void onAdd()
+        virtual bool onAdd()
         {
+            return true;
         }
 
         /**
