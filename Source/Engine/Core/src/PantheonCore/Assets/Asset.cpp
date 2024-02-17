@@ -1,13 +1,14 @@
 ﻿#include "PantheonCore/Assets/Asset.h"
 
-#include <fstream>
-
 #include "PantheonCore/Debug/Logger.h"
 #include "PantheonCore/Utility/ByteOrder.inl"
 
+#include <fstream>
+
 namespace PantheonCore::Assets
 {
-    Asset::Asset() : m_size(0)
+    Asset::Asset()
+        : m_size(0)
     {
     }
 
@@ -78,7 +79,7 @@ namespace PantheonCore::Assets
         m_size = 0;
 
         const size_t startSize = output.size();
-        const Asset& tmp = *this;
+        const Asset& tmp       = *this;
 
         if (!tmp.getData(output))
             return false;
@@ -150,9 +151,9 @@ namespace PantheonCore::Assets
 
     std::ostream& operator<<(std::ostream& os, const Asset& asset)
     {
-        const auto leSize = Utility::toBigEndian(asset.m_size);
+        const auto beSize = Utility::toBigEndian(asset.m_size);
 
-        os.write(reinterpret_cast<const char*>(&leSize), sizeof asset.m_size);
+        os.write(reinterpret_cast<const char*>(&beSize), sizeof asset.m_size);
         os << asset.m_guid << Asset::DATA_SEPARATOR << asset.m_type << Asset::DATA_SEPARATOR << asset.m_path <<
             Asset::ENTRY_SEPARATOR << std::flush;
 

@@ -1,17 +1,19 @@
 ﻿#include "PantheonCore/Assets/BundleAsset.h"
 
-#include <istream>
-
 #include "PantheonCore/Resources/ResourceAsset.h"
 #include "PantheonCore/Utility/utility.h"
 
+#include <istream>
+
 namespace PantheonCore::Assets
 {
-    BundleAsset::BundleAsset() : m_blockStart(0), m_blockSize(0)
+    BundleAsset::BundleAsset()
+        : m_blockStart(0), m_blockSize(0)
     {
     }
 
-    BundleAsset::BundleAsset(const std::shared_ptr<Asset>& asset) : m_blockStart(0), m_blockSize(0), m_asset(asset)
+    BundleAsset::BundleAsset(const std::shared_ptr<Asset>& asset)
+        : m_blockStart(0), m_blockSize(0), m_asset(asset)
     {
     }
 
@@ -51,11 +53,11 @@ namespace PantheonCore::Assets
         is.read(reinterpret_cast<char*>(&bundleAsset.m_blockSize), ALIGN(BundleAsset::BLOCK_SIZE_BITS, CHAR_BIT) / CHAR_BIT);
 
         bundleAsset.m_blockStart = Utility::fromBigEndian(bundleAsset.m_blockStart);
-        bundleAsset.m_blockSize = Utility::fromBigEndian(bundleAsset.m_blockSize);
+        bundleAsset.m_blockSize  = Utility::fromBigEndian(bundleAsset.m_blockSize);
 
-        const bool isResource = Utility::readBits(bundleAsset.m_blockStart, 1, 0) == 1;
+        const bool isResource    = Utility::readBits(bundleAsset.m_blockStart, 1, 0) == 1;
         bundleAsset.m_blockStart = Utility::readBits(bundleAsset.m_blockStart, BundleAsset::BLOCK_START_BITS - 1, 1);
-        bundleAsset.m_asset = isResource ? std::make_shared<Resources::ResourceAsset>() : std::make_shared<Asset>();
+        bundleAsset.m_asset      = isResource ? std::make_shared<Resources::ResourceAsset>() : std::make_shared<Asset>();
         is >> *bundleAsset.m_asset;
 
         return is;
@@ -67,11 +69,11 @@ namespace PantheonCore::Assets
 
         const BundleAsset::block_t tmp = isResource + (bundleAsset.m_blockStart << 1);
 
-        const auto leStart = Utility::toBigEndian(tmp);
-        const auto leSize = Utility::toBigEndian(bundleAsset.m_blockSize);
+        const auto beStart = Utility::toBigEndian(tmp);
+        const auto beSize  = Utility::toBigEndian(bundleAsset.m_blockSize);
 
-        os.write(reinterpret_cast<const char*>(&leStart), ALIGN(BundleAsset::BLOCK_START_BITS, CHAR_BIT) / CHAR_BIT);
-        os.write(reinterpret_cast<const char*>(&leSize), ALIGN(BundleAsset::BLOCK_SIZE_BITS, CHAR_BIT) / CHAR_BIT);
+        os.write(reinterpret_cast<const char*>(&beStart), ALIGN(BundleAsset::BLOCK_START_BITS, CHAR_BIT) / CHAR_BIT);
+        os.write(reinterpret_cast<const char*>(&beSize), ALIGN(BundleAsset::BLOCK_SIZE_BITS, CHAR_BIT) / CHAR_BIT);
         os << *bundleAsset.m_asset;
 
         return os;
