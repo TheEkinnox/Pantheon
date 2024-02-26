@@ -53,7 +53,7 @@ namespace PantheonCore::Serialization
          * \param output The output memory buffer
          * \return True on success. False otherwise
          */
-        template <typename SizeT = ElemSizeT>
+        template <typename SizeT>
         static bool writeNumber(SizeT size, std::vector<char>& output);
 
         /**
@@ -65,7 +65,7 @@ namespace PantheonCore::Serialization
          * \param length The memory buffer's length
          * \return The deserialized size on success. INVALID_ELEMENT_SIZE otherwise
          */
-        template <typename SizeT = ElemSizeT>
+        template <typename SizeT>
         static SizeT readNumber(const void* data, size_t length);
 
         /**

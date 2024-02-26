@@ -142,7 +142,7 @@ namespace PantheonCore::ECS
                 return 0;
             }
 
-            const ElemSizeT bufferSize = readNumber(byteData + offset, length - offset);
+            const ElemSizeT bufferSize = readNumber<ElemSizeT>(byteData + offset, length - offset);
 
             if (bufferSize == INVALID_ELEMENT_SIZE)
             {

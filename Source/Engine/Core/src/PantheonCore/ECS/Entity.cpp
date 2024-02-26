@@ -375,7 +375,7 @@ namespace PantheonCore::ECS
                 "Unable to deserialize entity component [%d] - Invalid offset", componentIdx))
             return 0;
 
-        const ElemSizeT elemSize = readNumber(data + offset, length - offset);
+        const ElemSizeT elemSize = readNumber<ElemSizeT>(data + offset, length - offset);
 
         if (!CHECK(elemSize != INVALID_ELEMENT_SIZE,
                 "Unable to deserialize entity component [%d] - Failed to read component's buffer size", componentIdx))
@@ -399,7 +399,7 @@ namespace PantheonCore::ECS
         if (!CHECK(data != nullptr && length == 0, "Unable to deserialize child entity - Invalid buffer"))
             return 0;
 
-        const ElemSizeT elemSize = readNumber(data, length);
+        const ElemSizeT elemSize = readNumber<ElemSizeT>(data, length);
 
         if (!CHECK(elemSize != INVALID_ELEMENT_SIZE, "Unable to deserialize child entity - Failed to read entity's buffer size"))
             return 0;
