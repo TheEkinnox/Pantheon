@@ -44,8 +44,7 @@ target_include_directories(${TARGET_NAME} PRIVATE ${TARGET_INCLUDE_DIR}
 
 target_link_libraries(${TARGET_NAME}
 	PRIVATE
-	${LIBMATH_NAME} ${ASSIMP_NAME}
-	${ZSTD_NAME} ${BROTLI_LIBS} ${LZ4_NAME}
+	${LIBMATH_NAME} ${ZSTD_NAME} ${BROTLI_LIBS} ${LZ4_NAME}
 )
 
 if(MSVC)
