@@ -1,7 +1,5 @@
 #include "PantheonTest/Tests/InputTest.h"
 
-#include <iostream>
-
 #include <PantheonApp/Input/EKey.h>
 #include <PantheonApp/Input/InputManager.h>
 
@@ -38,7 +36,7 @@ namespace PantheonTest
     void InputTest::testKeyboard()
     {
         const auto& inputManager = PTH_SERVICE(InputManager);
-        const auto& window = PTH_SERVICE(Window);
+        const auto& window       = PTH_SERVICE(Window);
 
         switch (m_frameCount)
         {
@@ -98,7 +96,7 @@ namespace PantheonTest
     void InputTest::testMouse()
     {
         const auto& inputManager = PTH_SERVICE(InputManager);
-        const auto& window = PTH_SERVICE(Window);
+        const auto& window       = PTH_SERVICE(Window);
 
         switch (m_frameCount)
         {

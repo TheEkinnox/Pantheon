@@ -1,12 +1,12 @@
 ﻿#pragma once
+#include "PantheonTest/Tests/ITest.h"
+
 #include <PantheonApp/Core/IApplication.h>
 #include <PantheonApp/Input/InputManager.h>
 #include <PantheonApp/Windowing/Window.h>
 
 #include <PantheonCore/Resources/ResourceManager.h>
 #include <PantheonCore/Utility/ThreadPool.h>
-
-#include "PantheonTest/Tests/ITest.h"
 
 namespace PantheonTest
 {

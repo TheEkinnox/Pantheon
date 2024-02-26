@@ -1,15 +1,16 @@
 ﻿#include "PantheonTest/TestApplication.h"
 
-#include <PantheonCore/Debug/Logger.h>
-#include <PantheonCore/Utility/FileSystem.h>
-#include <PantheonCore/Utility/ServiceLocator.h>
-
 #include "PantheonTest/Tests/InputTest.h"
 #include "PantheonTest/Tests/ThreadPoolTest.h"
 #include "PantheonTest/Tests/WindowTest.h"
 
+#include <PantheonCore/Debug/Logger.h>
+#include <PantheonCore/Utility/FileSystem.h>
+#include <PantheonCore/Utility/ServiceLocator.h>
+
 using namespace PantheonCore::Utility;
 using namespace PantheonCore::Resources;
+
 using namespace PantheonApp::Core;
 using namespace PantheonApp::Input;
 using namespace PantheonApp::Windowing;
@@ -36,7 +37,7 @@ namespace PantheonTest
 
     void TestApplication::onStart(int, char*[])
     {
-        const char* appDir = getApplicationDirectory();
+        const char* appDir     = getApplicationDirectory();
         std::string workingDir = getWorkingDirectory();
 
         DEBUG_LOG("Changing working directory from \"%s\" to \"%s\"", workingDir.c_str(), appDir);
@@ -97,7 +98,7 @@ namespace PantheonTest
                 ++passedCount;
         }
 
-        const auto      endTime = std::chrono::high_resolution_clock::now();
+        const auto      endTime     = std::chrono::high_resolution_clock::now();
         const long long elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - m_startTime).count();
 
         if (passedCount == m_tests.size())

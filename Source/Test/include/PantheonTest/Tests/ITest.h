@@ -1,6 +1,7 @@
 #pragma once
-#include <string>
 #include <PantheonCore/Debug/Assertion.h>
+
+#include <string>
 
 #define TEST_CHECK(...) ++m_executedCount; CHECK(__VA_ARGS__) ? ++m_passedCount : ++m_failedCount
 
@@ -28,8 +29,6 @@ namespace PantheonTest
         bool isSuccess() const;
 
     protected:
-        ITest();
-
         int m_executedCount;
         int m_passedCount;
         int m_failedCount;
@@ -52,7 +51,7 @@ namespace PantheonTest
 
     private:
         std::string m_name;
-        bool m_isDone;
-        bool m_isSuccess;
+        bool        m_isDone;
+        bool        m_isSuccess;
     };
 }

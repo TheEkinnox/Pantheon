@@ -53,10 +53,6 @@ namespace PantheonTest
         return m_isSuccess;
     }
 
-    ITest::ITest() : ITest("Unnamed")
-    {
-    }
-
     ITest::ITest(std::string name)
         : m_executedCount(0), m_passedCount(0), m_failedCount(0), m_name(std::move(name)), m_isDone(false), m_isSuccess(false)
     {
@@ -88,7 +84,7 @@ namespace PantheonTest
 
     void ITest::complete()
     {
-        m_isDone = true;
+        m_isDone    = true;
         m_isSuccess = m_passedCount == m_executedCount;
 
         if (m_isSuccess)

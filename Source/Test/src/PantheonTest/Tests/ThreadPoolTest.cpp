@@ -1,6 +1,6 @@
 #include "PantheonTest/Tests/ThreadPoolTest.h"
 
-#include "PantheonCore/Utility/ServiceLocator.h"
+#include <PantheonCore/Utility/ServiceLocator.h>
 
 using namespace PantheonCore::Utility;
 
