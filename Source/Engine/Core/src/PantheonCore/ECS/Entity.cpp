@@ -166,9 +166,7 @@ namespace PantheonCore::ECS
 
         writer.EndArray();
 
-        writer.EndObject();
-
-        return true;
+        return writer.EndObject();
     }
 
     bool Entity::deserialize(const rapidjson::Value& json)
@@ -316,9 +314,7 @@ namespace PantheonCore::ECS
                 "Unable to serialize entity - Component serialization failed"))
             return false;
 
-        writer.EndObject();
-
-        return true;
+        return writer.EndObject();
     }
 
     bool Entity::addComponentFromJson(const rapidjson::Value& jsonComponent)

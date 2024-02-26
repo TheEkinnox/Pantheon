@@ -68,9 +68,7 @@ namespace PantheonCore::Resources
         writer.Key("path");
         writer.String(m_path.c_str(), static_cast<rapidjson::SizeType>(m_path.size()));
 
-        writer.EndObject();
-
-        return true;
+        return writer.EndObject();
     }
 
     inline bool ResourceRefBase::deserialize(const rapidjson::Value& json)
@@ -215,9 +213,7 @@ namespace PantheonCore::Resources
         writer.Key("path");
         writer.String(m_path.c_str(), static_cast<rapidjson::SizeType>(m_path.size()));
 
-        writer.EndObject();
-
-        return true;
+        return writer.EndObject();
     }
 
     inline bool GenericResourceRef::deserialize(const rapidjson::Value& json)
