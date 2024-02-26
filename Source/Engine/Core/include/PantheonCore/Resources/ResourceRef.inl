@@ -157,7 +157,7 @@ namespace PantheonCore::Resources
     ResourceRef<T>::operator T*() const
     {
         if (!hasValue())
-            return nullptr;
+            return getDefaultResource<T>();
 
         return PTH_SERVICE(ResourceManager).getOrCreate<T>(m_key, m_path);
     }
@@ -182,7 +182,7 @@ namespace PantheonCore::Resources
     inline GenericResourceRef::operator IResource*() const
     {
         if (!hasValue())
-            return nullptr;
+            return IResource::getDefault(m_type);
 
         return PTH_SERVICE(ResourceManager).getOrCreate(m_type, m_key, m_path);
     }

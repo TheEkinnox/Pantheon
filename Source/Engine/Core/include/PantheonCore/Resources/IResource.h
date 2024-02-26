@@ -22,6 +22,9 @@ namespace PantheonCore::Resources
     template <typename T, typename... Args>
     T* createResource(Args&&... args);
 
+    template <typename T>
+    T* getDefaultResource();
+
     class IResource : public Serialization::IByteSerializable
     {
     public:
@@ -54,6 +57,13 @@ namespace PantheonCore::Resources
         inline static IResource* create(const std::string& type);
 
         /**
+         * \brief Gets the default resource for the given registered resource type
+         * \param type The target resource type
+         * \return The default resource of the given type
+         */
+        inline static IResource* getDefault(const std::string& type);
+
+        /**
          * \brief Gets the resource's registered type name
          * \return The resource's registered type name
          */
@@ -73,8 +83,13 @@ namespace PantheonCore::Resources
         virtual bool init() = 0;
 
     private:
-        using AllocFunc = decltype(&createResource<IResource>);
-        using TypeMap = std::unordered_map<std::string, AllocFunc>;
+        struct TypeData
+        {
+            decltype(&createResource<IResource>)     allocate;
+            decltype(&getDefaultResource<IResource>) getDefault;
+        };
+
+        using TypeMap = std::unordered_map<std::string, TypeData>;
         using TypeNameMap = std::unordered_map<size_t, std::string>;
 
         inline static TypeMap     s_resourceTypes{};

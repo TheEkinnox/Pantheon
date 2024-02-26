@@ -13,6 +13,12 @@ namespace PantheonCore::Resources
     }
 
     template <typename T>
+    T* getDefaultResource()
+    {
+        return nullptr;
+    }
+
+    template <typename T>
     constexpr void IResource::registerType(const std::string& name)
     {
         static_assert(std::is_base_of_v<IResource, T>);
@@ -22,9 +28,20 @@ namespace PantheonCore::Resources
         const size_t typeHash = typeid(T).hash_code();
         ASSERT(!s_resourceTypeNames.contains(typeHash), "Resource type \"%s\" has already been registered", name.c_str());
 
-        s_resourceTypes[name] = []
+        const auto allocFunc = []
         {
             return static_cast<IResource*>(createResource<T>());
+        };
+
+        const auto getDefaultFunc = []
+        {
+            return static_cast<IResource*>(getDefaultResource<T>());
+        };
+
+        s_resourceTypes[name] =
+        {
+            allocFunc,
+            getDefaultFunc
         };
 
         s_resourceTypeNames[typeHash] = name;
@@ -44,6 +61,12 @@ namespace PantheonCore::Resources
     inline IResource* IResource::create(const std::string& type)
     {
         const auto it = s_resourceTypes.find(type);
-        return it != s_resourceTypes.end() ? it->second() : nullptr;
+        return it != s_resourceTypes.end() ? it->second.allocate() : nullptr;
+    }
+
+    inline IResource* IResource::getDefault(const std::string& type)
+    {
+        const auto it = s_resourceTypes.find(type);
+        return it != s_resourceTypes.end() ? it->second.getDefault() : nullptr;
     }
 }
