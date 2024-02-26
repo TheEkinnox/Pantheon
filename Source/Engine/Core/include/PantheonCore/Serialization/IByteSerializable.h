@@ -1,4 +1,9 @@
 #pragma once
+#include <Quaternion.h>
+#include <Vector/Vector2.h>
+#include <Vector/Vector3.h>
+#include <Vector/Vector4.h>
+
 #include <string>
 #include <vector>
 
@@ -85,7 +90,23 @@ namespace PantheonCore::Serialization
         template <typename SizeT = size_t>
         static size_t deserializeString(std::string& out, const char* data, size_t length);
 
-#ifdef __LIBMATH__VECTOR__VECTOR2_H__
+        /**
+         * \brief Serializes the given 2d vector to a byte array
+         * \param vec2 The vector to serialize
+         * \param output The output memory buffer
+         * \return True on success. False otherwise.
+         */
+        inline static bool serializeVector2(LibMath::Vector2 vec2, std::vector<char>& output);
+
+        /**
+         * \brief Deserializes the given 2d vector from a byte array
+         * \param out The output vector
+         * \param data A pointer to the beginning of the memory buffer
+         * \param length The memory buffer's length
+         * \return True on success. False otherwise.
+         */
+        inline static bool deserializeVector2(LibMath::Vector2& out, const char* data, size_t length);
+
         /**
          * \brief Converts the vector's members to big endian
          * \param vec2 The vector to convert to big endian
@@ -97,9 +118,7 @@ namespace PantheonCore::Serialization
          * \param vec2 The vector to convert from big endian
          */
         inline static void vec2FromBigEndian(LibMath::Vector2& vec2);
-#endif
 
-#ifdef __LIBMATH__VECTOR__VECTOR3_H__
         /**
          * \brief Serializes the given 3d vector to a byte array
          * \param vec3 The vector to serialize
@@ -128,9 +147,36 @@ namespace PantheonCore::Serialization
          * \param vec3 The vector to convert from big endian
          */
         inline static void vec3FromBigEndian(LibMath::Vector3& vec3);
-#endif
 
-#ifdef __LIBMATH__QUATERNION_H__
+        /**
+         * \brief Serializes the given 4d vector to a byte array
+         * \param vec4 The vector to serialize
+         * \param output The output memory buffer
+         * \return True on success. False otherwise.
+         */
+        inline static bool serializeVector4(LibMath::Vector4 vec4, std::vector<char>& output);
+
+        /**
+         * \brief Deserializes the given 4d vector from a byte array
+         * \param out The output vector
+         * \param data A pointer to the beginning of the memory buffer
+         * \param length The memory buffer's length
+         * \return True on success. False otherwise.
+         */
+        inline static bool deserializeVector4(LibMath::Vector4& out, const char* data, size_t length);
+
+        /**
+         * \brief Converts the vector's members to big endian
+         * \param vec4 The vector to convert to big endian
+         */
+        inline static void vec4ToBigEndian(LibMath::Vector4& vec4);
+
+        /**
+         * \brief Converts the vector's members from big endian to the system's byte order
+         * \param vec4 The vector to convert from big endian
+         */
+        inline static void vec4FromBigEndian(LibMath::Vector4& vec4);
+
         /**
          * \brief Serializes the given quaternion to a byte array
          * \param quat The quaternion to serialize
@@ -147,7 +193,31 @@ namespace PantheonCore::Serialization
          * \return True on success. False otherwise.
          */
         inline static bool deserializeQuaternion(LibMath::Quaternion& out, const char* data, size_t length);
-#endif
+
+        /**
+         * \brief Serializes the given matrix to a byte array
+         * \tparam Rows The number of rows in the given matrix
+         * \tparam Cols The number of columns in the given matrix
+         * \tparam DataT The data type of the given matrix
+         * \param matrix The matrix to serialize
+         * \param output The output memory buffer
+         * \return True on success. False otherwise.
+         */
+        template <LibMath::length_t Rows, LibMath::length_t Cols, typename DataT>
+        static bool serializeMatrix(LibMath::TMatrix<Rows, Cols, DataT> matrix, std::vector<char>& output);
+
+        /**
+         * \brief Deserializes the given matrix from a byte array
+         * \tparam Rows The number of rows in the given matrix
+         * \tparam Cols The number of columns in the given matrix
+         * \tparam DataT The data type of the given matrix
+         * \param out The output matrix
+         * \param data A pointer to the beginning of the memory buffer
+         * \param length The memory buffer's length
+         * \return True on success. False otherwise.
+         */
+        template <LibMath::length_t Rows, LibMath::length_t Cols, typename DataT>
+        static bool deserializeMatrix(LibMath::TMatrix<Rows, Cols, DataT>& out, const char* data, size_t length);
     };
 }
 

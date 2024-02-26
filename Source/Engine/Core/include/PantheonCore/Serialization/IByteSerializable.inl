@@ -93,7 +93,28 @@ namespace PantheonCore::Serialization
         return sizeof(SizeT) + out.size();
     }
 
-#ifdef __LIBMATH__VECTOR__VECTOR2_H__
+    inline bool IByteSerializable::serializeVector2(LibMath::Vector2 vec2, std::vector<char>& output)
+    {
+        vec2ToBigEndian(vec2);
+
+        const size_t startSize = output.size();
+        output.resize(startSize + sizeof(LibMath::Vector2));
+        return memcpy_s(output.data() + startSize, output.size() - startSize, vec2.getArray(), sizeof(LibMath::Vector2)) == 0;
+    }
+
+    inline bool IByteSerializable::deserializeVector2(LibMath::Vector2& out, const char* data, const size_t length)
+    {
+        if (data == nullptr || length < sizeof(LibMath::Vector2))
+            return false;
+
+        if (memcpy_s(out.getArray(), sizeof(LibMath::Vector2), data, sizeof(LibMath::Vector2)) != 0)
+            return false;
+
+        vec2FromBigEndian(out);
+
+        return true;
+    }
+
     inline void IByteSerializable::vec2ToBigEndian(LibMath::Vector2& vec2)
     {
         vec2.m_x = Utility::toBigEndian(vec2.m_x);
@@ -105,9 +126,7 @@ namespace PantheonCore::Serialization
         vec2.m_x = Utility::fromBigEndian(vec2.m_x);
         vec2.m_y = Utility::fromBigEndian(vec2.m_y);
     }
-#endif
 
-#ifdef __LIBMATH__VECTOR__VECTOR3_H__
     inline bool IByteSerializable::serializeVector3(LibMath::Vector3 vec3, std::vector<char>& output)
     {
         vec3ToBigEndian(vec3);
@@ -143,9 +162,45 @@ namespace PantheonCore::Serialization
         vec3.m_y = Utility::fromBigEndian(vec3.m_y);
         vec3.m_z = Utility::fromBigEndian(vec3.m_z);
     }
-#endif
 
-#ifdef __LIBMATH__QUATERNION_H__
+    inline bool IByteSerializable::serializeVector4(LibMath::Vector4 vec4, std::vector<char>& output)
+    {
+        vec4ToBigEndian(vec4);
+
+        const size_t startSize = output.size();
+        output.resize(startSize + sizeof(LibMath::Vector4));
+        return memcpy_s(output.data() + startSize, output.size() - startSize, vec4.getArray(), sizeof(LibMath::Vector4)) == 0;
+    }
+
+    inline bool IByteSerializable::deserializeVector4(LibMath::Vector4& out, const char* data, size_t length)
+    {
+        if (data == nullptr || length < sizeof(LibMath::Vector4))
+            return false;
+
+        if (memcpy_s(out.getArray(), sizeof(LibMath::Vector4), data, sizeof(LibMath::Vector4)) != 0)
+            return false;
+
+        vec4FromBigEndian(out);
+
+        return true;
+    }
+
+    inline void IByteSerializable::vec4ToBigEndian(LibMath::Vector4& vec4)
+    {
+        vec4.m_x = Utility::toBigEndian(vec4.m_x);
+        vec4.m_y = Utility::toBigEndian(vec4.m_y);
+        vec4.m_z = Utility::toBigEndian(vec4.m_z);
+        vec4.m_w = Utility::toBigEndian(vec4.m_w);
+    }
+
+    inline void IByteSerializable::vec4FromBigEndian(LibMath::Vector4& vec4)
+    {
+        vec4.m_x = Utility::fromBigEndian(vec4.m_x);
+        vec4.m_y = Utility::fromBigEndian(vec4.m_y);
+        vec4.m_z = Utility::fromBigEndian(vec4.m_z);
+        vec4.m_w = Utility::fromBigEndian(vec4.m_w);
+    }
+
     inline bool IByteSerializable::serializeQuaternion(LibMath::Quaternion quat, std::vector<char>& output)
     {
         quat.m_x = Utility::toBigEndian(quat.m_x);
@@ -173,5 +228,31 @@ namespace PantheonCore::Serialization
 
         return true;
     }
-#endif
+
+    template <LibMath::length_t Rows, LibMath::length_t Cols, typename DataT>
+    bool IByteSerializable::serializeMatrix(LibMath::TMatrix<Rows, Cols, DataT> matrix, std::vector<char>& output)
+    {
+        using MatT = LibMath::TMatrix<Rows, Cols, DataT>;
+
+        for (size_t i = 0; i < MatT::getSize(); ++i)
+            matrix[i] = Utility::toBigEndian(matrix[i]);
+
+        const size_t startSize = output.size();
+        output.resize(startSize + sizeof(MatT));
+        return memcpy_s(output.data() + startSize, output.size() - startSize, matrix.getArray(), sizeof(MatT)) == 0;
+    }
+
+    template <LibMath::length_t Rows, LibMath::length_t Cols, typename DataT>
+    bool IByteSerializable::deserializeMatrix(LibMath::TMatrix<Rows, Cols, DataT>& out, const char* data, size_t length)
+    {
+        using MatT = LibMath::TMatrix<Rows, Cols, DataT>;
+
+        if (data == nullptr || length < sizeof(MatT) || memcpy_s(out.getArray(), sizeof(MatT), data, sizeof(MatT)) != 0)
+            return false;
+
+        for (size_t i = 0; i < MatT::getSize(); ++i)
+            out[i] = Utility::fromBigEndian(out[i]);
+
+        return true;
+    }
 }
