@@ -17,7 +17,7 @@
 
 #else
 
-#define ASSERT(condition, ...) ((void)condition)
+#define ASSERT(condition, ...) ((void)(condition))
 
 #endif // _DEBUG || PTH_VERBOSE_LOG
 #endif // !ASSERT
