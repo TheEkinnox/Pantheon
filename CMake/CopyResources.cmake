@@ -6,7 +6,7 @@ function(copy_resources TARGET_NAME)
 
 	# copy the assets folder in the target build directory
 	add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-		COMMAND ${CMAKE_COMMAND} -E copy_directory ${SURVIVANT_ASSETS_DIR} $<TARGET_FILE_DIR:${TARGET_NAME}>/assets
+		COMMAND ${CMAKE_COMMAND} -E copy_directory ${PANTHEON_ASSETS_DIR} $<TARGET_FILE_DIR:${TARGET_NAME}>/assets
 	)
 
 	# remove unwanted files
