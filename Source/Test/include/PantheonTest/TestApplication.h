@@ -33,7 +33,7 @@ namespace PantheonTest
         std::unique_ptr<PantheonCore::Utility::ThreadPool>        m_threadPool;
         std::unique_ptr<PantheonCore::Resources::ResourceManager> m_resourceManager;
 
-        std::vector<std::shared_ptr<ITest>> m_tests;
+        std::vector<std::unique_ptr<ITest>> m_tests;
 
         std::chrono::high_resolution_clock::time_point m_startTime;
     };

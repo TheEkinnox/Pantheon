@@ -1,5 +1,8 @@
 ﻿#include "PantheonTest/TestApplication.h"
 
+#include "PantheonTest/ComponentRegistrations.h"
+#include "PantheonTest/ResourceRegistrations.h"
+#include "PantheonTest/Tests/EntitiesTest.h"
 #include "PantheonTest/Tests/InputTest.h"
 #include "PantheonTest/Tests/ThreadPoolTest.h"
 #include "PantheonTest/Tests/WindowTest.h"
@@ -30,9 +33,10 @@ namespace PantheonTest
         ServiceLocator::provide<ThreadPool>(*m_threadPool);
         ServiceLocator::provide<ResourceManager>(*m_resourceManager);
 
-        m_tests.push_back(std::make_shared<WindowTest>());
-        m_tests.push_back(std::make_shared<InputTest>());
-        m_tests.push_back(std::make_shared<ThreadPoolTest>());
+        m_tests.emplace_back(std::make_unique<WindowTest>());
+        m_tests.emplace_back(std::make_unique<InputTest>());
+        m_tests.emplace_back(std::make_unique<ThreadPoolTest>());
+        m_tests.emplace_back(std::make_unique<EntitiesTest>());
     }
 
     void TestApplication::onStart(int, char*[])
@@ -114,7 +118,7 @@ namespace PantheonTest
 
     bool TestApplication::isRunning() const
     {
-        const auto isInProgress = [](const std::shared_ptr<ITest>& test)
+        const auto isInProgress = [](const std::unique_ptr<ITest>& test)
         {
             return !test->isDone();
         };
