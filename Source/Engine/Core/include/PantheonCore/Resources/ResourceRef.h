@@ -92,7 +92,6 @@ namespace PantheonCore::Resources
 
         ~ResourceRef() override = default;
 
-        operator T*() const;
         T* operator*() const;
         T* operator->() const;
     };
@@ -112,7 +111,6 @@ namespace PantheonCore::Resources
 
         ~GenericResourceRef() override = default;
 
-        operator IResource*() const;
         IResource* operator*() const;
         IResource* operator->() const;
 

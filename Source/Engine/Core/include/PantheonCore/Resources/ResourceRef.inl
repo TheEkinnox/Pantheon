@@ -152,7 +152,7 @@ namespace PantheonCore::Resources
     }
 
     template <class T>
-    ResourceRef<T>::operator T*() const
+    T* ResourceRef<T>::operator*() const
     {
         if (!hasValue())
             return getDefaultResource<T>();
@@ -161,15 +161,9 @@ namespace PantheonCore::Resources
     }
 
     template <class T>
-    T* ResourceRef<T>::operator*() const
-    {
-        return static_cast<T*>(*this);
-    }
-
-    template <class T>
     T* ResourceRef<T>::operator->() const
     {
-        return static_cast<T*>(*this);
+        return **this;
     }
 
     inline GenericResourceRef::GenericResourceRef(std::string type, const std::string& key, const std::string& path)
@@ -177,7 +171,7 @@ namespace PantheonCore::Resources
     {
     }
 
-    inline GenericResourceRef::operator IResource*() const
+    inline IResource* GenericResourceRef::operator*() const
     {
         if (!hasValue())
             return IResource::getDefault(m_type);
@@ -185,14 +179,9 @@ namespace PantheonCore::Resources
         return PTH_SERVICE(ResourceManager).getOrCreate(m_type, m_key, m_path);
     }
 
-    inline IResource* GenericResourceRef::operator*() const
-    {
-        return *this;
-    }
-
     inline IResource* GenericResourceRef::operator->() const
     {
-        return *this;
+        return **this;
     }
 
     inline bool GenericResourceRef::hasValue() const

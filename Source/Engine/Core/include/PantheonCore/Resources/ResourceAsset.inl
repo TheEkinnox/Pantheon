@@ -12,13 +12,12 @@ namespace PantheonCore::Resources
 
     inline bool ResourceAsset::isValid() const
     {
-        const IResource* resource = GenericResourceRef(m_type, m_guid, m_path);
-        return resource != nullptr;
+        return *GenericResourceRef(m_type, m_guid, m_path) != nullptr;
     }
 
     inline bool ResourceAsset::getData(std::vector<char>& output) const
     {
-        const IResource* resource = GenericResourceRef(m_type, m_guid, m_path);
+        const IResource* resource = *GenericResourceRef(m_type, m_guid, m_path);
 
         if (!resource)
         {
