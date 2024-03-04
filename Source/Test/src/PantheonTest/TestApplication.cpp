@@ -74,14 +74,14 @@ namespace PantheonTest
         m_inputManager->update();
     }
 
-    void TestApplication::onUpdate()
+    void TestApplication::onUpdate(const float)
     {
         preUpdate();
         update();
         postUpdate();
     }
 
-    void TestApplication::onFixedUpdate()
+    void TestApplication::onFixedUpdate(const float)
     {
         for (const auto& test : m_tests)
             test->fixedUpdate();

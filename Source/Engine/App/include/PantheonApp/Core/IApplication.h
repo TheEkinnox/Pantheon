@@ -63,12 +63,12 @@ namespace PantheonApp::Core
         /**
          * \brief Called on each update cycle
          */
-        virtual void onUpdate() = 0;
+        virtual void onUpdate(float deltaTime) = 0;
 
         /**
          * \brief Called every fixed time step
          */
-        virtual void onFixedUpdate() = 0;
+        virtual void onFixedUpdate(float deltaTime) = 0;
 
         /**
          * \brief Called when the application stops

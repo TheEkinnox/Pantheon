@@ -20,8 +20,8 @@ namespace PantheonTest
         void preUpdate();
         void update();
         void postUpdate();
-        void onUpdate() override;
-        void onFixedUpdate() override;
+        void onUpdate(float deltaTime) override;
+        void onFixedUpdate(float deltaTime) override;
         void onStop() override;
 
     public:

@@ -8,8 +8,8 @@ namespace PantheonCore::Utility
     class Timer
     {
     public:
-        Eventing::Event<> m_onUpdate;
-        Eventing::Event<> m_onFixedUpdate;
+        Eventing::Event<float> m_onUpdate;
+        Eventing::Event<float> m_onFixedUpdate;
 
         /**
          * \brief Creates a default timer

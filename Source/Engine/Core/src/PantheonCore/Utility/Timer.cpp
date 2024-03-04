@@ -40,16 +40,16 @@ namespace PantheonCore::Utility
         {
             reset();
             m_currentTime = clock::now();
-            m_lastUpdate = m_currentTime;
-            m_deltaTime = 0;
+            m_lastUpdate  = m_currentTime;
+            m_deltaTime   = 0;
 
             m_isFirstUpdate = false;
         }
         else
         {
-            m_lastUpdate = m_currentTime;
+            m_lastUpdate  = m_currentTime;
             m_currentTime = clock::now();
-            m_deltaTime = std::chrono::duration<float>(m_currentTime - m_lastUpdate).count();
+            m_deltaTime   = std::chrono::duration<float>(m_currentTime - m_lastUpdate).count();
             m_unscaledTime += m_deltaTime;
             m_time += getDeltaTime();
         }
@@ -57,10 +57,10 @@ namespace PantheonCore::Utility
         while (LibMath::abs(m_fixedTime - m_time) >= m_fixedDeltaTime)
         {
             m_fixedTime += m_fixedDeltaTime;
-            m_onFixedUpdate.invoke();
+            m_onFixedUpdate.invoke(m_fixedDeltaTime);
         }
 
-        m_onUpdate.invoke();
+        m_onUpdate.invoke(m_deltaTime);
 
         m_frameCount++;
     }
@@ -68,9 +68,9 @@ namespace PantheonCore::Utility
     void Timer::reset()
     {
         m_isFirstUpdate = true;
-        m_time = 0;
-        m_fixedTime = 0;
-        m_unscaledTime = 0;
+        m_time          = 0;
+        m_fixedTime     = 0;
+        m_unscaledTime  = 0;
     }
 
     float Timer::getTime() const
