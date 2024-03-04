@@ -127,7 +127,7 @@ namespace PantheonCore::ECS
 
     bool Entity::isActive() const
     {
-        const auto* parent = reinterpret_cast<const Entity*>(Node::getParent());
+        const auto* parent = reinterpret_cast<const Entity*>(getParent());
         return !m_isDestroyed && m_isActive && (parent == nullptr || parent->isActive());
     }
 
@@ -159,8 +159,7 @@ namespace PantheonCore::ECS
 
         for (ConstNodePtr& child : getChildren())
         {
-            if (!CHECK(!child || reinterpret_cast<const Entity&>(*child).serialize(writer),
-                    "Unable to serialize entity - Child serialization failed"))
+            if (child && !reinterpret_cast<const Entity&>(*child).serialize(writer))
                 return false;
         }
 
@@ -183,8 +182,7 @@ namespace PantheonCore::ECS
 
         for (const auto& jsonComponent : it->value.GetArray())
         {
-            if (!CHECK(addComponentFromJson(jsonComponent),
-                    "Unable to deserialize entity - Failed to deserialize component [%llu]", m_components.size()))
+            if (!addComponentFromJson(jsonComponent))
                 return false;
         }
 
@@ -194,8 +192,7 @@ namespace PantheonCore::ECS
 
         for (const rapidjson::Value& jsonChild : it->value.GetArray())
         {
-            if (!CHECK(addChild<Entity>(this).deserialize(jsonChild),
-                    "Unable to deserialize entity - Failed to deserialize child [%llu]", getChildren().size() - 1))
+            if (!addChild<Entity>(this).deserialize(jsonChild))
                 return false;
         }
 
@@ -232,8 +229,7 @@ namespace PantheonCore::ECS
 
         for (const ConstNodePtr& child : children)
         {
-            if (!CHECK(!child || reinterpret_cast<const Entity&>(*child).serializeWithSize(output),
-                    "Unable to serialize entity - Child serialization failed"))
+            if (child && !reinterpret_cast<const Entity&>(*child).serializeWithSize(output))
                 return false;
         }
 
@@ -262,7 +258,7 @@ namespace PantheonCore::ECS
                 return 0;
 
             const size_t readBytes = addComponentFromMemory(charData + offset, length - offset);
-            if (!CHECK(readBytes != 0, "Unable to deserialize entity - Failed to deserialize component [%d]", i))
+            if (readBytes == 0)
                 return 0;
 
             offset += readBytes;
@@ -281,7 +277,7 @@ namespace PantheonCore::ECS
                 return 0;
 
             const size_t readBytes = addChildFromMemory(charData + offset, length - offset);
-            if (!CHECK(readBytes != 0, "Unable to deserialize entity - Failed to deserialize child [%d]", i))
+            if (readBytes == 0)
                 return 0;
 
             offset += readBytes;
@@ -310,8 +306,7 @@ namespace PantheonCore::ECS
         writer.String(typeName.c_str(), static_cast<rapidjson::SizeType>(typeName.size()));
 
         writer.Key("data");
-        if (!CHECK(((IJsonSerializable&)*component).serialize(writer),
-                "Unable to serialize entity - Component serialization failed"))
+        if (!((IJsonSerializable&)*component).serialize(writer))
             return false;
 
         return writer.EndObject();
@@ -348,7 +343,7 @@ namespace PantheonCore::ECS
                 "Unable to write entity to memory buffer - Failed to write component type string"))
             return false;
 
-        if (!CHECK(component->serializeWithSize(output), "Unable to write entity to memory buffer - Failed to serialize component"))
+        if (!component->serializeWithSize(output))
             return false;
 
         return true;
@@ -356,7 +351,7 @@ namespace PantheonCore::ECS
 
     size_t Entity::addComponentFromMemory(const char* data, const size_t length)
     {
-        const size_t componentIdx = m_components.size();
+        [[maybe_unused]] const size_t componentIdx = m_components.size();
 
         if (!CHECK(data != nullptr && length > 0, "Unable to deserialize entity component [%d] - Invalid buffer", componentIdx))
             return 0;
@@ -405,8 +400,7 @@ namespace PantheonCore::ECS
             return 0;
 
         Entity& entity = addChild<Entity>(this);
-        if (!CHECK(entity.deserialize(data + sizeof(ElemSizeT), elemSize) != 0,
-                "Unable to deserialize entity - Failed to deserialize child [%llu]", getChildren().size() - 1))
+        if (entity.deserialize(data + sizeof(ElemSizeT), elemSize) == 0)
             return 0;
 
         return sizeof(ElemSizeT) + elemSize;
