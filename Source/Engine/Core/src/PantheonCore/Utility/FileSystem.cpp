@@ -4,14 +4,18 @@
 
 // Platform specific defines to handle getApplicationDirectory()
 #if defined(_WIN32)
+#if __cplusplus
 extern "C"
 {
+#endif
     __declspec(dllimport) unsigned long __stdcall GetModuleFileNameA(void* hModule, void* lpFilename, unsigned long nSize);
     __declspec(dllimport) unsigned long __stdcall GetModuleFileNameW(void* hModule, void* lpFilename, unsigned long nSize);
     __declspec(dllimport) int __stdcall WideCharToMultiByte(unsigned int cp, unsigned long flags, void* widestr, int cchwide,
-                                                            void* str,
-                                                            int cbmb, void* defchar, int* used_default);
+                                                            void* str, int cbmb, void* defchar, int* used_default);
+#ifdef __cplusplus
 }
+#endif
+
 #elif defined(__linux__)
 #include <unistd.h>
 #elif defined(__APPLE__)
@@ -20,13 +24,11 @@ extern "C"
 #endif // OSs
 
 #if defined(_WIN32)
-#include <direct.h>     // Required for: _getcwd(), _chdir()
-#define GETCWD _getcwd  // NOTE: MSDN recommends not to use getcwd(), chdir()
+#include <direct.h>     // Required for: _chdir()
 #define CHDIR _chdir
 #define MAX_PATH 260
 #else
-#include <unistd.h>     // Required for: getch(), chdir() (POSIX), access()
-#define GETCWD getcwd
+#include <unistd.h>     // Required for: chdir()
 #define CHDIR chdir
 #endif
 
@@ -93,46 +95,20 @@ namespace PantheonCore::Utility
             len = strlen(appDir);
 #endif
 
-#ifdef __cpp_lib_filesystem
         const auto tmp = std::filesystem::canonical(len > 0 ? appDir : "./").remove_filename();
         strcpy_s(appDir, MAX_PATH_LENGTH, tmp.string().c_str());
-#else
-        if (len > 0)
-        {
-            for (length_t i = len; i >= 0; --i)
-            {
-                if (appDir[i] == '\\' || appDir[i] == '/')
-                {
-                    appDir[i + 1] = '\0';
-                    break;
-                }
-            }
-        }
-        else
-        {
-            appDir[0] = '.';
-            appDir[1] = PATH_SEPARATOR;
-        }
-#endif
 
         return appDir;
     }
 
     std::string getWorkingDirectory()
     {
-#ifdef __cpp_lib_filesystem
         auto tmp = std::filesystem::current_path().string();
 
         if (!tmp.ends_with(PATH_SEPARATOR))
             tmp += PATH_SEPARATOR;
 
         return tmp;
-#else
-        static char currentDir[MAX_PATH_LENGTH] = { 0 };
-        memset(currentDir, 0, MAX_PATH_LENGTH);
-
-        return GETCWD(currentDir, MAX_PATH_LENGTH - 1) ? std::string(currentDir) : std::string();
-#endif
     }
 
     bool changeDirectory(const std::string& dir)
