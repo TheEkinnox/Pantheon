@@ -36,6 +36,7 @@ jobs:
           -DCMAKE_CXX_COMPILER=${{ matrix.info.cxx }}
           -DCMAKE_C_COMPILER=${{ matrix.info.cc }}
           -DPANTHEON_BUILD_TEST=ON
+          -DPANTHEON_HEADLESS_TEST=ON
       - name: Build
         run: cmake --build "${{ github.workspace }}/build" --config ${{ matrix.type }}
       - name: Test

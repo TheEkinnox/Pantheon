@@ -2,6 +2,7 @@
 get_filename_component(CURRENT_FOLDER_NAME ${CMAKE_CURRENT_LIST_DIR} NAME)
 set(TARGET_NAME Pantheon${CURRENT_FOLDER_NAME})
 
+option(PANTHEON_HEADLESS_TEST "Enable to run the tests in headless mode" OFF)
 
 ###############################
 #                             #
@@ -47,6 +48,10 @@ target_link_libraries(${TARGET_NAME}
 	${LIBMATH_NAME}
 	${ENGINE_TARGETS}
 )
+
+if (PANTHEON_HEADLESS_TEST)
+	target_compile_definitions(${TARGET_NAME} PRIVATE PTH_HEADLESS_TEST)
+endif()
 
 if(MSVC)
 	target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)

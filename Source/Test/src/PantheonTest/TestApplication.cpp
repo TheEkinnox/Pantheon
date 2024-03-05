@@ -11,6 +11,8 @@
 #include <PantheonCore/Utility/FileSystem.h>
 #include <PantheonCore/Utility/ServiceLocator.h>
 
+#include <PantheonRendering/RHI/IRenderAPI.h>
+
 using namespace PantheonCore::Utility;
 using namespace PantheonCore::Resources;
 
@@ -18,10 +20,18 @@ using namespace PantheonApp::Core;
 using namespace PantheonApp::Input;
 using namespace PantheonApp::Windowing;
 
+using namespace PantheonRendering::RHI;
+using namespace PantheonRendering::Core;
+using namespace PantheonRendering::Enums;
+
 namespace PantheonTest
 {
-    TestApplication::TestApplication() :
-        IApplication(std::make_unique<Context>(true, 4)),
+    TestApplication::TestApplication()
+#ifdef PTH_HEADLESS_TEST
+        : IApplication(IContext::create(EGraphicsAPI::NONE, true, 4)),
+#else
+        : IApplication(IContext::create(EGraphicsAPI::OPENGL, true, 4)),
+#endif
         m_window(std::make_unique<Window>(getContext(), WindowSettings{ "Pantheon Test", 800, 600 })),
         m_inputManager(std::make_unique<InputManager>(*m_window)),
         m_threadPool(std::make_unique<ThreadPool>()),
@@ -52,6 +62,17 @@ namespace PantheonTest
         ASSERT(workingDir == appDir, "Invalid working directory - Expected: \"%s\"", appDir);
 
         m_window->makeCurrentContext();
+
+        IRenderAPI::getCurrent().init(true)
+                                .setCullFace(ECullFace::BACK)
+                                .setClearColor(Color::black)
+                                .setCapability(ERenderingCapability::DEPTH_TEST, true)
+                                .setViewport({ 0, 0 }, m_window->getSize());
+
+        m_window->m_framebufferResizeEvent.subscribe([](const DimensionsT size)
+        {
+            IRenderAPI::getCurrent().setViewport({ 0, 0 }, size);
+        });
 
         for (const auto& test : m_tests)
             test->start();
@@ -118,11 +139,15 @@ namespace PantheonTest
 
     bool TestApplication::isRunning() const
     {
+#ifdef PTH_HEADLESS_TEST
         const auto isInProgress = [](const std::unique_ptr<ITest>& test)
         {
             return !test->isDone();
         };
 
         return !m_window->shouldClose() && std::ranges::find_if(m_tests, isInProgress) != m_tests.end();
+#else
+        return !m_window->shouldClose();
+#endif
     }
 }
