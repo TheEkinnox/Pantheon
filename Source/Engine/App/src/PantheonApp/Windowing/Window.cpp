@@ -1,70 +1,33 @@
 #include "PantheonApp/Windowing/Window.h"
-#include "PantheonCore/Debug/Logger.h"
 
-#include <glad/gl.h>
+#include <PantheonCore/Debug/Assertion.h>
+#include <PantheonCore/Debug/Logger.h>
+
 #include <GLFW/glfw3.h>
 
 using namespace PantheonApp::Input;
-using namespace PantheonApp::Windowing::Exceptions;
 
 namespace PantheonApp::Windowing
 {
-    Window::Window(const Core::Context& context, const WindowSettings& settings)
+    Window::Window(Core::IContext& context, const WindowSettings& settings)
         : m_title(settings.m_title),
         m_size({ settings.m_width, settings.m_height }),
         m_minSize({ settings.m_minWidth, settings.m_minHeight }),
         m_maxSize({ settings.m_maxWidth, settings.m_maxHeight }),
-        m_context(context),
+        m_context(&context),
         m_refreshRate(GLFW_DONT_CARE),
         m_isFullScreen(false)
     {
-        m_glfwWindow = nullptr;
-        createGlfwWindow(settings);
+        m_handle = nullptr;
+        createHandle(settings);
         updateSizeLimits();
 
         bindCallbacks();
     }
 
-    void Window::createGlfwWindow(const WindowSettings& settings)
-    {
-        m_glfwWindow = glfwCreateWindow(settings.m_width, settings.m_height, settings.m_title,
-            nullptr, nullptr);
-
-        if (m_glfwWindow == nullptr)
-        {
-            DEBUG_LOG_ERROR("Failed to create GLFW window");
-            throw WindowCreationFailed("Failed to create GLFW window");
-        }
-
-        glfwGetWindowPos(m_glfwWindow, &m_pos.m_x, &m_pos.m_y);
-
-        s_windowsMap[m_glfwWindow] = this;
-    }
-
-    void Window::bindCallbacks() const
-    {
-        glfwSetKeyCallback(m_glfwWindow, onKey);
-        glfwSetMouseButtonCallback(m_glfwWindow, onMouseButton);
-        glfwSetCursorPosCallback(m_glfwWindow, onCursorMove);
-
-        glfwSetWindowPosCallback(m_glfwWindow, onMove);
-        glfwSetWindowSizeCallback(m_glfwWindow, onResize);
-        glfwSetFramebufferSizeCallback(m_glfwWindow, onFrameBufferResize);
-        glfwSetWindowFocusCallback(m_glfwWindow, onFocus);
-        glfwSetWindowIconifyCallback(m_glfwWindow, onIconify);
-        glfwSetWindowCloseCallback(m_glfwWindow, onClose);
-    }
-
     void Window::makeCurrentContext() const
     {
-        glfwMakeContextCurrent(m_glfwWindow);
-
-        // Load GLAD's OpenGL function pointers (TODO: Handle this in the RHI)
-        if (!gladLoadGL(glfwGetProcAddress))
-        {
-            DEBUG_LOG_ERROR("Failed to initialize GLAD");
-            throw std::runtime_error("Failed to initialize GLAD");
-        }
+        m_context->setMainWindow(m_handle);
     }
 
     std::string Window::getTitle() const
@@ -74,7 +37,7 @@ namespace PantheonApp::Windowing
 
     void Window::setTitle(const std::string& title)
     {
-        glfwSetWindowTitle(m_glfwWindow, title.c_str());
+        glfwSetWindowTitle(static_cast<GLFWwindow*>(m_handle), title.c_str());
         m_title = title;
     }
 
@@ -85,7 +48,7 @@ namespace PantheonApp::Windowing
 
     void Window::setPosition(const PosT pos)
     {
-        glfwSetWindowPos(m_glfwWindow, pos.m_x, pos.m_y);
+        glfwSetWindowPos(static_cast<GLFWwindow*>(m_handle), pos.m_x, pos.m_y);
     }
 
     Window::DimensionsT Window::getSize() const
@@ -95,7 +58,7 @@ namespace PantheonApp::Windowing
 
     void Window::setSize(const DimensionsT size)
     {
-        glfwSetWindowSize(m_glfwWindow, size.m_x, size.m_y);
+        glfwSetWindowSize(static_cast<GLFWwindow*>(m_handle), size.m_x, size.m_y);
     }
 
     Window::DimensionsT Window::getMinSize() const
@@ -136,19 +99,47 @@ namespace PantheonApp::Windowing
         updateSizeLimits();
     }
 
-    bool Window::shouldClose() const
+    Window::CursorPosT Window::getCursorPosition() const
     {
-        return glfwWindowShouldClose(m_glfwWindow);
+        double mouseX, mouseY;
+        glfwGetCursorPos(static_cast<GLFWwindow*>(m_handle), &mouseX, &mouseY);
+
+        return { mouseX, mouseY };
     }
 
-    void Window::swapBuffers() const
+    void Window::setCursorPosition(const CursorPosT cursorPos) const
     {
-        glfwSwapBuffers(m_glfwWindow);
+        glfwSetCursorPos(static_cast<GLFWwindow*>(m_handle), cursorPos.m_x, cursorPos.m_y);
+    }
+
+    void Window::showCursor() const
+    {
+        glfwSetInputMode(static_cast<GLFWwindow*>(m_handle), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
+
+    void Window::hideCursor() const
+    {
+        glfwSetInputMode(static_cast<GLFWwindow*>(m_handle), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+    }
+
+    void Window::disableCursor() const
+    {
+        glfwSetInputMode(static_cast<GLFWwindow*>(m_handle), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
+
+    bool Window::shouldClose() const
+    {
+        return glfwWindowShouldClose(static_cast<GLFWwindow*>(m_handle));
+    }
+
+    void Window::swapBuffers()
+    {
+        m_context->swapBuffers();
     }
 
     void Window::setShouldClose(const bool shouldClose) const
     {
-        glfwSetWindowShouldClose(m_glfwWindow, shouldClose);
+        glfwSetWindowShouldClose(static_cast<GLFWwindow*>(m_handle), shouldClose);
     }
 
     float Window::getAspect() const
@@ -178,7 +169,7 @@ namespace PantheonApp::Windowing
 
         glfwSetWindowMonitor
         (
-            m_glfwWindow,
+            static_cast<GLFWwindow*>(m_handle),
             shouldEnable ? glfwGetPrimaryMonitor() : nullptr,
             m_pos.m_x, m_pos.m_y,
             m_size.m_x, m_size.m_y,
@@ -191,43 +182,42 @@ namespace PantheonApp::Windowing
         setFullScreen(!m_isFullScreen);
     }
 
-    void Window::showCursor() const
+    void Window::createHandle(const WindowSettings& settings)
     {
-        glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        m_handle = glfwCreateWindow(settings.m_width, settings.m_height, settings.m_title, nullptr, nullptr);
+
+        ASSERT(m_handle != nullptr, "Failed to create GLFW window");
+
+        glfwGetWindowPos(static_cast<GLFWwindow*>(m_handle), &m_pos.m_x, &m_pos.m_y);
+
+        s_windowsMap[m_handle] = this;
     }
 
-    void Window::hideCursor() const
+    void Window::bindCallbacks() const
     {
-        glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-    }
+        GLFWwindow* glfwWindow = static_cast<GLFWwindow*>(m_handle);
 
-    void Window::disableCursor() const
-    {
-        glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    }
+        glfwSetKeyCallback(glfwWindow, onKey);
+        glfwSetMouseButtonCallback(glfwWindow, onMouseButton);
+        glfwSetCursorPosCallback(glfwWindow, onCursorMove);
 
-    Window::CursorPosT Window::getCursorPosition() const
-    {
-        double mouseX, mouseY;
-        glfwGetCursorPos(m_glfwWindow, &mouseX, &mouseY);
-
-        return { mouseX, mouseY };
-    }
-
-    void Window::setCursorPosition(const CursorPosT cursorPos) const
-    {
-        glfwSetCursorPos(m_glfwWindow, cursorPos.m_x, cursorPos.m_y);
+        glfwSetWindowPosCallback(glfwWindow, onMove);
+        glfwSetWindowSizeCallback(glfwWindow, onResize);
+        glfwSetFramebufferSizeCallback(glfwWindow, onFrameBufferResize);
+        glfwSetWindowFocusCallback(glfwWindow, onFocus);
+        glfwSetWindowIconifyCallback(glfwWindow, onIconify);
+        glfwSetWindowCloseCallback(glfwWindow, onClose);
     }
 
     void Window::updateSizeLimits() const
     {
-        glfwSetWindowSizeLimits(m_glfwWindow,
+        glfwSetWindowSizeLimits(static_cast<GLFWwindow*>(m_handle),
             m_minSize.m_x, m_minSize.m_y,
             m_maxSize.m_x, m_maxSize.m_y
         );
     }
 
-    Window* Window::getInstance(GLFWwindow* window)
+    Window* Window::getInstance(void* window)
     {
         return s_windowsMap.contains(window) ? s_windowsMap[window] : nullptr;
     }

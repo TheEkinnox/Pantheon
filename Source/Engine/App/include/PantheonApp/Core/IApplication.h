@@ -1,6 +1,5 @@
 #pragma once
-
-#include "PantheonApp/Core/Context.h"
+#include "PantheonApp/Core/IContext.h"
 
 namespace PantheonApp::Core
 {
@@ -47,13 +46,13 @@ namespace PantheonApp::Core
         /**
          * \brief Creates an application with the given context
          */
-        explicit IApplication(std::unique_ptr<Context>);
+        explicit IApplication(std::unique_ptr<IContext>);
 
         /**
          * \brief Provides read access to the application's context
          * \return A reference to the application's context
          */
-        const Context& getContext() const;
+        IContext& getContext() const;
 
         /**
          * \brief Called when the application starts
@@ -76,6 +75,6 @@ namespace PantheonApp::Core
         virtual void onStop() = 0;
 
     private:
-        std::unique_ptr<Context> m_context = nullptr;
+        std::unique_ptr<IContext> m_context = nullptr;
     };
 }

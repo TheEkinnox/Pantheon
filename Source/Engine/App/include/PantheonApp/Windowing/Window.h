@@ -1,11 +1,5 @@
 #pragma once
-#include <stdexcept>
-
-#include <PantheonCore/Eventing/Event.h>
-
-#include <Vector/Vector2.h>
-
-#include "PantheonApp/Core/Context.h"
+#include "PantheonApp/Core/IContext.h"
 #include "PantheonApp/Input/EInputModifier.h"
 #include "PantheonApp/Input/EKey.h"
 #include "PantheonApp/Input/EKeyState.h"
@@ -13,33 +7,15 @@
 #include "PantheonApp/Input/EMouseButtonState.h"
 #include "PantheonApp/Windowing/WindowSettings.h"
 
+#include <PantheonCore/Eventing/Event.h>
+
+#include <Vector/Vector2.h>
+
 // Forward declaration of GLFWwindow to avoid including glfw in the header
-using GLFWwindow = struct GLFWwindow;
+struct GLFWwindow;
 
 namespace PantheonApp::Windowing
 {
-    namespace Exceptions
-    {
-        class WindowCreationFailed : public std::runtime_error
-        {
-        public:
-            WindowCreationFailed()
-                : runtime_error("Window creation failed")
-            {
-            }
-
-            explicit WindowCreationFailed(const std::string& message)
-                : runtime_error(message.c_str())
-            {
-            }
-
-            explicit WindowCreationFailed(const char* message)
-                : runtime_error(message)
-            {
-            }
-        };
-    }
-
     class Window
     {
     public:
@@ -47,7 +23,7 @@ namespace PantheonApp::Windowing
         using PosT = LibMath::Vector2I;
         using CursorPosT = LibMath::TVector2<double>;
 
-        PantheonCore::Eventing::Event<Input::EKey, int, Input::EKeyState, Input::EInputModifier> m_keyEvent;
+        PantheonCore::Eventing::Event<Input::EKey, int, Input::EKeyState, Input::EInputModifier>            m_keyEvent;
         PantheonCore::Eventing::Event<Input::EMouseButton, Input::EMouseButtonState, Input::EInputModifier> m_mouseButtonEvent;
 
         PantheonCore::Eventing::Event<DimensionsT> m_resizeEvent;
@@ -61,11 +37,11 @@ namespace PantheonApp::Windowing
         PantheonCore::Eventing::Event<>            m_closeEvent;
 
         /**
-         * \brief Creates a GLFW window
+         * \brief Creates a window
          * \param context The application's context
          * \param settings The window'S settings
          */
-        Window(const Core::Context& context, const WindowSettings& settings);
+        Window(Core::IContext& context, const WindowSettings& settings);
 
         /**
          * \brief Disable the Application's copy constructor
@@ -91,17 +67,6 @@ namespace PantheonApp::Windowing
          * \brief Disable the Application's move assignment operator
          */
         Window& operator=(Window&&) = delete;
-
-        /**
-         * \brief Creates a glfw window with the given settings
-         * \param settings The window creation settings
-         */
-        void createGlfwWindow(const WindowSettings& settings);
-
-        /**
-         * \brief Binds the glfw callbacks
-         */
-        void bindCallbacks() const;
 
         /**
          * \brief Sets the window as glfw's current context
@@ -200,7 +165,7 @@ namespace PantheonApp::Windowing
         /**
          * \brief Swaps the render buffers
          */
-        void swapBuffers() const;
+        void swapBuffers();
 
         /**
          * \brief Sets whether the window should close or not
@@ -244,7 +209,7 @@ namespace PantheonApp::Windowing
         void toggleFullScreen();
 
     private:
-        inline static std::unordered_map<GLFWwindow*, Window*> s_windowsMap;
+        inline static std::unordered_map<void*, Window*> s_windowsMap;
 
         std::string m_title;
         DimensionsT m_size;
@@ -252,11 +217,22 @@ namespace PantheonApp::Windowing
         DimensionsT m_maxSize;
         PosT        m_pos;
 
-        const Core::Context& m_context;
-        GLFWwindow*          m_glfwWindow;
+        Core::IContext* m_context;
+        void*           m_handle;
 
         int  m_refreshRate;
         bool m_isFullScreen;
+
+        /**
+         * \brief Creates a glfw window with the given settings
+         * \param settings The window creation settings
+         */
+        void createHandle(const WindowSettings& settings);
+
+        /**
+         * \brief Binds the glfw callbacks
+         */
+        void bindCallbacks() const;
 
         /**
          * \brief Updates the glfw window's size limits based
@@ -264,11 +240,11 @@ namespace PantheonApp::Windowing
         void updateSizeLimits() const;
 
         /**
-         * \brief Finds the window linked to the given GLFW window
+         * \brief Finds the window linked to the given handle
          * \param window The glfw window linked to the window to find.
          * \return A pointer to the found window or nullptr if no window was found.
          */
-        static Window* getInstance(GLFWwindow* window);
+        static Window* getInstance(void* window);
 
         /**
          * \brief GLFW key action callback

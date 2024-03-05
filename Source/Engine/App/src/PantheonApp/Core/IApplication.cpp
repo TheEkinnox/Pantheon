@@ -8,10 +8,9 @@ namespace PantheonApp::Core
 {
     void IApplication::run(const int argc, char* argv[])
     {
-        if (!m_context && !m_context->isInitialized())
-            throw std::runtime_error("Unable to run application - context is undefined");
+        ASSERT(m_context && m_context->isInitialized(), "Unable to run application - context is undefined");
 
-        Timer& timer = *getContext().m_timer;
+        Timer& timer = m_context->m_timer;
         timer.reset();
 
         onStart(argc, argv);
@@ -35,12 +34,12 @@ namespace PantheonApp::Core
         onStop();
     }
 
-    IApplication::IApplication(std::unique_ptr<Context> context) :
-        m_context(std::move(context))
+    IApplication::IApplication(std::unique_ptr<IContext> context)
+        : m_context(std::move(context))
     {
     }
 
-    const Context& IApplication::getContext() const
+    IContext& IApplication::getContext() const
     {
         ASSERT(m_context);
         return *m_context;
