@@ -1,13 +1,9 @@
 #pragma once
-#include "PantheonRendering/Core/Color.h"
-#include "PantheonRendering/RHI/ITexture.h"
 #include "PantheonRendering/RHI/IShader.h"
 
 #include <PantheonCore/Resources/IResource.h>
 #include <PantheonCore/Resources/ResourceRef.h>
 #include <PantheonCore/Serialization/IJsonSerializable.h>
-
-#include <Vector/Vector2.h>
 
 #include <any>
 
@@ -24,14 +20,46 @@ namespace PantheonRendering::Resources
             std::any               m_value;
         };
 
+        /**
+         * \brief Creates a default material
+         */
         Material() = default;
+
+        /**
+         * \brief Creates a material with the given shader
+         * \param shader The material's shader
+         */
         explicit Material(const PantheonCore::Resources::ResourceRef<RHI::IShader>& shader);
 
-        Material(const Material& other)     = default;
-        Material(Material&& other) noexcept = default;
-        ~Material() override                = default;
+        /**
+         * \brief Creates a copy of the given material
+         * \param other The material to copy
+         */
+        Material(const Material& other) = default;
 
-        Material& operator=(const Material& other)     = default;
+        /**
+         * \brief Creates a move copy of the given material
+         * \param other The material to move
+         */
+        Material(Material&& other) noexcept = default;
+
+        /**
+         * \brief Destroys the material
+         */
+        ~Material() override = default;
+
+        /**
+         * \brief Assigns a copy of the given material to this one
+         * \param other The material to copy
+         * \return A reference to the modified material
+         */
+        Material& operator=(const Material& other) = default;
+
+        /**
+         * \brief Moves the given material into this one
+         * \param other The material to move
+         * \return A reference to the modified material
+         */
         Material& operator=(Material&& other) noexcept = default;
 
         /**
@@ -140,10 +168,15 @@ namespace PantheonRendering::Resources
         PantheonCore::Resources::ResourceRef<RHI::IShader> m_shader;
         std::unordered_map<std::string, Property>          m_properties;
 
+        /**
+         * \brief Gets the default value for the given data type
+         * \param dataType The values data type
+         * \return The data type's default value
+         */
         static std::any getDefaultValue(Enums::EShaderDataType dataType);
 
         /**
-         * \brief
+         * \brief Binds the given property to the given shader
          * \param shader The target shader
          * \param name The target property's name
          * \param property The target property

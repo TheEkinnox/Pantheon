@@ -6,13 +6,39 @@ namespace PantheonRendering::RHI
     class OpenGLShaderStorageBuffer final : public IShaderStorageBuffer
     {
     public:
-        explicit OpenGLShaderStorageBuffer(Enums::EAccessMode accessSpecifier, uint32_t bindIndex);
+        /**
+         * \brief Creates a shader storage buffer with the given access mode and bind index
+         * \param accessMode The ssbo's access specifier
+         * \param bindIndex The ssbo's binding point
+         */
+        explicit OpenGLShaderStorageBuffer(Enums::EAccessMode accessMode, uint32_t bindIndex);
+
+        /**
+         * \brief Disable shader storage buffer copying
+         */
         OpenGLShaderStorageBuffer(const OpenGLShaderStorageBuffer&) = delete;
+
+        /**
+         * \brief Creates a move copy of the given shader storage buffer
+         * \param other The ssbo to move
+         */
         OpenGLShaderStorageBuffer(OpenGLShaderStorageBuffer&& other) noexcept;
 
+        /**
+         * \brief Destroys the given shader storage buffer
+         */
         ~OpenGLShaderStorageBuffer() override;
 
+        /**
+         * \brief Disable shader storage buffer copying
+         */
         OpenGLShaderStorageBuffer& operator=(const OpenGLShaderStorageBuffer&) = delete;
+
+        /**
+         * \brief Moves the given shader storage buffer into this one
+         * \param other The ssbo to move
+         * \return A reference to the modified ssbo
+         */
         OpenGLShaderStorageBuffer& operator=(OpenGLShaderStorageBuffer&& other) noexcept;
 
         /**

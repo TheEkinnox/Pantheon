@@ -10,12 +10,32 @@ namespace PantheonRendering::RHI
     class IVertexBuffer
     {
     public:
-        IVertexBuffer(const IVertexBuffer&)           = delete;
+        /**
+         * \brief Disable vertex buffer copying
+         */
+        IVertexBuffer(const IVertexBuffer&) = delete;
+
+        /**
+         * \brief Creates a move copy of the given vertex buffer
+         * \param other The vertex buffer to move
+         */
         IVertexBuffer(IVertexBuffer&& other) noexcept = default;
 
+        /**
+         * \brief Destroys the vertex buffer
+         */
         virtual ~IVertexBuffer() = default;
 
-        IVertexBuffer& operator=(const IVertexBuffer&)           = delete;
+        /**
+         * \brief Disable vertex buffer copying
+         */
+        IVertexBuffer& operator=(const IVertexBuffer&) = delete;
+
+        /**
+         * \brief Moves the given vertex buffer into this one
+         * \param other The vertex buffer to move
+         * \return A reference to the modified vertex buffer
+         */
         IVertexBuffer& operator=(IVertexBuffer&& other) noexcept = default;
 
         /**

@@ -9,12 +9,32 @@ namespace PantheonRendering::RHI
     class IUniformBuffer
     {
     public:
+        /**
+         * \brief Disable uniform buffer copying
+         */
         IUniformBuffer(const IUniformBuffer&) = delete;
+
+        /**
+         * \brief Creates a move copy of the given uniform buffer
+         * \param other The ubo to move
+         */
         IUniformBuffer(IUniformBuffer&& other) noexcept;
 
+        /**
+         * \brief Destroys the uniform buffer
+         */
         virtual ~IUniformBuffer() = default;
 
+        /**
+         * \brief Disable uniform buffer copying
+         */
         IUniformBuffer& operator=(const IUniformBuffer&) = delete;
+
+        /**
+         * \brief Moves the given uniform buffer into this one
+         * \param other The ubo to copy
+         * \return A reference to the modified ubo
+         */
         IUniformBuffer& operator=(IUniformBuffer&& other) noexcept;
 
         /**
@@ -81,6 +101,11 @@ namespace PantheonRendering::RHI
         uint32_t           m_bindIndex;
         Enums::EAccessMode m_accessMode;
 
+        /**
+         * \brief Creates a uniform buffer with the given access mode and bind index
+         * \param accessMode The ubo's access specifier
+         * \param bindIndex The ubo's binding point
+         */
         IUniformBuffer(Enums::EAccessMode accessMode, uint32_t bindIndex);
     };
 }

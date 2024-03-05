@@ -6,12 +6,40 @@ namespace PantheonRendering::RHI
     class OpenGLShader final : public IShader
     {
     public:
+        /**
+         * \brief Creates a default shader
+         */
         OpenGLShader() = default;
+
+        /**
+         * \brief Creates a copy of the given shader
+         * \param other The shader to copy
+         */
         OpenGLShader(const OpenGLShader& other);
+
+        /**
+         * \brief Creates a move copy of the given shader
+         * \param other The shader to move
+         */
         OpenGLShader(OpenGLShader&& other) noexcept;
+
+        /**
+         * \brief Destroys the given shader
+         */
         ~OpenGLShader() override;
 
+        /**
+         * \brief Assigns a copy of the given shader to this one
+         * \param other The shader to copy
+         * \return A reference to the modified shader
+         */
         OpenGLShader& operator=(const OpenGLShader& other);
+
+        /**
+         * \brief Moves the given shader into this one
+         * \param other The shader to move
+         * \return A reference to the modified shader
+         */
         OpenGLShader& operator=(OpenGLShader&& other) noexcept;
 
         /**

@@ -2,13 +2,10 @@
 
 #include "PantheonRendering/RHI/ITexture.h"
 
-#include <PantheonCore/Utility/ServiceLocator.h>
-
 #include <rapidjson/istreamwrapper.h>
 
 using namespace LibMath;
 using namespace PantheonCore::Resources;
-using namespace PantheonRendering::Core;
 using namespace PantheonRendering::Enums;
 using namespace PantheonRendering::RHI;
 
@@ -181,7 +178,7 @@ namespace PantheonRendering::Resources
             bindProperty(shader, name, property);
     }
 
-    std::any Material::getDefaultValue(EShaderDataType dataType)
+    std::any Material::getDefaultValue(const EShaderDataType dataType)
     {
         switch (dataType)
         {

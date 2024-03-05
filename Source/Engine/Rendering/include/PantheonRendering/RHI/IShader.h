@@ -24,7 +24,36 @@ namespace PantheonRendering::RHI
             int                    m_location;
         };
 
+        /**
+         * \brief Creates a copy of the given shader
+         * \param other The shader to copy
+         */
+        IShader(const IShader& other) = default;
+
+        /**
+         * \brief Creates a move copy of the given shader
+         * \param other The shader to move
+         */
+        IShader(IShader&& other) noexcept = default;
+
+        /**
+         * \brief Destroys the shader
+         */
         ~IShader() override = default;
+
+        /**
+         * \brief Assigns a copy of the given shader to this one
+         * \param other The shader to copy
+         * \return A reference to the modified shader
+         */
+        IShader& operator=(const IShader& other) = default;
+
+        /**
+         * \brief Moves the given shader into this one
+         * \param other The shader to move
+         * \return A reference to the modified shader
+         */
+        IShader& operator=(IShader&& other) noexcept = default;
 
         /**
          * \brief Binds the shader to the context.
@@ -177,6 +206,11 @@ namespace PantheonRendering::RHI
 
     protected:
         std::unordered_map<std::string, UniformInfo> m_uniforms;
+
+        /**
+         * \brief Creates a default shader
+         */
+        IShader() = default;
     };
 }
 

@@ -13,8 +13,8 @@ using namespace PantheonRendering::Enums;
 
 namespace PantheonRendering::RHI
 {
-    OpenGLShaderStorageBuffer::OpenGLShaderStorageBuffer(const EAccessMode accessSpecifier, const uint32_t bindIndex)
-        : IShaderStorageBuffer(accessSpecifier, bindIndex)
+    OpenGLShaderStorageBuffer::OpenGLShaderStorageBuffer(const EAccessMode accessMode, const uint32_t bindIndex)
+        : IShaderStorageBuffer(accessMode, bindIndex)
     {
         glGenBuffers(1, &m_id);
     }

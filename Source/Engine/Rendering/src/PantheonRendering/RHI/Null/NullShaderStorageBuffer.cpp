@@ -2,8 +2,8 @@
 
 namespace PantheonRendering::RHI
 {
-    NullShaderStorageBuffer::NullShaderStorageBuffer(const Enums::EAccessMode accessSpecifier, const uint32_t bindIndex)
-        : IShaderStorageBuffer(accessSpecifier, bindIndex)
+    NullShaderStorageBuffer::NullShaderStorageBuffer(const Enums::EAccessMode accessMode, const uint32_t bindIndex)
+        : IShaderStorageBuffer(accessMode, bindIndex)
     {
     }
 

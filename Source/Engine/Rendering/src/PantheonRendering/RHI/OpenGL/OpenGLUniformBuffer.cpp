@@ -13,8 +13,8 @@ using namespace PantheonRendering::Enums;
 
 namespace PantheonRendering::RHI
 {
-    OpenGLUniformBuffer::OpenGLUniformBuffer(const EAccessMode accessSpecifier, const uint32_t bindIndex)
-        : IUniformBuffer(accessSpecifier, bindIndex)
+    OpenGLUniformBuffer::OpenGLUniformBuffer(const EAccessMode accessMode, const uint32_t bindIndex)
+        : IUniformBuffer(accessMode, bindIndex)
     {
         glGenBuffers(1, &m_id);
     }

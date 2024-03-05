@@ -7,11 +7,32 @@ namespace PantheonRendering::RHI
     class IVertexArray
     {
     public:
-        IVertexArray(const IVertexArray&)           = delete;
-        IVertexArray(IVertexArray&& other) noexcept = default;
-        virtual ~IVertexArray()                     = default;
+        /**
+         * \brief Disable vertex array copying
+         */
+        IVertexArray(const IVertexArray&) = delete;
 
-        IVertexArray& operator=(const IVertexArray&)           = delete;
+        /**
+         * \brief Creates a move copy of the given vertex array
+         * \param other The vertex array to move
+         */
+        IVertexArray(IVertexArray&& other) noexcept = default;
+
+        /**
+         * \brief Destroys the vertex array
+         */
+        virtual ~IVertexArray() = default;
+
+        /**
+         * \brief Disable vertex array copying
+         */
+        IVertexArray& operator=(const IVertexArray&) = delete;
+
+        /**
+         * \brief Moves the given vertex array into this one
+         * \param other The vertex array to move
+         * \return A reference to the modified vertex array
+         */
         IVertexArray& operator=(IVertexArray&& other) noexcept = default;
 
         /**
@@ -33,6 +54,9 @@ namespace PantheonRendering::RHI
         static std::unique_ptr<IVertexArray> create(const IVertexBuffer& vbo, const IIndexBuffer& ebo);
 
     protected:
+        /**
+         * \brief Creates a default vertex array
+         */
         IVertexArray() = default;
     };
 }

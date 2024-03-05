@@ -6,12 +6,40 @@ namespace PantheonRendering::RHI
     class NullShader final : public IShader
     {
     public:
-        NullShader()                            = default;
-        NullShader(const NullShader& other)     = default;
-        NullShader(NullShader&& other) noexcept = default;
-        ~NullShader() override                  = default;
+        /**
+         * \brief Creates a default shader
+         */
+        NullShader() = default;
 
-        NullShader& operator=(const NullShader& other)     = default;
+        /**
+         * \brief Creates a copy of the given shader
+         * \param other The shader to copy
+         */
+        NullShader(const NullShader& other) = default;
+
+        /**
+         * \brief Creates a move copy of the given shader
+         * \param other The shader to move
+         */
+        NullShader(NullShader&& other) noexcept = default;
+
+        /**
+         * \brief Destroys the given shader
+         */
+        ~NullShader() override = default;
+
+        /**
+         * \brief Assigns a copy of the given shader to this one
+         * \param other The shader to copy
+         * \return A reference to the modified shader
+         */
+        NullShader& operator=(const NullShader& other) = default;
+
+        /**
+         * \brief Moves the given shader into this one
+         * \param other The shader to move
+         * \return A reference to the modified shader
+         */
         NullShader& operator=(NullShader&& other) noexcept = default;
 
         /**

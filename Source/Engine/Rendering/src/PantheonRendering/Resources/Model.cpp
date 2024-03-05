@@ -2,7 +2,6 @@
 
 #include "PantheonRendering/LowRenderer/Camera.h"
 #include "PantheonRendering/Resources/Mesh.h"
-#include "PantheonRendering/RHI/ITexture.h"
 
 #include <PantheonCore/Resources/ResourceRef.h>
 
@@ -13,7 +12,6 @@
 using namespace LibMath;
 using namespace PantheonCore::Resources;
 using namespace PantheonCore::Utility;
-using namespace PantheonRendering::Core;
 using namespace PantheonRendering::Geometry;
 
 namespace PantheonRendering::Resources

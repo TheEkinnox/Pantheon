@@ -6,13 +6,39 @@ namespace PantheonRendering::RHI
     class NullShaderStorageBuffer final : public IShaderStorageBuffer
     {
     public:
-        explicit NullShaderStorageBuffer(Enums::EAccessMode accessSpecifier, uint32_t p_bindIndex);
-        NullShaderStorageBuffer(const NullShaderStorageBuffer&)           = delete;
+        /**
+         * \brief Creates a shader storage buffer with the given access mode and bind index
+         * \param accessMode The ssbo's access specifier
+         * \param bindIndex The ssbo's binding point
+         */
+        explicit NullShaderStorageBuffer(Enums::EAccessMode accessMode, uint32_t bindIndex);
+
+        /**
+         * \brief Disable shader storage buffer copying
+         */
+        NullShaderStorageBuffer(const NullShaderStorageBuffer&) = delete;
+
+        /**
+         * \brief Creates a move copy of the given shader storage buffer
+         * \param other The ssbo to move
+         */
         NullShaderStorageBuffer(NullShaderStorageBuffer&& other) noexcept = default;
 
+        /**
+         * \brief Destroys the given shader storage buffer
+         */
         ~NullShaderStorageBuffer() override = default;
 
-        NullShaderStorageBuffer& operator=(const NullShaderStorageBuffer&)           = delete;
+        /**
+         * \brief Disable shader storage buffer copying
+         */
+        NullShaderStorageBuffer& operator=(const NullShaderStorageBuffer&) = delete;
+
+        /**
+         * \brief Moves the given shader storage buffer into this one
+         * \param other The ssbo to move
+         * \return A reference to the modified ssbo
+         */
         NullShaderStorageBuffer& operator=(NullShaderStorageBuffer&& other) noexcept = default;
 
         /**

@@ -2,8 +2,8 @@
 
 namespace PantheonRendering::RHI
 {
-    NullUniformBuffer::NullUniformBuffer(const Enums::EAccessMode accessSpecifier, const uint32_t bindIndex)
-        : IUniformBuffer(accessSpecifier, bindIndex)
+    NullUniformBuffer::NullUniformBuffer(const Enums::EAccessMode accessMode, const uint32_t bindIndex)
+        : IUniformBuffer(accessMode, bindIndex)
     {
     }
 

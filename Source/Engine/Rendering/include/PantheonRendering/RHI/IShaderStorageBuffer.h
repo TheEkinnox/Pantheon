@@ -9,12 +9,32 @@ namespace PantheonRendering::RHI
     class IShaderStorageBuffer
     {
     public:
+        /**
+         * \brief Disable shader storage buffer copying
+         */
         IShaderStorageBuffer(const IShaderStorageBuffer&) = delete;
+
+        /**
+         * \brief Creates a move copy of the given shader storage buffer
+         * \param other The ssbo to move
+         */
         IShaderStorageBuffer(IShaderStorageBuffer&& other) noexcept;
 
+        /**
+         * \brief Destroys the given shader storage buffer
+         */
         virtual ~IShaderStorageBuffer() = default;
 
+        /**
+         * \brief Disable shader storage buffer copying
+         */
         IShaderStorageBuffer& operator=(const IShaderStorageBuffer&) = delete;
+
+        /**
+         * \brief Moves the given shader storage buffer into this one
+         * \param other The ssbo to move
+         * \return A reference to the modified ssbo
+         */
         IShaderStorageBuffer& operator=(IShaderStorageBuffer&& other) noexcept;
 
         /**
@@ -81,6 +101,11 @@ namespace PantheonRendering::RHI
         uint32_t           m_bindIndex;
         Enums::EAccessMode m_accessMode;
 
+        /**
+         * \brief Creates a shader storage buffer with the given access mode and bind index
+         * \param accessMode The ssbo's access specifier
+         * \param bindIndex The ssbo's binding point
+         */
         IShaderStorageBuffer(Enums::EAccessMode accessMode, uint32_t bindIndex);
     };
 }
