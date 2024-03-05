@@ -22,6 +22,12 @@ namespace PantheonCore::Resources
         ResourceManager() = default;
 
         /**
+         * \brief Creates a resource manager with the given search paths
+         * \param searchPaths The resource manager's search paths
+         */
+        ResourceManager(std::vector<std::string> searchPaths);
+
+        /**
          * \brief Creates a copy of the given resource manager
          * \param other A reference to the resource manager to copy
          */
@@ -139,10 +145,36 @@ namespace PantheonCore::Resources
          */
         void clear();
 
+        /**
+         * \brief Gets the resource manager's search paths
+         * \return The resource manager's search paths
+         */
+        std::vector<std::string> getSearchPaths() const;
+
+        /**
+         * \brief Sets the resource manager's search paths
+         * \param searchPaths The resource manager's new search paths
+         */
+        void setSearchPaths(std::vector<std::string> searchPaths);
+
+        /**
+         * \brief Adds the given path to the resource manager's search paths
+         * \param path The search path to add
+         */
+        void addSearchPath(const std::string& path);
+
+        /**
+         * \brief Removes the given path from the resource manager's search paths
+         * \param path The search path to remove
+         */
+        void removeSearchPath(const std::string& path);
+
     private:
         BundlesMap  m_bundles;
         ResourceMap m_resources;
         KeyMap      m_resourceKeys;
+
+        std::vector<std::string> m_searchPaths;
 
         /**
          * \brief Loads all the resources contained in the given asset bundle
@@ -165,6 +197,13 @@ namespace PantheonCore::Resources
          * \return The resource's path
          */
         std::string getResourcePath(const std::string& keyOrPath) const;
+
+        /**
+         * \brief Gets the full path of a resource from its relative path
+         * \param path The resource's relative path
+         * \return The resource's path including the search path
+         */
+        std::string getFullPath(const std::string& path) const;
     };
 }
 

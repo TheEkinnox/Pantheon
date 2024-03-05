@@ -2,6 +2,7 @@
 
 #include "PantheonCore/Debug/Logger.h"
 #include "PantheonCore/Resources/IResource.h"
+#include "PantheonCore/Utility/FileSystem.h"
 
 #include <ranges>
 
@@ -9,6 +10,11 @@ using namespace PantheonCore::Assets;
 
 namespace PantheonCore::Resources
 {
+    ResourceManager::ResourceManager(std::vector<std::string> searchPaths)
+        : m_searchPaths(std::move(searchPaths))
+    {
+    }
+
     ResourceManager::~ResourceManager()
     {
         clear();
@@ -36,12 +42,12 @@ namespace PantheonCore::Resources
 
     bool ResourceManager::includeBundle(const std::string& path, const bool shouldLoadResources)
     {
-        if (CHECK(!path.empty(), "Unable to include bundle - empty path"))
+        if (!CHECK(!path.empty(), "Unable to include bundle - empty path"))
             return false;
 
         AssetBundle& assetBundle = m_bundles[path];
 
-        if (!assetBundle.load(path))
+        if (!assetBundle.load(getFullPath(path)))
         {
             m_bundles.erase(path);
             return false;
@@ -79,7 +85,7 @@ namespace PantheonCore::Resources
 
         IResource* resource = IResource::create(type);
 
-        if (resource == nullptr || (shouldLoad && (!loadResource(resource, key, path))))
+        if (resource == nullptr || (shouldLoad && !loadResource(resource, key, path)))
             return nullptr;
 
         m_resources[key]     = resource;
@@ -115,7 +121,7 @@ namespace PantheonCore::Resources
             return resourceData;
         }
 
-        std::ifstream fileStream(getResourcePath(keyOrPath), std::ios::binary | std::ios::ate);
+        std::ifstream fileStream(getFullPath(getResourcePath(keyOrPath)), std::ios::binary | std::ios::ate);
 
         if (!fileStream.is_open())
             return {};
@@ -169,6 +175,29 @@ namespace PantheonCore::Resources
         m_resources.clear();
     }
 
+    std::vector<std::string> ResourceManager::getSearchPaths() const
+    {
+        return m_searchPaths;
+    }
+
+    void ResourceManager::setSearchPaths(std::vector<std::string> searchPaths)
+    {
+        m_searchPaths = std::move(searchPaths);
+    }
+
+    void ResourceManager::addSearchPath(const std::string& path)
+    {
+        const auto it = std::ranges::find(m_searchPaths, path);
+
+        if (it == m_searchPaths.end())
+            m_searchPaths.emplace_back(path);
+    }
+
+    void ResourceManager::removeSearchPath(const std::string& path)
+    {
+        m_searchPaths.erase(std::ranges::find(m_searchPaths, path));
+    }
+
     void ResourceManager::importBundle(const AssetBundle& bundle)
     {
         const auto assets = bundle.getAssets();
@@ -186,7 +215,7 @@ namespace PantheonCore::Resources
 
             if (ptr == nullptr)
             {
-                DEBUG_LOG("[WARNING] Skipped asset at path \"%s\" - Unable to create resource of type \"%s\"", path, type);
+                DEBUG_LOG("[WARNING] Skipped bundle asset at path \"%s\" - Unable to create resource of type \"%s\"", path, type);
                 continue;
             }
 
@@ -194,7 +223,7 @@ namespace PantheonCore::Resources
 
             if (assetData.empty())
             {
-                DEBUG_LOG("[WARNING] Skipped asset at path \"%s\" - Empty data", path);
+                DEBUG_LOG("[WARNING] Skipped bundle asset at path \"%s\" - Empty data", path);
                 remove(guid);
                 removePath(path);
                 continue;
@@ -202,7 +231,7 @@ namespace PantheonCore::Resources
 
             if (ptr->deserialize(assetData.data(), assetData.size()) == 0 || !ptr->init())
             {
-                DEBUG_LOG("[WARNING] Skipped asset at path \"%s\" - Unable to load resource", path);
+                DEBUG_LOG("[WARNING] Skipped bundle asset at path \"%s\" - Unable to load resource", path);
                 remove(guid);
                 removePath(path);
             }
@@ -226,7 +255,7 @@ namespace PantheonCore::Resources
             return resource->deserialize(bundleData.data(), bundleData.size()) != 0 && resource->init();
         }
 
-        return resource->load(path) && resource->init();
+        return resource->load(getFullPath(path)) && resource->init();
     }
 
     std::string ResourceManager::getResourcePath(const std::string& keyOrPath) const
@@ -251,5 +280,18 @@ namespace PantheonCore::Resources
         }
 
         return keyOrPath;
+    }
+
+    std::string ResourceManager::getFullPath(const std::string& path) const
+    {
+        for (const auto& searchPath : m_searchPaths)
+        {
+            const std::string fullPath = Utility::appendPath(searchPath, path);
+
+            if (Utility::pathExists(fullPath))
+                return fullPath;
+        }
+
+        return path;
     }
 }

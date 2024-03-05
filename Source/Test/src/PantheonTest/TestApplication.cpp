@@ -61,6 +61,8 @@ namespace PantheonTest
         DEBUG_LOG("Current working directory: \"%s\"", workingDir.c_str());
         ASSERT(workingDir == appDir, "Invalid working directory - Expected: \"%s\"", appDir);
 
+        m_resourceManager->addSearchPath("assets");
+
         m_window->makeCurrentContext();
 
         IRenderAPI::getCurrent().init(true)
