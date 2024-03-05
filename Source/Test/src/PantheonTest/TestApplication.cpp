@@ -43,7 +43,10 @@ namespace PantheonTest
         ServiceLocator::provide<ThreadPool>(*m_threadPool);
         ServiceLocator::provide<ResourceManager>(*m_resourceManager);
 
+#ifndef PTH_HEADLESS_TEST
         m_tests.emplace_back(std::make_unique<WindowTest>());
+#endif
+
         m_tests.emplace_back(std::make_unique<InputTest>());
         m_tests.emplace_back(std::make_unique<ThreadPoolTest>());
         m_tests.emplace_back(std::make_unique<EntitiesTest>());
