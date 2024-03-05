@@ -19,7 +19,8 @@ namespace PantheonCore::Assets
 
     AssetBundle::AssetBundle(const std::string& path)
     {
-        ASSERT(load(path));
+        [[maybe_unused]] const bool result = load(path);
+        ASSERT(result);
     }
 
     bool AssetBundle::load(const std::string& path)

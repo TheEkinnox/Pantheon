@@ -73,7 +73,10 @@ namespace PantheonRendering::RHI
         : IShader(other), m_source(other.m_source)
     {
         if (other.m_program != 0)
-        ASSERT(parseSource());
+        {
+            [[maybe_unused]] const bool result = parseSource();
+            ASSERT(result);
+        }
     }
 
     OpenGLShader::OpenGLShader(OpenGLShader&& other) noexcept
@@ -95,7 +98,10 @@ namespace PantheonRendering::RHI
         m_source = other.m_source;
 
         if (other.m_program != 0)
-        ASSERT(parseSource());
+        {
+            [[maybe_unused]] const bool result = parseSource();
+            ASSERT(result);
+        }
 
         return *this;
     }

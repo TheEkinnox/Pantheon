@@ -10,7 +10,9 @@ namespace PantheonApp::Platform
         : m_windowHandle(nullptr)
     {
         // Initialize and configure glfw
-        ASSERT(glfwInit() == GLFW_TRUE, "Failed to initialize GLFW");
+        [[maybe_unused]] const auto result = glfwInit();
+        ASSERT(result == GLFW_TRUE, "Failed to initialize GLFW");
+
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
         m_isInitialized = true;

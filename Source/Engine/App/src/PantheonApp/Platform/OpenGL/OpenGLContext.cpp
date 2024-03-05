@@ -14,7 +14,8 @@ namespace PantheonApp::Platform
         : m_windowHandle(nullptr), m_useVsync(useVsync)
     {
         // Initialize and configure glfw
-        ASSERT(glfwInit() == GLFW_TRUE, "Failed to initialize GLFW");
+        [[maybe_unused]] const auto result = glfwInit();
+        ASSERT(result == GLFW_TRUE, "Failed to initialize GLFW");
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, PANTHEON_OPENGL_VERSION_MAJOR);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, PANTHEON_OPENGL_VERSION_MINOR);

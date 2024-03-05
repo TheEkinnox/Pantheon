@@ -370,7 +370,10 @@ namespace PantheonRendering::RHI
 
     OpenGLAPI& OpenGLAPI::init(const bool enableDebug)
     {
-        ASSERT(gladLoadGL(glfwGetProcAddress), "Failed to initialize GLAD");
+        const int version = gladLoadGL(glfwGetProcAddress);
+
+        ASSERT(version != 0, "Failed to initialize GLAD");
+        DEBUG_LOG("Loaded OpenGL %d.%d", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
 
         if (enableDebug)
         {
