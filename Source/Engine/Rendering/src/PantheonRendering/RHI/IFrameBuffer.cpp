@@ -4,8 +4,6 @@
 #include "PantheonRendering/RHI/OpenGL/OpenGLFrameBuffer.h"
 #include "PantheonRendering/RHI/Null/NullFrameBuffer.h"
 
-#include <PantheonCore/Utility/ServiceLocator.h>
-
 namespace PantheonRendering::RHI
 {
     std::unique_ptr<IFrameBuffer> IFrameBuffer::create()

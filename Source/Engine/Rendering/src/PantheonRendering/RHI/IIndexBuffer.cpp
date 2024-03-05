@@ -4,8 +4,6 @@
 #include "PantheonRendering/RHI/Null/NullIndexBuffer.h"
 #include "PantheonRendering/RHI/OpenGL/OpenGLIndexBuffer.h"
 
-#include <PantheonCore/Utility/ServiceLocator.h>
-
 namespace PantheonRendering::RHI
 {
     std::unique_ptr<IIndexBuffer> IIndexBuffer::create(const uint32_t* indices, uint32_t count)

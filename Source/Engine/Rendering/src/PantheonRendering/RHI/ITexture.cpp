@@ -6,7 +6,6 @@
 
 #include <PantheonCore/Debug/Assertion.h>
 #include <PantheonCore/Debug/Logger.h>
-#include <PantheonCore/Utility/ServiceLocator.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ASSERT(x) ASSERT(x)

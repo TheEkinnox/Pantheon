@@ -4,8 +4,6 @@
 #include "PantheonRendering/RHI/Null/NullVertexBuffer.h"
 #include "PantheonRendering/RHI/OpenGL/OpenGLVertexBuffer.h"
 
-#include <PantheonCore/Utility/ServiceLocator.h>
-
 using namespace PantheonRendering::Geometry;
 
 namespace PantheonRendering::RHI

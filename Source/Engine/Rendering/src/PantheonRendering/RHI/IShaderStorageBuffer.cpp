@@ -1,7 +1,5 @@
 #include "PantheonRendering/RHI/IShaderStorageBuffer.h"
 
-#include "PantheonCore/Utility/ServiceLocator.h"
-
 #include "PantheonRendering/RHI/IRenderAPI.h"
 #include "PantheonRendering/RHI/Null/NullShaderStorageBuffer.h"
 #include "PantheonRendering/RHI/OpenGL/OpenGLShaderStorageBuffer.h"
