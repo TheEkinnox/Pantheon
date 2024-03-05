@@ -1,5 +1,7 @@
 #include "PantheonRendering/RHI/OpenGL/OpenGLShader.h"
 
+#include "PantheonCore/Utility/ServiceLocator.h"
+
 #include "PantheonRendering/RHI/ITexture.h"
 
 #include <PantheonCore/Debug/Assertion.h>
@@ -136,7 +138,7 @@ namespace PantheonRendering::RHI
 
     bool OpenGLShader::init()
     {
-        return CHECK(parseSource(), "Unable to initialize shader - Couldn't pare source");
+        return CHECK(parseSource(), "Unable to initialize shader - Couldn't parse source");
     }
 
     bool OpenGLShader::serialize(std::vector<char>& output) const
@@ -307,17 +309,11 @@ namespace PantheonRendering::RHI
             if (!CHECK(!line.empty(), "Empty shader include path", line.c_str()))
                 return false;
 
-            std::ifstream sourceFile(line, std::ios::binary | std::ios::ate);
-
-            if (!CHECK(sourceFile.is_open(), "Invalid shader include path: \"%s\"", line.c_str()))
+            const std::vector<char> shaderFile = PTH_SERVICE(ResourceManager).readFile(line);
+            if (!CHECK(!shaderFile.empty(), "Invalid shader include path: \"%s\"", line.c_str()))
                 return false;
 
-            const std::ifstream::pos_type length = sourceFile.tellg();
-            sourceFile.seekg(0, std::ios::beg);
-
-            std::string includedShader(length, 0);
-            sourceFile.read(includedShader.data(), length);
-            sourceFile.close();
+            std::string includedShader(shaderFile.begin(), shaderFile.end());
 
             if (!processIncludes(includedShader))
                 return false;
