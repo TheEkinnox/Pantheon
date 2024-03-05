@@ -29,4 +29,19 @@ namespace PantheonCore::Utility
      * \return True on success. False otherwise
      */
     bool changeDirectory(const std::string& dir);
+
+    /**
+     * \brief Appends the given path to the given root
+     * \param root The root search path
+     * \param path The path to append to the root
+     * \return The concatenated paths
+     */
+    std::string appendPath(const std::string& root, const std::string& path);
+
+    /**
+     * \brief Checks whether the given file path exists
+     * \param path The path to check
+     * \return True if the path exists. False otherwise
+     */
+    bool pathExists(const std::string& path);
 }

@@ -139,4 +139,14 @@ namespace PantheonCore::Utility
     {
         return CHDIR(dir.c_str()) == 0;
     }
+
+    std::string appendPath(const std::string& root, const std::string& path)
+    {
+        return std::filesystem::path(root).append(path).string();
+    }
+
+    bool pathExists(const std::string& path)
+    {
+        return std::filesystem::exists(path);
+    }
 }
