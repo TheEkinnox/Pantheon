@@ -5,6 +5,7 @@
 #include "PantheonTest/Tests/EntitiesTest.h"
 #include "PantheonTest/Tests/InputTest.h"
 #include "PantheonTest/Tests/ThreadPoolTest.h"
+#include "PantheonTest/Tests/TypeTraitsTest.h"
 #include "PantheonTest/Tests/WindowTest.h"
 
 #include <PantheonCore/Debug/Logger.h>
