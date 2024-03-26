@@ -58,7 +58,7 @@ namespace PantheonCore::Resources
         return !m_key.empty() && !m_path.empty();
     }
 
-    inline bool ResourceRefBase::serialize(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
+    inline bool ResourceRefBase::toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
     {
         writer.StartObject();
 
@@ -71,7 +71,7 @@ namespace PantheonCore::Resources
         return writer.EndObject();
     }
 
-    inline bool ResourceRefBase::deserialize(const rapidjson::Value& json)
+    inline bool ResourceRefBase::fromJson(const rapidjson::Value& json)
     {
         if (!json.IsObject())
         {
@@ -99,7 +99,7 @@ namespace PantheonCore::Resources
         return true;
     }
 
-    inline bool ResourceRefBase::serialize(std::vector<char>& output) const
+    inline bool ResourceRefBase::toBinary(std::vector<char>& output) const
     {
         const KeySizeT  keySize  = static_cast<KeySizeT>(m_key.size());
         const PathSizeT pathSize = static_cast<PathSizeT>(m_path.size());
@@ -121,7 +121,7 @@ namespace PantheonCore::Resources
         return true;
     }
 
-    inline size_t ResourceRefBase::deserialize(const void* data, const size_t length)
+    inline size_t ResourceRefBase::fromBinary(const char* data, const size_t length)
     {
         if (data == nullptr || length == 0)
         {
@@ -129,8 +129,7 @@ namespace PantheonCore::Resources
             return 0;
         }
 
-        const char* byteData = static_cast<const char*>(data);
-        if (!CHECK(deserializeString<KeySizeT>(m_key, byteData, length) != 0,
+        if (!CHECK(deserializeString<KeySizeT>(m_key, data, length) != 0,
                 "Unable to deserialize resource ref - Key deserialization failed"))
             return 0;
 
@@ -138,7 +137,7 @@ namespace PantheonCore::Resources
         if (!CHECK(length > offset, "Unable to deserialize resource ref - Invalid offset"))
             return 0;
 
-        if (!CHECK(deserializeString<PathSizeT>(m_path, byteData + offset, length - offset) != 0,
+        if (!CHECK(deserializeString<PathSizeT>(m_path, data + offset, length - offset) != 0,
                 "Unable to deserialize resource ref - Path deserialization failed"))
             return 0;
 
@@ -189,7 +188,7 @@ namespace PantheonCore::Resources
         return ResourceRefBase::hasValue() && !m_type.empty();
     }
 
-    inline bool GenericResourceRef::serialize(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
+    inline bool GenericResourceRef::toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
     {
         writer.StartObject();
 
@@ -205,9 +204,9 @@ namespace PantheonCore::Resources
         return writer.EndObject();
     }
 
-    inline bool GenericResourceRef::deserialize(const rapidjson::Value& json)
+    inline bool GenericResourceRef::fromJson(const rapidjson::Value& json)
     {
-        if (!ResourceRefBase::deserialize(json))
+        if (!ResourceRefBase::fromJson(json))
             return false;
 
         const auto it = json.FindMember("type");
@@ -222,7 +221,7 @@ namespace PantheonCore::Resources
         return true;
     }
 
-    inline bool GenericResourceRef::serialize(std::vector<char>& output) const
+    inline bool GenericResourceRef::toBinary(std::vector<char>& output) const
     {
         if (!serializeString<TypeSizeT>(m_type, output))
         {
@@ -230,10 +229,10 @@ namespace PantheonCore::Resources
             return false;
         }
 
-        return ResourceRefBase::serialize(output);
+        return ResourceRefBase::toBinary(output);
     }
 
-    inline size_t GenericResourceRef::deserialize(const void* data, size_t length)
+    inline size_t GenericResourceRef::fromBinary(const char* data, size_t length)
     {
         if (data == nullptr || length == 0)
         {
@@ -241,8 +240,7 @@ namespace PantheonCore::Resources
             return 0;
         }
 
-        const char* byteData = static_cast<const char*>(data);
-        if (!CHECK(deserializeString<TypeSizeT>(m_type, byteData, length) != 0,
+        if (!CHECK(deserializeString<TypeSizeT>(m_type, data, length) != 0,
                 "Unable to deserialize resource ref - Key deserialization failed"))
             return 0;
 
@@ -254,6 +252,6 @@ namespace PantheonCore::Resources
             return 0;
         }
 
-        return ResourceRefBase::deserialize(byteData + offset, length - offset);
+        return ResourceRefBase::fromBinary(data + offset, length - offset);
     }
 }

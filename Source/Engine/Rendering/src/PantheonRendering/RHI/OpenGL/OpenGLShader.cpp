@@ -1,13 +1,12 @@
 #include "PantheonRendering/RHI/OpenGL/OpenGLShader.h"
 
-#include "PantheonCore/Utility/ServiceLocator.h"
-
-#include "PantheonRendering/RHI/ITexture.h"
-
 #include <PantheonCore/Debug/Assertion.h>
 #include <PantheonCore/Debug/Logger.h>
 #include <PantheonCore/Resources/ResourceManager.h>
+#include <PantheonCore/Utility/ServiceLocator.h>
 #include <PantheonCore/Utility/utility.h>
+
+#include <PantheonRendering/RHI/ITexture.h>
 
 #include <sstream>
 
@@ -141,7 +140,7 @@ namespace PantheonRendering::RHI
         return CHECK(parseSource(), "Unable to initialize shader - Couldn't parse source");
     }
 
-    bool OpenGLShader::serialize(std::vector<char>& output) const
+    bool OpenGLShader::toBinary(std::vector<char>& output) const
     {
         if (m_source.empty())
             return false;
@@ -152,14 +151,14 @@ namespace PantheonRendering::RHI
         return true;
     }
 
-    size_t OpenGLShader::deserialize(const void* data, const size_t length)
+    size_t OpenGLShader::fromBinary(const char* data, const size_t length)
     {
         m_source.clear();
 
         if (!CHECK(data != nullptr && length > 0, "Unable to load shader - Empty memory buffer"))
             return 0;
 
-        if (!CHECK(deserializeString(m_source, static_cast<const char*>(data), length) != 0, "Unable to load shader from memory"))
+        if (!CHECK(deserializeString(m_source, data, length) != 0, "Unable to load shader from memory"))
             return 0;
 
         return sizeof(size_t) + m_source.size();

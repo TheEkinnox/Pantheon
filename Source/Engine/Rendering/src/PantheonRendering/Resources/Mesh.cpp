@@ -50,7 +50,7 @@ namespace PantheonRendering::Resources
         return *this;
     }
 
-    bool Mesh::serialize(std::vector<char>& output) const
+    bool Mesh::toBinary(std::vector<char>& output) const
     {
         if (m_indices.empty() || m_vertices.empty())
             return false;
@@ -117,7 +117,7 @@ namespace PantheonRendering::Resources
         return true;
     }
 
-    size_t Mesh::deserialize(const void* data, const size_t length)
+    size_t Mesh::fromBinary(const char* data, const size_t length)
     {
         if (data == nullptr || length == 0)
         {

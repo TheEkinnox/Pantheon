@@ -22,7 +22,7 @@ namespace PantheonRendering::Resources
     }
 
     Model::Model(std::vector<Mesh> meshes, const size_t materialsCount)
-        : m_meshes(std::move(meshes)), m_materialsCount(materialsCount)
+        : m_meshes(std::move(meshes)), m_materialCount(materialsCount)
     {
         m_boundingBox =
         {
@@ -52,7 +52,7 @@ namespace PantheonRendering::Resources
 
         m_meshes.clear();
         m_meshes.reserve(scene->mNumMeshes);
-        m_materialsCount = 0;
+        m_materialCount = 0;
 
         m_boundingBox =
         {
@@ -105,7 +105,7 @@ namespace PantheonRendering::Resources
             m_boundingBox.m_max = max(m_boundingBox.m_max, newMesh.getBoundingBox().m_max);
         }
 
-        m_materialsCount = scene->mNumMaterials;
+        m_materialCount = scene->mNumMaterials;
 
         return true;
     }
@@ -121,28 +121,25 @@ namespace PantheonRendering::Resources
         return true;
     }
 
-    bool Model::serialize(std::vector<char>& output) const
+    bool Model::toBinary(std::vector<char>& output) const
     {
-        return serializeMeshes(output)
-            && serializeMaterialCount(output);
+        return serializeMeshes(output) && CHECK(writeNumber(static_cast<ElemCountT>(m_materialCount), output),
+                "Unable to serialize model - Material count serialization failed");
     }
 
-    size_t Model::deserialize(const void* data, const size_t length)
+    size_t Model::fromBinary(const char* data, const size_t length)
     {
-        const char* buffer    = static_cast<const char*>(data);
-        size_t      readBytes = deserializeMeshes(buffer, length);
+        const size_t meshBytes = deserializeMeshes(data, length);
 
-        if (readBytes != 0)
-        {
-            const size_t countOffset = deserializeMaterialCount(buffer + readBytes, length - readBytes);
+        if (meshBytes == 0)
+            return 0;
 
-            if (countOffset <= 0)
-                return 0;
+        const size_t materialCountBytes = readNumber<size_t, ElemCountT>(m_materialCount, data + meshBytes, length - meshBytes);
 
-            readBytes += countOffset;
-        }
+        if (!CHECK(materialCountBytes != 0, "Unable to deserialize model - Couldn't read material count"))
+            return 0;
 
-        return readBytes;
+        return meshBytes + materialCountBytes;
     }
 
     const Mesh& Model::getMesh(const size_t index) const
@@ -166,7 +163,7 @@ namespace PantheonRendering::Resources
 
     size_t Model::getMaterialCount() const
     {
-        return m_materialsCount;
+        return m_materialCount;
     }
 
     BoundingBox Model::getBoundingBox() const
@@ -188,7 +185,7 @@ namespace PantheonRendering::Resources
 
         for (const Mesh& mesh : m_meshes)
         {
-            if (!CHECK(mesh.serialize(output), "Unable to serialize model"))
+            if (!CHECK(mesh.toBinary(output), "Unable to serialize model"))
                 return false;
         }
 
@@ -200,16 +197,17 @@ namespace PantheonRendering::Resources
         if (!CHECK(data != nullptr && length >= sizeof(ElemCountT), "Unable to deserialize model - Couldn't read meshes"))
             return 0;
 
-        const ElemCountT elemCount = readNumber<ElemCountT>(data, length);
-        if (!CHECK(elemCount != INVALID_ELEMENT_SIZE, "Unable to deserialize model - Couldn't read mesh count"))
+        ElemCountT elemCount;
+        size_t     offset = readNumber(elemCount, data, length);
+
+        if (!CHECK(offset != 0, "Unable to deserialize model - Couldn't read mesh count"))
             return 0;
 
         m_meshes.resize(elemCount);
-        size_t offset = sizeof(ElemCountT);
 
         for (ElemCountT i = 0; i < elemCount; ++i)
         {
-            const size_t readBytes = m_meshes[i].deserialize(data + offset, length - offset);
+            const size_t readBytes = m_meshes[i].fromBinary(data + offset, length - offset);
 
             if (readBytes == 0)
                 return 0;
@@ -218,20 +216,5 @@ namespace PantheonRendering::Resources
         }
 
         return offset;
-    }
-
-    bool Model::serializeMaterialCount(std::vector<char>& output) const
-    {
-        return CHECK(writeNumber(static_cast<ElemCountT>(m_materialsCount), output),
-                "Unable to serialize model - Material count serialization failed");
-    }
-
-    size_t Model::deserializeMaterialCount(const char* data, size_t length)
-    {
-        if (!CHECK(data != nullptr && length != 0, "Unable to deserialize model - Couldn't read material count"))
-            return 0;
-
-        m_materialsCount = readNumber<ElemCountT>(data, length);
-        return m_materialsCount != INVALID_ELEMENT_SIZE ? sizeof(ElemCountT) : 0;
     }
 }

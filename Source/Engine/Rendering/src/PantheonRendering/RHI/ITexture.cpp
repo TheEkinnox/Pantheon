@@ -151,7 +151,7 @@ namespace PantheonRendering::RHI
         return true;
     }
 
-    bool ITexture::serialize(std::vector<char>& output) const
+    bool ITexture::toBinary(std::vector<char>& output) const
     {
         if (m_data == nullptr)
             return false;
@@ -184,7 +184,7 @@ namespace PantheonRendering::RHI
         return true;
     }
 
-    size_t ITexture::deserialize(const void* data, const size_t length)
+    size_t ITexture::fromBinary(const char* data, const size_t length)
     {
         if (data == nullptr || length == 0)
         {
@@ -198,9 +198,10 @@ namespace PantheonRendering::RHI
             m_data = nullptr;
         }
 
-        const uint32_t textureInfo = readNumber<uint32_t>(data, length);
+        uint32_t textureInfo;
+        size_t   offset = readNumber(textureInfo, data, length);
 
-        if (!CHECK(textureInfo != INVALID_ELEMENT_SIZE, "Unable to load texture from memory - Failed to read load info"))
+        if (!CHECK(offset != 0, "Unable to load texture from memory - Failed to read load info"))
             return 0;
 
         m_minFilter = static_cast<ETextureFilter>(readBits(textureInfo, 8, 0));
@@ -208,19 +209,19 @@ namespace PantheonRendering::RHI
         m_wrapModeU = static_cast<ETextureWrapMode>(readBits(textureInfo, 8, 16));
         m_wrapModeV = static_cast<ETextureWrapMode>(readBits(textureInfo, 8, 24));
 
-        size_t          offset     = sizeof(uint32_t);
-        const ElemSizeT bufferSize = readNumber<ElemSizeT>(static_cast<const char*>(data) + offset, length - offset);
+        ElemSizeT    bufferSize;
+        const size_t readBytes = readNumber(bufferSize, data + offset, length - offset);
 
-        if (!CHECK(bufferSize != INVALID_ELEMENT_SIZE, "Unable to load texture from memory - Failed to read buffer size"))
+        if (!CHECK(readBytes != 0, "Unable to load texture from memory - Failed to read buffer size"))
             return 0;
 
-        offset += sizeof(ElemSizeT);
+        offset += readBytes;
 
         if (!CHECK(length > offset && length - offset >= bufferSize, "Unable to load texture from memory - Invalid offset"))
             return 0;
 
         stbi_set_flip_vertically_on_load(true);
-        m_data = stbi_load_from_memory(static_cast<const stbi_uc*>(data) + offset, static_cast<int>(bufferSize),
+        m_data = stbi_load_from_memory(reinterpret_cast<const stbi_uc*>(data + offset), static_cast<int>(bufferSize),
             &m_width, &m_height, reinterpret_cast<int*>(&m_channels), 0);
 
         if (!CHECK(m_data == nullptr, "Unable to load texture from memory"))

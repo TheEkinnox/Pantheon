@@ -37,15 +37,15 @@ namespace PantheonRendering::Resources
             return false;
         }
 
-        return deserialize(json);
+        return fromJson(json);
     }
 
-    bool Material::serialize(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
+    bool Material::toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
     {
         writer.StartObject();
 
         writer.Key("shader");
-        if (!CHECK(m_shader.serialize(writer), "Unable to serialize material - Failed to serialize shader"))
+        if (!CHECK(m_shader.toJson(writer), "Unable to serialize material - Failed to serialize shader"))
             return false;
 
         writer.Key("properties");
@@ -73,13 +73,13 @@ namespace PantheonRendering::Resources
         return writer.EndObject();
     }
 
-    bool Material::deserialize(const rapidjson::Value& json)
+    bool Material::fromJson(const rapidjson::Value& json)
     {
         if (!CHECK(json.IsObject(), "Unable to deserialize material - Json value should be an object"))
             return false;
 
         auto it = json.FindMember("shader");
-        if (!CHECK(it != json.MemberEnd(), "Unable to deserialize material - Missing shader") || !m_shader.deserialize(it->value))
+        if (!CHECK(it != json.MemberEnd(), "Unable to deserialize material - Missing shader") || !m_shader.fromJson(it->value))
             return false;
 
         it = json.FindMember("properties");
@@ -87,9 +87,9 @@ namespace PantheonRendering::Resources
             deserializeProperties(it->value);
     }
 
-    bool Material::serialize(std::vector<char>& output) const
+    bool Material::toBinary(std::vector<char>& output) const
     {
-        if (!m_shader.serialize(output))
+        if (!m_shader.toBinary(output))
             return false;
 
         const ElemCountT propertyCount = static_cast<ElemCountT>(m_properties.size());
@@ -108,7 +108,7 @@ namespace PantheonRendering::Resources
         return true;
     }
 
-    size_t Material::deserialize(const void* data, const size_t length)
+    size_t Material::fromBinary(const char* data, const size_t length)
     {
         // TODO: Implement material binary deserialization
         DEBUG_LOG_ERROR("Not implemented - Load material from %llu bytes memory buffer @(%p)", length, data);
@@ -292,7 +292,7 @@ namespace PantheonRendering::Resources
             return writer.String(str.c_str(), static_cast<rapidjson::SizeType>(str.size()));
         }
         case EShaderDataType::TEXTURE:
-            return std::any_cast<const ResourceRef<ITexture>&>(property.m_value).serialize(writer);
+            return std::any_cast<const ResourceRef<ITexture>&>(property.m_value).toJson(writer);
         case EShaderDataType::UNKNOWN:
         default:
             return false;
@@ -436,7 +436,7 @@ namespace PantheonRendering::Resources
         {
             ResourceRef<ITexture> texture;
 
-            if (!texture.deserialize(json))
+            if (!texture.fromJson(json))
                 return false;
 
             out.m_value = texture;
@@ -479,7 +479,7 @@ namespace PantheonRendering::Resources
         case EShaderDataType::MAT4:
             return serializeMatrix(std::any_cast<Matrix4>(property.m_value), output);
         case EShaderDataType::TEXTURE:
-            return std::any_cast<const ResourceRef<ITexture>&>(property.m_value).serialize(output);
+            return std::any_cast<const ResourceRef<ITexture>&>(property.m_value).toBinary(output);
         case EShaderDataType::UNKNOWN:
         default:
             ASSERT(false, "Unable to serialize material property - Unknown/Invalid type");

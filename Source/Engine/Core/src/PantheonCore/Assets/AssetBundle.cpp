@@ -46,7 +46,7 @@ namespace PantheonCore::Assets
         ifs.read(reinterpret_cast<char*>(&headerData), HEADER_SIZE);
         headerData = fromBigEndian(headerData);
 
-        m_compressionMode = static_cast<ECompressionMode>(readBits(headerData, COMPRESSION_MODE_BITS, 0));
+        m_compressionMode    = static_cast<ECompressionMode>(readBits(headerData, COMPRESSION_MODE_BITS, 0));
         m_compressedDataSize = readBits(headerData, DATA_SIZE_BITS, COMPRESSION_MODE_BITS);
 
         DEBUG_LOG("Header: %d | Compression Mode: %d | Compressed Size: %d", headerData, static_cast<int>(m_compressionMode),
@@ -115,7 +115,7 @@ namespace PantheonCore::Assets
 
             bundleAsset.getAsset()->getData(assetBuffer);
 
-            const block_t dataSize = assetBuffer.size();
+            const block_t dataSize  = assetBuffer.size();
             block_t       blockSize = dataSize;
 
             if (dataSize > 0)
@@ -143,7 +143,7 @@ namespace PantheonCore::Assets
 
         ofs.close();
 
-        m_path = path;
+        m_path            = path;
         m_compressionMode = compressionMode;
 
         return true;
@@ -231,7 +231,7 @@ namespace PantheonCore::Assets
             return {};
 
         const std::streamoff       blockStart = static_cast<std::streamoff>(HEADER_SIZE + bundleAsset.getBlockStart());
-        const BundleAsset::block_t blockSize = bundleAsset.getBlockSize();
+        const BundleAsset::block_t blockSize  = bundleAsset.getBlockSize();
 
         if (blockSize == 0)
             return {};

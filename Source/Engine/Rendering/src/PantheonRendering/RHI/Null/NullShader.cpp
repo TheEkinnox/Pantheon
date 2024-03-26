@@ -12,13 +12,13 @@ namespace PantheonRendering::RHI
         return true;
     }
 
-    bool NullShader::serialize(std::vector<char>& output) const
+    bool NullShader::toBinary(std::vector<char>& output) const
     {
         output.resize(output.size() + 1); // Can't not write anything. Deserialization considers 0 as failure
         return true;
     }
 
-    size_t NullShader::deserialize(const void* data, const size_t length)
+    size_t NullShader::fromBinary(const char* data, const size_t length)
     {
         return data != nullptr && length > 0 ? 1 : 0;
     }

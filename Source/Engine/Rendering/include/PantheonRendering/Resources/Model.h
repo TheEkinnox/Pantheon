@@ -52,7 +52,7 @@ namespace PantheonRendering::Resources
          * \param output The output memory buffer
          * \return True on success. False otherwise.
          */
-        bool serialize(std::vector<char>& output) const override;
+        bool toBinary(std::vector<char>& output) const override;
 
         /**
          * \brief Deserializes the model from the given memory buffer
@@ -60,7 +60,7 @@ namespace PantheonRendering::Resources
          * \param length The memory buffer's length
          * \return The number of deserialized bytes on success. 0 otherwise.
          */
-        size_t deserialize(const void* data, size_t length) override;
+        size_t fromBinary(const char* data, size_t length) override;
 
         /**
          * \brief Gets the model's mesh at the given index
@@ -96,13 +96,10 @@ namespace PantheonRendering::Resources
 
     private:
         std::vector<Mesh>     m_meshes;
-        size_t                m_materialsCount;
+        size_t                m_materialCount;
         Geometry::BoundingBox m_boundingBox;
 
         bool   serializeMeshes(std::vector<char>& output) const;
         size_t deserializeMeshes(const char* data, size_t length);
-
-        bool   serializeMaterialCount(std::vector<char>& output) const;
-        size_t deserializeMaterialCount(const char* data, size_t length);
     };
 }

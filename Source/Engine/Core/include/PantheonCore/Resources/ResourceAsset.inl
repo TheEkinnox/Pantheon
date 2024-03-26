@@ -27,6 +27,6 @@ namespace PantheonCore::Resources
             return false;
         }
 
-        return resource->serialize(output);
+        return resource->toBinary(output);
     }
 }

@@ -15,6 +15,12 @@ namespace PantheonCore::Utility
     template <typename T>
     constexpr bool HasDuplicates<T> = false;
 
+    template <typename T, typename... Remainder>
+    constexpr bool IsAllConst = std::is_const_v<T> && IsAllConst<Remainder...>;
+
+    template <typename T>
+    constexpr bool IsAllConst<T> = std::is_const_v<T>;
+
     template <typename T, typename First, typename... Remainder>
     constexpr size_t IndexOf = std::is_same_v<T, First> ? 0 : IndexOf<T, Remainder...> + 1;
 

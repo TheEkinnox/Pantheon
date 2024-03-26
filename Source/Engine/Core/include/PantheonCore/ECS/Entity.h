@@ -1,209 +1,77 @@
 #pragma once
-#include "PantheonCore/DataStructure/Node.h"
-#include "PantheonCore/ECS/Component.h"
-#include "PantheonCore/Eventing/Event.h"
-#include "PantheonCore/Serialization/IByteSerializable.h"
-#include "PantheonCore/Serialization/IJsonSerializable.h"
-
-#include <vector>
+#include <climits>
+#include <cstdint>
 
 namespace PantheonCore::ECS
 {
-    class Entity final : public DataStructure::Node, public Serialization::IByteSerializable,
-        public Serialization::IJsonSerializable
+    class Entity
     {
-        using ComponentList = std::vector<Component*>;
-
     public:
-        Eventing::Event<Entity&> m_childAddedEvent;
-        Eventing::Event<Entity&> m_childRemovedEvent;
+        using Id = uint64_t;
+        using Version = uint32_t;
 
-        Entity();
-        Entity(Entity* parent);
-        Entity(const Entity& other);
-        Entity(Entity&& other) noexcept;
-        ~Entity() override;
+        static constexpr uint8_t VERSION_BITS = 24;
+        static constexpr uint8_t INDEX_BITS   = sizeof(Id) * CHAR_BIT - VERSION_BITS;
 
-        /**
-         * \brief Checks whether the entity is valid or not
-         * \return True if the entity is valid. False otherwise.
-         */
-        explicit operator bool() const;
-
-        Entity& operator=(const Entity& other);
-        Entity& operator=(Entity&& other) noexcept;
+        static constexpr Version VERSION_MASK = (Version{ 1 } << VERSION_BITS) - 1;
+        static constexpr Id      INDEX_MASK   = (Id{ 1 } << INDEX_BITS) - 1;
 
         /**
-         * \brief Adds a component of the given type to the entity
-         * \param args The component's constructor's parameters
-         * \return A reference to the added component
+         * \brief Creates a default entity
          */
-        template <typename T, typename... Args>
-        T* addComponent(Args&&... args);
-
-        template <typename T>
-        void removeComponent();
-
-        void removeComponent(const Component& component);
-
-        void removeComponent(Component::ComponentId id);
-
-        template <typename T>
-        T* getComponent();
-
-        template <typename T>
-        const T* getComponent() const;
-
-        template <typename T>
-        T* getComponent(Component::ComponentId id);
-
-        template <typename T>
-        const T* getComponent(Component::ComponentId id) const;
-
-        template <typename T>
-        std::vector<T*> getComponents();
-
-        template <typename T>
-        std::vector<const T*> getComponents() const;
-
-        template <typename T>
-        T* getComponentInParent(bool includeInactive);
-
-        template <typename T>
-        const T* getComponentInParent(bool includeInactive) const;
-
-        template <typename T>
-        T* getComponentInParent(Component::ComponentId id, bool includeInactive);
-
-        template <typename T>
-        const T* getComponentInParent(Component::ComponentId id, bool includeInactive) const;
-
-        template <typename T>
-        std::vector<T*> getComponentsInParent(bool includeInactive);
-
-        template <typename T>
-        std::vector<const T*> getComponentsInParent(bool includeInactive) const;
-
-        template <typename T>
-        T* getComponentInChildren(bool includeInactive);
-
-        template <typename T>
-        const T* getComponentInChildren(bool includeInactive) const;
-
-        template <typename T>
-        T* getComponentInChildren(Component::ComponentId id, bool includeInactive);
-
-        template <typename T>
-        const T* getComponentInChildren(Component::ComponentId id, bool includeInactive) const;
-
-        template <typename T>
-        std::vector<T*> getComponentsInChildren(bool includeInactive);
-
-        template <typename T>
-        std::vector<const T*> getComponentsInChildren(bool includeInactive) const;
+        constexpr Entity() = default;
 
         /**
-         * \brief Updates the entity's components and children
+         * \brief Creates an entity with the given id
+         * \param id The entity's id
          */
-        void update();
+        explicit constexpr Entity(Id id);
 
         /**
-         * \brief Checks whether the entity is active or not
-         * \return True if the entity is currently active. False otherwise.
+         * \brief Creates an entity with the given index and version
+         * \param index The entity's index
+         * \param version The entity's version
          */
-        bool isActive() const;
+        constexpr Entity(Id index, Version version);
 
         /**
-         * \brief Sets whether the entity is active or not
-         * \param active The entity's new active state
+         * \brief Implicitly converts an entity to it's index
          */
-        void setActive(bool active);
+        constexpr operator Id() const;
 
         /**
-         * \brief Serializes the entity to json
-         * \param writer The output json writer
-         * \return True on success. False otherwise.
+         * \brief Gets the entity's version
+         * \return The entity's version
          */
-        bool serialize(rapidjson::Writer<rapidjson::StringBuffer>& writer) const override;
+        constexpr Version getVersion() const;
 
         /**
-         * \brief Deserializes the entity from json
-         * \param json The input json data
-         * \return True on success. False otherwise.
+         * \brief Gets the entity's index
+         * \return The entity's index
          */
-        bool deserialize(const rapidjson::Value& json) override;
+        constexpr Id getIndex() const;
 
         /**
-         * \brief Serializes the entity to a byte array
-         * \param output The output memory buffer
-         * \return True on success. False otherwise.
+         * \brief Increments the entity's version
          */
-        bool serialize(std::vector<char>& output) const override;
-
-        /**
-         * \brief Deserializes the entity from the given memory buffer
-         * \param data A pointer to the beginning of the memory buffer
-         * \param length The memory buffer's length
-         * \return The number of deserialized bytes on success. 0 otherwise.
-         */
-        size_t deserialize(const void* data, size_t length) override;
+        void bumpVersion();
 
     private:
-        ComponentList m_components;
-        bool          m_isActive;
-        bool          m_isDestroyed;
+        Id m_id = 0;
 
         /**
-         * \brief Adds the given node as a child of the current node
-         * \param child A pointer to the child to add to the current node
+         * \brief Creates an entity identifier from the given index and version
+         * \param index The target index
+         * \param version The target version
+         * \return The entity identifier composed of the given index and version
          */
-        void onChildAdded(Node& child) override;
-
-        /**
-         * \brief Removes the given node from this node's children
-         * \param child A pointer to the child to remove from the node's children
-         */
-        void onRemoveChild(Node& child) override;
-
-        /**
-         * \brief Serializes the given component to json
-         * \param component The component to serialize
-         * \param writer The output json writer
-         * \return True on success. False otherwise
-         */
-        static bool serializeComponent(const Component* component, rapidjson::Writer<rapidjson::StringBuffer>& writer);
-
-        /**
-         * \brief Deserializes and adds the given json component to the entity
-         * \param jsonComponent The added component's json representation
-         * \return True on success. False otherwise.
-         */
-        bool addComponentFromJson(const rapidjson::Value& jsonComponent);
-
-        /**
-         * \brief Serializes the given component to a byte array
-         * \param component The component to serialize
-         * \param output The output memory buffer
-         * \return True on success. False otherwise
-         */
-        static bool serializeComponent(const Component* component, std::vector<char>& output);
-
-        /**
-         * \brief Deserializes and adds the given memory component to the entity
-         * \param data A pointer to the beginning of the memory buffer
-         * \param length The memory buffer's length
-         * \return The size of the component block on success. 0 otherwise.
-         */
-        size_t addComponentFromMemory(const char* data, size_t length);
-
-        /**
-         * \brief Deserializes and adds the given memory child entity to the entity
-         * \param data A pointer to the beginning of the memory buffer
-         * \param length The memory buffer's length
-         * \return The size of the child block on success. 0 otherwise.
-         */
-        size_t addChildFromMemory(const char* data, size_t length);
+        static constexpr Id make(Id index, Id version);
     };
 }
 
 #include "PantheonCore/ECS/Entity.inl"
+
+namespace PantheonCore::ECS
+{
+    static constexpr Entity NULL_ENTITY{ Entity::INDEX_MASK, Entity::VERSION_MASK };
+}

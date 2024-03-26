@@ -60,7 +60,7 @@ namespace PantheonRendering::RHI
          * \param output The output memory buffer
          * \return True on success. False otherwise.
          */
-        bool serialize(std::vector<char>& output) const override;
+        bool toBinary(std::vector<char>& output) const override;
 
         /**
          * \brief Deserializes the shader from the given memory buffer
@@ -68,7 +68,7 @@ namespace PantheonRendering::RHI
          * \param length The memory buffer's length
          * \return The number of deserialized bytes on success. 0 otherwise.
          */
-        size_t deserialize(const void* data, size_t length) override;
+        size_t fromBinary(const char* data, size_t length) override;
 
         /**
          * \brief Binds the shader to the context.\n

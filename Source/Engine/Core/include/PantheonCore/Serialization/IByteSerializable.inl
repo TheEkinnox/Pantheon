@@ -5,7 +5,7 @@
 namespace PantheonCore::Serialization
 {
     template <typename SizeT>
-    bool IByteSerializable::serializeWithSize(std::vector<char>& output) const
+    bool IByteSerializable::toBinaryWithSize(std::vector<char>& output) const
     {
         const size_t startSize = output.size();
 
@@ -13,7 +13,7 @@ namespace PantheonCore::Serialization
         output.resize(startSize + sizeof(SizeT), 0);
 
         // Serialize the element after the reserved space
-        if (!((const IByteSerializable*)this)->serialize(output))
+        if (!toBinary(output))
             return false;
 
         // Calculate and write the serialized element's bytes
@@ -25,31 +25,32 @@ namespace PantheonCore::Serialization
         return true;
     }
 
-    template <typename SizeT>
-    bool IByteSerializable::writeNumber(const SizeT size, std::vector<char>& output)
+    template <typename T>
+    bool IByteSerializable::writeNumber(const T value, std::vector<char>& output)
     {
         const size_t startSize = output.size();
-        output.resize(startSize + sizeof(SizeT));
+        output.resize(startSize + sizeof(T));
 
-        const SizeT beSize = Utility::toBigEndian(size);
-        if (memcpy_s(output.data() + startSize, output.size() - startSize, &beSize, sizeof(SizeT)) != 0)
+        const T beSize = Utility::toBigEndian(value);
+        if (memcpy_s(output.data() + startSize, output.size() - startSize, &beSize, sizeof(T)) != 0)
             return false;
 
         return true;
     }
 
-    template <typename SizeT>
-    SizeT IByteSerializable::readNumber(const void* data, const size_t length)
+    template <typename T, typename U>
+    size_t IByteSerializable::readNumber(T& out, const char* data, const size_t length)
     {
-        if (data == nullptr || length < sizeof(SizeT))
-            return INVALID_ELEMENT_SIZE;
+        if (data == nullptr || length < sizeof(U))
+            return 0;
 
-        SizeT elemSize = 0;
+        U elemSize = 0;
 
-        if (memcpy_s(&elemSize, sizeof(SizeT), data, sizeof(SizeT)) != 0)
-            return INVALID_ELEMENT_SIZE;
+        if (memcpy_s(&elemSize, sizeof(U), data, sizeof(U)) != 0)
+            return 0;
 
-        return Utility::fromBigEndian(elemSize);
+        out = static_cast<T>(Utility::fromBigEndian(elemSize));
+        return sizeof(U);
     }
 
     template <typename SizeT>
@@ -58,7 +59,7 @@ namespace PantheonCore::Serialization
         const SizeT strLength = static_cast<SizeT>(string.size());
 
         size_t offset = output.size();
-        output.resize(offset + sizeof(SizeT) + strLength, 0);
+        output.resize(offset + sizeof(SizeT) + strLength);
 
         const SizeT beStrLength = Utility::toBigEndian(strLength);
         if (memcpy_s(output.data() + offset, output.size() - offset, &beStrLength, sizeof(SizeT)) != 0)
@@ -102,17 +103,17 @@ namespace PantheonCore::Serialization
         return memcpy_s(output.data() + startSize, output.size() - startSize, vec2.getArray(), sizeof(LibMath::Vector2)) == 0;
     }
 
-    inline bool IByteSerializable::deserializeVector2(LibMath::Vector2& out, const char* data, const size_t length)
+    inline size_t IByteSerializable::deserializeVector2(LibMath::Vector2& out, const char* data, const size_t length)
     {
         if (data == nullptr || length < sizeof(LibMath::Vector2))
-            return false;
+            return 0;
 
         if (memcpy_s(out.getArray(), sizeof(LibMath::Vector2), data, sizeof(LibMath::Vector2)) != 0)
-            return false;
+            return 0;
 
         vec2FromBigEndian(out);
 
-        return true;
+        return sizeof(LibMath::Vector2);
     }
 
     inline void IByteSerializable::vec2ToBigEndian(LibMath::Vector2& vec2)
@@ -136,17 +137,17 @@ namespace PantheonCore::Serialization
         return memcpy_s(output.data() + startSize, output.size() - startSize, vec3.getArray(), sizeof(LibMath::Vector3)) == 0;
     }
 
-    inline bool IByteSerializable::deserializeVector3(LibMath::Vector3& out, const char* data, const size_t length)
+    inline size_t IByteSerializable::deserializeVector3(LibMath::Vector3& out, const char* data, const size_t length)
     {
         if (data == nullptr || length < sizeof(LibMath::Vector3))
-            return false;
+            return 0;
 
         if (memcpy_s(out.getArray(), sizeof(LibMath::Vector3), data, sizeof(LibMath::Vector3)) != 0)
-            return false;
+            return 0;
 
         vec3FromBigEndian(out);
 
-        return true;
+        return sizeof(LibMath::Vector3);
     }
 
     inline void IByteSerializable::vec3ToBigEndian(LibMath::Vector3& vec3)
@@ -172,17 +173,17 @@ namespace PantheonCore::Serialization
         return memcpy_s(output.data() + startSize, output.size() - startSize, vec4.getArray(), sizeof(LibMath::Vector4)) == 0;
     }
 
-    inline bool IByteSerializable::deserializeVector4(LibMath::Vector4& out, const char* data, size_t length)
+    inline size_t IByteSerializable::deserializeVector4(LibMath::Vector4& out, const char* data, size_t length)
     {
         if (data == nullptr || length < sizeof(LibMath::Vector4))
-            return false;
+            return 0;
 
         if (memcpy_s(out.getArray(), sizeof(LibMath::Vector4), data, sizeof(LibMath::Vector4)) != 0)
-            return false;
+            return 0;
 
         vec4FromBigEndian(out);
 
-        return true;
+        return sizeof(LibMath::Vector4);
     }
 
     inline void IByteSerializable::vec4ToBigEndian(LibMath::Vector4& vec4)
@@ -213,20 +214,20 @@ namespace PantheonCore::Serialization
         return memcpy_s(output.data() + startSize, output.size() - startSize, quat.getArray(), sizeof(LibMath::Quaternion)) == 0;
     }
 
-    inline bool IByteSerializable::deserializeQuaternion(LibMath::Quaternion& out, const char* data, const size_t length)
+    inline size_t IByteSerializable::deserializeQuaternion(LibMath::Quaternion& out, const char* data, const size_t length)
     {
         if (data == nullptr || length < sizeof(LibMath::Quaternion))
-            return false;
+            return 0;
 
         if (memcpy_s(out.getArray(), sizeof(LibMath::Quaternion), data, sizeof(LibMath::Quaternion)) != 0)
-            return false;
+            return 0;
 
         out.m_x = Utility::fromBigEndian(out.m_x);
         out.m_y = Utility::fromBigEndian(out.m_y);
         out.m_z = Utility::fromBigEndian(out.m_z);
         out.m_w = Utility::fromBigEndian(out.m_w);
 
-        return true;
+        return sizeof(LibMath::Quaternion);
     }
 
     template <LibMath::length_t Rows, LibMath::length_t Cols, typename DataT>
@@ -243,16 +244,16 @@ namespace PantheonCore::Serialization
     }
 
     template <LibMath::length_t Rows, LibMath::length_t Cols, typename DataT>
-    bool IByteSerializable::deserializeMatrix(LibMath::TMatrix<Rows, Cols, DataT>& out, const char* data, size_t length)
+    size_t IByteSerializable::deserializeMatrix(LibMath::TMatrix<Rows, Cols, DataT>& out, const char* data, size_t length)
     {
         using MatT = LibMath::TMatrix<Rows, Cols, DataT>;
 
         if (data == nullptr || length < sizeof(MatT) || memcpy_s(out.getArray(), sizeof(MatT), data, sizeof(MatT)) != 0)
-            return false;
+            return 0;
 
         for (size_t i = 0; i < MatT::getSize(); ++i)
             out[i] = Utility::fromBigEndian(out[i]);
 
-        return true;
+        return sizeof(MatT);
     }
 }

@@ -12,22 +12,26 @@ namespace PantheonCore::Serialization
     class IByteSerializable
     {
     public:
-        // Max element size is ~4GB (2^32-2 Bytes)
+        // Max element size is 4GB (2^32-1 Bytes)
         using ElemSizeT = uint32_t;
 
-        // Max element count is ~4GB (2^32-1 Bytes)
+        // Max element count is 4GB (2^32-1 Bytes)
         using ElemCountT = uint32_t;
 
-        static constexpr ElemSizeT INVALID_ELEMENT_SIZE = static_cast<ElemSizeT>(-1);
+        IByteSerializable()                               = default;
+        IByteSerializable(const IByteSerializable& other) = default;
+        IByteSerializable(IByteSerializable&& other)      = default;
+        virtual ~IByteSerializable()                      = default;
 
-        virtual ~IByteSerializable() = default;
+        IByteSerializable& operator=(const IByteSerializable& other) = default;
+        IByteSerializable& operator=(IByteSerializable&& other)      = default;
 
         /**
          * \brief Serializes the object to a byte array
          * \param output The output memory buffer
          * \return True on success. False otherwise.
          */
-        virtual bool serialize(std::vector<char>& output) const = 0;
+        virtual bool toBinary(std::vector<char>& output) const = 0;
 
         /**
          * \brief Deserializes the object from the given memory buffer
@@ -35,7 +39,7 @@ namespace PantheonCore::Serialization
          * \param length The memory buffer's length
          * \return The number of deserialized bytes on success. 0 otherwise.
          */
-        virtual size_t deserialize(const void* data, size_t length) = 0;
+        virtual size_t fromBinary(const char* data, size_t length) = 0;
 
         /**
          * \brief Serializes the object to a byte array preceded by it's buffer size
@@ -44,29 +48,31 @@ namespace PantheonCore::Serialization
          * \return True on success. False otherwise.
          */
         template <typename SizeT = ElemSizeT>
-        bool serializeWithSize(std::vector<char>& output) const;
+        bool toBinaryWithSize(std::vector<char>& output) const;
 
         /**
-         * \brief Writes the given size to a byte array
-         * \tparam SizeT The size's type
-         * \param size The size to write
+         * \brief Writes the given number to a byte array
+         * \tparam T The number's type
+         * \param value The number to write
          * \param output The output memory buffer
          * \return True on success. False otherwise
          */
-        template <typename SizeT>
-        static bool writeNumber(SizeT size, std::vector<char>& output);
+        template <typename T>
+        static bool writeNumber(T value, std::vector<char>& output);
 
         /**
-         * \brief Reads an element size from the given buffer
-         * \note IMPORTANT: This function is guaranteed to work ONLY for values serialized using IByteSerializable::writeSize
-         * or IByteSerializable::serializeWithSize and the SAME Size Type
-         * \tparam SizeT The size's type
+         * \brief Reads a number from the given buffer
+         * \note IMPORTANT: This function is guaranteed to work ONLY for values serialized using IByteSerializable::writeNumber
+         * or IByteSerializable::serializeWithSize and the SAME type
+         * \tparam T The output number's type
+         * \tparam U The read number's type
+         * \param out The output number
          * \param data A pointer to the beginning of the memory buffer
          * \param length The memory buffer's length
-         * \return The deserialized size on success. INVALID_ELEMENT_SIZE otherwise
+         * \return The deserialized number on success. A number for which IByteSerializable::isValid returns false otherwise
          */
-        template <typename SizeT>
-        static SizeT readNumber(const void* data, size_t length);
+        template <typename T, typename U = T>
+        static size_t readNumber(T& out, const char* data, size_t length);
 
         /**
          * \brief Serializes the given string to a byte array
@@ -105,7 +111,7 @@ namespace PantheonCore::Serialization
          * \param length The memory buffer's length
          * \return True on success. False otherwise.
          */
-        inline static bool deserializeVector2(LibMath::Vector2& out, const char* data, size_t length);
+        inline static size_t deserializeVector2(LibMath::Vector2& out, const char* data, size_t length);
 
         /**
          * \brief Converts the vector's members to big endian
@@ -134,7 +140,7 @@ namespace PantheonCore::Serialization
          * \param length The memory buffer's length
          * \return True on success. False otherwise.
          */
-        inline static bool deserializeVector3(LibMath::Vector3& out, const char* data, size_t length);
+        inline static size_t deserializeVector3(LibMath::Vector3& out, const char* data, size_t length);
 
         /**
          * \brief Converts the vector's members to big endian
@@ -163,7 +169,7 @@ namespace PantheonCore::Serialization
          * \param length The memory buffer's length
          * \return True on success. False otherwise.
          */
-        inline static bool deserializeVector4(LibMath::Vector4& out, const char* data, size_t length);
+        inline static size_t deserializeVector4(LibMath::Vector4& out, const char* data, size_t length);
 
         /**
          * \brief Converts the vector's members to big endian
@@ -192,7 +198,7 @@ namespace PantheonCore::Serialization
          * \param length The memory buffer's length
          * \return True on success. False otherwise.
          */
-        inline static bool deserializeQuaternion(LibMath::Quaternion& out, const char* data, size_t length);
+        inline static size_t deserializeQuaternion(LibMath::Quaternion& out, const char* data, size_t length);
 
         /**
          * \brief Serializes the given matrix to a byte array
@@ -217,7 +223,7 @@ namespace PantheonCore::Serialization
          * \return True on success. False otherwise.
          */
         template <LibMath::length_t Rows, LibMath::length_t Cols, typename DataT>
-        static bool deserializeMatrix(LibMath::TMatrix<Rows, Cols, DataT>& out, const char* data, size_t length);
+        static size_t deserializeMatrix(LibMath::TMatrix<Rows, Cols, DataT>& out, const char* data, size_t length);
     };
 }
 

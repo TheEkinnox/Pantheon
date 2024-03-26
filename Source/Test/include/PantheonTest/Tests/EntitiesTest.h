@@ -1,7 +1,7 @@
 #pragma once
 #include "ITest.h"
 
-#include <PantheonCore/ECS/Entity.h>
+#include <PantheonCore/ECS/Scene.h>
 
 namespace PantheonTest
 {
@@ -14,9 +14,13 @@ namespace PantheonTest
         void onStart() override;
 
     private:
-        std::vector<PantheonCore::ECS::Entity> m_entities;
-
+        void testEntityStorage();
+        void testComponentStorage();
         void testComponents();
+        void testScene();
+
+        static PantheonCore::ECS::Scene makeScene();
+
         void testJsonSerialization();
         void testBinarySerialization();
     };

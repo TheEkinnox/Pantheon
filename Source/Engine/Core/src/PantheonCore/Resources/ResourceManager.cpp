@@ -229,7 +229,7 @@ namespace PantheonCore::Resources
                 continue;
             }
 
-            if (ptr->deserialize(assetData.data(), assetData.size()) == 0 || !ptr->init())
+            if (ptr->fromBinary(assetData.data(), assetData.size()) == 0 || !ptr->init())
             {
                 DEBUG_LOG("[WARNING] Skipped bundle asset at path \"%s\" - Unable to load resource", path);
                 remove(guid);
@@ -252,7 +252,7 @@ namespace PantheonCore::Resources
             if (bundleData.empty())
                 continue;
 
-            return resource->deserialize(bundleData.data(), bundleData.size()) != 0 && resource->init();
+            return resource->fromBinary(bundleData.data(), bundleData.size()) != 0 && resource->init();
         }
 
         return resource->load(getFullPath(path)) && resource->init();

@@ -1,70 +1,53 @@
 #include "PantheonCore/ECS/Components/TagComponent.h"
 
-#include "PantheonCore/ECS/Entity.h"
+#include "PantheonCore/ECS/EntityHandle.h"
+
+using namespace PantheonCore::Serialization;
 
 namespace PantheonCore::ECS
 {
-    TagComponent::TagComponent(Entity& owner)
-        : TagComponent(owner, "Entity")
+    template <>
+    bool ComponentRegistry::toBinary<TagComponent>(const TagComponent* tag, std::vector<char>& output, const EntitiesMap&)
     {
-    }
-
-    TagComponent::TagComponent(Entity& owner, std::string tag)
-        : Component(owner), m_tag(std::move(tag))
-    {
-    }
-
-    bool TagComponent::serialize(std::vector<char>& output) const
-    {
-        return serializeString(m_tag, output);
-    }
-
-    size_t TagComponent::deserialize(const void* data, size_t length)
-    {
-        return deserializeString(m_tag, static_cast<const char*>(data), length);
-    }
-
-    bool TagComponent::serialize(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
-    {
-        writer.StartObject();
-
-        writer.Key("tag");
-        writer.String(m_tag.c_str(), static_cast<rapidjson::SizeType>(m_tag.size()));
-
-        return writer.EndObject();
-    }
-
-    bool TagComponent::deserialize(const rapidjson::Value& json)
-    {
-        if (!CHECK(json.IsObject(), "Unable to deserialize tag - Json value should be an object"))
+        if (!CHECK(tag != nullptr))
             return false;
 
-        const auto it = json.FindMember("tag");
-        if (!CHECK(it != json.MemberEnd() && it->value.IsString(), "Unable to deserialize tag - Failed to read value"))
+        return IByteSerializable::serializeString(tag->m_tag, output);
+    }
+
+    template <>
+    size_t ComponentRegistry::fromBinary<TagComponent>(TagComponent* out, const char* data, size_t length)
+    {
+        if (!CHECK(out != nullptr, "Unable to deserialize tag - Null output"))
+            return 0;
+
+        if (!CHECK(data != nullptr && length > 0, "Unable to deserialize tag - Empty buffer"))
+            return 0;
+
+        return IByteSerializable::deserializeString(out->m_tag, data, length);
+    }
+
+    template <>
+    bool ComponentRegistry::toJson<TagComponent>(
+        const TagComponent* tag, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap&)
+    {
+        if (!CHECK(tag != nullptr))
             return false;
 
-        m_tag = it->value.GetString();
+        return writer.String(tag->m_tag.c_str(), static_cast<rapidjson::SizeType>(tag->m_tag.size()));
+    }
+
+    template <>
+    bool ComponentRegistry::fromJson<TagComponent>(TagComponent* out, const rapidjson::Value& json)
+    {
+        if (!CHECK(out != nullptr, "Unable to deserialize tag - Null output"))
+            return false;
+
+        if (!CHECK(json.IsString(), "Unable to deserialize tag - Json value should be a string"))
+            return false;
+
+        out->m_tag = json.GetString();
+
         return true;
-    }
-
-    std::string TagComponent::getTag() const
-    {
-        return m_tag;
-    }
-
-    void TagComponent::setTag(const std::string& tag)
-    {
-        m_tag = tag;
-    }
-
-    bool TagComponent::onAdd()
-    {
-        if (getOwner().getComponent<TagComponent>())
-        {
-            DEBUG_LOG("[WARNING] Entity already has a tag component");
-            return false;
-        }
-
-        return Component::onAdd();
     }
 }

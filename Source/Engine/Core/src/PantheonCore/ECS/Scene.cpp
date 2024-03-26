@@ -1,15 +1,16 @@
 #include "PantheonCore/ECS/Scene.h"
 
-#include <rapidjson/istreamwrapper.h>
+#include "PantheonCore/ECS/ComponentRegistry.h"
 
-#include "PantheonCore/Utility/ByteOrder.h"
+#include <ranges>
+
+#include <rapidjson/istreamwrapper.h>
 
 namespace PantheonCore::ECS
 {
-    void Scene::update()
+    Scene::Scene()
+        : m_entities(this)
     {
-        for (const auto& node : getNodes())
-            node->update();
     }
 
     bool Scene::load(const std::string& fileName)
@@ -33,23 +34,117 @@ namespace PantheonCore::ECS
             return false;
         }
 
-        return deserialize(json);
+        return fromJson(json);
     }
 
-    bool Scene::serialize(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
+    bool Scene::toBinary(std::vector<char>& output) const
+    {
+        if (!CHECK(writeNumber(m_entities.getCount(), output), "Unable to write scene entity count to memory buffer"))
+            return false;
+
+        IComponentStorage::EntitiesMap entitiesMap;
+        Entity::Id                     index = 0;
+
+        for (const auto entity : m_entities)
+            entitiesMap[entity] = Entity(index++);
+
+        const ElemCountT storageCount = static_cast<ElemCountT>(m_components.size());
+        if (!CHECK(writeNumber(storageCount, output), "Unable to write scene entity count to memory buffer"))
+            return false;
+
+        for (const auto& [typeId, storage] : m_components)
+        {
+            if (!storage || storage->getCount() == 0)
+                continue;
+
+            const std::string& typeName = ComponentRegistry::getRegisteredTypeName(typeId);
+
+            if (!CHECK(IByteSerializable::serializeString(typeName, output), "Unable to serialize component storage type string"))
+                return false;
+
+            if (!storage->toBinary(output, entitiesMap))
+                return false;
+        }
+
+        return true;
+    }
+
+    size_t Scene::fromBinary(const char* data, const size_t length)
+    {
+        clear();
+
+        if (data == nullptr || length == 0)
+            return 0;
+
+        Entity::Id entityCount = 0;
+        size_t     offset      = readNumber(entityCount, data, length);
+
+        if (!CHECK(offset != 0, "Unable to deserialize scene - Failed to read entity count"))
+            return 0;
+
+        m_entities.reserve(entityCount);
+
+        for (Entity::Id id = 0; id < entityCount; ++id)
+        {
+            [[maybe_unused]] Entity entity = create();
+            ASSERT(entity.getIndex() == id);
+        }
+
+        ElemCountT storageCount = 0;
+        size_t     readBytes    = length >= offset ? readNumber(storageCount, data + offset, length - offset) : 0;
+
+        if (!CHECK(readBytes > 0, "Unable to deserialize scene - Failed to read storage count"))
+            return 0;
+
+        offset += readBytes;
+
+        for (ElemCountT i = 0; i < storageCount; ++i)
+        {
+            readBytes = length >= offset ? deserializeStorage(data + offset, length - offset) : 0;
+
+            if (readBytes == 0)
+                return 0;
+
+            offset += readBytes;
+        }
+
+        return offset;
+    }
+
+    bool Scene::toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
     {
         writer.StartObject();
 
         writer.Key("entities");
+        writer.Uint64(m_entities.getCount());
+
+        writer.Key("components");
         writer.StartArray();
 
-        for (const auto& entity : getNodes())
+        IComponentStorage::EntitiesMap entitiesMap;
+        Entity::Id                     index = 0;
+
+        for (const auto entity : m_entities)
+            entitiesMap[entity] = Entity(index++);
+
+        for (const auto& [typeId, storage] : m_components)
         {
-            if (!entity->serialize(writer))
-            {
-                DEBUG_LOG_ERROR("Unable to write scene to json - Scene entity serializing failed");
+            if (!storage || storage->getCount() == 0)
+                continue;
+
+            writer.StartObject();
+            writer.Key("type");
+
+            const std::string& typeName = ComponentRegistry::getRegisteredTypeName(typeId);
+            if (!CHECK(writer.String(typeName.c_str(), static_cast<rapidjson::SizeType>(typeName.size())),
+                    "Unable to serialize scene component storage - Failed to write type"))
                 return false;
-            }
+
+            writer.Key("data");
+            if (!storage->toJson(writer, entitiesMap))
+                return false;
+
+            writer.EndObject();
         }
 
         writer.EndArray();
@@ -57,93 +152,130 @@ namespace PantheonCore::ECS
         return writer.EndObject();
     }
 
-    bool Scene::deserialize(const rapidjson::Value& json)
+    bool Scene::fromJson(const rapidjson::Value& json)
     {
         clear();
 
-        if (!json.IsObject())
-        {
-            DEBUG_LOG_ERROR("Unable to deserialize scene - Json value should be an object");
-            return false;
-        }
-
-        const auto it = json.FindMember("entities");
-        if (it == json.MemberEnd() || !it->value.IsArray())
-        {
-            DEBUG_LOG_ERROR("Unable to deserialize scene - Invalid entities array");
-            return false;
-        }
-
-        const auto array = it->value.GetArray();
-        for (const auto& jsonEntity : array)
-        {
-            Entity& entity = addNode<Entity>();
-            if (!entity.deserialize(jsonEntity))
-            {
-                DEBUG_LOG_ERROR("Unable to deserialize scene - Scene entity deserializing failed");
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    bool Scene::serialize(std::vector<char>& output) const
-    {
-        const ElemCountT entityCount = static_cast<ElemCountT>(getNodes().size());
-
-        const size_t startSize = output.size();
-        output.resize(startSize + sizeof(ElemCountT));
-
-        const ElemCountT beEntityCount = Utility::toBigEndian(entityCount);
-        if (!CHECK(memcpy_s(output.data() + startSize, output.size() - startSize, &beEntityCount, sizeof(ElemCountT)) == 0,
-                "Unable to write scene entity count to memory buffer"))
+        if (!CHECK(json.IsObject(), "Unable to deserialize scene - Json value should be an object"))
             return false;
 
-        for (const std::shared_ptr<const Entity>& entity : getNodes())
+        auto it = json.FindMember("entities");
+        if (!CHECK(it != json.MemberEnd() && it->value.IsUint64(), "Unable to deserialize scene - Invalid entities count"))
+            return false;
+
+        const Entity::Id entityCount = it->value.GetUint64();
+        m_entities.reserve(entityCount);
+
+        for (Entity::Id id = 0; id < entityCount; ++id)
         {
-            if (!CHECK(entity->serializeWithSize(output), "Unable to write scene to memory buffer - Failed to serialize entity"))
+            [[maybe_unused]] Entity entity = create();
+            ASSERT(entity.getIndex() == id);
+        }
+
+        it = json.FindMember("components");
+        if (!CHECK(it != json.MemberEnd() && it->value.IsArray(), "Unable to deserialize scene - Invalid components storage array"))
+            return false;
+
+        const auto componentStorages = it->value.GetArray();
+        for (const auto& jsonStorage : componentStorages)
+        {
+            if (!deserializeStorage(jsonStorage))
                 return false;
         }
 
         return true;
     }
 
-    size_t Scene::deserialize(const void* data, const size_t length)
+    EntityHandle Scene::create()
     {
-        clear();
+        return { this, m_entities.add() };
+    }
 
-        if (data == nullptr || length == 0)
-            return 0;
+    EntityHandle Scene::create(const Entity source)
+    {
+        if (!isValid(source))
+            return create();
 
-        ElemCountT entityCount = 0;
+        Entity entity = m_entities.add();
 
-        if (!CHECK(length >= sizeof(ElemCountT) && memcpy_s(&entityCount, sizeof(ElemCountT), data, sizeof(ElemCountT)) == 0,
-                "Unable to deserialize scene - Failed to read entity count"))
-            return 0;
+        for (const auto& componentStorage : m_components | std::views::values)
+            componentStorage->copy(source, entity);
 
-        size_t      offset   = sizeof(ElemCountT);
-        const char* byteData = static_cast<const char*>(data);
+        return { this, entity };
+    }
 
-        for (ElemCountT i = 0; i < Utility::fromBigEndian(entityCount); ++i)
+    void Scene::destroy(const Entity entity)
+    {
+        for (const auto& componentStorage : m_components | std::views::values)
+            componentStorage->remove(entity);
+
+        m_entities.remove(entity);
+    }
+
+    bool Scene::isValid(const Entity entity) const
+    {
+        return entity != NULL_ENTITY && m_entities.has(entity);
+    }
+
+    void Scene::clear()
+    {
+        for (auto& storage : m_components | std::views::values)
         {
-            if (!CHECK(length > offset && length - offset >= sizeof(ElemSizeT), "Unable to deserialize scene - Invalid offset"))
-                return 0;
-
-            const ElemSizeT bufferSize = readNumber<ElemSizeT>(byteData + offset, length - offset);
-
-            if (!CHECK(bufferSize != INVALID_ELEMENT_SIZE, "Unable to deserialize scene - Failed to read size of entity [%d]", i))
-                return 0;
-
-            offset += sizeof(ElemSizeT);
-            Entity& entity = addNode<Entity>();
-
-            if (length <= offset || length - offset < bufferSize || entity.deserialize(byteData + offset, bufferSize) == 0)
-                return 0;
-
-            offset += bufferSize;
+            if (storage)
+                storage->clear();
         }
 
-        return offset;
+        m_entities.clear();
+    }
+
+    bool Scene::contains(const Entity owner) const
+    {
+        return m_entities.has(owner);
+    }
+
+    bool Scene::deserializeStorage(const rapidjson::Value& json)
+    {
+        if (!CHECK(json.IsObject(), "Unable to deserialize scene component storage - Json value should be an object"))
+            return false;
+
+        auto it = json.FindMember("type");
+        if (!CHECK(it != json.MemberEnd() && it->value.IsString(), "Unable to deserialize component storage - Invalid type string"))
+            return false;
+
+        const std::string type(it->value.GetString(), it->value.GetStringLength());
+
+        it = json.FindMember("data");
+        if (!CHECK(it != json.MemberEnd(), "Unable to deserialize component storage - Data not found"))
+            return false;
+
+        const ComponentRegistry::TypeInfo& typeInfo = ComponentRegistry::getRegisteredTypeInfo(type);
+        IComponentStorage&                 storage  = *(m_components[typeInfo.m_typeId] = typeInfo.makeStorage(this));
+
+        if (!storage.fromJson(it->value))
+            return false;
+
+        return true;
+    }
+
+    size_t Scene::deserializeStorage(const char* data, size_t length)
+    {
+        if (!CHECK(data != nullptr && length > 0, "Unable to deserialize component storage - Empty buffer"))
+            return 0;
+
+        std::string  typeName;
+        const size_t offset = deserializeString(typeName, data, length);
+
+        if (!CHECK(offset > 0, "Unable to deserialize component storage type string"))
+            return 0;
+
+        const ComponentRegistry::TypeInfo& typeInfo = ComponentRegistry::getRegisteredTypeInfo(typeName);
+        IComponentStorage&                 storage  = *(m_components[typeInfo.m_typeId] = typeInfo.makeStorage(this));
+
+        const size_t readBytes = length >= offset ? storage.fromBinary(data + offset, length - offset) : 0;
+
+        if (readBytes == 0)
+            return 0;
+
+        return offset + readBytes;
     }
 }

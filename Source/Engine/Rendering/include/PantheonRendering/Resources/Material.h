@@ -79,21 +79,21 @@ namespace PantheonRendering::Resources
          * \param writer The output json writer
          * \return True on success. False otherwise.
          */
-        bool serialize(rapidjson::Writer<rapidjson::StringBuffer>& writer) const override;
+        bool toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const override;
 
         /**
          * \brief Deserializes the material from json
          * \param json The input json data
          * \return True on success. False otherwise.
          */
-        bool deserialize(const rapidjson::Value& json) override;
+        bool fromJson(const rapidjson::Value& json) override;
 
         /**
          * \brief Serializes the material to a byte array
          * \param output The output memory buffer
          * \return True on success. False otherwise.
          */
-        bool serialize(std::vector<char>& output) const override;
+        bool toBinary(std::vector<char>& output) const override;
 
         /**
          * \brief Deserializes the material from the given memory buffer
@@ -101,7 +101,7 @@ namespace PantheonRendering::Resources
          * \param length The memory buffer's length
          * \return The number of deserialized bytes on success. 0 otherwise.
          */
-        size_t deserialize(const void* data, size_t length) override;
+        size_t fromBinary(const char* data, size_t length) override;
 
         /**
          * \brief Gets the material's shader
