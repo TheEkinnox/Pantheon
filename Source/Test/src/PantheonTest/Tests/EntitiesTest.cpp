@@ -65,8 +65,14 @@ namespace PantheonTest
         scene.make<int>(scene.create(), 3);
 
         EntityHandle lastEntity = scene.create();
-        scene.make<int>(lastEntity, 999);
-        scene.set<int>(lastEntity, 4);
+
+        {
+            const int& i = scene.make<int>(lastEntity, 999);
+            TEST_CHECK(i == 999, "Constructing a component should return a reference to said component");
+
+            scene.set<int>(lastEntity, 4);
+            TEST_CHECK(i == 4, "Setting a component for an existing entity should have updated it's value");
+        }
 
         TEST_CHECK(scene.getStorage<Entity>().getCount() == 5);
         TEST_CHECK(scene.getStorage<int>().getCount() == 5);
@@ -116,8 +122,6 @@ namespace PantheonTest
 
             *iComp = 123;
             *cComp = 'z';
-
-            std::cout << "iComp: " << *iComp << " | cComp: " << *cComp << " | fComp: " << *fComp << '\n';
         }
 
         auto [i2, c2, f2] = view.get(lastEntity);
