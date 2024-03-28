@@ -118,7 +118,7 @@ namespace PantheonCore::Utility
 
     std::string appendPath(const std::string& root, const std::string& path)
     {
-        return std::filesystem::path(root).append(path).string();
+        return std::filesystem::path(root).append(path).make_preferred().string();
     }
 
     bool pathExists(const std::string& path)
