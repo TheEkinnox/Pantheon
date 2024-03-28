@@ -3,12 +3,12 @@
 #include "PantheonApp/Platform/Null/NullContext.h"
 #include "PantheonApp/Platform/OpenGL/OpenGLContext.h"
 
+#include <PantheonCore/Debug/Logger.h>
+#include <PantheonCore/Utility/ServiceLocator.h>
+
+#include <PantheonRendering/RHI/IRenderAPI.h>
+
 #include <GLFW/glfw3.h>
-
-#include "PantheonCore/Debug/Logger.h"
-#include "PantheonCore/Utility/ServiceLocator.h"
-
-#include "PantheonRendering/RHI/IRenderAPI.h"
 
 using namespace PantheonCore::Debug;
 using namespace PantheonCore::Utility;
