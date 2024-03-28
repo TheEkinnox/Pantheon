@@ -21,6 +21,11 @@ namespace PantheonRendering::LowRenderer
         static constexpr uint8_t CLEAR_STENCIL_BIT    = 1 << CLEAR_STENCIL_OFFSET;
 
         /**
+         * \brief Creates a default camera
+         */
+        Camera();
+
+        /**
          * \brief Creates a camera with the given projection and view matrices
          * \param projection The camera's projection matrix
          * \param view The camera's view matrix

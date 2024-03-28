@@ -7,6 +7,11 @@ using namespace PantheonRendering::Geometry;
 
 namespace PantheonRendering::LowRenderer
 {
+    Camera::Camera()
+        : Camera({}, {}, ECullingMode::NONE)
+    {
+    }
+
     Camera::Camera(Matrix4 projection, Matrix4 view, const ECullingMode cullingMode)
         : m_viewMatrix(std::move(view)), m_projectionMatrix(std::move(projection)),
         m_viewProjectionMatrix(m_projectionMatrix * m_viewMatrix), m_frustum(m_viewProjectionMatrix), m_cullingMode(cullingMode)
