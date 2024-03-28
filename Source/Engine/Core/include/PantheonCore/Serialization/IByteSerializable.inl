@@ -86,9 +86,13 @@ namespace PantheonCore::Serialization
         strLength = Utility::fromBigEndian(strLength);
 
         const size_t offset = sizeof(SizeT);
+
+        if (length <= offset || length - offset < strLength)
+            return 0;
+
         out.resize(strLength);
 
-        if (length <= offset || length - offset < strLength || memcpy_s(out.data(), out.size(), data + offset, strLength) != 0)
+        if (memcpy_s(out.data(), out.size(), data + offset, strLength) != 0)
             return 0;
 
         return sizeof(SizeT) + out.size();
