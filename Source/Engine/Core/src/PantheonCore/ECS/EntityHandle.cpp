@@ -30,7 +30,6 @@ namespace PantheonCore::ECS
         return m_scene;
     }
 
-    // EntityHandle.cpp
     EntityHandle EntityHandle::getRoot() const
     {
         EntityHandle parent = *this;
