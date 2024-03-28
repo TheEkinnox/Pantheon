@@ -78,7 +78,7 @@ namespace PantheonRendering::RHI
          * \param count The number of elements in the array
          */
         template <typename T>
-        void setData(T* data, size_t count);
+        void setData(const T* data, size_t count);
 
         /**
          * \brief Sets the buffer's data starting at the given offset

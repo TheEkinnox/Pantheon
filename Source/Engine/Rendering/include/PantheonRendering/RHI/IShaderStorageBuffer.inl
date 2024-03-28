@@ -4,7 +4,7 @@
 namespace PantheonRendering::RHI
 {
     template <typename T>
-    void IShaderStorageBuffer::setData(T* data, const size_t count)
+    void IShaderStorageBuffer::setData(const T* data, const size_t count)
     {
         setRawData(static_cast<const void*>(data), count * sizeof(T));
     }
