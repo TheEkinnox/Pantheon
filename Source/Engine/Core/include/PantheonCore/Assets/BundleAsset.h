@@ -3,7 +3,7 @@
 #include <ostream>
 
 #include "PantheonCore/Assets/Asset.h"
-#include "PantheonCore/utility/macros.h"
+#include "PantheonCore/Utility/macros.h"
 
 namespace PantheonCore::Assets
 {
