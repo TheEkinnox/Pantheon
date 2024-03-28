@@ -81,7 +81,7 @@ namespace PantheonCore::Serialization
          * \param output The output memory buffer
          * \return True on success. False otherwise.
          */
-        template <typename SizeT = size_t>
+        template <typename SizeT = ElemSizeT>
         static bool serializeString(const std::string& string, std::vector<char>& output);
 
         /**
@@ -93,7 +93,7 @@ namespace PantheonCore::Serialization
          * \param length The memory buffer's length
          * \return The number of deserialized bytes on success. 0 otherwise.
          */
-        template <typename SizeT = size_t>
+        template <typename SizeT = ElemSizeT>
         static size_t deserializeString(std::string& out, const char* data, size_t length);
 
         /**
