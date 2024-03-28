@@ -3,6 +3,7 @@
 #include "PantheonCore/Resources/ResourceAsset.h"
 #include "PantheonCore/Utility/utility.h"
 
+#include <climits>
 #include <istream>
 
 namespace PantheonCore::Assets

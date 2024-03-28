@@ -1,10 +1,11 @@
 ﻿#pragma once
-#include <unordered_map>
-#include <vector>
-
 #include "PantheonCore/Assets/BundleAsset.h"
 #include "PantheonCore/Utility/ECompressionMode.h"
 #include "PantheonCore/Utility/macros.h"
+
+#include <climits>
+#include <unordered_map>
+#include <vector>
 
 namespace PantheonCore::Assets
 {
@@ -14,8 +15,8 @@ namespace PantheonCore::Assets
     {
     public:
         static constexpr int COMPRESSION_MODE_BITS = 2;
-        static constexpr int DATA_SIZE_BITS = 62;
-        static constexpr int HEADER_SIZE = ALIGN(COMPRESSION_MODE_BITS + DATA_SIZE_BITS, CHAR_BIT) / CHAR_BIT;
+        static constexpr int DATA_SIZE_BITS        = 62;
+        static constexpr int HEADER_SIZE           = ALIGN(COMPRESSION_MODE_BITS + DATA_SIZE_BITS, CHAR_BIT) / CHAR_BIT;
 
         using block_t = SMALLEST_UNSIGNED_TYPE(DATA_SIZE_BITS);
         using header_t = SMALLEST_UNSIGNED_TYPE(COMPRESSION_MODE_BITS + DATA_SIZE_BITS);
