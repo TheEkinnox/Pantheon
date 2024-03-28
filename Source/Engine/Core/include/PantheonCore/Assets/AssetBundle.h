@@ -4,6 +4,7 @@
 #include "PantheonCore/Utility/macros.h"
 
 #include <climits>
+#include <memory>
 #include <unordered_map>
 #include <vector>
 

@@ -1,16 +1,17 @@
 ﻿#pragma once
-#include <cstdint>
-#include <ostream>
-
 #include "PantheonCore/Assets/Asset.h"
 #include "PantheonCore/Utility/macros.h"
+
+#include <cstdint>
+#include <memory>
+#include <ostream>
 
 namespace PantheonCore::Assets
 {
     class BundleAsset
     {
     public:
-        static constexpr int BLOCK_SIZE_BITS = 62;
+        static constexpr int BLOCK_SIZE_BITS  = 62;
         static constexpr int BLOCK_START_BITS = BLOCK_SIZE_BITS + 1;
 
         using block_t = SMALLEST_UNSIGNED_TYPE(BLOCK_SIZE_BITS);
