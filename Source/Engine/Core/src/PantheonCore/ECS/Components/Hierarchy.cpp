@@ -17,7 +17,7 @@ namespace PantheonCore::ECS
         return m_parent;
     }
 
-    void HierarchyComponent::setParent(Entity parent)
+    void HierarchyComponent::setParent(const Entity parent)
     {
         m_parent = parent;
     }
@@ -207,12 +207,9 @@ namespace PantheonCore::ECS
 
     template <>
     bool ComponentRegistry::toBinary<HierarchyComponent>(
-        const HierarchyComponent* hierarchy, std::vector<char>& out, const EntitiesMap& toSerialized)
+        const HierarchyComponent& hierarchy, std::vector<char>& out, const EntitiesMap& toSerialized)
     {
-        if (!CHECK(hierarchy != nullptr))
-            return false;
-
-        Entity parent = hierarchy->getParent();
+        Entity parent = hierarchy.getParent();
 
         if (parent != NULL_ENTITY)
         {
@@ -228,25 +225,19 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    size_t ComponentRegistry::fromBinary<HierarchyComponent>(HierarchyComponent* out, const char* data, size_t length)
+    size_t ComponentRegistry::fromBinary<HierarchyComponent>(HierarchyComponent& out, const char* data, size_t length)
     {
-        if (!CHECK(out != nullptr, "Unable to deserialize hierarchy - Null output"))
-            return 0;
-
         if (!CHECK(data != nullptr && length > 0, "Unable to deserialize hierarchy - Empty buffer"))
             return 0;
 
-        return IByteSerializable::readNumber<Entity, Entity::Id>(out->m_parent, data, length);
+        return IByteSerializable::readNumber<Entity, Entity::Id>(out.m_parent, data, length);
     }
 
     template <>
     bool ComponentRegistry::toJson<HierarchyComponent>(
-        const HierarchyComponent* hierarchy, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap& toSerialized)
+        const HierarchyComponent& hierarchy, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap& toSerialized)
     {
-        if (!CHECK(hierarchy != nullptr))
-            return false;
-
-        Entity parent = hierarchy->getParent();
+        Entity parent = hierarchy.getParent();
 
         if (parent != NULL_ENTITY)
         {
@@ -267,11 +258,8 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    bool ComponentRegistry::fromJson<HierarchyComponent>(HierarchyComponent* out, const rapidjson::Value& json)
+    bool ComponentRegistry::fromJson<HierarchyComponent>(HierarchyComponent& out, const rapidjson::Value& json)
     {
-        if (!CHECK(out != nullptr, "Unable to deserialize hierarchy - Null output"))
-            return false;
-
         if (!CHECK(json.IsObject(), "Unable to deserialize hierarchy - Json value should be an object"))
             return false;
 
@@ -279,36 +267,30 @@ namespace PantheonCore::ECS
         if (!CHECK(it != json.MemberEnd() && it->value.Is<Entity::Id>(), "Unable to deserialize hierarchy - Invalid parent"))
             return false;
 
-        out->m_parent = Entity(it->value.Get<Entity::Id>());
+        out.setParent(Entity(it->value.Get<Entity::Id>()));
         return true;
     }
 
     template <>
-    bool ComponentRegistry::toBinary<Transform>(const Transform* transform, std::vector<char>& out, const EntitiesMap&)
+    bool ComponentRegistry::toBinary<Transform>(const Transform& transform, std::vector<char>& out, const EntitiesMap&)
     {
-        if (!CHECK(transform != nullptr))
-            return false;
-
         out.reserve(out.size() + sizeof(Vector3) * 2 + sizeof(Quaternion));
 
-        if (!CHECK(IByteSerializable::serializeVector3(transform->getPosition(), out)))
+        if (!CHECK(IByteSerializable::serializeVector3(transform.getPosition(), out)))
             return false;
 
-        if (!CHECK(IByteSerializable::serializeQuaternion(transform->getRotation(), out)))
+        if (!CHECK(IByteSerializable::serializeQuaternion(transform.getRotation(), out)))
             return false;
 
-        if (!CHECK(IByteSerializable::serializeVector3(transform->getScale(), out)))
+        if (!CHECK(IByteSerializable::serializeVector3(transform.getScale(), out)))
             return false;
 
         return true;
     }
 
     template <>
-    size_t ComponentRegistry::fromBinary<Transform>(Transform* out, const char* data, size_t length)
+    size_t ComponentRegistry::fromBinary<Transform>(Transform& out, const char* data, size_t length)
     {
-        if (!CHECK(out != nullptr, "Unable to deserialize transform - Null output"))
-            return 0;
-
         if (!CHECK(data != nullptr && length > 0, "Unable to deserialize transform - Empty buffer"))
             return 0;
 
@@ -332,40 +314,34 @@ namespace PantheonCore::ECS
         if (!CHECK(readBytes != 0, "Unable to deserialize transform scale"))
             return 0;
 
-        out->setAll(position, rotation, scale);
+        out.setAll(position, rotation, scale);
         return offset + readBytes;
     }
 
     template <>
     bool ComponentRegistry::toJson<Transform>(
-        const Transform* transform, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap&)
+        const Transform& transform, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap&)
     {
-        if (!transform)
-            return false;
-
         writer.StartObject();
 
         writer.Key("position");
-        std::string str = transform->getPosition().string();
+        std::string str = transform.getPosition().string();
         writer.String(str.c_str(), static_cast<rapidjson::SizeType>(str.size()));
 
         writer.Key("rotation");
-        str = transform->getRotation().string();
+        str = transform.getRotation().string();
         writer.String(str.c_str(), static_cast<rapidjson::SizeType>(str.size()));
 
         writer.Key("scale");
-        str = transform->getScale().string();
+        str = transform.getScale().string();
         writer.String(str.c_str(), static_cast<rapidjson::SizeType>(str.size()));
 
         return writer.EndObject();
     }
 
     template <>
-    bool ComponentRegistry::fromJson<Transform>(Transform* transform, const rapidjson::Value& json)
+    bool ComponentRegistry::fromJson<Transform>(Transform& transform, const rapidjson::Value& json)
     {
-        if (!transform)
-            return false;
-
         if (!CHECK(json.IsObject(), "Unable to deserialize transform - Invalid json object"))
             return false;
 
@@ -399,7 +375,7 @@ namespace PantheonCore::ECS
             iss >> scale;
         }
 
-        transform->setAll(position, rotation, scale);
+        transform.setAll(position, rotation, scale);
         return true;
     }
 }

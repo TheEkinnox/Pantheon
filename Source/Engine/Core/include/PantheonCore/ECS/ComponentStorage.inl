@@ -223,7 +223,7 @@ namespace PantheonCore::ECS
             if (!CHECK(Serialization::IByteSerializable::writeNumber(it->second, output), "Failed to write component owner"))
                 return false;
 
-            if (!ComponentRegistry::toBinary(&m_components[index], output, entitiesMap))
+            if (!ComponentRegistry::toBinary(m_components[index], output, entitiesMap))
                 return false;
         }
 
@@ -256,7 +256,7 @@ namespace PantheonCore::ECS
 
             offset += readBytes;
             ComponentT component;
-            readBytes = length >= offset ? ComponentRegistry::fromBinary(&component, data + offset, length - offset) : 0;
+            readBytes = length >= offset ? ComponentRegistry::fromBinary(component, data + offset, length - offset) : 0;
 
             if (readBytes == 0)
                 return false;
@@ -287,7 +287,7 @@ namespace PantheonCore::ECS
                 return false;
 
             writer.Key("data");
-            if (!ComponentRegistry::toJson(&m_components[index], writer, entitiesMap))
+            if (!ComponentRegistry::toJson(m_components[index], writer, entitiesMap))
                 return false;
 
             writer.EndObject();
@@ -320,7 +320,7 @@ namespace PantheonCore::ECS
                 return false;
 
             ComponentT component;
-            if (!ComponentRegistry::fromJson(&component, it->value))
+            if (!ComponentRegistry::fromJson(component, it->value))
                 return false;
 
             set(owner, component);

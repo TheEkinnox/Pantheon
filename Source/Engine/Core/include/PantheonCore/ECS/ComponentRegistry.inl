@@ -9,11 +9,11 @@ namespace PantheonCore::ECS
 {
     template <typename T>
     bool ComponentRegistry::toJson(
-        const T* component, rapidjson::Writer<rapidjson::StringBuffer>& writer, [[maybe_unused]] const EntitiesMap& toSerialized)
+        const T& component, rapidjson::Writer<rapidjson::StringBuffer>& writer, [[maybe_unused]] const EntitiesMap& toSerialized)
     {
         if constexpr (std::is_base_of_v<Serialization::IJsonSerializable, T>)
         {
-            return component && component->toJson(writer);
+            return component.toJson(writer);
         }
         else
         {
@@ -23,11 +23,11 @@ namespace PantheonCore::ECS
     }
 
     template <typename T>
-    bool ComponentRegistry::fromJson(T* out, const rapidjson::Value& json)
+    bool ComponentRegistry::fromJson(T& out, const rapidjson::Value& json)
     {
         if constexpr (std::is_base_of_v<Serialization::IJsonSerializable, T>)
         {
-            return out && out->fromJson(json);
+            return out.fromJson(json);
         }
         else
         {
@@ -37,11 +37,11 @@ namespace PantheonCore::ECS
     }
 
     template <typename T>
-    bool ComponentRegistry::toBinary(const T* component, std::vector<char>& out, [[maybe_unused]] const EntitiesMap& toSerialized)
+    bool ComponentRegistry::toBinary(const T& component, std::vector<char>& out, [[maybe_unused]] const EntitiesMap& toSerialized)
     {
         if constexpr (std::is_base_of_v<Serialization::IByteSerializable, T>)
         {
-            return component && component->toBinary(out);
+            return component.toBinary(out);
         }
         else
         {
@@ -51,11 +51,11 @@ namespace PantheonCore::ECS
     }
 
     template <typename T>
-    size_t ComponentRegistry::fromBinary(T* out, const char* data, const size_t length)
+    size_t ComponentRegistry::fromBinary(T& out, const char* data, const size_t length)
     {
         if constexpr (std::is_base_of_v<Serialization::IByteSerializable, T>)
         {
-            return out ? const_cast<std::remove_const_t<T>*>(out)->fromBinary(data, length) : 0;
+            return out.fromBinary(data, length);
         }
         else
         {

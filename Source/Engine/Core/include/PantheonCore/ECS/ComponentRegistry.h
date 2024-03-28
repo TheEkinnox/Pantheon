@@ -21,16 +21,16 @@ namespace PantheonCore::ECS
         using EntitiesMap = std::unordered_map<Entity::Id, Entity>;
 
         template <typename T>
-        static bool toJson(const T* component, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap& toSerialized);
+        static bool toJson(const T& component, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap& toSerialized);
 
         template <typename T>
-        static bool fromJson(T* out, const rapidjson::Value& json);
+        static bool fromJson(T& out, const rapidjson::Value& json);
 
         template <typename T>
-        static bool toBinary(const T* component, std::vector<char>& out, const EntitiesMap& toSerialized);
+        static bool toBinary(const T& component, std::vector<char>& out, const EntitiesMap& toSerialized);
 
         template <typename T>
-        static size_t fromBinary(T* out, const char* data, size_t length);
+        static size_t fromBinary(T& out, const char* data, size_t length);
 
         struct TypeInfo
         {
