@@ -3,6 +3,8 @@
 
 #include "PantheonCore/ECS/ComponentRegistry.h"
 #include "PantheonCore/ECS/ComponentTraits.h"
+#include "PantheonCore/ECS/EntityHandle.h"
+#include "PantheonCore/Serialization/IByteSerializable.h"
 
 namespace PantheonCore::ECS
 {
@@ -33,19 +35,20 @@ namespace PantheonCore::ECS
     template <class T>
     T& ComponentStorage<T>::set(const Entity owner, const ComponentT& instance)
     {
-        const auto it = m_entityToComponent.find(owner);
+        const auto   it = m_entityToComponent.find(owner);
+        EntityHandle handle(m_scene, owner);
 
         if (it != m_entityToComponent.end())
         {
             ComponentT& component = m_components[it->second];
 
-            ComponentTraits::onBeforeChange<ComponentT>({ m_scene, owner }, component);
-            m_onBeforeChange.invoke({ m_scene, owner }, component);
+            ComponentTraits::onBeforeChange<ComponentT>(handle, component);
+            m_onBeforeChange.invoke(handle, component);
 
             component = instance;
 
-            ComponentTraits::onChange<ComponentT>({ m_scene, owner }, component);
-            m_onChange.invoke({ m_scene, owner }, component);
+            ComponentTraits::onChange<ComponentT>(handle, component);
+            m_onChange.invoke(handle, component);
 
             return component;
         }
@@ -56,8 +59,8 @@ namespace PantheonCore::ECS
         m_componentToEntity[index] = owner;
         m_entityToComponent[owner] = index;
 
-        ComponentTraits::onAdd<ComponentT>({ m_scene, owner }, component);
-        m_onAdd.invoke({ m_scene, owner }, component);
+        ComponentTraits::onAdd<ComponentT>(handle, component);
+        m_onAdd.invoke(handle, component);
 
         return component;
     }
@@ -66,19 +69,20 @@ namespace PantheonCore::ECS
     template <typename... Args>
     T& ComponentStorage<T>::construct(const Entity owner, Args&&... args)
     {
-        const auto it = m_entityToComponent.find(owner);
+        const auto   it = m_entityToComponent.find(owner);
+        EntityHandle handle(m_scene, owner);
 
         if (it != m_entityToComponent.end())
         {
             ComponentT& component = m_components[it->second];
 
-            ComponentTraits::onBeforeChange<ComponentT>({ m_scene, owner }, component);
-            m_onBeforeChange.invoke({ m_scene, owner }, component);
+            ComponentTraits::onBeforeChange<ComponentT>(handle, component);
+            m_onBeforeChange.invoke(handle, component);
 
             component = *new(&component) ComponentT(std::forward<Args>(args)...);
 
-            ComponentTraits::onChange<ComponentT>({ m_scene, owner }, component);
-            m_onChange.invoke({ m_scene, owner }, component);
+            ComponentTraits::onChange<ComponentT>(handle, component);
+            m_onChange.invoke(handle, component);
             return component;
         }
 
@@ -88,8 +92,8 @@ namespace PantheonCore::ECS
         m_componentToEntity[index] = owner;
         m_entityToComponent[owner] = index;
 
-        ComponentTraits::onAdd<ComponentT>({ m_scene, owner }, component);
-        m_onAdd.invoke({ m_scene, owner }, component);
+        ComponentTraits::onAdd<ComponentT>(handle, component);
+        m_onAdd.invoke(handle, component);
 
         return component;
     }
@@ -102,10 +106,11 @@ namespace PantheonCore::ECS
         if (it == m_entityToComponent.end())
             return;
 
-        ComponentT& component = m_components[it->second];
+        ComponentT&  component = m_components[it->second];
+        EntityHandle handle(m_scene, owner);
 
-        ComponentTraits::onRemove<ComponentT>({ m_scene, owner }, component);
-        m_onRemove.invoke({ m_scene, owner }, component);
+        ComponentTraits::onRemove<ComponentT>(handle, component);
+        m_onRemove.invoke(handle, component);
 
         const size_t lastIndex = m_components.size() - 1;
 

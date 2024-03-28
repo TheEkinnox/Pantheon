@@ -94,40 +94,40 @@ namespace PantheonCore::ECS
         size_t m_childCount      = 0;
     };
 
-    std::vector<LibMath::Transform*> GetChildTransforms(EntityHandle entity);
+    std::vector<LibMath::Transform*> GetChildTransforms(const EntityHandle& entity);
 
     /**
      * \brief Links the relevant transforms to this entity
      * \param entity The entity for which the transforms should be linked
      */
-    void LinkTransforms(EntityHandle entity);
+    void LinkTransforms(EntityHandle& entity);
 
     /**
      * \brief Unlinks the relevant transforms from this entity
      * \param entity The entity for which the transforms should be unlinked
      */
-    void UnlinkTransforms(EntityHandle entity);
+    void UnlinkTransforms(const EntityHandle& entity);
 
     template <>
-    void ComponentTraits::onAdd<HierarchyComponent>(EntityHandle, HierarchyComponent&);
+    void ComponentTraits::onAdd<HierarchyComponent>(EntityHandle&, HierarchyComponent&);
 
     template <>
-    void ComponentTraits::onRemove<HierarchyComponent>(EntityHandle, HierarchyComponent&);
+    void ComponentTraits::onRemove<HierarchyComponent>(EntityHandle&, HierarchyComponent&);
 
     template <>
-    void ComponentTraits::onBeforeChange<HierarchyComponent>(EntityHandle, HierarchyComponent&);
+    void ComponentTraits::onBeforeChange<HierarchyComponent>(EntityHandle&, HierarchyComponent&);
 
     template <>
-    void ComponentTraits::onChange<HierarchyComponent>(EntityHandle, HierarchyComponent&);
+    void ComponentTraits::onChange<HierarchyComponent>(EntityHandle&, HierarchyComponent&);
 
     template <>
-    void ComponentTraits::onAdd<LibMath::Transform>(EntityHandle, LibMath::Transform&);
+    void ComponentTraits::onAdd<LibMath::Transform>(EntityHandle&, LibMath::Transform&);
 
     template <>
-    void ComponentTraits::onRemove<LibMath::Transform>(EntityHandle, LibMath::Transform&);
+    void ComponentTraits::onRemove<LibMath::Transform>(EntityHandle&, LibMath::Transform&);
 
     template <>
-    void ComponentTraits::onChange<LibMath::Transform>(EntityHandle, LibMath::Transform&);
+    void ComponentTraits::onChange<LibMath::Transform>(EntityHandle&, LibMath::Transform&);
 
     template <>
     bool ComponentRegistry::toBinary<HierarchyComponent>(

@@ -13,7 +13,7 @@ namespace PantheonCore::ECS
          * \param component The added component
          */
         template <class T>
-        static void onAdd([[maybe_unused]] EntityHandle entity, [[maybe_unused]] T& component)
+        static void onAdd([[maybe_unused]] EntityHandle& entity, [[maybe_unused]] T& component)
         {
         }
 
@@ -24,7 +24,7 @@ namespace PantheonCore::ECS
          * \param component The component to remove
          */
         template <class T>
-        static void onRemove([[maybe_unused]] EntityHandle entity, [[maybe_unused]] T& component)
+        static void onRemove([[maybe_unused]] EntityHandle& entity, [[maybe_unused]] T& component)
         {
         }
 
@@ -35,7 +35,7 @@ namespace PantheonCore::ECS
          * \param component The updated component
          */
         template <class T>
-        static void onBeforeChange([[maybe_unused]] EntityHandle entity, [[maybe_unused]] T& component)
+        static void onBeforeChange([[maybe_unused]] EntityHandle& entity, [[maybe_unused]] T& component)
         {
         }
 
@@ -46,10 +46,8 @@ namespace PantheonCore::ECS
          * \param component The updated component
          */
         template <class T>
-        static void onChange([[maybe_unused]] EntityHandle entity, [[maybe_unused]] T& component)
+        static void onChange([[maybe_unused]] EntityHandle& entity, [[maybe_unused]] T& component)
         {
         }
     };
 }
-
-#include "PantheonCore/ECS/EntityHandle.h"

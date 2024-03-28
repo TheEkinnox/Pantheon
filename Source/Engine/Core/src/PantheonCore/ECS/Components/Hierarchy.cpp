@@ -1,5 +1,6 @@
 #include "PantheonCore/ECS/Components/Hierarchy.h"
 
+#include "PantheonCore/ECS/EntityHandle.h"
 #include "PantheonCore/ECS/SceneView.h"
 
 using namespace LibMath;
@@ -42,34 +43,7 @@ namespace PantheonCore::ECS
         return m_childCount;
     }
 
-    void LinkTransforms(EntityHandle entity)
-    {
-        Transform* parentTransform = entity.getParent().getInParent<Transform>();
-        Transform* transform       = entity.get<Transform>();
-
-        if (transform)
-            transform->setParent(parentTransform, parentTransform == nullptr);
-
-        const std::vector<Transform*> childTransforms = GetChildTransforms(entity);
-
-        for (Transform* childTransform : childTransforms)
-        {
-            Transform* newParent = transform ? transform : parentTransform;
-            childTransform->setParent(newParent, parentTransform == nullptr);
-        }
-    }
-
-    void UnlinkTransforms(const EntityHandle entity)
-    {
-        Transform* parentTransform = entity.getParent().getInParent<Transform>();
-
-        const std::vector<Transform*> linkedTransforms = GetChildTransforms(entity);
-
-        for (Transform* transform : linkedTransforms)
-            transform->setParent(parentTransform, true);
-    }
-
-    std::vector<Transform*> GetChildTransforms(const EntityHandle entity)
+    std::vector<Transform*> GetChildTransforms(const EntityHandle& entity)
     {
         std::vector<Transform*> linkedTransforms;
 
@@ -91,8 +65,35 @@ namespace PantheonCore::ECS
         return linkedTransforms;
     }
 
+    void LinkTransforms(EntityHandle& entity)
+    {
+        Transform* parentTransform = entity.getParent().getInParent<Transform>();
+        Transform* transform       = entity.get<Transform>();
+
+        if (transform)
+            transform->setParent(parentTransform, parentTransform == nullptr);
+
+        const std::vector<Transform*> childTransforms = GetChildTransforms(entity);
+
+        for (Transform* childTransform : childTransforms)
+        {
+            Transform* newParent = transform ? transform : parentTransform;
+            childTransform->setParent(newParent, parentTransform == nullptr);
+        }
+    }
+
+    void UnlinkTransforms(const EntityHandle& entity)
+    {
+        Transform* parentTransform = entity.getParent().getInParent<Transform>();
+
+        const std::vector<Transform*> linkedTransforms = GetChildTransforms(entity);
+
+        for (Transform* transform : linkedTransforms)
+            transform->setParent(parentTransform, true);
+    }
+
     template <>
-    void ComponentTraits::onAdd<HierarchyComponent>(const EntityHandle owner, HierarchyComponent& hierarchy)
+    void ComponentTraits::onAdd<HierarchyComponent>(EntityHandle& owner, HierarchyComponent& hierarchy)
     {
         ASSERT(hierarchy.m_firstChild == NULL_ENTITY, "Adding a pre-existing hierarchy is not supported");
         ASSERT(hierarchy.m_previousSibling == NULL_ENTITY, "Adding a pre-existing hierarchy is not supported");
@@ -103,7 +104,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    void ComponentTraits::onRemove<HierarchyComponent>(const EntityHandle entity, HierarchyComponent& hierarchy)
+    void ComponentTraits::onRemove<HierarchyComponent>(EntityHandle& entity, HierarchyComponent& hierarchy)
     {
         onBeforeChange(entity, hierarchy);
 
@@ -125,7 +126,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    void ComponentTraits::onBeforeChange<HierarchyComponent>(const EntityHandle entity, HierarchyComponent& hierarchy)
+    void ComponentTraits::onBeforeChange<HierarchyComponent>(EntityHandle& entity, HierarchyComponent& hierarchy)
     {
         Scene* scene = entity.getScene();
         ASSERT(scene);
@@ -154,7 +155,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    void ComponentTraits::onChange<HierarchyComponent>(const EntityHandle entity, HierarchyComponent& hierarchy)
+    void ComponentTraits::onChange<HierarchyComponent>(EntityHandle& entity, HierarchyComponent& hierarchy)
     {
         Scene* scene = entity.getScene();
         ASSERT(scene);
@@ -188,19 +189,19 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    void ComponentTraits::onAdd<Transform>(const EntityHandle entity, Transform&)
+    void ComponentTraits::onAdd<Transform>(EntityHandle& entity, Transform&)
     {
         LinkTransforms(entity);
     }
 
     template <>
-    void ComponentTraits::onRemove<Transform>(const EntityHandle entity, Transform&)
+    void ComponentTraits::onRemove<Transform>(EntityHandle& entity, Transform&)
     {
         UnlinkTransforms(entity);
     }
 
     template <>
-    void ComponentTraits::onChange<Transform>(const EntityHandle entity, Transform&)
+    void ComponentTraits::onChange<Transform>(EntityHandle& entity, Transform&)
     {
         LinkTransforms(entity);
     }
