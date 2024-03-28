@@ -87,7 +87,8 @@ namespace PantheonCore::ECS
         for (Entity::Id id = 0; id < entityCount; ++id)
         {
             [[maybe_unused]] Entity entity = create();
-            ASSERT(entity.getIndex() == id);
+            if (!ASSUME(entity.getIndex() == id))
+                return 0;
         }
 
         ElemCountT storageCount = 0;
@@ -169,7 +170,8 @@ namespace PantheonCore::ECS
         for (Entity::Id id = 0; id < entityCount; ++id)
         {
             [[maybe_unused]] Entity entity = create();
-            ASSERT(entity.getIndex() == id);
+            if (!ASSUME(entity.getIndex() == id))
+                return false;
         }
 
         it = json.FindMember("components");

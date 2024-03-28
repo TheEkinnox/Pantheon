@@ -17,7 +17,7 @@ namespace PantheonCore::ECS
         }
         else
         {
-            ASSERT(false, "Json serialization is not defined for \"%s\"", typeid(T).name());
+            ((void)ASSUME(false, "Json serialization is not defined for \"%s\"", typeid(T).name()));
             return false;
         }
     }
@@ -31,7 +31,7 @@ namespace PantheonCore::ECS
         }
         else
         {
-            ASSERT(false, "Json deserialization is not defined for \"%s\"", typeid(T).name());
+            ((void)ASSUME(false, "Json deserialization is not defined for \"%s\"", typeid(T).name()));
             return false;
         }
     }
@@ -45,7 +45,7 @@ namespace PantheonCore::ECS
         }
         else
         {
-            ASSERT(false, "Binary serialization is not defined for \"%s\"", typeid(T).name());
+            ((void)ASSUME(false, "Binary serialization is not defined for \"%s\"", typeid(T).name()));
             return false;
         }
     }
@@ -59,7 +59,7 @@ namespace PantheonCore::ECS
         }
         else
         {
-            ASSERT(false, "Binary deserialization is not defined for \"%s\"", typeid(T).name());
+            ((void)ASSUME(false, "Binary deserialization is not defined for \"%s\"", typeid(T).name()));
             return 0;
         }
     }
