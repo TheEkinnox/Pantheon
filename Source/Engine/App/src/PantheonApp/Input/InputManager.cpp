@@ -4,7 +4,6 @@
 #include "PantheonApp/Windowing/Window.h"
 
 #include <PantheonCore/Utility/ServiceLocator.h>
-#include <PantheonCore/Utility/macros.h>
 
 #include <functional>
 #include <GLFW/glfw3.h>
@@ -14,56 +13,6 @@ using namespace PantheonCore::Utility;
 
 namespace PantheonApp::Input
 {
-#pragma region BINDINGS
-    extern "C"
-    {
-        PANTHEON_API void InputManager_getMousePosition(double& x, double& y)
-        {
-            const auto [mouseX, mouseY] = PTH_SERVICE(InputManager).getMousePosition();
-
-            x = mouseX;
-            y = mouseY;
-        }
-
-        PANTHEON_API void InputManager_getMouseDelta(double& x, double& y)
-        {
-            const auto [mouseX, mouseY] = PTH_SERVICE(InputManager).getMousePosition();
-
-            x = mouseX;
-            y = mouseY;
-        }
-
-        PANTHEON_API int InputManager_getScanCode(const int key)
-        {
-            return InputManager::getScanCode(static_cast<EKey>(key));
-        }
-
-        PANTHEON_API const char* InputManager_getKeyName(const int key, const int scanCode)
-        {
-            return InputManager::getKeyName(static_cast<EKey>(key), scanCode);
-        }
-
-        EXPORT_SERVICE_FUNC(/**/, /**/, InputManager, bool, isKeyUp, int key, static_cast<EKey>(key))
-        EXPORT_SERVICE_FUNC(/**/, /**/, InputManager, bool, isKeyDown, int key, static_cast<EKey>(key))
-        EXPORT_SERVICE_FUNC(/**/, /**/, InputManager, bool, isKeyPressed, int key, static_cast<EKey>(key))
-        EXPORT_SERVICE_FUNC(/**/, /**/, InputManager, bool, isKeyReleased, int key, static_cast<EKey>(key))
-
-        EXPORT_SERVICE_FUNC(/**/, ScanCode, InputManager, bool, isKeyUp, int scanCode, scanCode)
-        EXPORT_SERVICE_FUNC(/**/, ScanCode, InputManager, bool, isKeyDown, int scanCode, scanCode)
-        EXPORT_SERVICE_FUNC(/**/, ScanCode, InputManager, bool, isKeyPressed, int scanCode, scanCode)
-        EXPORT_SERVICE_FUNC(/**/, ScanCode, InputManager, bool, isKeyReleased, int scanCode, scanCode)
-
-        EXPORT_SERVICE_FUNC(/**/, /**/, InputManager, bool, isMouseButtonUp, int mouseButton,
-            static_cast<EMouseButton>(mouseButton))
-        EXPORT_SERVICE_FUNC(/**/, /**/, InputManager, bool, isMouseButtonDown, int mouseButton,
-            static_cast<EMouseButton>(mouseButton))
-        EXPORT_SERVICE_FUNC(/**/, /**/, InputManager, bool, isMouseButtonPressed, int mouseButton,
-            static_cast<EMouseButton>(mouseButton))
-        EXPORT_SERVICE_FUNC(/**/, /**/, InputManager, bool, isMouseButtonReleased, int mouseButton,
-            static_cast<EMouseButton>(mouseButton))
-    }
-#pragma endregion
-
     InputManager::InputManager(Window& window)
         : m_window(window), m_isFirstMouse(true)
     {

@@ -1,34 +1,10 @@
 #include "PantheonCore/Utility/Timer.h"
 
+#include <Arithmetic.h>
 #include <chrono>
-
-#include "Arithmetic.h"
-
-#include "PantheonCore/Utility/ServiceLocator.h"
-#include "PantheonCore/Utility/macros.h"
 
 namespace PantheonCore::Utility
 {
-#pragma region BINDINGS
-
-    extern "C"
-    {
-        EXPORT_SERVICE_FUNC_NO_PARAMS(/**/, /**/, Timer, float, getTime)
-        EXPORT_SERVICE_FUNC_NO_PARAMS(/**/, /**/, Timer, float, getDeltaTime)
-        EXPORT_SERVICE_FUNC_NO_PARAMS(/**/, /**/, Timer, float, getUnscaledTime)
-        EXPORT_SERVICE_FUNC_NO_PARAMS(/**/, /**/, Timer, float, getUnscaledDeltaTime)
-        EXPORT_SERVICE_FUNC_NO_PARAMS(/**/, /**/, Timer, uint64_t, getFrameCount)
-        EXPORT_SERVICE_FUNC_NO_PARAMS(/**/, /**/, Timer, float, getTimeScale)
-        EXPORT_SERVICE_FUNC(/**/, /**/, Timer, void, setTimeScale, const float timeScale, timeScale)
-        EXPORT_SERVICE_FUNC_NO_PARAMS(/**/, /**/, Timer, float, getFixedTime)
-        EXPORT_SERVICE_FUNC_NO_PARAMS(/**/, /**/, Timer, float, getFixedDeltaTime)
-        EXPORT_SERVICE_FUNC(/**/, /**/, Timer, void, setFixedDeltaTime, const float deltaTime, deltaTime)
-        EXPORT_SERVICE_FUNC_NO_PARAMS(/**/, /**/, Timer, float, getMaxDeltaTime)
-        EXPORT_SERVICE_FUNC(/**/, /**/, Timer, void, setMaxDeltaTime, const float deltaTime, deltaTime)
-    }
-
-#pragma endregion
-
     Timer::Timer(const float timeScale)
         : m_timeScale(timeScale)
     {
