@@ -1,6 +1,7 @@
 #include "PantheonCore/Utility/FileSystem.h"
 
 #include "PantheonCore/Debug/Logger.h"
+#include "PantheonCore/Utility/Copy.h"
 
 // Platform specific defines to handle getApplicationDirectory()
 #if defined(_WIN32)
@@ -45,7 +46,6 @@ extern "C"
 #endif
 
 #include <filesystem>
-#include <cstring>
 
 namespace PantheonCore::Utility
 {
@@ -99,9 +99,7 @@ namespace PantheonCore::Utility
 #endif
 
         const auto tmp = std::filesystem::canonical(len > 0 ? appDir : "./").remove_filename();
-        strcpy_s(appDir, MAX_PATH_LENGTH, tmp.string().c_str());
-
-        return appDir;
+        return strCopy(appDir, MAX_PATH_LENGTH, tmp.string().c_str()) ? appDir : nullptr;
     }
 
     std::string getWorkingDirectory()

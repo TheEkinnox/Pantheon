@@ -137,7 +137,7 @@ namespace PantheonCore::Assets
 
         ofs << std::flush;
 
-        header = toBigEndian<header_t>(static_cast<uint8_t>(compressionMode) + (m_compressedDataSize << 2));
+        header = toBigEndian(static_cast<uint8_t>(compressionMode) | (m_compressedDataSize << COMPRESSION_MODE_BITS));
         ofs.seekp(0, std::ofstream::beg);
         ofs.write(reinterpret_cast<char*>(&header), 8);
 

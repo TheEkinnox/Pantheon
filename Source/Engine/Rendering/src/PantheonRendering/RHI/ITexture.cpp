@@ -175,11 +175,9 @@ namespace PantheonRendering::RHI
         const size_t startSize = output.size();
         output.resize(startSize + bufferSize);
 
-        if (memcpy_s(output.data() + startSize, output.size() - startSize, m_data, bufferSize) != 0)
-        {
-            DEBUG_LOG_ERROR("Unable to serialize texture - Failed copying data to buffer.");
+        if (!CHECK(memCopy(output.data() + startSize, output.size() - startSize, m_data, bufferSize),
+                "Unable to serialize texture - Failed copying data to buffer."))
             return false;
-        }
 
         return true;
     }

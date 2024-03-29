@@ -1,6 +1,7 @@
 #pragma once
 #include "PantheonCore/Serialization/IByteSerializable.h"
 #include "PantheonCore/Utility/ByteOrder.h"
+#include "PantheonCore/Utility/Copy.h"
 
 namespace PantheonCore::Serialization
 {
@@ -19,7 +20,7 @@ namespace PantheonCore::Serialization
         // Calculate and write the serialized element's bytes
         const SizeT writtenBytes   = static_cast<SizeT>(output.size() - (startSize + sizeof(SizeT)));
         const SizeT beWrittenBytes = Utility::toBigEndian(writtenBytes);
-        if (memcpy_s(output.data() + startSize, output.size() - writtenBytes, &beWrittenBytes, sizeof(SizeT)) != 0)
+        if (!Utility::memCopy(output.data() + startSize, output.size() - writtenBytes, &beWrittenBytes, sizeof(SizeT)))
             return false;
 
         return true;
@@ -32,7 +33,7 @@ namespace PantheonCore::Serialization
         output.resize(startSize + sizeof(T));
 
         const T beSize = Utility::toBigEndian(value);
-        if (memcpy_s(output.data() + startSize, output.size() - startSize, &beSize, sizeof(T)) != 0)
+        if (!Utility::memCopy(output.data() + startSize, output.size() - startSize, &beSize, sizeof(T)))
             return false;
 
         return true;
@@ -46,7 +47,7 @@ namespace PantheonCore::Serialization
 
         U elemSize = 0;
 
-        if (memcpy_s(&elemSize, sizeof(U), data, sizeof(U)) != 0)
+        if (!Utility::memCopy(&elemSize, sizeof(U), data, sizeof(U)))
             return 0;
 
         out = static_cast<T>(Utility::fromBigEndian(elemSize));
@@ -62,11 +63,11 @@ namespace PantheonCore::Serialization
         output.resize(offset + sizeof(SizeT) + strLength);
 
         const SizeT beStrLength = Utility::toBigEndian(strLength);
-        if (memcpy_s(output.data() + offset, output.size() - offset, &beStrLength, sizeof(SizeT)) != 0)
+        if (!Utility::memCopy(output.data() + offset, output.size() - offset, &beStrLength, sizeof(SizeT)))
             return false;
 
         offset += sizeof(SizeT);
-        if (memcpy_s(output.data() + offset, output.size() - offset, string.c_str(), strLength) != 0)
+        if (!Utility::memCopy(output.data() + offset, output.size() - offset, string.c_str(), strLength))
             return false;
 
         return true;
@@ -80,7 +81,7 @@ namespace PantheonCore::Serialization
 
         SizeT strLength = 0;
 
-        if (memcpy_s(&strLength, sizeof(SizeT), data, sizeof(SizeT)) != 0)
+        if (!Utility::memCopy(&strLength, sizeof(SizeT), data, sizeof(SizeT)))
             return 0;
 
         strLength = Utility::fromBigEndian(strLength);
@@ -92,7 +93,7 @@ namespace PantheonCore::Serialization
 
         out.resize(strLength);
 
-        if (memcpy_s(out.data(), out.size(), data + offset, strLength) != 0)
+        if (!Utility::memCopy(out.data(), out.size(), data + offset, strLength))
             return 0;
 
         return sizeof(SizeT) + out.size();
@@ -104,7 +105,7 @@ namespace PantheonCore::Serialization
 
         const size_t startSize = output.size();
         output.resize(startSize + sizeof(LibMath::Vector2));
-        return memcpy_s(output.data() + startSize, output.size() - startSize, vec2.getArray(), sizeof(LibMath::Vector2)) == 0;
+        return Utility::memCopy(output.data() + startSize, output.size() - startSize, vec2.getArray(), sizeof(LibMath::Vector2));
     }
 
     inline size_t IByteSerializable::deserializeVector2(LibMath::Vector2& out, const char* data, const size_t length)
@@ -112,7 +113,7 @@ namespace PantheonCore::Serialization
         if (data == nullptr || length < sizeof(LibMath::Vector2))
             return 0;
 
-        if (memcpy_s(out.getArray(), sizeof(LibMath::Vector2), data, sizeof(LibMath::Vector2)) != 0)
+        if (!Utility::memCopy(out.getArray(), sizeof(LibMath::Vector2), data, sizeof(LibMath::Vector2)))
             return 0;
 
         vec2FromBigEndian(out);
@@ -138,7 +139,7 @@ namespace PantheonCore::Serialization
 
         const size_t startSize = output.size();
         output.resize(startSize + sizeof(LibMath::Vector3));
-        return memcpy_s(output.data() + startSize, output.size() - startSize, vec3.getArray(), sizeof(LibMath::Vector3)) == 0;
+        return Utility::memCopy(output.data() + startSize, output.size() - startSize, vec3.getArray(), sizeof(LibMath::Vector3));
     }
 
     inline size_t IByteSerializable::deserializeVector3(LibMath::Vector3& out, const char* data, const size_t length)
@@ -146,7 +147,7 @@ namespace PantheonCore::Serialization
         if (data == nullptr || length < sizeof(LibMath::Vector3))
             return 0;
 
-        if (memcpy_s(out.getArray(), sizeof(LibMath::Vector3), data, sizeof(LibMath::Vector3)) != 0)
+        if (!Utility::memCopy(out.getArray(), sizeof(LibMath::Vector3), data, sizeof(LibMath::Vector3)))
             return 0;
 
         vec3FromBigEndian(out);
@@ -174,7 +175,7 @@ namespace PantheonCore::Serialization
 
         const size_t startSize = output.size();
         output.resize(startSize + sizeof(LibMath::Vector4));
-        return memcpy_s(output.data() + startSize, output.size() - startSize, vec4.getArray(), sizeof(LibMath::Vector4)) == 0;
+        return Utility::memCopy(output.data() + startSize, output.size() - startSize, vec4.getArray(), sizeof(LibMath::Vector4));
     }
 
     inline size_t IByteSerializable::deserializeVector4(LibMath::Vector4& out, const char* data, size_t length)
@@ -182,7 +183,7 @@ namespace PantheonCore::Serialization
         if (data == nullptr || length < sizeof(LibMath::Vector4))
             return 0;
 
-        if (memcpy_s(out.getArray(), sizeof(LibMath::Vector4), data, sizeof(LibMath::Vector4)) != 0)
+        if (!Utility::memCopy(out.getArray(), sizeof(LibMath::Vector4), data, sizeof(LibMath::Vector4)))
             return 0;
 
         vec4FromBigEndian(out);
@@ -215,7 +216,7 @@ namespace PantheonCore::Serialization
 
         const size_t startSize = output.size();
         output.resize(startSize + sizeof(LibMath::Quaternion));
-        return memcpy_s(output.data() + startSize, output.size() - startSize, quat.getArray(), sizeof(LibMath::Quaternion)) == 0;
+        return Utility::memCopy(output.data() + startSize, output.size() - startSize, quat.getArray(), sizeof(LibMath::Quaternion));
     }
 
     inline size_t IByteSerializable::deserializeQuaternion(LibMath::Quaternion& out, const char* data, const size_t length)
@@ -223,7 +224,7 @@ namespace PantheonCore::Serialization
         if (data == nullptr || length < sizeof(LibMath::Quaternion))
             return 0;
 
-        if (memcpy_s(out.getArray(), sizeof(LibMath::Quaternion), data, sizeof(LibMath::Quaternion)) != 0)
+        if (!Utility::memCopy(out.getArray(), sizeof(LibMath::Quaternion), data, sizeof(LibMath::Quaternion)))
             return 0;
 
         out.m_x = Utility::fromBigEndian(out.m_x);
@@ -244,7 +245,7 @@ namespace PantheonCore::Serialization
 
         const size_t startSize = output.size();
         output.resize(startSize + sizeof(MatT));
-        return memcpy_s(output.data() + startSize, output.size() - startSize, matrix.getArray(), sizeof(MatT)) == 0;
+        return Utility::memCopy(output.data() + startSize, output.size() - startSize, matrix.getArray(), sizeof(MatT));
     }
 
     template <LibMath::length_t Rows, LibMath::length_t Cols, typename DataT>
@@ -252,11 +253,11 @@ namespace PantheonCore::Serialization
     {
         using MatT = LibMath::TMatrix<Rows, Cols, DataT>;
 
-        if (data == nullptr || length < sizeof(MatT) || memcpy_s(out.getArray(), sizeof(MatT), data, sizeof(MatT)) != 0)
+        if (data == nullptr || length < sizeof(MatT) || !Utility::memCopy(out.getArray(), sizeof(MatT), data, sizeof(MatT)))
             return 0;
 
         for (size_t i = 0; i < MatT::getSize(); ++i)
-            out[i] = Utility::fromBigEndian(out[i]);
+            out[i]    = Utility::fromBigEndian(out[i]);
 
         return sizeof(MatT);
     }

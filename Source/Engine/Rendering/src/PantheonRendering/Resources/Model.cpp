@@ -173,19 +173,15 @@ namespace PantheonRendering::Resources
 
     bool Model::serializeMeshes(std::vector<char>& output) const
     {
-        const size_t offset = output.size();
         output.resize(output.size() + sizeof(ElemCountT));
 
-        const ElemCountT meshCount = toBigEndian(static_cast<ElemCountT>(m_meshes.size()));
-        if (memcpy_s(output.data() + offset, output.size() - offset, &meshCount, sizeof(ElemCountT)) != 0)
-        {
-            DEBUG_LOG_ERROR("Unable to serialize model - Mesh count serialization failed");
+        if (!CHECK(writeNumber(static_cast<ElemCountT>(m_meshes.size()), output),
+                "Unable to serialize model - Mesh count serialization failed"))
             return false;
-        }
 
         for (const Mesh& mesh : m_meshes)
         {
-            if (!CHECK(mesh.toBinary(output), "Unable to serialize model"))
+            if (!mesh.toBinary(output))
                 return false;
         }
 

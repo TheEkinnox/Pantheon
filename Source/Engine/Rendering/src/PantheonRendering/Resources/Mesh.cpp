@@ -52,9 +52,6 @@ namespace PantheonRendering::Resources
 
     bool Mesh::toBinary(std::vector<char>& output) const
     {
-        if (m_indices.empty() || m_vertices.empty())
-            return false;
-
         const ElemCountT vertCount      = static_cast<ElemCountT>(m_vertices.size());
         const size_t     vertBufferSize = vertCount * sizeof(Vertex);
 
@@ -64,16 +61,10 @@ namespace PantheonRendering::Resources
         const size_t bufferSize = sizeof(ElemCountT) + vertBufferSize
             + sizeof(ElemCountT) + idxBufferSize;
 
-        size_t offset = output.size();
-        output.resize(output.size() + bufferSize);
+        output.reserve(output.size() + bufferSize);
 
-        ElemCountT beCount = toBigEndian(vertCount);
-        if (memcpy_s(output.data() + offset, output.size() - offset, &beCount, sizeof(ElemCountT)) != 0)
-        {
-            DEBUG_LOG_ERROR("Unable to write vertex count to memory buffer");
-            output.resize(output.size() - bufferSize);
+        if (!CHECK(writeNumber(vertCount, output), "Unable to write vertex count to memory buffer"))
             return false;
-        }
 
         {
             std::vector<Vertex> beVertices(m_vertices);
@@ -81,23 +72,16 @@ namespace PantheonRendering::Resources
             for (Vertex& beVertex : beVertices)
                 vertexToBigEndian(beVertex);
 
-            offset += sizeof(ElemCountT);
-            if (memcpy_s(output.data() + offset, output.size() - offset, beVertices.data(), vertBufferSize) != 0)
-            {
-                DEBUG_LOG_ERROR("Unable to write vertices to memory buffer");
-                output.resize(output.size() - bufferSize);
+            const size_t offset = output.size();
+            output.resize(offset + vertBufferSize);
+
+            if (!CHECK(memCopy(output.data() + offset, output.size() - offset, beVertices.data(), vertBufferSize),
+                    "Unable to write vertices to memory buffer"))
                 return false;
-            }
         }
 
-        offset += vertBufferSize;
-        beCount = toBigEndian(idxCount);
-        if (memcpy_s(output.data() + offset, output.size() - offset, &beCount, sizeof(ElemCountT)) != 0)
-        {
-            DEBUG_LOG_ERROR("Unable to write index count to memory buffer");
-            output.resize(output.size() - bufferSize);
+        if (!CHECK(writeNumber(idxCount, output), "Unable to write index count to memory buffer"))
             return false;
-        }
 
         {
             std::vector<uint32_t> beIndices(m_indices);
@@ -105,13 +89,12 @@ namespace PantheonRendering::Resources
             for (uint32_t& beIndex : beIndices)
                 beIndex = toBigEndian(beIndex);
 
-            offset += sizeof(ElemCountT);
-            if (memcpy_s(output.data() + offset, output.size() - offset, beIndices.data(), idxBufferSize) != 0)
-            {
-                DEBUG_LOG_ERROR("Unable to write indices to memory buffer");
-                output.resize(output.size() - bufferSize);
+            const size_t offset = output.size();
+            output.resize(offset + idxBufferSize);
+
+            if (!CHECK(memCopy(output.data() + offset, output.size() - offset, beIndices.data(), idxBufferSize),
+                    "Unable to write indices to memory buffer"))
                 return false;
-            }
         }
 
         return true;
@@ -119,34 +102,26 @@ namespace PantheonRendering::Resources
 
     size_t Mesh::fromBinary(const char* data, const size_t length)
     {
-        if (data == nullptr || length == 0)
-        {
-            DEBUG_LOG_ERROR("Unable to deserialize mesh - Empty buffer");
+        if (!CHECK(data != nullptr && length > 0, "Unable to deserialize mesh - Empty buffer"))
             return 0;
-        }
-
-        const char* buffer = static_cast<const char*>(data);
 
         m_vertices.clear();
         m_indices.clear();
 
         ElemCountT elemCount;
-        if (length < sizeof(ElemCountT) || memcpy_s(&elemCount, sizeof(ElemCountT), buffer, sizeof(ElemCountT)) != 0)
-        {
-            DEBUG_LOG_ERROR("Unable to load vertex count from memory buffer");
-            return 0;
-        }
+        size_t     offset = readNumber(elemCount, data, length);
 
-        size_t bufferSize = fromBigEndian(elemCount) * sizeof(Vertex);
+        if (!CHECK(offset > 0, "Unable to load vertex count from memory buffer"))
+            return 0;
+
+        size_t bufferSize = elemCount * sizeof(Vertex);
         m_vertices.resize(elemCount);
 
-        size_t offset = sizeof(ElemCountT);
-        if (length <= offset || length - offset < bufferSize || memcpy_s(m_vertices.data(), bufferSize, buffer + offset,
-            bufferSize) != 0)
-        {
-            DEBUG_LOG_ERROR("Unable to load vertices from memory buffer");
+        if (!CHECK(length >= offset && length - offset >= bufferSize &&
+                memCopy(m_vertices.data(), bufferSize, data + offset, bufferSize), "Unable to load vertices from memory buffer"))
             return 0;
-        }
+
+        offset += bufferSize;
 
         m_boundingBox =
         {
@@ -162,23 +137,18 @@ namespace PantheonRendering::Resources
             m_boundingBox.m_max = max(m_boundingBox.m_max, vertex.m_position);
         }
 
-        offset += bufferSize;
+        const size_t readBytes = length >= offset ? readNumber(elemCount, data + offset, length - offset) : 0;
 
-        if (length <= offset || length - offset < sizeof(ElemCountT) || memcpy_s(&elemCount, sizeof(ElemCountT), buffer + offset,
-            sizeof(ElemCountT)) != 0)
-        {
-            DEBUG_LOG_ERROR("Unable to load index count from memory buffer");
+        if (!CHECK(readBytes > 0, "Unable to load index count from memory buffer"))
             return 0;
-        }
 
-        bufferSize = fromBigEndian(elemCount) * sizeof(uint32_t);
+        offset += readBytes;
 
-        if (length <= offset || length - offset < bufferSize || memcpy_s(m_indices.data(), bufferSize, buffer + offset,
-            bufferSize) != 0)
-        {
-            DEBUG_LOG_ERROR("Unable to load indices from memory buffer");
+        bufferSize = elemCount * sizeof(uint32_t);
+
+        if (!CHECK(length >= offset && length - offset >= bufferSize &&
+                memCopy(m_indices.data(), bufferSize, data + offset, bufferSize), "Unable to load indices from memory buffer"))
             return 0;
-        }
 
         for (uint32_t& index : m_indices)
             index = fromBigEndian(index);
