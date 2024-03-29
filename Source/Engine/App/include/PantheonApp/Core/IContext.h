@@ -3,6 +3,8 @@
 
 #include "PantheonRendering/RHI/EGraphicsAPI.h"
 
+#include <memory>
+
 namespace PantheonApp::Core
 {
     class IContext

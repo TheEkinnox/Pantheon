@@ -143,7 +143,7 @@ namespace PantheonTest
         TEST_CHECK(cDestroyed == nullptr);
         TEST_CHECK(fDestroyed == nullptr);
 
-        for (const auto _ : view)
+        for ([[maybe_unused]] const auto _ : view)
         {
             TEST_CHECK(false, "The only releveant entity should have been destroyed");
         }
@@ -155,7 +155,7 @@ namespace PantheonTest
         TEST_CHECK(scene.getStorage<float>().getCount() == 0);
         TEST_CHECK(scene.getStorage<char>().getCount() == 0);
 
-        for (const auto _ : view)
+        for ([[maybe_unused]] const auto _ : view)
         {
             TEST_CHECK(false, "The only releveant entity should have been destroyed");
         }

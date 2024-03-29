@@ -3,6 +3,8 @@
 #include <PantheonCore/Debug/Assertion.h>
 #include <PantheonCore/Debug/Logger.h>
 
+#include <climits>
+
 #include <GLFW/glfw3.h>
 
 using namespace PantheonApp::Input;
