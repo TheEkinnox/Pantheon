@@ -1,5 +1,6 @@
 #include "PantheonCore/Utility/utility.h"
 
+#include <cstring>
 #include <sstream>
 
 namespace PantheonCore::Utility
