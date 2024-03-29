@@ -27,6 +27,12 @@ namespace PantheonApp::Windowing
         bindCallbacks();
     }
 
+    Window::~Window()
+    {
+        s_windowsMap.erase(m_handle);
+        glfwDestroyWindow(static_cast<GLFWwindow*>(m_handle));
+    }
+
     void Window::makeCurrentContext() const
     {
         m_context->setMainWindow(m_handle);

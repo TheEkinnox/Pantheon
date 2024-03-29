@@ -56,7 +56,7 @@ namespace PantheonApp::Windowing
         /**
          * \brief Clears the application's previously allocated resources
          */
-        ~Window() = default;
+        ~Window();
 
         /**
          * \brief Disable the Application's copy assignment operator
