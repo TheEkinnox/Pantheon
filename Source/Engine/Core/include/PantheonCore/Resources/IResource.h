@@ -9,7 +9,7 @@ static uint8_t resReg_##Name = (PantheonCore::Resources::IResource::registerType
 
 #define REGISTERED_RESOURCE_BODY(Type)                                        \
 public:                                                                       \
-inline const std::string& Type::getTypeName() const                           \
+inline const std::string& getTypeName() const                           \
 {                                                                             \
     return PantheonCore::Resources::IResource::getRegisteredTypeName<Type>(); \
 }                                                                             \
