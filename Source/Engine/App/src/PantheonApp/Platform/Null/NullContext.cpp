@@ -10,6 +10,15 @@ namespace PantheonApp::Platform
         : m_windowHandle(nullptr)
     {
         // Initialize and configure glfw
+#if defined(_DEBUG) || defined(PTH_VERBOSE_LOG)
+        const auto errorCallback = [](const int error, const char* description)
+        {
+            DEBUG_LOG_ERROR("GLFW Error %d: %s", error, description);
+        };
+
+        glfwSetErrorCallback(errorCallback);
+#endif
+
         [[maybe_unused]] const auto result = glfwInit();
         ASSERT(result == GLFW_TRUE, "Failed to initialize GLFW");
 
