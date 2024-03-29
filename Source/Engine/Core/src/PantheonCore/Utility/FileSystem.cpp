@@ -44,6 +44,9 @@ extern "C"
 #endif
 #endif
 
+#include <filesystem>
+#include <cstring>
+
 namespace PantheonCore::Utility
 {
     std::vector<std::string> readLines(const std::string& fileName)
