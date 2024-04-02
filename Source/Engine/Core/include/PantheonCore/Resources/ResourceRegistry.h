@@ -43,14 +43,14 @@ namespace PantheonCore::Resources
          * \param type The type of the resource to create
          * \return A pointer to the allocated resource on success, nullptr otherwise
          */
-        inline IResource* create(const std::string& type) const;
+        IResource* create(const std::string& type) const;
 
         /**
          * \brief Gets the default resource for the given registered resource type
          * \param type The target resource type
          * \return The default resource of the given type
          */
-        inline IResource* getDefault(const std::string& type) const;
+        IResource* getDefault(const std::string& type) const;
     };
 }
 
