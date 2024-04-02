@@ -8,6 +8,6 @@ namespace PantheonRendering::Core
     namespace Layer
     {
         constexpr LayerMask NONE = 0;
-        constexpr LayerMask ALL  = 0xffffffff;
+        constexpr LayerMask ALL  = ~static_cast<LayerMask>(0);
     };
 }
