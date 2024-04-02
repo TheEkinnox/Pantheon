@@ -42,5 +42,3 @@ namespace PantheonCore::Resources
         virtual bool init() = 0;
     };
 }
-
-#include "PantheonCore/Resources/IResource.inl"

@@ -3,6 +3,18 @@
 
 namespace PantheonCore::Resources
 {
+    template <typename T, typename... Args>
+    T* createResource(Args&&... args)
+    {
+        return new T(std::forward<Args>(args)...);
+    }
+
+    template <typename T>
+    T* getDefaultResource()
+    {
+        return nullptr;
+    }
+
     inline ResourceRegistry& ResourceRegistry::getInstance()
     {
         static ResourceRegistry instance;
