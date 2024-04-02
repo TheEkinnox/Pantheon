@@ -12,56 +12,36 @@ namespace PantheonCore::ECS
         const T& component, rapidjson::Writer<rapidjson::StringBuffer>& writer, [[maybe_unused]] const EntitiesMap& toSerialized)
     {
         if constexpr (std::is_base_of_v<Serialization::IJsonSerializable, T>)
-        {
             return component.toJson(writer);
-        }
         else
-        {
-            ((void)ASSUME(false, "Json serialization is not defined for \"%s\"", typeid(T).name()));
-            return false;
-        }
+            return ASSUME(false, "Json serialization is not defined for \"%s\"", typeid(T).name()) && false;
     }
 
     template <typename T>
     bool ComponentRegistry::fromJson(T& out, const rapidjson::Value& json)
     {
         if constexpr (std::is_base_of_v<Serialization::IJsonSerializable, T>)
-        {
             return out.fromJson(json);
-        }
         else
-        {
-            ((void)ASSUME(false, "Json deserialization is not defined for \"%s\"", typeid(T).name()));
-            return false;
-        }
+            return ASSUME(false, "Json deserialization is not defined for \"%s\"", typeid(T).name()) && false;
     }
 
     template <typename T>
     bool ComponentRegistry::toBinary(const T& component, std::vector<char>& out, [[maybe_unused]] const EntitiesMap& toSerialized)
     {
         if constexpr (std::is_base_of_v<Serialization::IByteSerializable, T>)
-        {
             return component.toBinary(out);
-        }
         else
-        {
-            ((void)ASSUME(false, "Binary serialization is not defined for \"%s\"", typeid(T).name()));
-            return false;
-        }
+            return ASSUME(false, "Binary serialization is not defined for \"%s\"", typeid(T).name()) && false;
     }
 
     template <typename T>
     size_t ComponentRegistry::fromBinary(T& out, const char* data, const size_t length)
     {
         if constexpr (std::is_base_of_v<Serialization::IByteSerializable, T>)
-        {
             return out.fromBinary(data, length);
-        }
         else
-        {
-            ((void)ASSUME(false, "Binary deserialization is not defined for \"%s\"", typeid(T).name()));
-            return 0;
-        }
+            return (ASSUME(false, "Binary deserialization is not defined for \"%s\"", typeid(T).name()), 0);
     }
 
     inline ComponentRegistry& ComponentRegistry::getInstance()
