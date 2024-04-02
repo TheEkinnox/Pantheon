@@ -1,13 +1,12 @@
-#include "PantheonRendering/LowRenderer/Light.h"
+#include "PantheonRendering/Core/Light.h"
 
 #include "PantheonRendering/Enums/ELightType.h"
 
 using namespace LibMath;
 
-using namespace PantheonRendering::Core;
 using namespace PantheonRendering::Enums;
 
-namespace PantheonRendering::LowRenderer
+namespace PantheonRendering::Core
 {
     Light::Light(const Color& color)
         : m_color(color)
@@ -46,19 +45,19 @@ namespace PantheonRendering::LowRenderer
         return lightMat;
     }
 
-    AttenuationData::AttenuationData(const float range)
-        : AttenuationData(1.f, 4.5f / range, 75.f / (range * range))
+    Attenuation::Attenuation(const float range)
+        : Attenuation(1.f, 4.5f / range, 75.f / (range * range))
     {
     }
 
-    AttenuationData::AttenuationData(const float constant, const float linear, const float quadratic)
+    Attenuation::Attenuation(const float constant, const float linear, const float quadratic)
         : m_constant(constant), m_linear(linear), m_quadratic(quadratic)
     {
     }
 
-    PointLight::PointLight(const Light&           light, const Vector3& position,
-                           const AttenuationData& attenuationData)
-        : Light(light), m_position(position), m_attenuationData(attenuationData)
+    PointLight::PointLight(const Light&       light, const Vector3& position,
+                           const Attenuation& attenuation)
+        : Light(light), m_position(position), m_attenuation(attenuation)
     {
     }
 
@@ -70,20 +69,20 @@ namespace PantheonRendering::LowRenderer
         lightMat(1, 2) = m_position.m_y;
         lightMat(1, 3) = m_position.m_z;
 
-        lightMat(2, 1) = m_attenuationData.m_constant;
-        lightMat(2, 2) = m_attenuationData.m_linear;
-        lightMat(2, 3) = m_attenuationData.m_quadratic;
+        lightMat(2, 1) = m_attenuation.m_constant;
+        lightMat(2, 2) = m_attenuation.m_linear;
+        lightMat(2, 3) = m_attenuation.m_quadratic;
 
         lightMat(3, 3) = static_cast<float>(ELightType::POINT);
 
         return lightMat;
     }
 
-    SpotLight::SpotLight(const Light&   light, const Vector3&             position,
-                         const Vector3& direction, const AttenuationData& attenuationData,
+    SpotLight::SpotLight(const Light&   light, const Vector3&         position,
+                         const Vector3& direction, const Attenuation& attenuation,
                          const Cutoff&  cutoff)
         : Light(light), m_position(position), m_direction(direction),
-        m_attenuationData(attenuationData), m_cutoff(cutoff)
+        m_attenuation(attenuation), m_cutoff(cutoff)
     {
     }
 
@@ -99,9 +98,9 @@ namespace PantheonRendering::LowRenderer
         lightMat(1, 2) = m_position.m_y;
         lightMat(1, 3) = m_position.m_z;
 
-        lightMat(2, 1) = m_attenuationData.m_constant;
-        lightMat(2, 2) = m_attenuationData.m_linear;
-        lightMat(2, 3) = m_attenuationData.m_quadratic;
+        lightMat(2, 1) = m_attenuation.m_constant;
+        lightMat(2, 2) = m_attenuation.m_linear;
+        lightMat(2, 3) = m_attenuation.m_quadratic;
 
         lightMat(3, 1) = m_cutoff.m_inner;
         lightMat(3, 2) = m_cutoff.m_outer;

@@ -5,17 +5,17 @@
 
 #include <Vector/Vector3.h>
 
-namespace PantheonRendering::LowRenderer
+namespace PantheonRendering::Core
 {
     struct Light
     {
         /**
          * \brief The light's color (alpha is intensity)
          */
-        Core::Color m_color = Core::Color::white;
+        Color m_color = Color::white;
 
         Light() = default;
-        Light(const Core::Color& color);
+        Light(const Color& color);
 
         Light(const Light&) = default;
         Light(Light&&)      = default;
@@ -56,24 +56,24 @@ namespace PantheonRendering::LowRenderer
         LibMath::Matrix4 getMatrix() const override;
     };
 
-    struct AttenuationData
+    struct Attenuation
     {
         float m_constant  = 1;
         float m_linear    = 0;
         float m_quadratic = 0;
 
-        AttenuationData() = default;
-        explicit AttenuationData(float range);
-        AttenuationData(float constant, float linear, float quadratic);
+        Attenuation() = default;
+        explicit Attenuation(float range);
+        Attenuation(float constant, float linear, float quadratic);
     };
 
     struct PointLight final : Light
     {
         LibMath::Vector3 m_position;
-        AttenuationData  m_attenuationData;
+        Attenuation      m_attenuation;
 
         PointLight() = default;
-        PointLight(const Light& light, const LibMath::Vector3& position, const AttenuationData& attenuationData);
+        PointLight(const Light& light, const LibMath::Vector3& position, const Attenuation& attenuation);
 
         PointLight(const PointLight&) = default;
         PointLight(PointLight&&)      = default;
@@ -103,12 +103,12 @@ namespace PantheonRendering::LowRenderer
         LibMath::Vector3 m_position;
         LibMath::Vector3 m_direction;
 
-        AttenuationData m_attenuationData;
-        Cutoff          m_cutoff{ 0, 0 };
+        Attenuation m_attenuation;
+        Cutoff      m_cutoff{ 0, 0 };
 
         SpotLight() = default;
-        SpotLight(const Light&           light, const LibMath::Vector3& position, const LibMath::Vector3& direction,
-                  const AttenuationData& attenuationData, const Cutoff& cutoff);
+        SpotLight(const Light&       light, const LibMath::Vector3& position, const LibMath::Vector3& direction,
+                  const Attenuation& attenuation, const Cutoff&     cutoff);
 
         SpotLight(const SpotLight&) = default;
         SpotLight(SpotLight&&)      = default;
