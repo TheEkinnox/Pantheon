@@ -2,6 +2,7 @@
 
 #include "PantheonCore/Debug/Logger.h"
 #include "PantheonCore/Resources/IResource.h"
+#include "PantheonCore/Resources/ResourceRegistry.h"
 #include "PantheonCore/Utility/FileSystem.h"
 
 #include <ranges>
@@ -83,7 +84,7 @@ namespace PantheonCore::Resources
         remove(key);
         removePath(path);
 
-        IResource* resource = IResource::create(type);
+        IResource* resource = ResourceRegistry::getInstance().create(type);
 
         if (resource == nullptr || (shouldLoad && !loadResource(resource, key, path)))
             return nullptr;

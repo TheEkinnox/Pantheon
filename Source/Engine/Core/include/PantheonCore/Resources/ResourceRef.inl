@@ -1,6 +1,7 @@
 #pragma once
 #include "PantheonCore/Resources/ResourceManager.h"
 #include "PantheonCore/Resources/ResourceRef.h"
+#include "PantheonCore/Resources/ResourceRegistry.h"
 #include "PantheonCore/Utility/ServiceLocator.h"
 
 namespace PantheonCore::Resources
@@ -173,7 +174,7 @@ namespace PantheonCore::Resources
     inline IResource* GenericResourceRef::operator*() const
     {
         if (!hasValue())
-            return IResource::getDefault(m_type);
+            return ResourceRegistry::getInstance().getDefault(m_type);
 
         return PTH_SERVICE(ResourceManager).getOrCreate(m_type, m_key, m_path);
     }

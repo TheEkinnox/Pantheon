@@ -1,21 +1,29 @@
 #pragma once
 #include "PantheonCore/ECS/Entity.h"
 #include "PantheonCore/Serialization/IJsonSerializable.h"
+#include "PantheonCore/Utility/TypeRegistry.h"
 
 #include <cstdint>
 #include <memory>
-#include <string>
-#include <unordered_map>
 
-#define REGISTER_COMPONENT_TYPE(Name, Type)                                                       \
-static uint8_t compReg_##Name = (PantheonCore::ECS::ComponentRegistry::registerType<Type>(#Name), 0);
+#define REGISTER_COMPONENT_TYPE(Name, Type)                                                                        \
+static uint8_t compReg_##Name = (PantheonCore::ECS::ComponentRegistry::getInstance().registerType<Type>(#Name), 0);
 
 namespace PantheonCore::ECS
 {
     class IComponentStorage;
     class Scene;
 
-    class ComponentRegistry final
+    struct ComponentTypeInfo
+    {
+        using TypeId = Utility::TypeRegistry<ComponentTypeInfo>::TypeId;
+
+        TypeId m_typeId;
+
+        std::unique_ptr<IComponentStorage> (*makeStorage)(Scene*);
+    };
+
+    class ComponentRegistry final : public Utility::TypeRegistry<ComponentTypeInfo>
     {
     public:
         using EntitiesMap = std::unordered_map<Entity::Id, Entity>;
@@ -32,77 +40,18 @@ namespace PantheonCore::ECS
         template <typename T>
         static size_t fromBinary(T& out, const char* data, size_t length);
 
-        struct TypeInfo
-        {
-            using TypeId = size_t;
-
-            std::string m_name;
-            TypeId      m_typeId;
-
-            std::unique_ptr<IComponentStorage> (*makeStorage)(Scene*);
-        };
-
-        ComponentRegistry()                                   = delete;
-        ComponentRegistry(const ComponentRegistry& other)     = delete;
-        ComponentRegistry(ComponentRegistry&& other) noexcept = delete;
-        ~ComponentRegistry()                                  = default;
-
-        ComponentRegistry& operator=(const ComponentRegistry& other)     = delete;
-        ComponentRegistry& operator=(ComponentRegistry&& other) noexcept = delete;
-
-        bool operator==(const ComponentRegistry& other) const;
-        bool operator!=(const ComponentRegistry& other) const;
+        /**
+         * \brief Gets the current component registry instance
+         * \return A reference to the current component registry
+         */
+        static ComponentRegistry& getInstance();
 
         /**
-         * \brief Registers the given component type (required for the create function)
+         * \brief Registers the given component type with the given name
          * \tparam T The component type to register
          */
         template <typename T>
-        static void registerType(const std::string& name);
-
-        /**
-         * \brief Gets the registered type information for the given component type
-         * \tparam T The component type
-         * \return The registered type information for the given component type
-         */
-        static const TypeInfo& getRegisteredTypeInfo(const std::string& type);
-
-        /**
-         * \brief Gets the registered type information for the given type id
-         * \param typeId The component type's id
-         * \return The registered type information for the given component type
-         */
-        static const TypeInfo& getRegisteredTypeInfo(size_t typeId);
-
-        /**
-         * \brief Gets the registered type information for the given type id
-         * \tparam T The component type
-         * \return The registered type information for the given component type
-         */
-        template <typename T>
-        static const TypeInfo& getRegisteredTypeInfo();
-
-        /**
-         * \brief Gets the registered name for the given type id
-         * \param typeId The component type's id
-         * \return The registered name for the given component type
-         */
-        static const std::string& getRegisteredTypeName(size_t typeId);
-
-        /**
-         * \brief Gets the registered name for the given component type
-         * \tparam T The component type
-         * \return The registered name for the given component type
-         */
-        template <typename T>
-        static const std::string& getRegisteredTypeName();
-
-    private:
-        using TypeMap = std::unordered_map<size_t, TypeInfo>;
-        using TypeIdMap = std::unordered_map<std::string, size_t>;
-
-        inline static TypeMap   s_typeInfos{};
-        inline static TypeIdMap s_typeIds{};
+        void registerType(const std::string& name);
     };
 }
 

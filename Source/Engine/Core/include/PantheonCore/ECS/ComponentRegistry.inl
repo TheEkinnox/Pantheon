@@ -64,16 +64,19 @@ namespace PantheonCore::ECS
         }
     }
 
+    inline ComponentRegistry& ComponentRegistry::getInstance()
+    {
+        static ComponentRegistry instance;
+        return instance;
+    }
+
     template <typename T>
     void ComponentRegistry::registerType(const std::string& name)
     {
         const size_t typeHash = typeid(T).hash_code();
-        ASSERT(!s_typeInfos.contains(typeHash), "Type %d (\"%s\") has already been registered", typeHash, typeid(T).name());
-        ASSERT(!s_typeIds.contains(name), "Type \"%s\" has already been registered", name.c_str());
 
-        const TypeInfo typeInfo
+        const ComponentTypeInfo typeInfo
         {
-            .m_name = name,
             .m_typeId = typeHash,
             .makeStorage = [](Scene* scene)
             {
@@ -82,42 +85,6 @@ namespace PantheonCore::ECS
             }
         };
 
-        s_typeInfos[typeHash] = typeInfo;
-
-        s_typeIds[name] = typeHash;
-    }
-
-    inline const ComponentRegistry::TypeInfo& ComponentRegistry::getRegisteredTypeInfo(const std::string& type)
-    {
-        const auto it = s_typeIds.find(type);
-        ASSERT(it != s_typeIds.end(), "No registered type \"%s\" found.", type.c_str());
-        return getRegisteredTypeInfo(it->second);
-    }
-
-    inline const ComponentRegistry::TypeInfo& ComponentRegistry::getRegisteredTypeInfo(size_t typeId)
-    {
-        const auto it = s_typeInfos.find(typeId);
-        ASSERT(it != s_typeInfos.end(), "No registered type id \"%d\" found.", typeId);
-        return it->second;
-    }
-
-    inline const std::string& ComponentRegistry::getRegisteredTypeName(size_t typeId)
-    {
-        const auto it = s_typeInfos.find(typeId);
-        ASSERT(it != s_typeInfos.end(), "Couldn't find registered name of type with id %d", typeId);
-
-        return it->second.m_name;
-    }
-
-    template <typename T>
-    const ComponentRegistry::TypeInfo& ComponentRegistry::getRegisteredTypeInfo()
-    {
-        return getRegisteredTypeInfo(typeid(T).hash_code());
-    }
-
-    template <typename T>
-    const std::string& ComponentRegistry::getRegisteredTypeName()
-    {
-        return getRegisteredTypeName(typeid(T).hash_code());
+        TypeRegistry::registerType<T>(name, typeInfo);
     }
 }

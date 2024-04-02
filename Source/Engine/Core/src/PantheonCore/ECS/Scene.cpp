@@ -57,7 +57,7 @@ namespace PantheonCore::ECS
             if (!storage || storage->getCount() == 0)
                 continue;
 
-            const std::string& typeName = ComponentRegistry::getRegisteredTypeName(typeId);
+            const std::string& typeName = ComponentRegistry::getInstance().getRegisteredTypeName(typeId);
 
             if (!CHECK(IByteSerializable::serializeString(typeName, output), "Unable to serialize component storage type string"))
                 return false;
@@ -136,7 +136,7 @@ namespace PantheonCore::ECS
             writer.StartObject();
             writer.Key("type");
 
-            const std::string& typeName = ComponentRegistry::getRegisteredTypeName(typeId);
+            const std::string& typeName = ComponentRegistry::getInstance().getRegisteredTypeName(typeId);
             if (!CHECK(writer.String(typeName.c_str(), static_cast<rapidjson::SizeType>(typeName.size())),
                     "Unable to serialize scene component storage - Failed to write type"))
                 return false;
@@ -250,8 +250,8 @@ namespace PantheonCore::ECS
         if (!CHECK(it != json.MemberEnd(), "Unable to deserialize component storage - Data not found"))
             return false;
 
-        const ComponentRegistry::TypeInfo& typeInfo = ComponentRegistry::getRegisteredTypeInfo(type);
-        IComponentStorage&                 storage  = *(m_components[typeInfo.m_typeId] = typeInfo.makeStorage(this));
+        const ComponentTypeInfo& typeInfo = ComponentRegistry::getInstance().getTypeInfo(type);
+        IComponentStorage&       storage  = *(m_components[typeInfo.m_typeId] = typeInfo.makeStorage(this));
 
         if (!storage.fromJson(it->value))
             return false;
@@ -270,8 +270,8 @@ namespace PantheonCore::ECS
         if (!CHECK(offset > 0, "Unable to deserialize component storage type string"))
             return 0;
 
-        const ComponentRegistry::TypeInfo& typeInfo = ComponentRegistry::getRegisteredTypeInfo(typeName);
-        IComponentStorage&                 storage  = *(m_components[typeInfo.m_typeId] = typeInfo.makeStorage(this));
+        const ComponentTypeInfo& typeInfo = ComponentRegistry::getInstance().getTypeInfo(typeName);
+        IComponentStorage&       storage  = *(m_components[typeInfo.m_typeId] = typeInfo.makeStorage(this));
 
         const size_t readBytes = length >= offset ? storage.fromBinary(data + offset, length - offset) : 0;
 
