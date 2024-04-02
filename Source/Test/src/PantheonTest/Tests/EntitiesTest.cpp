@@ -197,7 +197,7 @@ namespace PantheonTest
         entity6.make<Transform>(Vector3(1.5f, 1.5f, 0.f), Quaternion::identity(), Vector3::one());
 
         EntityHandle entity7 = scene.create();
-        entity6.make<TagComponent>("Entity 7 (2nd child of Entity 3)");
+        entity7.make<TagComponent>("Entity 7 (2nd child of Entity 3)");
         entity7.make<HierarchyComponent>(entity3.getEntity());
         entity7.make<Transform>(Vector3(-1.5f, 1.5f, 0.f), Quaternion::identity(), Vector3::one());
 
