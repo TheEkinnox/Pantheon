@@ -11,7 +11,7 @@ namespace PantheonCore::Utility
         ASSERT(!m_typeIds.contains(name), "Type name \"%s\" has already been registered", name.c_str());
 
         TypeId id = typeid(T).hash_code();
-        ASSERT(!m_typeInfos.contains(id), "Type %d (\"%s\") has already been registered", id, typeid(T).name());
+        ASSERT(!m_typeInfos.contains(id), "Type %llu (\"%s\") has already been registered", id, typeid(T).name());
 
         m_typeInfos[id] = info;
         m_typeNames[id] = name;
@@ -49,7 +49,7 @@ namespace PantheonCore::Utility
     const TypeInfo& TypeRegistry<TypeInfo>::getTypeInfo(const size_t typeId) const
     {
         const auto it = m_typeInfos.find(typeId);
-        ASSERT(it != m_typeInfos.end(), "No registered type id \"%d\" found.", typeId);
+        ASSERT(it != m_typeInfos.end(), "No registered type id \"%llu\" found.", typeId);
         return it->second;
     }
 
@@ -64,7 +64,7 @@ namespace PantheonCore::Utility
     const std::string& TypeRegistry<TypeInfo>::getRegisteredTypeName(const size_t typeId) const
     {
         const auto it = m_typeNames.find(typeId);
-        ASSERT(it != m_typeNames.end(), "Couldn't find registered name of type with id %d", typeId);
+        ASSERT(it != m_typeNames.end(), "Couldn't find registered name of type with id %llu", typeId);
 
         return it->second;
     }
