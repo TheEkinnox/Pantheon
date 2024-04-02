@@ -27,12 +27,9 @@ namespace PantheonTest
             DEBUG_LOG("Created entity %d:%d", p_entity.getIndex(), p_entity.getVersion());
         };
 
-        const auto onRemoveEntity = [](const EntityHandle p_entity)
+        const auto onRemoveEntity = [](const Entity p_entity)
         {
-            for (auto child : p_entity.getChildren())
-                child.destroy();
-
-            DEBUG_LOG("Removed entity %d:%d", p_entity.getEntity().getIndex(), p_entity.getEntity().getVersion());
+            DEBUG_LOG("Removed entity %d:%d", p_entity.getIndex(), p_entity.getVersion());
         };
 
         const auto onAddInt = [](const Entity p_owner, const int& p_val)
