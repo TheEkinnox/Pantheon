@@ -70,6 +70,18 @@ namespace PantheonCore::ECS
         void refresh();
 
         /**
+         * \brief Gets the view's target scene
+         * \return A reference to the view's target scene
+         */
+        SceneRef getScene() const;
+
+        /**
+         * \brief Sets the view's target scene
+         * \param scene The view's new target scene
+         */
+        void setScene(SceneRef scene);
+
+        /**
          * \brief Gets the components of the given types owned by the given entity
          * \tparam T The component types to fetch
          * \param owner The searched components' owner

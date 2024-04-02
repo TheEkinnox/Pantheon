@@ -19,6 +19,20 @@ namespace PantheonCore::ECS
     }
 
     template <class... Components>
+    typename SceneView<Components...>::SceneRef SceneView<Components...>::getScene() const
+    {
+        ASSERT(m_scene != nullptr);
+        return *m_scene;
+    }
+
+    template <class... Components>
+    void SceneView<Components...>::setScene(SceneRef scene)
+    {
+        m_scene = &scene;
+        refresh();
+    }
+
+    template <class... Components>
     template <typename... T>
     std::enable_if_t<(sizeof...(T) > 1), std::tuple<T*...>> SceneView<Components...>::get(const Entity owner)
     {
