@@ -16,7 +16,7 @@ namespace PantheonCore::ECS
 
     struct ComponentTypeInfo
     {
-        using TypeId = Utility::TypeRegistry<ComponentTypeInfo>::TypeId;
+        using TypeId = size_t;
 
         TypeId m_typeId;
 
