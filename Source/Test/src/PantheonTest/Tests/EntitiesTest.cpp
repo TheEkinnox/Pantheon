@@ -37,6 +37,11 @@ namespace PantheonTest
             DEBUG_LOG("Added int %d to entity %d:%d", p_val, p_owner.getIndex(), p_owner.getVersion());
         };
 
+        const auto onBeforeChangeInt = [](const Entity p_owner, const int& p_val)
+        {
+            DEBUG_LOG("Changing int %d of entity %d:%d", p_owner.getIndex(), p_owner.getVersion(), p_val);
+        };
+
         const auto onChangeInt = [](const Entity p_owner, const int& p_val)
         {
             DEBUG_LOG("Changed int of entity %d:%d to %d", p_owner.getIndex(), p_owner.getVersion(), p_val);
@@ -53,6 +58,7 @@ namespace PantheonTest
         scene.getStorage<Entity>().m_onRemove.subscribe(onRemoveEntity);
 
         scene.getStorage<int>().m_onAdd.subscribe(onAddInt);
+        scene.getStorage<int>().m_onBeforeChange.subscribe(onBeforeChangeInt);
         scene.getStorage<int>().m_onChange.subscribe(onChangeInt);
         scene.getStorage<int>().m_onRemove.subscribe(onRemoveInt);
 
