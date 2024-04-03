@@ -1,7 +1,9 @@
 #pragma once
-#include <utility>
+#include "PantheonCore/Resources/ResourceAsset.h"
+#include "PantheonCore/Resources/ResourceRef.h"
+#include "PantheonCore/Utility/ServiceLocator.h"
 
-#include "ResourceAsset.h"
+#include <utility>
 
 namespace PantheonCore::Resources
 {
@@ -12,20 +14,16 @@ namespace PantheonCore::Resources
 
     inline bool ResourceAsset::isValid() const
     {
-        return *GenericResourceRef(m_type, m_guid, m_path) != nullptr;
+        return GenericResourceRef(m_type, m_guid, m_path).hasValue();
     }
 
     inline bool ResourceAsset::getData(std::vector<char>& output) const
     {
-        const IResource* resource = *GenericResourceRef(m_type, m_guid, m_path);
+        const GenericResourceRef resource(m_type, m_guid, m_path);
 
-        if (!resource)
-        {
-            DEBUG_LOG_ERROR("Unable to get resource data for asset \"%s\" (type: \"%s\" | path: \"%s\")",
-                getGuid(), getType(), getPath());
-
+        if (!CHECK(resource.hasValue(), "Unable to get resource data for asset \"%s\" (type: \"%s\" | path: \"%s\")",
+                getGuid(), getType(), getPath()))
             return false;
-        }
 
         return resource->toBinary(output);
     }

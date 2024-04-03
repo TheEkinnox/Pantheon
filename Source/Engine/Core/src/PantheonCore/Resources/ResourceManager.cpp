@@ -26,7 +26,8 @@ namespace PantheonCore::Resources
         if (this == &other)
             return *this;
 
-        m_resources = other.m_resources;
+        m_bundles     = other.m_bundles;
+        m_searchPaths = other.m_searchPaths;
 
         return *this;
     }
@@ -36,7 +37,10 @@ namespace PantheonCore::Resources
         if (this == &other)
             return *this;
 
-        m_resources = std::move(other.m_resources);
+        m_bundles      = std::move(other.m_bundles);
+        m_resources    = std::move(other.m_resources);
+        m_resourceKeys = std::move(other.m_resourceKeys);
+        m_searchPaths  = std::move(other.m_searchPaths);
 
         return *this;
     }
@@ -78,31 +82,60 @@ namespace PantheonCore::Resources
         return true;
     }
 
-    IResource* ResourceManager::create(const std::string& type, const std::string& key, const std::string& path,
-                                       const bool         shouldLoad)
+    GenericResourceRef ResourceManager::create(
+        const std::string& type, const std::string& key, const std::string& path, const bool shouldLoad)
     {
         remove(key);
         removePath(path);
 
-        IResource* resource = ResourceRegistry::getInstance().create(type);
+        if (type.empty() || key.empty() || path.empty())
+            return {};
+
+        IResource* resource(ResourceRegistry::getInstance().create(type));
 
         if (resource == nullptr || (shouldLoad && !loadResource(resource, key, path)))
-            return nullptr;
+            return {};
 
-        m_resources[key]     = resource;
         m_resourceKeys[path] = key;
-
-        return resource;
+        return { *(m_resources[key] = std::make_unique<GenericResourceRef>(type, key, path, resource)), type };
     }
 
-    IResource* ResourceManager::getOrCreate(const std::string& type, const std::string& key, const std::string& path)
+    GenericResourceRef ResourceManager::get(const std::string& type, const std::string& keyOrPath) const
     {
-        IResource* resource = get<IResource>(key);
+        if (type.empty() || keyOrPath.empty())
+            return {};
+
+        auto it = m_resources.find(keyOrPath);
+
+        if (it == m_resources.end())
+        {
+            const auto keyIt = m_resourceKeys.find(keyOrPath);
+
+            if (keyIt == m_resourceKeys.end())
+                return {};
+
+            it = m_resources.find(keyIt->second);
+
+            if (it == m_resources.end())
+                return {};
+        }
+
+        GenericResourceRef* resource = dynamic_cast<GenericResourceRef*>(it->second.get());
 
         if (!resource)
-            resource = get<IResource>(path);
+            return { *it->second, type };
 
-        return resource ? resource : create(type, key, path, true);
+        return resource->getType() == type ? *resource : GenericResourceRef();
+    }
+
+    GenericResourceRef ResourceManager::getOrCreate(const std::string& type, const std::string& key, const std::string& path)
+    {
+        GenericResourceRef resource(get(type, key));
+
+        if (!resource.hasValue())
+            resource = get(type, path);
+
+        return resource.hasValue() ? resource : create(type, key, path, true);
     }
 
     std::vector<char> ResourceManager::readFile(const std::string& keyOrPath) const
@@ -153,8 +186,7 @@ namespace PantheonCore::Resources
         if (it == m_resources.end())
             return;
 
-        delete it->second;
-        it->second = nullptr;
+        it->second.reset();
     }
 
     void ResourceManager::removePath(const std::string& path)
@@ -170,10 +202,8 @@ namespace PantheonCore::Resources
 
     void ResourceManager::clear()
     {
-        for (const auto& resource : m_resources | std::views::values)
-            delete resource;
-
         m_resources.clear();
+        m_resourceKeys.clear();
     }
 
     std::vector<std::string> ResourceManager::getSearchPaths() const
@@ -212,9 +242,9 @@ namespace PantheonCore::Resources
             const char* guid = asset->getGuid();
             const char* path = asset->getPath();
 
-            IResource* ptr = create(type, guid, path, false);
+            GenericResourceRef resource(create(type, guid, path, false));
 
-            if (ptr == nullptr)
+            if (!resource.hasValue())
             {
                 DEBUG_LOG("[WARNING] Skipped bundle asset at path \"%s\" - Unable to create resource of type \"%s\"", path, type);
                 continue;
@@ -230,7 +260,7 @@ namespace PantheonCore::Resources
                 continue;
             }
 
-            if (ptr->fromBinary(assetData.data(), assetData.size()) == 0 || !ptr->init())
+            if (resource->fromBinary(assetData.data(), assetData.size()) == 0 || !resource->init())
             {
                 DEBUG_LOG("[WARNING] Skipped bundle asset at path \"%s\" - Unable to load resource", path);
                 remove(guid);

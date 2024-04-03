@@ -117,7 +117,7 @@ namespace PantheonRendering::Resources
 
     IShader& Material::getShader() const
     {
-        IShader* shader = *m_shader;
+        IShader* shader = m_shader.getResource();
 
         ASSERT(shader, "Couldn't load shader with key \"%s\" or path \"%s\". Make sure the resource exists",
             m_shader.getKey().c_str(), m_shader.getPath().c_str());
@@ -169,7 +169,7 @@ namespace PantheonRendering::Resources
 
     void Material::bind() const
     {
-        IShader* shader = *m_shader;
+        IShader* shader = m_shader.getResource();
 
         ASSERT(shader != nullptr, "Failed to bind material - Missing shader");
         shader->bind();
@@ -244,7 +244,7 @@ namespace PantheonRendering::Resources
             break;
         case EShaderDataType::TEXTURE:
         {
-            shader->setUniformTexture(name, *std::any_cast<const ResourceRef<ITexture>&>(property.m_value));
+            shader->setUniformTexture(name, std::any_cast<const ResourceRef<ITexture>&>(property.m_value).getResource());
             break;
         }
         case EShaderDataType::UNKNOWN:

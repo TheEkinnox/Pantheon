@@ -8,10 +8,13 @@ namespace PantheonCore::Resources
 {
     class IResource;
 
+    template <class T>
+    class ResourceRef;
+    class GenericResourceRef;
+
     class ResourceManager
     {
-        using ResourcePtr = IResource*;
-        using ResourceMap = std::unordered_map<std::string, ResourcePtr>;
+        using ResourceMap = std::unordered_map<std::string, std::unique_ptr<ResourceRef<IResource>>>;
         using KeyMap = std::unordered_map<std::string, std::string>;
         using BundlesMap = std::unordered_map<std::string, Assets::AssetBundle>;
 
@@ -80,7 +83,7 @@ namespace PantheonCore::Resources
          * \return A pointer to the resource on success, nullptr otherwise.
          */
         template <typename T>
-        T* load(const std::string& key, const std::string& path);
+        ResourceRef<T> load(const std::string& key, const std::string& path);
 
         /**
          * \brief Tries to create an empty resource of the given type
@@ -91,16 +94,24 @@ namespace PantheonCore::Resources
          * \param shouldLoad Whether the resource should be loaded on creation
          * \return A pointer to the created resource on success, nullptr otherwise.
          */
-        IResource* create(const std::string& type, const std::string& key, const std::string& path, bool shouldLoad = true);
+        GenericResourceRef create(const std::string& type, const std::string& key, const std::string& path, bool shouldLoad = true);
 
         /**
-         * \brief Tries to find the resource with the given key.
+         * \brief Tries to find the resource with the given key or path.
          * \tparam T The resource's type
-         * \param keyOrPath The resource's key
+         * \param keyOrPath The resource's key or path
          * \return A pointer to the resource on success, nullptr otherwise.
          */
         template <typename T>
-        T* get(const std::string& keyOrPath) const;
+        ResourceRef<T> get(const std::string& keyOrPath) const;
+
+        /**
+         * \brief Tries to find the resource of the given type with the given key or path.
+         * \param type The resource's type
+         * \param keyOrPath The resource's key or path
+         * \return A pointer to the resource on success, nullptr otherwise.
+         */
+        GenericResourceRef get(const std::string& type, const std::string& keyOrPath) const;
 
         /**
          * \brief Tries to find the resource with the given key or path. If not found, tries to load it from the given path
@@ -110,7 +121,7 @@ namespace PantheonCore::Resources
          * \return A pointer to the resource on success, nullptr otherwise.
          */
         template <typename T>
-        T* getOrCreate(const std::string& key, const std::string& path);
+        ResourceRef<T> getOrCreate(const std::string& key, const std::string& path);
 
         /**
          * \brief Tries to find the resource with the given key or path. If not found, tries to load it from the given path
@@ -119,7 +130,7 @@ namespace PantheonCore::Resources
          * \param path The resource's path
          * \return A pointer to the resource on success, nullptr otherwise.
          */
-        IResource* getOrCreate(const std::string& type, const std::string& key, const std::string& path);
+        GenericResourceRef getOrCreate(const std::string& type, const std::string& key, const std::string& path);
 
         /**
          * \brief Reads the content of the resource at the given path

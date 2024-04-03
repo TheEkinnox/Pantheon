@@ -142,11 +142,8 @@ namespace PantheonRendering::RHI
         stbi_set_flip_vertically_on_load(true);
         m_data = stbi_load(fileName.c_str(), &m_width, &m_height, reinterpret_cast<int*>(&m_channels), 0);
 
-        if (m_data == nullptr)
-        {
-            DEBUG_LOG_ERROR("Unable to load texture from path \"%s\"", fileName.c_str());
+        if (!CHECK(m_data != nullptr, "Unable to load texture from path \"%s\"", fileName.c_str()))
             return false;
-        }
 
         return true;
     }

@@ -1,39 +1,41 @@
 #pragma once
 #include "PantheonCore/Resources/IResource.h"
 #include "PantheonCore/Resources/ResourceManager.h"
+#include "PantheonCore/Resources/ResourceRef.h"
 
 namespace PantheonCore::Resources
 {
     template <typename T>
-    T* ResourceManager::load(const std::string& key, const std::string& path)
+    ResourceRef<T> ResourceManager::load(const std::string& key, const std::string& path)
     {
         static_assert(std::is_same_v<IResource, T> || std::is_base_of_v<IResource, T>);
 
-        if (m_resources.contains(key))
-        {
-            delete m_resources[key];
-            m_resources[key] = nullptr;
-        }
+        remove(key);
+        removePath(path);
 
-        T* ptr = createResource<T>();
+        if (key.empty() || path.empty())
+            return {};
 
-        if (!loadResource(ptr, key, path))
+        T* resource = createResource<T>();
+
+        if (!loadResource(resource, key, path))
         {
-            delete ptr;
             m_resourceKeys.erase(path);
-            return nullptr;
+            return {};
         }
 
-        m_resources[key]     = ptr;
         m_resourceKeys[path] = key;
 
-        return ptr;
+        return *(m_resources[key] = std::make_unique<ResourceRef<IResource>>(key, path, resource));
     }
 
     template <typename T>
-    T* ResourceManager::get(const std::string& keyOrPath) const
+    ResourceRef<T> ResourceManager::get(const std::string& keyOrPath) const
     {
         static_assert(std::is_same_v<IResource, T> || std::is_base_of_v<IResource, T>);
+
+        if (keyOrPath.empty())
+            return {};
 
         auto it = m_resources.find(keyOrPath);
 
@@ -42,25 +44,25 @@ namespace PantheonCore::Resources
             const auto keyIt = m_resourceKeys.find(keyOrPath);
 
             if (keyIt == m_resourceKeys.end())
-                return nullptr;
+                return {};
 
             it = m_resources.find(keyIt->second);
 
             if (it == m_resources.end())
-                return nullptr;
+                return {};
         }
 
-        return reinterpret_cast<T*>(it->second);
+        return *it->second;
     }
 
     template <typename T>
-    T* ResourceManager::getOrCreate(const std::string& key, const std::string& path)
+    ResourceRef<T> ResourceManager::getOrCreate(const std::string& key, const std::string& path)
     {
-        T* resource = get<T>(key);
+        ResourceRef<T> resource = get<T>(key);
 
-        if (!resource)
+        if (!resource.hasValue())
             resource = get<T>(path);
 
-        return resource ? resource : load<T>(key, path);
+        return resource.hasValue() ? resource : load<T>(key, path);
     }
 }

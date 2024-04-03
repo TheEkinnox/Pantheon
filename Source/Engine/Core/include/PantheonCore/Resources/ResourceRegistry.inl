@@ -34,6 +34,8 @@ namespace PantheonCore::Resources
     template <typename T>
     void ResourceRegistry::registerType(const std::string& name)
     {
+        static_assert(std::is_base_of_v<IResource, T>);
+
         const ResourceTypeInfo typeInfo
         {
             .allocate = []

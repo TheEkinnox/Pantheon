@@ -7,21 +7,100 @@
 
 namespace PantheonCore::Resources
 {
-    class ResourceRefBase : public Serialization::IJsonSerializable, public Serialization::IByteSerializable
+    template <class T>
+    class ResourceRef
     {
+        static_assert(std::is_same_v<IResource, T> || std::is_base_of_v<IResource, T>);
+
     public:
         using KeySizeT = uint8_t;
         using PathSizeT = uint8_t;
+        using RefCountT = uint32_t;
 
-        ResourceRefBase() = default;
-        ResourceRefBase(std::string key, std::string path);
-        ResourceRefBase(const ResourceRefBase& other);
-        ResourceRefBase(ResourceRefBase&& other) noexcept;
+        /**
+         * \brief Creates an empty resource ref
+         */
+        ResourceRef() = default;
 
-        ResourceRefBase& operator=(const ResourceRefBase& other);
-        ResourceRefBase& operator=(ResourceRefBase&& other) noexcept;
+        /**
+         * \brief Creates a handle to the resource with the given key and path
+         * \param key The resource's key
+         * \param path The resource's path
+         * \param resource A pointer to the referenced resource
+         */
+        ResourceRef(std::string key, std::string path, T* resource);
 
-        ~ResourceRefBase() override = default;
+        /**
+         * \brief Creates a handle to the resource with the given key and path
+         * \param key The resource's key
+         * \param path The resource's path
+         */
+        ResourceRef(const std::string& key, const std::string& path);
+
+        /**
+         * \brief Creates a copy of the given resource reference
+         * \param other The resource reference to copy
+         */
+        ResourceRef(const ResourceRef& other);
+
+        /**
+         * \brief Creates a move copy of the given resource reference
+         * \param other The resource reference to move
+         */
+        ResourceRef(ResourceRef&& other) noexcept;
+
+        /**
+         * \brief Creates a copy of the given resource reference
+         * \tparam U The other resource type
+         * \param other The resource reference to copy
+         */
+        template <typename U>
+        ResourceRef(const ResourceRef<U>& other);
+
+        /**
+         * \brief Creates a move copy of the given resource reference
+         * \tparam U The other resource type
+         * \param other The resource reference to move
+         */
+        template <typename U>
+        ResourceRef(ResourceRef<U>&& other) noexcept;
+
+        /**
+         * \brief Destroys the resource reference
+         */
+        virtual ~ResourceRef();
+
+        /**
+         * \brief Assigns a copy of the given resource reference to this one
+         * \param other The resource reference to copy
+         * \return A reference to the modified resource reference
+         */
+        ResourceRef& operator=(const ResourceRef& other);
+
+        /**
+         * \brief Moves the given resource reference into this one
+         * \param other The resource reference to move
+         * \return A reference to the modified resource reference
+         */
+        ResourceRef& operator=(ResourceRef&& other) noexcept;
+
+        /**
+         * \brief Gets a reference to the referenced resource
+         * \return A pointer to the referenced resource
+         */
+        T& operator*() const;
+
+        /**
+         * \brief Gets a pointer to the referenced resource
+         * \return A pointer to the referenced resource
+         */
+        T* operator->() const;
+
+        /**
+         * \brief Gets a pointer to the referenced resource
+         * \return A pointer to the referenced resource
+         */
+        T* getResource() const;
 
         /**
          * \brief Gets the referenced resource's key
@@ -42,25 +121,16 @@ namespace PantheonCore::Resources
         virtual bool hasValue() const;
 
         /**
-         * \brief Serializes the resource reference to json
-         * \param writer The output json writer
-         * \return True on success. False otherwise.
+         * \brief Resets the resource reference
          */
-        bool toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const override;
-
-        /**
-         * \brief Deserializes the resource reference from json
-         * \param json The input json data
-         * \return True on success. False otherwise.
-         */
-        bool fromJson(const rapidjson::Value& json) override;
+        void reset();
 
         /**
          * \brief Serializes the resource reference to a byte array
          * \param output The output memory buffer
          * \return True on success. False otherwise.
          */
-        bool toBinary(std::vector<char>& output) const override;
+        virtual bool toBinary(std::vector<char>& output) const;
 
         /**
          * \brief Deserializes the resource reference from the given memory buffer
@@ -69,52 +139,63 @@ namespace PantheonCore::Resources
          * \param length The memory buffer's length
          * \return The number of deserialized bytes on success. 0 otherwise.
          */
-        size_t fromBinary(const char* data, size_t length) override;
+        virtual size_t fromBinary(const char* data, size_t length);
+
+        /**
+         * \brief Serializes the resource reference to json
+         * \param writer The output json writer
+         * \return True on success. False otherwise.
+         */
+        virtual bool toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const;
+
+        /**
+         * \brief Deserializes the resource reference from json
+         * \param json The input json data
+         * \return True on success. False otherwise.
+         */
+        virtual bool fromJson(const rapidjson::Value& json);
 
     protected:
+        template <typename U>
+        friend class ResourceRef;
+
         std::string m_key;
         std::string m_path;
+        T*          m_resource = nullptr;
+        RefCountT*  m_refCount = nullptr;
     };
 
-    template <class T>
-    class ResourceRef final : public ResourceRefBase
-    {
-        static_assert(std::is_base_of_v<IResource, T>);
-
-    public:
-        ResourceRef() = default;
-        ResourceRef(const std::string& key, const std::string& path);
-        ResourceRef(const ResourceRef& other)     = default;
-        ResourceRef(ResourceRef&& other) noexcept = default;
-
-        ResourceRef& operator=(const ResourceRef& other)     = default;
-        ResourceRef& operator=(ResourceRef&& other) noexcept = default;
-
-        ~ResourceRef() override = default;
-
-        T* operator*() const;
-        T* operator->() const;
-    };
-
-    class GenericResourceRef final : public ResourceRefBase
+    class GenericResourceRef final : public ResourceRef<IResource>
     {
     public:
         using TypeSizeT = uint8_t;
 
         GenericResourceRef() = default;
+        GenericResourceRef(std::string type, const std::string& key, const std::string& path, IResource* resource);
         GenericResourceRef(std::string type, const std::string& key, const std::string& path);
         GenericResourceRef(const GenericResourceRef& other)     = default;
         GenericResourceRef(GenericResourceRef&& other) noexcept = default;
+
+        template <typename T>
+        GenericResourceRef(const ResourceRef<T>& other);
+
+        template <typename T>
+        GenericResourceRef(ResourceRef<T>&& other) noexcept;
+
+        template <typename T>
+        GenericResourceRef(const ResourceRef<T>& other, std::string type);
+
+        template <typename T>
+        GenericResourceRef(ResourceRef<T>&& other, std::string type) noexcept;
 
         GenericResourceRef& operator=(const GenericResourceRef& other)     = default;
         GenericResourceRef& operator=(GenericResourceRef&& other) noexcept = default;
 
         ~GenericResourceRef() override = default;
 
-        IResource* operator*() const;
-        IResource* operator->() const;
-
         bool hasValue() const override;
+
+        std::string getType() const;
 
         bool toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const override;
         bool fromJson(const rapidjson::Value& json) override;

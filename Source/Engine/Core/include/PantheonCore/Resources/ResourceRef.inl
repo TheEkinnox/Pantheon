@@ -6,60 +6,198 @@
 
 namespace PantheonCore::Resources
 {
-    inline ResourceRefBase::ResourceRefBase(std::string key, std::string path)
-        : m_key(std::move(key)), m_path(std::move(path))
+    template <class T>
+    ResourceRef<T>::ResourceRef(std::string key, std::string path, T* resource)
+        : m_key(std::move(key)), m_path(std::move(path)), m_resource(resource), m_refCount(resource ? new RefCountT(1) : nullptr)
     {
     }
 
-    inline ResourceRefBase::ResourceRefBase(const ResourceRefBase& other)
-        : ResourceRefBase(other.m_key, other.m_path)
+    template <class T>
+    ResourceRef<T>::ResourceRef(const std::string& key, const std::string& path)
+        : ResourceRef(PTH_SERVICE(ResourceManager).getOrCreate<T>(key, path))
     {
     }
 
-    inline ResourceRefBase::ResourceRefBase(ResourceRefBase&& other) noexcept
+    template <class T>
+    ResourceRef<T>::ResourceRef(const ResourceRef& other)
+        : m_key(other.m_key), m_path(other.m_path), m_resource(other.m_resource), m_refCount(other.m_refCount)
     {
-        m_key.swap(other.m_key);
-        m_path.swap(other.m_path);
+        if (m_refCount)
+            ++(*m_refCount);
     }
 
-    inline ResourceRefBase& ResourceRefBase::operator=(const ResourceRefBase& other)
+    template <class T>
+    ResourceRef<T>::ResourceRef(ResourceRef&& other) noexcept
+        : m_key(std::move(other.m_key)), m_path(std::move(other.m_path)), m_resource(other.m_resource), m_refCount(other.m_refCount)
+    {
+        other.m_resource = nullptr;
+        other.m_refCount = nullptr;
+    }
+
+    template <class T>
+    template <typename U>
+    ResourceRef<T>::ResourceRef(const ResourceRef<U>& other)
+        : m_key(other.m_key), m_path(other.m_path), m_resource(dynamic_cast<T*>(other.m_resource)),
+        m_refCount(m_resource ? other.m_refCount : nullptr)
+    {
+        if (m_refCount)
+            ++(*m_refCount);
+    }
+
+    template <class T>
+    template <typename U>
+    ResourceRef<T>::ResourceRef(ResourceRef<U>&& other) noexcept
+        : m_key(std::move(other.m_key)), m_path(std::move(other.m_path)), m_resource(dynamic_cast<T*>(other.m_resource)),
+        m_refCount(m_resource ? other.m_refCount : nullptr)
+    {
+        other.m_resource = nullptr;
+        other.m_refCount = nullptr;
+    }
+
+    template <class T>
+    ResourceRef<T>::~ResourceRef()
+    {
+        reset();
+    }
+
+    template <class T>
+    ResourceRef<T>& ResourceRef<T>::operator=(const ResourceRef& other)
     {
         if (this == &other)
             return *this;
 
-        m_key  = other.m_key;
-        m_path = other.m_path;
+        if (other.m_refCount != m_refCount)
+            reset();
+        else if (other.m_refCount)
+            ++(*other.m_refCount);
+
+        m_key      = other.m_key;
+        m_path     = other.m_path;
+        m_resource = other.m_resource;
+        m_refCount = other.m_refCount;
 
         return *this;
     }
 
-    inline ResourceRefBase& ResourceRefBase::operator=(ResourceRefBase&& other) noexcept
+    template <class T>
+    ResourceRef<T>& ResourceRef<T>::operator=(ResourceRef&& other) noexcept
     {
         if (this == &other)
             return *this;
 
-        m_key.swap(other.m_key);
-        m_path.swap(other.m_path);
+        if (other.m_refCount != m_refCount)
+            reset();
+
+        m_key      = std::move(other.m_key);
+        m_path     = std::move(other.m_path);
+        m_resource = other.m_resource;
+        m_refCount = other.m_refCount;
+
+        other.m_resource = nullptr;
+        other.m_refCount = nullptr;
 
         return *this;
     }
 
-    inline std::string ResourceRefBase::getKey() const
+    template <class T>
+    T& ResourceRef<T>::operator*() const
+    {
+        return *getResource();
+    }
+
+    template <class T>
+    T* ResourceRef<T>::operator->() const
+    {
+        return getResource();
+    }
+
+    template <class T>
+    T* ResourceRef<T>::getResource() const
+    {
+        return m_resource ? m_resource : getDefaultResource<T>();
+    }
+
+    template <class T>
+    std::string ResourceRef<T>::getKey() const
     {
         return m_key;
     }
 
-    inline std::string ResourceRefBase::getPath() const
+    template <class T>
+    std::string ResourceRef<T>::getPath() const
     {
         return m_path;
     }
 
-    inline bool ResourceRefBase::hasValue() const
+    template <class T>
+    bool ResourceRef<T>::hasValue() const
     {
-        return !m_key.empty() && !m_path.empty();
+        return m_refCount && getResource() && *m_refCount > 0 && !m_key.empty() && !m_path.empty();
     }
 
-    inline bool ResourceRefBase::toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
+    template <class T>
+    void ResourceRef<T>::reset()
+    {
+        if (m_refCount && --(*m_refCount) == 0)
+        {
+            delete m_refCount;
+
+            if (m_resource)
+            {
+                delete m_resource;
+                m_resource = nullptr;
+            }
+        }
+    }
+
+    template <class T>
+    bool ResourceRef<T>::toBinary(std::vector<char>& output) const
+    {
+        using namespace Serialization;
+
+        const KeySizeT  keySize  = static_cast<KeySizeT>(m_key.size());
+        const PathSizeT pathSize = static_cast<PathSizeT>(m_path.size());
+
+        output.reserve(output.size() + sizeof(KeySizeT) + keySize + sizeof(PathSizeT) + pathSize);
+
+        if (!CHECK(IByteSerializable::serializeString<KeySizeT>(m_key, output),
+                "Unable to serialize resource ref - Failed to write resource key"))
+            return false;
+
+        if (!CHECK(IByteSerializable::serializeString<PathSizeT>(m_path, output),
+                "Unable to serialize resource ref - Failed to write resource path"))
+            return false;
+
+        return true;
+    }
+
+    template <class T>
+    size_t ResourceRef<T>::fromBinary(const char* data, const size_t length)
+    {
+        using namespace Serialization;
+
+        if (!CHECK(data != nullptr && length > 0, "Unable to deserialize resource ref - Invalid buffer"))
+            return 0;
+
+        const size_t offset = IByteSerializable::deserializeString<KeySizeT>(m_key, data, length);
+        if (!CHECK(offset != 0, "Unable to deserialize resource ref - Key deserialization failed"))
+            return 0;
+
+        if (!CHECK(length > offset, "Unable to deserialize resource ref - Invalid offset"))
+            return 0;
+
+        const size_t readBytes = IByteSerializable::deserializeString<PathSizeT>(m_path, data + offset, length - offset);
+        if (!CHECK(readBytes != 0, "Unable to deserialize resource ref - Path deserialization failed"))
+            return 0;
+
+        if constexpr (!std::is_same_v<T, IResource>)
+            (*this) = { m_key, m_path };
+
+        return offset + readBytes;
+    }
+
+    template <class T>
+    bool ResourceRef<T>::toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
     {
         writer.StartObject();
 
@@ -72,121 +210,73 @@ namespace PantheonCore::Resources
         return writer.EndObject();
     }
 
-    inline bool ResourceRefBase::fromJson(const rapidjson::Value& json)
+    template <class T>
+    bool ResourceRef<T>::fromJson(const rapidjson::Value& json)
     {
-        if (!json.IsObject())
-        {
-            DEBUG_LOG_ERROR("Unable to deserialize resource ref - Json value should be an object");
+        if (!CHECK(json.IsObject(), "Unable to deserialize resource ref - Json value should be an object"))
             return false;
-        }
 
         auto it = json.FindMember("key");
-        if (it == json.MemberEnd() || !it->value.IsString())
-        {
-            DEBUG_LOG_ERROR("Unable to deserialize resource ref - Invalid resource key");
+        if (!CHECK(it != json.MemberEnd() && it->value.IsString(), "Unable to deserialize resource ref - Invalid resource key"))
             return false;
-        }
 
         m_key = it->value.GetString();
 
         it = json.FindMember("path");
-        if (it == json.MemberEnd() || !it->value.IsString())
-        {
-            DEBUG_LOG_ERROR("Unable to deserialize resource ref - Invalid resource path");
+        if (!CHECK(it != json.MemberEnd() && it->value.IsString(), "Unable to deserialize resource ref - Invalid resource path"))
             return false;
-        }
 
         m_path = it->value.GetString();
-        return true;
-    }
 
-    inline bool ResourceRefBase::toBinary(std::vector<char>& output) const
-    {
-        const KeySizeT  keySize  = static_cast<KeySizeT>(m_key.size());
-        const PathSizeT pathSize = static_cast<PathSizeT>(m_path.size());
-
-        output.reserve(output.size() + sizeof(KeySizeT) + keySize + sizeof(PathSizeT) + pathSize);
-
-        if (!serializeString<KeySizeT>(m_key, output))
-        {
-            DEBUG_LOG_ERROR("Unable to serialize resource ref - Failed to write resource key");
-            return false;
-        }
-
-        if (!serializeString<PathSizeT>(m_path, output))
-        {
-            DEBUG_LOG_ERROR("Unable to serialize resource ref - Failed to write resource path");
-            return false;
-        }
+        if constexpr (!std::is_same_v<T, IResource>)
+            (*this) = { m_key, m_path };
 
         return true;
     }
 
-    inline size_t ResourceRefBase::fromBinary(const char* data, const size_t length)
-    {
-        if (data == nullptr || length == 0)
-        {
-            DEBUG_LOG_ERROR("Unable to deserialize resource ref - Invalid buffer");
-            return 0;
-        }
-
-        if (!CHECK(deserializeString<KeySizeT>(m_key, data, length) != 0,
-                "Unable to deserialize resource ref - Key deserialization failed"))
-            return 0;
-
-        const size_t offset = sizeof(KeySizeT) + m_key.size();
-        if (!CHECK(length > offset, "Unable to deserialize resource ref - Invalid offset"))
-            return 0;
-
-        if (!CHECK(deserializeString<PathSizeT>(m_path, data + offset, length - offset) != 0,
-                "Unable to deserialize resource ref - Path deserialization failed"))
-            return 0;
-
-        return offset + sizeof(PathSizeT) + m_path.size();
-    }
-
-    template <class T>
-    ResourceRef<T>::ResourceRef(const std::string& key, const std::string& path)
-        : ResourceRefBase(key, path)
+    template <typename T>
+    GenericResourceRef::GenericResourceRef(const ResourceRef<T>& other)
+        : GenericResourceRef(other, ResourceRegistry::getInstance().getRegisteredTypeName<T>())
     {
     }
 
-    template <class T>
-    T* ResourceRef<T>::operator*() const
+    template <typename T>
+    GenericResourceRef::GenericResourceRef(ResourceRef<T>&& other) noexcept
+        : GenericResourceRef(std::move(other), ResourceRegistry::getInstance().getRegisteredTypeName<T>())
     {
-        if (!hasValue())
-            return getDefaultResource<T>();
-
-        return PTH_SERVICE(ResourceManager).getOrCreate<T>(m_key, m_path);
     }
 
-    template <class T>
-    T* ResourceRef<T>::operator->() const
+    template <typename T>
+    GenericResourceRef::GenericResourceRef(const ResourceRef<T>& other, std::string type)
+        : ResourceRef(other), m_type(std::move(type))
     {
-        return **this;
+    }
+
+    template <typename T>
+    GenericResourceRef::GenericResourceRef(ResourceRef<T>&& other, std::string type) noexcept
+        : ResourceRef(std::move(other)), m_type(std::move(type))
+    {
+    }
+
+    inline GenericResourceRef::GenericResourceRef(
+        std::string type, const std::string& key, const std::string& path, IResource* resource)
+        : ResourceRef(key, path, resource), m_type(std::move(type))
+    {
     }
 
     inline GenericResourceRef::GenericResourceRef(std::string type, const std::string& key, const std::string& path)
-        : ResourceRefBase(key, path), m_type(std::move(type))
+        : GenericResourceRef(PTH_SERVICE(ResourceManager).getOrCreate(type, key, path))
     {
-    }
-
-    inline IResource* GenericResourceRef::operator*() const
-    {
-        if (!hasValue())
-            return ResourceRegistry::getInstance().getDefault(m_type);
-
-        return PTH_SERVICE(ResourceManager).getOrCreate(m_type, m_key, m_path);
-    }
-
-    inline IResource* GenericResourceRef::operator->() const
-    {
-        return **this;
     }
 
     inline bool GenericResourceRef::hasValue() const
     {
-        return ResourceRefBase::hasValue() && !m_type.empty();
+        return ResourceRef::hasValue() && !m_type.empty();
+    }
+
+    inline std::string GenericResourceRef::getType() const
+    {
+        return m_type;
     }
 
     inline bool GenericResourceRef::toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
@@ -207,52 +297,52 @@ namespace PantheonCore::Resources
 
     inline bool GenericResourceRef::fromJson(const rapidjson::Value& json)
     {
-        if (!ResourceRefBase::fromJson(json))
-            return false;
-
         const auto it = json.FindMember("type");
-        if (it == json.MemberEnd() || !it->value.IsString())
-        {
-            DEBUG_LOG_ERROR("Unable to deserialize resource ref - Invalid resource type");
+        if (!CHECK(it != json.MemberEnd() && it->value.IsString(), "Unable to deserialize resource ref - Invalid resource type"))
             return false;
-        }
 
         m_type = it->value.GetString();
 
+        ResourceRef tmp;
+        if (!tmp.fromJson(json))
+            return false;
+
+        (*this) = { tmp, m_type };
         return true;
     }
 
     inline bool GenericResourceRef::toBinary(std::vector<char>& output) const
     {
-        if (!serializeString<TypeSizeT>(m_type, output))
-        {
-            DEBUG_LOG_ERROR("Unable to serialize resource ref - Failed to serialize type string");
-            return false;
-        }
+        using namespace Serialization;
 
-        return ResourceRefBase::toBinary(output);
+        if (!CHECK(IByteSerializable::serializeString<TypeSizeT>(m_type, output),
+                "Unable to serialize resource ref - Failed to serialize type string"))
+            return false;
+
+        return ResourceRef::toBinary(output);
     }
 
-    inline size_t GenericResourceRef::fromBinary(const char* data, size_t length)
+    inline size_t GenericResourceRef::fromBinary(const char* data, const size_t length)
     {
-        if (data == nullptr || length == 0)
-        {
-            DEBUG_LOG_ERROR("Unable to deserialize resource ref - Invalid buffer");
-            return 0;
-        }
+        using namespace Serialization;
 
-        if (!CHECK(deserializeString<TypeSizeT>(m_type, data, length) != 0,
-                "Unable to deserialize resource ref - Key deserialization failed"))
+        if (!CHECK(data != nullptr && length > 0, "Unable to deserialize resource ref - Invalid buffer"))
             return 0;
 
-        const size_t offset = sizeof(TypeSizeT) + m_type.size();
-
-        if (length <= offset)
-        {
-            DEBUG_LOG_ERROR("Unable to deserialize resource ref - Invalid offset");
+        const size_t offset = IByteSerializable::deserializeString<TypeSizeT>(m_type, data, length);
+        if (!CHECK(offset != 0, "Unable to deserialize resource ref - Type string deserialization failed"))
             return 0;
-        }
 
-        return ResourceRefBase::fromBinary(data + offset, length - offset);
+        if (!CHECK(length > offset, "Unable to deserialize resource ref - Invalid offset"))
+            return 0;
+
+        ResourceRef  tmp;
+        const size_t readBytes = tmp.fromBinary(data + offset, length - offset);
+
+        if (readBytes == 0)
+            return 0;
+
+        (*this) = { tmp, m_type };
+        return offset + readBytes;
     }
 }

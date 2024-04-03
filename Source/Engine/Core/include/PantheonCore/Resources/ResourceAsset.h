@@ -1,6 +1,4 @@
 #pragma once
-#include "ResourceRef.h"
-
 #include "PantheonCore/Assets/Asset.h"
 
 namespace PantheonCore::Resources
