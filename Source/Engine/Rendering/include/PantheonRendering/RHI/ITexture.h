@@ -11,7 +11,7 @@ namespace PantheonRendering::RHI
 {
     class ITexture : public PantheonCore::Resources::IResource
     {
-        REGISTERED_RESOURCE_BODY(ITexture)
+        REGISTERED_RESOURCE_BODY()
 
     public:
         /**

@@ -11,7 +11,7 @@ namespace PantheonRendering::Resources
 {
     class Material final : public PantheonCore::Resources::IResource, public PantheonCore::Serialization::IJsonSerializable
     {
-        REGISTERED_RESOURCE_BODY(Material)
+        REGISTERED_RESOURCE_BODY()
 
     public:
         struct Property

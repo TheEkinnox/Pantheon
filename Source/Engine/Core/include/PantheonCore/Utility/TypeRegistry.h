@@ -47,6 +47,14 @@ namespace PantheonCore::Utility
         TypeRegistry& operator=(TypeRegistry&& other) noexcept = default;
 
         /**
+         * \brief Gets the given type's id
+         * \tparam T The target type
+         * \return The given type's id
+         */
+        template <typename T>
+        static TypeId getTypeId();
+
+        /**
          * \brief Registers the given type with the given info and name
          * \tparam T The registered type
          * \param name The registered type's name

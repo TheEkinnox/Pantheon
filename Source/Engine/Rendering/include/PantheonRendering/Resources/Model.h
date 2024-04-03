@@ -9,7 +9,7 @@ namespace PantheonRendering::Resources
 {
     class Model final : public PantheonCore::Resources::IResource
     {
-        REGISTERED_RESOURCE_BODY(Model)
+        REGISTERED_RESOURCE_BODY()
 
     public:
         static constexpr size_t INVALID_INDEX = static_cast<size_t>(-1);

@@ -12,7 +12,7 @@ namespace PantheonCore::ECS
 
     class Scene final : public Resources::IResource, public Serialization::IJsonSerializable
     {
-        REGISTERED_RESOURCE_BODY(Scene)
+        REGISTERED_RESOURCE_BODY()
 
     public:
         template <typename T>

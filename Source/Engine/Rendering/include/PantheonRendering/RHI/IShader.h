@@ -15,7 +15,7 @@ namespace PantheonRendering::RHI
 
     class IShader : public PantheonCore::Resources::IResource
     {
-        REGISTERED_RESOURCE_BODY(IShader)
+        REGISTERED_RESOURCE_BODY()
 
     public:
         struct UniformInfo

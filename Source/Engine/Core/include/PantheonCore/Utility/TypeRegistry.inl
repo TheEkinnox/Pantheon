@@ -2,15 +2,24 @@
 #include "PantheonCore/Debug/Assertion.h"
 #include "PantheonCore/Utility/TypeRegistry.h"
 
+#include <type_traits>
+
 namespace PantheonCore::Utility
 {
+    template <class TypeInfo>
+    template <typename T>
+    typename TypeRegistry<TypeInfo>::TypeId TypeRegistry<TypeInfo>::getTypeId()
+    {
+        return typeid(std::remove_cvref_t<T>).hash_code();
+    }
+
     template <class TypeInfo>
     template <typename T>
     void TypeRegistry<TypeInfo>::registerType(const std::string& name, const TypeInfo& info)
     {
         ASSERT(!m_typeIds.contains(name), "Type name \"%s\" has already been registered", name.c_str());
 
-        TypeId id = typeid(T).hash_code();
+        TypeId id = getTypeId<T>();
         ASSERT(!m_typeInfos.contains(id), "Type %llu (\"%s\") has already been registered", id, typeid(T).name());
 
         m_typeInfos[id] = info;
@@ -34,7 +43,7 @@ namespace PantheonCore::Utility
     template <typename T>
     bool TypeRegistry<TypeInfo>::contains() const
     {
-        return contains(typeid(T).hash_code());
+        return contains(getTypeId<T>());
     }
 
     template <typename TypeInfo>
@@ -73,6 +82,6 @@ namespace PantheonCore::Utility
     template <typename T>
     const std::string& TypeRegistry<TypeInfo>::getRegisteredTypeName() const
     {
-        return getRegisteredTypeName(typeid(T).hash_code());
+        return getRegisteredTypeName(getTypeId<T>());
     }
 }

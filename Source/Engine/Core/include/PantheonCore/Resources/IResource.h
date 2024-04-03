@@ -4,12 +4,12 @@
 
 #include <string>
 
-#define REGISTERED_RESOURCE_BODY(Type)                                                             \
-public:                                                                                            \
-inline const std::string& getTypeName() const                                                      \
-{                                                                                                  \
-    return PantheonCore::Resources::ResourceRegistry::getInstance().getRegisteredTypeName<Type>(); \
-}                                                                                                  \
+#define REGISTERED_RESOURCE_BODY()                                                                            \
+public:                                                                                                       \
+inline const std::string& getTypeName() const                                                                 \
+{                                                                                                             \
+    return PantheonCore::Resources::ResourceRegistry::getInstance().getRegisteredTypeName<decltype(*this)>(); \
+}                                                                                                             \
 private:
 
 namespace PantheonCore::Resources
