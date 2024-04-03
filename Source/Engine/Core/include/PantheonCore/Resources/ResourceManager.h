@@ -180,6 +180,13 @@ namespace PantheonCore::Resources
          */
         void removeSearchPath(const std::string& path);
 
+        /**
+         * \brief Gets the full path of a resource from its relative path
+         * \param path The resource's relative path
+         * \return The resource's path including the search path
+         */
+        std::string getFullPath(const std::string& path) const;
+
     private:
         BundlesMap  m_bundles;
         ResourceMap m_resources;
@@ -208,13 +215,6 @@ namespace PantheonCore::Resources
          * \return The resource's path
          */
         std::string getResourcePath(const std::string& keyOrPath) const;
-
-        /**
-         * \brief Gets the full path of a resource from its relative path
-         * \param path The resource's relative path
-         * \return The resource's path including the search path
-         */
-        std::string getFullPath(const std::string& path) const;
     };
 }
 

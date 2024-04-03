@@ -229,6 +229,19 @@ namespace PantheonCore::Resources
         m_searchPaths.erase(std::ranges::find(m_searchPaths, path));
     }
 
+    std::string ResourceManager::getFullPath(const std::string& path) const
+    {
+        for (const auto& searchPath : m_searchPaths)
+        {
+            const std::string fullPath = Utility::appendPath(searchPath, path);
+
+            if (Utility::pathExists(fullPath))
+                return fullPath;
+        }
+
+        return path;
+    }
+
     void ResourceManager::importBundle(const AssetBundle& bundle)
     {
         const auto assets = bundle.getAssets();
@@ -311,18 +324,5 @@ namespace PantheonCore::Resources
         }
 
         return keyOrPath;
-    }
-
-    std::string ResourceManager::getFullPath(const std::string& path) const
-    {
-        for (const auto& searchPath : m_searchPaths)
-        {
-            const std::string fullPath = Utility::appendPath(searchPath, path);
-
-            if (Utility::pathExists(fullPath))
-                return fullPath;
-        }
-
-        return path;
     }
 }
