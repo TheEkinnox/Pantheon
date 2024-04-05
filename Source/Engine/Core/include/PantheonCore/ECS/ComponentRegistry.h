@@ -1,5 +1,6 @@
 #pragma once
 #include "PantheonCore/ECS/Entity.h"
+#include "PantheonCore/Utility/DynamicTypeInfo.h"
 #include "PantheonCore/Serialization/IJsonSerializable.h"
 #include "PantheonCore/Utility/TypeRegistry.h"
 
@@ -23,7 +24,7 @@ namespace PantheonCore::ECS
         std::unique_ptr<IComponentStorage> (*makeStorage)(Scene*);
     };
 
-    class ComponentRegistry final : public Utility::TypeRegistry<ComponentTypeInfo>
+    class ComponentRegistry final : public Utility::TypeRegistry<Utility::DynamicTypeInfo<ComponentTypeInfo>>
     {
     public:
         using EntitiesMap = std::unordered_map<Entity::Id, Entity>;
