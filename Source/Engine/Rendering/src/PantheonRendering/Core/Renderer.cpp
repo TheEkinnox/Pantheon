@@ -61,11 +61,19 @@ namespace PantheonRendering::Core
             switch (camera.getCullingMode())
             {
             case ECullingMode::MODEL:
+            {
                 if (!frustum.intersects(transformBoundingBox(modelBoundingBox, modelMat)))
                     continue;
+
+                break;
+            }
             case ECullingMode::MESH:
+            {
                 if (!frustum.intersects(transformBoundingBox(mesh->getBoundingBox(), modelMat)))
                     continue;
+
+                break;
+            }
             case ECullingMode::NONE:
             default:
                 break;
