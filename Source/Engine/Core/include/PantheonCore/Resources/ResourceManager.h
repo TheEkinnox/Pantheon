@@ -207,7 +207,7 @@ namespace PantheonCore::Resources
          * \param path The resource's path
          * \return True on success. False otherwise.
          */
-        bool loadResource(IResource* resource, const std::string& key, const std::string& path);
+        bool loadResource(IResource* resource, const std::string& key, const std::string& path) const;
 
         /**
          * \brief Gets the path of a resource from its key or path

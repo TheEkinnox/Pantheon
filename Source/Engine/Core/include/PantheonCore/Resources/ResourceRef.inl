@@ -268,7 +268,7 @@ namespace PantheonCore::Resources
             "Attempted to make generic resource ref with resource of a different type");
     }
 
-    inline GenericResourceRef::GenericResourceRef(std::string type, const std::string& key, const std::string& path)
+    inline GenericResourceRef::GenericResourceRef(const std::string& type, const std::string& key, const std::string& path)
         : GenericResourceRef(PTH_SERVICE(ResourceManager).getOrCreate(type, key, path))
     {
     }
@@ -336,13 +336,12 @@ namespace PantheonCore::Resources
         if (!CHECK(length > offset, "Unable to deserialize resource ref - Invalid offset"))
             return 0;
 
-        ResourceRef  tmp;
-        const size_t readBytes = tmp.fromBinary(data + offset, length - offset);
+        const size_t readBytes = ResourceRef::fromBinary(data + offset, length - offset);
 
         if (readBytes == 0)
             return 0;
 
-        (*this) = { tmp, m_type };
+        (*this) = { m_type, m_key, m_path };
         return offset + readBytes;
     }
 
@@ -370,11 +369,10 @@ namespace PantheonCore::Resources
 
         m_type = it->value.GetString();
 
-        ResourceRef tmp;
-        if (!tmp.fromJson(json))
+        if (!ResourceRef::fromJson(json))
             return false;
 
-        (*this) = { tmp, m_type };
+        (*this) = { m_type, m_key, m_path };
         return true;
     }
 }

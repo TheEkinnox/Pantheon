@@ -185,7 +185,7 @@ namespace PantheonCore::Resources
 
         GenericResourceRef() = default;
         GenericResourceRef(std::string type, const std::string& key, const std::string& path, IResource* resource);
-        GenericResourceRef(std::string type, const std::string& key, const std::string& path);
+        GenericResourceRef(const std::string& type, const std::string& key, const std::string& path);
         GenericResourceRef(const GenericResourceRef& other)     = default;
         GenericResourceRef(GenericResourceRef&& other) noexcept = default;
 

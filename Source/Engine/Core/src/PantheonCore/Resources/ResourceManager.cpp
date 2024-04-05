@@ -200,13 +200,7 @@ namespace PantheonCore::Resources
     void ResourceManager::remove(const std::string& key)
     {
         m_resourceKeys.erase(getResourcePath(key));
-
-        const auto it = m_resources.find(key);
-
-        if (it == m_resources.end())
-            return;
-
-        m_resources.erase(it);
+        m_resources.erase(key);
     }
 
     void ResourceManager::removePath(const std::string& path)
@@ -302,7 +296,7 @@ namespace PantheonCore::Resources
         }
     }
 
-    bool ResourceManager::loadResource(IResource* resource, const std::string& key, const std::string& path)
+    bool ResourceManager::loadResource(IResource* resource, const std::string& key, const std::string& path) const
     {
         std::vector<char> bundleData;
 
