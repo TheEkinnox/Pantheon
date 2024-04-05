@@ -22,34 +22,34 @@ namespace PantheonTest
 
     void EntitiesTest::testScene()
     {
-        const auto onAddEntity = [](const Entity p_entity)
+        const auto onAddEntity = [](const Entity entity)
         {
-            DEBUG_LOG("Created entity %d:%d", p_entity.getIndex(), p_entity.getVersion());
+            DEBUG_LOG("Created entity %d:%d", entity.getIndex(), entity.getVersion());
         };
 
-        const auto onRemoveEntity = [](const Entity p_entity)
+        const auto onRemoveEntity = [](const Entity entity)
         {
-            DEBUG_LOG("Removed entity %d:%d", p_entity.getIndex(), p_entity.getVersion());
+            DEBUG_LOG("Removed entity %d:%d", entity.getIndex(), entity.getVersion());
         };
 
-        const auto onAddInt = [](const Entity p_owner, const int& p_val)
+        const auto onAddInt = [](const Entity owner, const int& val)
         {
-            DEBUG_LOG("Added int %d to entity %d:%d", p_val, p_owner.getIndex(), p_owner.getVersion());
+            DEBUG_LOG("Added int %d to entity %d:%d", val, owner.getIndex(), owner.getVersion());
         };
 
-        const auto onBeforeChangeInt = [](const Entity p_owner, const int& p_val)
+        const auto onBeforeChangeInt = [](const Entity owner, const int& val)
         {
-            DEBUG_LOG("Changing int %d of entity %d:%d", p_owner.getIndex(), p_owner.getVersion(), p_val);
+            DEBUG_LOG("Changing int %d of entity %d:%d", owner.getIndex(), owner.getVersion(), val);
         };
 
-        const auto onChangeInt = [](const Entity p_owner, const int& p_val)
+        const auto onChangeInt = [](const Entity owner, const int& val)
         {
-            DEBUG_LOG("Changed int of entity %d:%d to %d", p_owner.getIndex(), p_owner.getVersion(), p_val);
+            DEBUG_LOG("Changed int of entity %d:%d to %d", owner.getIndex(), owner.getVersion(), val);
         };
 
-        const auto onRemoveInt = [](const Entity p_owner, const int& p_val)
+        const auto onRemoveInt = [](const Entity owner, const int& val)
         {
-            DEBUG_LOG("Removed int %d from entity %d:%d", p_val, p_owner.getIndex(), p_owner.getVersion());
+            DEBUG_LOG("Removed int %d from entity %d:%d", val, owner.getIndex(), owner.getVersion());
         };
 
         Scene scene;
