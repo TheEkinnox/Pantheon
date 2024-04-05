@@ -24,5 +24,5 @@ set(BUILD_BULLET3 ON)
 set(CMAKE_FOLDER ${CMAKE_FOLDER}/Bullet)
 FetchContent_MakeAvailable(bullet3)
 
-set(BULLET_LIBRARIES Bullet3Common Bullet3Collision Bullet3Dynamics)
+set(BULLET_LIBRARIES Bullet3Common Bullet3Collision Bullet3Dynamics PARENT_SCOPE)
 set(BULLET_INCLUDE_DIR ${bullet3_SOURCE_DIR}/src PARENT_SCOPE)
