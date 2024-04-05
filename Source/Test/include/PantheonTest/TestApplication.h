@@ -8,6 +8,8 @@
 #include <PantheonCore/Resources/ResourceManager.h>
 #include <PantheonCore/Utility/ThreadPool.h>
 
+#include <PantheonRendering/Core/Renderer.h>
+
 namespace PantheonTest
 {
     class TestApplication final : public PantheonApp::Core::IApplication
@@ -32,6 +34,7 @@ namespace PantheonTest
         std::unique_ptr<PantheonApp::Input::InputManager>         m_inputManager;
         std::unique_ptr<PantheonCore::Utility::ThreadPool>        m_threadPool;
         std::unique_ptr<PantheonCore::Resources::ResourceManager> m_resourceManager;
+        std::unique_ptr<PantheonRendering::Core::Renderer>        m_renderer;
 
         std::vector<std::unique_ptr<ITest>> m_tests;
 
