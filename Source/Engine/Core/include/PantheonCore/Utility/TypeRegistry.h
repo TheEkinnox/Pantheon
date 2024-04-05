@@ -90,6 +90,13 @@ namespace PantheonCore::Utility
          * \tparam T The component type
          * \return The registered type information for the given component type
          */
+        TypeInfo& getTypeInfo(const std::string& type);
+
+        /**
+         * \brief Gets the registered type information for the given component type
+         * \tparam T The component type
+         * \return The registered type information for the given component type
+         */
         const TypeInfo& getTypeInfo(const std::string& type) const;
 
         /**
@@ -97,7 +104,22 @@ namespace PantheonCore::Utility
          * \param typeId The component type's id
          * \return The registered type information for the given component type
          */
-        const TypeInfo& getTypeInfo(size_t typeId) const;
+        TypeInfo& getTypeInfo(TypeId typeId);
+
+        /**
+         * \brief Gets the registered type information for the given type id
+         * \param typeId The component type's id
+         * \return The registered type information for the given component type
+         */
+        const TypeInfo& getTypeInfo(TypeId typeId) const;
+
+        /**
+         * \brief Gets the registered type information for the given type id
+         * \tparam T The component type
+         * \return The registered type information for the given component type
+         */
+        template <typename T>
+        TypeInfo& getTypeInfo();
 
         /**
          * \brief Gets the registered type information for the given type id
@@ -112,7 +134,7 @@ namespace PantheonCore::Utility
          * \param typeId The component type's id
          * \return The registered name for the given component type
          */
-        const std::string& getRegisteredTypeName(size_t typeId) const;
+        const std::string& getRegisteredTypeName(TypeId typeId) const;
 
         /**
          * \brief Gets the registered name for the given component type
@@ -123,9 +145,9 @@ namespace PantheonCore::Utility
         const std::string& getRegisteredTypeName() const;
 
     private:
-        using TypeMap = std::unordered_map<size_t, TypeInfo>;
-        using TypeNameMap = std::unordered_map<size_t, std::string>;
-        using TypeIdMap = std::unordered_map<std::string, size_t>;
+        using TypeMap = std::unordered_map<TypeId, TypeInfo>;
+        using TypeNameMap = std::unordered_map<TypeId, std::string>;
+        using TypeIdMap = std::unordered_map<std::string, TypeId>;
 
         TypeMap     m_typeInfos;
         TypeNameMap m_typeNames;

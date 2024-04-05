@@ -46,8 +46,8 @@ namespace PantheonCore::Utility
         return contains(getTypeId<T>());
     }
 
-    template <typename TypeInfo>
-    const TypeInfo& TypeRegistry<TypeInfo>::getTypeInfo(const std::string& type) const
+    template <class TypeInfoT>
+    TypeInfoT& TypeRegistry<TypeInfoT>::getTypeInfo(const std::string& type)
     {
         const auto it = m_typeIds.find(type);
         ASSERT(it != m_typeIds.end(), "No registered type \"%s\" found.", type.c_str());
@@ -55,7 +55,13 @@ namespace PantheonCore::Utility
     }
 
     template <typename TypeInfo>
-    const TypeInfo& TypeRegistry<TypeInfo>::getTypeInfo(const size_t typeId) const
+    const TypeInfo& TypeRegistry<TypeInfo>::getTypeInfo(const std::string& type) const
+    {
+        return const_cast<TypeRegistry*>(this)->getTypeInfo(type);
+    }
+
+    template <class TypeInfoT>
+    TypeInfoT& TypeRegistry<TypeInfoT>::getTypeInfo(const size_t typeId)
     {
         const auto it = m_typeInfos.find(typeId);
         ASSERT(it != m_typeInfos.end(), "No registered type id \"%llu\" found.", typeId);
@@ -63,10 +69,23 @@ namespace PantheonCore::Utility
     }
 
     template <typename TypeInfo>
+    const TypeInfo& TypeRegistry<TypeInfo>::getTypeInfo(const size_t typeId) const
+    {
+        return const_cast<TypeRegistry*>(this)->getTypeInfo(typeId);
+    }
+
+    template <class TypeInfoT>
+    template <typename T>
+    TypeInfoT& TypeRegistry<TypeInfoT>::getTypeInfo()
+    {
+        return getTypeInfo(getTypeId<T>());
+    }
+
+    template <typename TypeInfo>
     template <typename T>
     const TypeInfo& TypeRegistry<TypeInfo>::getTypeInfo() const
     {
-        return getTypeInfo(typeid(T).hash_code());
+        return getTypeInfo(getTypeId<T>());
     }
 
     template <typename TypeInfo>
