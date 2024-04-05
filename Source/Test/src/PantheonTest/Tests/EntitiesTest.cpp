@@ -277,6 +277,20 @@ namespace PantheonTest
         TEST_CHECK(entity.get<TagComponent>() == nullptr, "getComponent should return nullptr for removed component type");
     }
 
+    bool compareBuffers(const std::vector<char>& buffer1, const std::vector<char>& buffer2)
+    {
+        if (buffer1.empty() != buffer2.empty())
+            return false;
+
+        if (buffer1.data() == buffer2.data())
+            return true;
+
+        if (buffer1.size() != buffer2.size())
+            return false;
+
+        return memcmp(buffer1.data(), buffer2.data(), buffer1.size()) == 0;
+    }
+
     void EntitiesTest::testJsonSerialization()
     {
         DEBUG_LOG("\n= Starting json serialization tests =");
@@ -322,7 +336,7 @@ namespace PantheonTest
             TEST_CHECK(tmpWriter.IsComplete(), "Scene json serialization failed - Produced json is incomplete");
 
             const std::string tmpJsonStr(tmpBuffer.GetString(), tmpBuffer.GetSize());
-            TEST_CHECK(tmpJsonStr == validJsonStr);
+            TEST_CHECK(compareBuffers({tmpJsonStr.begin(), tmpJsonStr.end()}, {validJsonStr.begin(), validJsonStr.end()}));
         }
     }
 
@@ -348,7 +362,7 @@ namespace PantheonTest
         {
             std::vector<char> tmpArray;
             TEST_CHECK(scene.toBinary(tmpArray), "Scene binary serialization failed");
-            TEST_CHECK(tmpArray == validArray);
+            TEST_CHECK(compareBuffers(tmpArray, validArray));
         }
     }
 }

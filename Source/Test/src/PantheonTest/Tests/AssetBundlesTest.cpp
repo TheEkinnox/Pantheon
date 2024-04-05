@@ -167,7 +167,7 @@ namespace PantheonTest
 
     bool AssetBundlesTest::compareBuffers(const std::vector<char>& buffer1, const std::vector<char>& buffer2)
     {
-        if (buffer1.empty() && !buffer2.empty() || buffer2.empty() && !buffer1.empty())
+        if (buffer1.empty() != buffer2.empty())
             return false;
 
         if (buffer1.data() == buffer2.data())
