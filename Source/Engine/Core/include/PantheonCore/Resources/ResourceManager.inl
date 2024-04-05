@@ -10,23 +10,45 @@ namespace PantheonCore::Resources
     {
         static_assert(std::is_same_v<IResource, T> || std::is_base_of_v<IResource, T>);
 
-        remove(key);
-        removePath(path);
-
         if (key.empty() || path.empty())
             return {};
 
-        T* resource = createResource<T>();
+        const std::string savedPath = getResourcePath(key);
+
+        T*         resource = nullptr;
+        const auto it       = m_resources.find(key);
+
+        if (it != m_resources.end() && it->second)
+        {
+            IResource* savedResource = it->second->get();
+
+            resource = dynamic_cast<T*>(savedResource);
+
+            if (!CHECK(!savedResource || (resource && savedPath == path) || it->second->getReferenceCount() <= 1,
+                    "Unsafe reloading of resource \"%s\" from \"%s\" to \"%s\"", key.c_str(), savedPath.c_str(), path.c_str()))
+                return {};
+        }
+
+        const bool canReuse = resource;
+
+        if (!resource)
+            resource = createResource<T>();
+
+        if (savedPath != path)
+        {
+            m_resourceKeys.erase(savedPath);
+            removePath(path);
+        }
 
         if (!loadResource(resource, key, path))
         {
-            m_resourceKeys.erase(path);
+            m_resources.erase(it);
             return {};
         }
 
         m_resourceKeys[path] = key;
 
-        return *(m_resources[key] = std::make_unique<ResourceRef<IResource>>(key, path, resource));
+        return canReuse ? *it->second : *(m_resources[key] = std::make_unique<ResourceRef<IResource>>(key, path, resource));
     }
 
     template <typename T>
@@ -60,9 +82,9 @@ namespace PantheonCore::Resources
     {
         ResourceRef<T> resource = get<T>(key);
 
-        if (!resource.hasValue())
+        if (!resource)
             resource = get<T>(path);
 
-        return resource.hasValue() ? resource : load<T>(key, path);
+        return resource ? resource : load<T>(key, path);
     }
 }

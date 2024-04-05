@@ -100,6 +100,20 @@ namespace PantheonCore::Assets
          */
         const char* getAssetPathFromGuid(const std::string& guid) const;
 
+        /**
+         * \brief Checks whether the bundle contains the given guid or not
+         * \param guid The asset guid to search for
+         * \return True if the bundle contains the given guid. False otherwise
+         */
+        bool containsGuid(const std::string& guid) const;
+
+        /**
+         * \brief Checks whether the bundle contains the given path or not
+         * \param path The asset path to search for
+         * \return True if the bundle contains the given path. False otherwise
+         */
+        bool containsPath(const std::string& path) const;
+
     private:
         std::string m_path;
 

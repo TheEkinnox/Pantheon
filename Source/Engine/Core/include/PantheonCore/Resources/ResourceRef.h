@@ -1,9 +1,10 @@
 #pragma once
 #include "PantheonCore/Resources/IResource.h"
-#include "PantheonCore/Serialization/IByteSerializable.h"
-#include "PantheonCore/Serialization/IJsonSerializable.h"
 
 #include <type_traits>
+
+#include <rapidjson/document.h>
+#include <rapidjson/writer.h>
 
 namespace PantheonCore::Resources
 {
@@ -97,10 +98,28 @@ namespace PantheonCore::Resources
         T* operator->() const;
 
         /**
+         * \brief Checks whether the resource reference has been set or not.
+         * \return True if the resource ref is set. False otherwise.
+         */
+        virtual operator bool() const;
+
+        /**
          * \brief Gets a pointer to the referenced resource
          * \return A pointer to the referenced resource
          */
-        T* getResource() const;
+        T* get() const;
+
+        /**
+         * \brief Gets a pointer to the referenced or default resource
+         * \return A pointer to the referenced or default resource
+         */
+        T* getOrDefault() const;
+
+        /**
+         * \brief Gets the number of active references to the resource
+         * \return The number of active references to the resource
+         */
+        RefCountT getReferenceCount() const;
 
         /**
          * \brief Gets the referenced resource's key
@@ -113,12 +132,6 @@ namespace PantheonCore::Resources
          * \return The referenced resource's path
          */
         std::string getPath() const;
-
-        /**
-         * \brief Checks whether the resource reference has been set or not.
-         * \return True if the resource ref is set. False otherwise.
-         */
-        virtual bool hasValue() const;
 
         /**
          * \brief Resets the resource reference
@@ -188,20 +201,20 @@ namespace PantheonCore::Resources
         template <typename T>
         GenericResourceRef(ResourceRef<T>&& other, std::string type) noexcept;
 
+        ~GenericResourceRef() override = default;
+
         GenericResourceRef& operator=(const GenericResourceRef& other)     = default;
         GenericResourceRef& operator=(GenericResourceRef&& other) noexcept = default;
 
-        ~GenericResourceRef() override = default;
-
-        bool hasValue() const override;
+        operator bool() const override;
 
         std::string getType() const;
 
-        bool toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const override;
-        bool fromJson(const rapidjson::Value& json) override;
-
         bool   toBinary(std::vector<char>& output) const override;
         size_t fromBinary(const char* data, size_t length) override;
+
+        bool toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const override;
+        bool fromJson(const rapidjson::Value& json) override;
 
     private:
         std::string m_type;

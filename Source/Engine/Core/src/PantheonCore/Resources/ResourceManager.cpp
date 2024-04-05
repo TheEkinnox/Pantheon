@@ -85,19 +85,45 @@ namespace PantheonCore::Resources
     GenericResourceRef ResourceManager::create(
         const std::string& type, const std::string& key, const std::string& path, const bool shouldLoad)
     {
-        remove(key);
-        removePath(path);
-
         if (type.empty() || key.empty() || path.empty())
             return {};
 
-        IResource* resource(ResourceRegistry::getInstance().create(type));
+        const std::string savedPath = getResourcePath(key);
 
-        if (resource == nullptr || (shouldLoad && !loadResource(resource, key, path)))
+        IResource* resource = nullptr;
+        const auto it       = m_resources.find(key);
+
+        if (it != m_resources.end() && it->second)
+        {
+            IResource* savedResource = it->second->get();
+
+            resource = !savedResource || savedResource->getTypeName() == type ? savedResource : nullptr;
+
+            if (!CHECK(!savedResource || (resource && savedPath == path) || it->second->getReferenceCount() <= 1,
+                    "Unsafe reloading of resource \"%s\" from \"%s\" to \"%s\"", key.c_str(), savedPath.c_str(), path.c_str()))
+                return {};
+        }
+
+        const bool canReuse = resource;
+
+        if (!resource)
+            resource = ResourceRegistry::getInstance().create(type);
+
+        if (savedPath != path)
+        {
+            m_resourceKeys.erase(savedPath);
+            removePath(path);
+        }
+
+        if (shouldLoad && !loadResource(resource, key, path))
+        {
+            m_resources.erase(it);
             return {};
+        }
 
         m_resourceKeys[path] = key;
-        return { *(m_resources[key] = std::make_unique<GenericResourceRef>(type, key, path, resource)), type };
+
+        return canReuse ? *it->second : *(m_resources[key] = std::make_unique<GenericResourceRef>(type, key, path, resource));
     }
 
     GenericResourceRef ResourceManager::get(const std::string& type, const std::string& keyOrPath) const
@@ -132,10 +158,10 @@ namespace PantheonCore::Resources
     {
         GenericResourceRef resource(get(type, key));
 
-        if (!resource.hasValue())
+        if (!resource)
             resource = get(type, path);
 
-        return resource.hasValue() ? resource : create(type, key, path, true);
+        return resource ? resource : create(type, key, path, true);
     }
 
     std::vector<char> ResourceManager::readFile(const std::string& keyOrPath) const
@@ -155,7 +181,8 @@ namespace PantheonCore::Resources
             return resourceData;
         }
 
-        std::ifstream fileStream(getFullPath(getResourcePath(keyOrPath)), std::ios::binary | std::ios::ate);
+        const std::string path = getResourcePath(keyOrPath);
+        std::ifstream     fileStream(getFullPath(!path.empty() ? path : keyOrPath), std::ios::binary | std::ios::ate);
 
         if (!fileStream.is_open())
             return {};
@@ -172,21 +199,14 @@ namespace PantheonCore::Resources
 
     void ResourceManager::remove(const std::string& key)
     {
-        {
-            const std::string resourcePath = getResourcePath(key);
-
-            const auto it = m_resourceKeys.find(resourcePath);
-
-            if (it != m_resourceKeys.end())
-                m_resourceKeys.erase(it);
-        }
+        m_resourceKeys.erase(getResourcePath(key));
 
         const auto it = m_resources.find(key);
 
         if (it == m_resources.end())
             return;
 
-        it->second.reset();
+        m_resources.erase(it);
     }
 
     void ResourceManager::removePath(const std::string& path)
@@ -196,7 +216,7 @@ namespace PantheonCore::Resources
         if (it == m_resourceKeys.end())
             return;
 
-        remove(it->second);
+        m_resources.erase(it->second);
         m_resourceKeys.erase(it);
     }
 
@@ -257,7 +277,7 @@ namespace PantheonCore::Resources
 
             GenericResourceRef resource(create(type, guid, path, false));
 
-            if (!resource.hasValue())
+            if (!resource)
             {
                 DEBUG_LOG("[WARNING] Skipped bundle asset at path \"%s\" - Unable to create resource of type \"%s\"", path, type);
                 continue;
@@ -306,23 +326,28 @@ namespace PantheonCore::Resources
     {
         const auto it = m_resourceKeys.find(keyOrPath);
 
-        if (it == m_resourceKeys.end())
-            for (const auto& [path, key] : m_resourceKeys)
-            {
-                if (key != keyOrPath)
-                    continue;
+        if (it != m_resourceKeys.end())
+            return keyOrPath;
 
-                return path;
-            }
+        for (const auto& [path, key] : m_resourceKeys)
+        {
+            if (key != keyOrPath)
+                continue;
+
+            return path;
+        }
 
         for (const AssetBundle& bundle : m_bundles | std::views::values)
         {
+            if (bundle.containsPath(keyOrPath))
+                return keyOrPath;
+
             const char* path = bundle.getAssetPathFromGuid(keyOrPath);
 
             if (path != nullptr)
                 return path;
         }
 
-        return keyOrPath;
+        return {};
     }
 }

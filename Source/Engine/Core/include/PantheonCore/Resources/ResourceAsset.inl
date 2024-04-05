@@ -14,14 +14,14 @@ namespace PantheonCore::Resources
 
     inline bool ResourceAsset::isValid() const
     {
-        return GenericResourceRef(m_type, m_guid, m_path).hasValue();
+        return GenericResourceRef(m_type, m_guid, m_path);
     }
 
     inline bool ResourceAsset::getData(std::vector<char>& output) const
     {
         const GenericResourceRef resource(m_type, m_guid, m_path);
 
-        if (!CHECK(resource.hasValue(), "Unable to get resource data for asset \"%s\" (type: \"%s\" | path: \"%s\")",
+        if (!CHECK(resource, "Unable to get resource data for asset \"%s\" (type: \"%s\" | path: \"%s\")",
                 getGuid(), getType(), getPath()))
             return false;
 

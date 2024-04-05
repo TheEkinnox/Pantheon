@@ -21,22 +21,22 @@ namespace PantheonRendering::Components
 
     Model* ModelComponent::operator*()
     {
-        return m_model.getResource();
+        return m_model.getOrDefault();
     }
 
     const Model* ModelComponent::operator*() const
     {
-        return m_model.getResource();
+        return m_model.getOrDefault();
     }
 
     Model* ModelComponent::operator->()
     {
-        return m_model.getResource();
+        return m_model.getOrDefault();
     }
 
     const Model* ModelComponent::operator->() const
     {
-        return m_model.getResource();
+        return m_model.getOrDefault();
     }
 
     void ModelComponent::setModel(ModelRef model)
@@ -45,7 +45,7 @@ namespace PantheonRendering::Components
         m_materials.clear();
         m_materialInstances.clear();
 
-        const Model* modelResource = m_model.getResource();
+        const Model* modelResource = m_model.getOrDefault();
 
         if (!modelResource)
             return;
@@ -89,7 +89,7 @@ namespace PantheonRendering::Components
         ASSERT(index < m_materials.size());
 
         static Material defaultMat;
-        Material*       ptr = m_materials[index].getResource();
+        Material*       ptr = m_materials[index].getOrDefault();
 
         return ptr ? *ptr : defaultMat;
     }

@@ -2,6 +2,7 @@
 #include "PantheonCore/Resources/ResourceManager.h"
 #include "PantheonCore/Resources/ResourceRef.h"
 #include "PantheonCore/Resources/ResourceRegistry.h"
+#include "PantheonCore/Serialization/IByteSerializable.h"
 #include "PantheonCore/Utility/ServiceLocator.h"
 
 namespace PantheonCore::Resources
@@ -40,6 +41,11 @@ namespace PantheonCore::Resources
         : m_key(other.m_key), m_path(other.m_path), m_resource(dynamic_cast<T*>(other.m_resource)),
         m_refCount(m_resource ? other.m_refCount : nullptr)
     {
+        static_assert(std::is_same_v<T, U> || std::is_base_of_v<T, U> || std::is_base_of_v<U, T>,
+            "Attempted to convert to an incompatible resource type");
+
+        ASSERT((void*)other.m_resource == (void*)m_resource, "Attempted to convert to an incompatible resource type");
+
         if (m_refCount)
             ++(*m_refCount);
     }
@@ -50,6 +56,11 @@ namespace PantheonCore::Resources
         : m_key(std::move(other.m_key)), m_path(std::move(other.m_path)), m_resource(dynamic_cast<T*>(other.m_resource)),
         m_refCount(m_resource ? other.m_refCount : nullptr)
     {
+        static_assert(std::is_same_v<T, U> || std::is_base_of_v<T, U> || std::is_base_of_v<U, T>,
+            "Attempted to convert to an incompatible resource type");
+
+        ASSERT((void*)other.m_resource == (void*)m_resource, "Attempted to convert to an incompatible resource type");
+
         other.m_resource = nullptr;
         other.m_refCount = nullptr;
     }
@@ -67,9 +78,12 @@ namespace PantheonCore::Resources
             return *this;
 
         if (other.m_refCount != m_refCount)
+        {
             reset();
-        else if (other.m_refCount)
-            ++(*other.m_refCount);
+
+            if (other.m_refCount)
+                ++(*other.m_refCount);
+        }
 
         m_key      = other.m_key;
         m_path     = other.m_path;
@@ -102,19 +116,37 @@ namespace PantheonCore::Resources
     template <class T>
     T& ResourceRef<T>::operator*() const
     {
-        return *getResource();
+        return *getOrDefault();
     }
 
     template <class T>
     T* ResourceRef<T>::operator->() const
     {
-        return getResource();
+        return getOrDefault();
     }
 
     template <class T>
-    T* ResourceRef<T>::getResource() const
+    ResourceRef<T>::operator bool() const
     {
-        return m_resource ? m_resource : getDefaultResource<T>();
+        return m_refCount && getOrDefault();
+    }
+
+    template <class T>
+    T* ResourceRef<T>::get() const
+    {
+        return m_resource;
+    }
+
+    template <class T>
+    T* ResourceRef<T>::getOrDefault() const
+    {
+        return m_resource || !m_key.empty() || !m_path.empty() ? m_resource : getDefaultResource<T>();
+    }
+
+    template <class T>
+    typename ResourceRef<T>::RefCountT ResourceRef<T>::getReferenceCount() const
+    {
+        return m_refCount ? *m_refCount : 0;
     }
 
     template <class T>
@@ -127,12 +159,6 @@ namespace PantheonCore::Resources
     std::string ResourceRef<T>::getPath() const
     {
         return m_path;
-    }
-
-    template <class T>
-    bool ResourceRef<T>::hasValue() const
-    {
-        return m_refCount && getResource() && *m_refCount > 0 && !m_key.empty() && !m_path.empty();
     }
 
     template <class T>
@@ -234,34 +260,12 @@ namespace PantheonCore::Resources
         return true;
     }
 
-    template <typename T>
-    GenericResourceRef::GenericResourceRef(const ResourceRef<T>& other)
-        : GenericResourceRef(other, ResourceRegistry::getInstance().getRegisteredTypeName<T>())
-    {
-    }
-
-    template <typename T>
-    GenericResourceRef::GenericResourceRef(ResourceRef<T>&& other) noexcept
-        : GenericResourceRef(std::move(other), ResourceRegistry::getInstance().getRegisteredTypeName<T>())
-    {
-    }
-
-    template <typename T>
-    GenericResourceRef::GenericResourceRef(const ResourceRef<T>& other, std::string type)
-        : ResourceRef(other), m_type(std::move(type))
-    {
-    }
-
-    template <typename T>
-    GenericResourceRef::GenericResourceRef(ResourceRef<T>&& other, std::string type) noexcept
-        : ResourceRef(std::move(other)), m_type(std::move(type))
-    {
-    }
-
     inline GenericResourceRef::GenericResourceRef(
         std::string type, const std::string& key, const std::string& path, IResource* resource)
         : ResourceRef(key, path, resource), m_type(std::move(type))
     {
+        ASSERT(!m_resource || m_resource->getTypeName() == m_type,
+            "Attempted to make generic resource ref with resource of a different type");
     }
 
     inline GenericResourceRef::GenericResourceRef(std::string type, const std::string& key, const std::string& path)
@@ -269,46 +273,42 @@ namespace PantheonCore::Resources
     {
     }
 
-    inline bool GenericResourceRef::hasValue() const
+    template <typename T>
+    GenericResourceRef::GenericResourceRef(const ResourceRef<T>& other)
+        : ResourceRef(other), m_type(m_resource ? m_resource->getTypeName() : std::string())
     {
-        return ResourceRef::hasValue() && !m_type.empty();
+    }
+
+    template <typename T>
+    GenericResourceRef::GenericResourceRef(ResourceRef<T>&& other) noexcept
+        : ResourceRef(std::move(other)), m_type(m_resource ? m_resource->getTypeName() : std::string())
+    {
+    }
+
+    template <typename T>
+    GenericResourceRef::GenericResourceRef(const ResourceRef<T>& other, std::string type)
+        : ResourceRef(other), m_type(std::move(type))
+    {
+        ASSERT(!m_resource || m_resource->getTypeName() == m_type,
+            "Attempted to convert resource ref to generic resource ref of a different type");
+    }
+
+    template <typename T>
+    GenericResourceRef::GenericResourceRef(ResourceRef<T>&& other, std::string type) noexcept
+        : ResourceRef(std::move(other)), m_type(std::move(type))
+    {
+        ASSERT(!m_resource || m_resource->getTypeName() == m_type,
+            "Attempted to convert resource ref to generic resource ref of a different type");
+    }
+
+    inline GenericResourceRef::operator bool() const
+    {
+        return ResourceRef::operator bool() && !m_type.empty();
     }
 
     inline std::string GenericResourceRef::getType() const
     {
         return m_type;
-    }
-
-    inline bool GenericResourceRef::toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
-    {
-        writer.StartObject();
-
-        writer.Key("type");
-        writer.String(m_type.c_str(), static_cast<rapidjson::SizeType>(m_type.size()));
-
-        writer.Key("key");
-        writer.String(m_key.c_str(), static_cast<rapidjson::SizeType>(m_key.size()));
-
-        writer.Key("path");
-        writer.String(m_path.c_str(), static_cast<rapidjson::SizeType>(m_path.size()));
-
-        return writer.EndObject();
-    }
-
-    inline bool GenericResourceRef::fromJson(const rapidjson::Value& json)
-    {
-        const auto it = json.FindMember("type");
-        if (!CHECK(it != json.MemberEnd() && it->value.IsString(), "Unable to deserialize resource ref - Invalid resource type"))
-            return false;
-
-        m_type = it->value.GetString();
-
-        ResourceRef tmp;
-        if (!tmp.fromJson(json))
-            return false;
-
-        (*this) = { tmp, m_type };
-        return true;
     }
 
     inline bool GenericResourceRef::toBinary(std::vector<char>& output) const
@@ -344,5 +344,37 @@ namespace PantheonCore::Resources
 
         (*this) = { tmp, m_type };
         return offset + readBytes;
+    }
+
+    inline bool GenericResourceRef::toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
+    {
+        writer.StartObject();
+
+        writer.Key("type");
+        writer.String(m_type.c_str(), static_cast<rapidjson::SizeType>(m_type.size()));
+
+        writer.Key("key");
+        writer.String(m_key.c_str(), static_cast<rapidjson::SizeType>(m_key.size()));
+
+        writer.Key("path");
+        writer.String(m_path.c_str(), static_cast<rapidjson::SizeType>(m_path.size()));
+
+        return writer.EndObject();
+    }
+
+    inline bool GenericResourceRef::fromJson(const rapidjson::Value& json)
+    {
+        const auto it = json.FindMember("type");
+        if (!CHECK(it != json.MemberEnd() && it->value.IsString(), "Unable to deserialize resource ref - Invalid resource type"))
+            return false;
+
+        m_type = it->value.GetString();
+
+        ResourceRef tmp;
+        if (!tmp.fromJson(json))
+            return false;
+
+        (*this) = { tmp, m_type };
+        return true;
     }
 }

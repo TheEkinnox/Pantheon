@@ -223,6 +223,16 @@ namespace PantheonCore::Assets
         return m_assets[it->second].getAsset()->getPath();
     }
 
+    bool AssetBundle::containsGuid(const std::string& guid) const
+    {
+        return m_guidMap.contains(guid);
+    }
+
+    bool AssetBundle::containsPath(const std::string& path) const
+    {
+        return m_pathMap.contains(path);
+    }
+
     std::vector<char> AssetBundle::getAssetData(const BundleAsset& bundleAsset) const
     {
         std::ifstream fs(m_path, std::ifstream::in | std::ifstream::binary);
