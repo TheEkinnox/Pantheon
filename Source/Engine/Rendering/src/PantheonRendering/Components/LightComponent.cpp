@@ -450,7 +450,7 @@ namespace PantheonCore::ECS
     template <>
     bool ComponentRegistry::toBinary<LightComponent>(const LightComponent& light, std::vector<char>& out, const EntitiesMap&)
     {
-        if (!CHECK(Serialization::IByteSerializable::serializeString(lightTypeToString(light.m_type), out)))
+        if (!CHECK(IByteSerializable::serializeString(lightTypeToString(light.m_type), out)))
             return false;
 
         switch (light.m_type)
@@ -469,11 +469,10 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    size_t ComponentRegistry::fromBinary<LightComponent>(
-        LightComponent& out, const char* data, size_t length)
+    size_t ComponentRegistry::fromBinary<LightComponent>(LightComponent& out, const char* data, size_t length)
     {
         std::string  typeString;
-        const size_t offset = Serialization::IByteSerializable::deserializeString(typeString, data, length);
+        const size_t offset = IByteSerializable::deserializeString(typeString, data, length);
 
         if (!CHECK(offset > 0 && offset <= length, "Unable to deserialize light type string"))
             return 0;
