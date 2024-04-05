@@ -34,7 +34,7 @@ namespace PantheonRendering::Components
      * \param out The output memory buffer
      * \return True on success. False otherwise
      */
-    bool SerializeAmbient(const Core::Light& light, std::vector<char>& out);
+    bool serializeAmbient(const Core::Light& light, std::vector<char>& out);
 
     /**
      * \brief Deserializes the given ambient light from the given memory buffer
@@ -43,7 +43,7 @@ namespace PantheonRendering::Components
      * \param length The memory buffer's length
      * \return The number of deserialized bytes on success. 0 otherwise.
      */
-    size_t DeserializeAmbient(Core::Light& out, const char* data, size_t length);
+    size_t seserializeAmbient(Core::Light& out, const char* data, size_t length);
 
     /**
      * \brief Serializes the given ambient light to json
@@ -51,7 +51,7 @@ namespace PantheonRendering::Components
      * \param writer The output json writer
      * \return True on success. False otherwise
      */
-    bool SerializeAmbient(const Core::Light& light, rapidjson::Writer<rapidjson::StringBuffer>& writer);
+    bool serializeAmbient(const Core::Light& light, rapidjson::Writer<rapidjson::StringBuffer>& writer);
 
     /**
      * \brief Deserializes the given ambient light from json
@@ -59,7 +59,7 @@ namespace PantheonRendering::Components
      * \param json The input json data
      * \return True on success. False otherwise
      */
-    bool DeserializeAmbient(Core::Light& out, const rapidjson::Value& json);
+    bool seserializeAmbient(Core::Light& out, const rapidjson::Value& json);
 
     /**
      * \brief Serializes the given directional light to a byte array
@@ -67,7 +67,7 @@ namespace PantheonRendering::Components
      * \param out The output memory buffer
      * \return True on success. False otherwise
      */
-    bool SerializeDirectional(const Core::DirectionalLight& light, std::vector<char>& out);
+    bool serializeDirectional(const Core::DirectionalLight& light, std::vector<char>& out);
 
     /**
      * \brief Deserializes the given directional light from the given memory buffer
@@ -76,7 +76,7 @@ namespace PantheonRendering::Components
      * \param length The memory buffer's length
      * \return The number of deserialized bytes on success. 0 otherwise.
      */
-    size_t DeserializeDirectional(Core::DirectionalLight& out, const char* data, size_t length);
+    size_t seserializeDirectional(Core::DirectionalLight& out, const char* data, size_t length);
 
     /**
      * \brief Serializes the given directional light to json
@@ -84,7 +84,7 @@ namespace PantheonRendering::Components
      * \param writer The output json writer
      * \return True on success. False otherwise
      */
-    bool SerializeDirectional(const Core::DirectionalLight& light, rapidjson::Writer<rapidjson::StringBuffer>& writer);
+    bool serializeDirectional(const Core::DirectionalLight& light, rapidjson::Writer<rapidjson::StringBuffer>& writer);
 
     /**
      * \brief Deserializes the given directional light from json
@@ -92,7 +92,7 @@ namespace PantheonRendering::Components
      * \param json The input json data
      * \return True on success. False otherwise
      */
-    bool DeserializeDirectional(Core::DirectionalLight& out, const rapidjson::Value& json);
+    bool seserializeDirectional(Core::DirectionalLight& out, const rapidjson::Value& json);
 
     /**
      * \brief Serializes the given attenuation data to json
@@ -100,7 +100,7 @@ namespace PantheonRendering::Components
      * \param writer The output json writer
      * \return True on success. False otherwise
      */
-    bool SerializeAttenuation(const Core::Attenuation& attenuation, rapidjson::Writer<rapidjson::StringBuffer>& writer);
+    bool serializeAttenuation(const Core::Attenuation& attenuation, rapidjson::Writer<rapidjson::StringBuffer>& writer);
 
     /**
      * \brief Deserializes the given attenuation data from json
@@ -108,7 +108,7 @@ namespace PantheonRendering::Components
      * \param json The input json data
      * \return True on success. False otherwise
      */
-    bool DeserializeAttenuation(Core::Attenuation& out, const rapidjson::Value& json);
+    bool deserializeAttenuation(Core::Attenuation& out, const rapidjson::Value& json);
 
     /**
      * \brief Serializes the given point light to a byte array
@@ -116,7 +116,7 @@ namespace PantheonRendering::Components
      * \param out The output memory buffer
      * \return True on success. False otherwise
      */
-    bool SerializePoint(const Core::PointLight& light, std::vector<char>& out);
+    bool serializePoint(const Core::PointLight& light, std::vector<char>& out);
 
     /**
      * \brief Deserializes the given point light from the given memory buffer
@@ -125,7 +125,7 @@ namespace PantheonRendering::Components
      * \param length The memory buffer's length
      * \return The number of deserialized bytes on success. 0 otherwise.
      */
-    size_t DeserializePoint(Core::PointLight& out, const char* data, size_t length);
+    size_t deserializePoint(Core::PointLight& out, const char* data, size_t length);
 
     /**
      * \brief Serializes the given point light to json
@@ -133,7 +133,7 @@ namespace PantheonRendering::Components
      * \param writer The output json writer
      * \return True on success. False otherwise
      */
-    bool SerializePoint(const Core::PointLight& light, rapidjson::Writer<rapidjson::StringBuffer>& writer);
+    bool serializePoint(const Core::PointLight& light, rapidjson::Writer<rapidjson::StringBuffer>& writer);
 
     /**
      * \brief Deserializes the given point light from json
@@ -141,7 +141,7 @@ namespace PantheonRendering::Components
      * \param json The input json data
      * \return True on success. False otherwise
      */
-    bool DeserializePoint(Core::PointLight& out, const rapidjson::Value& json);
+    bool deserializePoint(Core::PointLight& out, const rapidjson::Value& json);
 
     /**
      * \brief Serializes the given cutoff data to json
@@ -149,7 +149,7 @@ namespace PantheonRendering::Components
      * \param writer The output json writer
      * \return True on success. False otherwise
      */
-    bool SerializeCutoff(const Core::Cutoff& cutoff, rapidjson::Writer<rapidjson::StringBuffer>& writer);
+    bool serializeCutoff(const Core::Cutoff& cutoff, rapidjson::Writer<rapidjson::StringBuffer>& writer);
 
     /**
      * \brief Deserializes the given cutoff data from json
@@ -157,7 +157,7 @@ namespace PantheonRendering::Components
      * \param json The input json data
      * \return True on success. False otherwise
      */
-    bool DeserializeCutoff(Core::Cutoff& out, const rapidjson::Value& json);
+    bool deserializeCutoff(Core::Cutoff& out, const rapidjson::Value& json);
 
     /**
      * \brief Serializes the given spot light to a byte array
@@ -165,7 +165,7 @@ namespace PantheonRendering::Components
      * \param out The output memory buffer
      * \return True on success. False otherwise
      */
-    bool SerializeSpot(const Core::SpotLight& light, std::vector<char>& out);
+    bool serializeSpot(const Core::SpotLight& light, std::vector<char>& out);
 
     /**
      * \brief Deserializes the given spot light from the given memory buffer
@@ -174,7 +174,7 @@ namespace PantheonRendering::Components
      * \param length The memory buffer's length
      * \return The number of deserialized bytes on success. 0 otherwise.
      */
-    size_t DeserializeSpot(Core::SpotLight& out, const char* data, size_t length);
+    size_t deserializeSpot(Core::SpotLight& out, const char* data, size_t length);
 
     /**
      * \brief Serializes the given spot light to json
@@ -182,7 +182,7 @@ namespace PantheonRendering::Components
      * \param writer The output json writer
      * \return True on success. False otherwise
      */
-    bool SerializeSpot(const Core::SpotLight& light, rapidjson::Writer<rapidjson::StringBuffer>& writer);
+    bool serializeSpot(const Core::SpotLight& light, rapidjson::Writer<rapidjson::StringBuffer>& writer);
 
     /**
      * \brief Deserializes the given spot light from json
@@ -190,7 +190,7 @@ namespace PantheonRendering::Components
      * \param json The input json data
      * \return True on success. False otherwise
      */
-    bool DeserializeSpot(Core::SpotLight& out, const rapidjson::Value& json);
+    bool deserializeSpot(Core::SpotLight& out, const rapidjson::Value& json);
 }
 
 namespace PantheonCore::ECS
