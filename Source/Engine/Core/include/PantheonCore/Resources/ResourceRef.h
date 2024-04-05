@@ -87,7 +87,7 @@ namespace PantheonCore::Resources
 
         /**
          * \brief Gets a reference to the referenced resource
-         * \return A pointer to the referenced resource
+         * \return A reference to the referenced resource
          */
         T& operator*() const;
 
