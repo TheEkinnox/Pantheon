@@ -287,14 +287,14 @@ namespace PantheonCore::ECS
 
         it = json.FindMember("perspective_fov");
 
-        if (!CHECK(it != json.MemberEnd() && it->value.Is<float>(), "Unable to deserialize camera component's vertical fov"))
+        if (!CHECK(it != json.MemberEnd() && it->value.IsNumber(), "Unable to deserialize camera component's vertical fov"))
             return false;
 
         out.m_fovY = Degree(it->value.Get<float>());
 
         it = json.FindMember("perspective_near");
 
-        if (!CHECK(it != json.MemberEnd() && it->value.Is<float>(),
+        if (!CHECK(it != json.MemberEnd() && it->value.IsNumber(),
                 "Unable to deserialize camera component's perspective near clipping plane"))
             return false;
 
@@ -302,7 +302,7 @@ namespace PantheonCore::ECS
 
         it = json.FindMember("perspective_far");
 
-        if (!CHECK(it != json.MemberEnd() && it->value.Is<float>(),
+        if (!CHECK(it != json.MemberEnd() && it->value.IsNumber(),
                 "Unable to deserialize camera component's perspective far clipping plane"))
             return false;
 
@@ -310,14 +310,14 @@ namespace PantheonCore::ECS
 
         it = json.FindMember("orthographic_size");
 
-        if (!CHECK(it != json.MemberEnd() && it->value.Is<float>(), "Unable to deserialize camera component's orthographic size"))
+        if (!CHECK(it != json.MemberEnd() && it->value.IsNumber(), "Unable to deserialize camera component's orthographic size"))
             return false;
 
         out.m_orthographicSize = it->value.Get<float>();
 
         it = json.FindMember("orthographic_near");
 
-        if (!CHECK(it != json.MemberEnd() && it->value.Is<float>(),
+        if (!CHECK(it != json.MemberEnd() && it->value.IsNumber(),
                 "Unable to deserialize camera component's orthographic near clipping plane"))
             return false;
 
@@ -325,7 +325,7 @@ namespace PantheonCore::ECS
 
         it = json.FindMember("orthographic_far");
 
-        if (!CHECK(it != json.MemberEnd() && it->value.Is<float>(),
+        if (!CHECK(it != json.MemberEnd() && it->value.IsNumber(),
                 "Unable to deserialize camera component's orthographic far clipping plane"))
             return false;
 

@@ -160,21 +160,21 @@ namespace PantheonRendering::Components
 
         auto it = json.FindMember("constant");
 
-        if (!CHECK(it != json.MemberEnd() && it->value.Is<float>(), "Unable to deserialize light constant attenuation"))
+        if (!CHECK(it != json.MemberEnd() && it->value.IsNumber(), "Unable to deserialize light constant attenuation"))
             return false;
 
         out.m_constant = it->value.Get<float>();
 
         it = json.FindMember("linear");
 
-        if (!CHECK(it != json.MemberEnd() && it->value.Is<float>(), "Unable to deserialize light linear attenuation"))
+        if (!CHECK(it != json.MemberEnd() && it->value.IsNumber(), "Unable to deserialize light linear attenuation"))
             return false;
 
         out.m_linear = it->value.Get<float>();
 
         it = json.FindMember("quadratic");
 
-        if (!CHECK(it != json.MemberEnd() && it->value.Is<float>(), "Unable to deserialize light quadratic attenuation"))
+        if (!CHECK(it != json.MemberEnd() && it->value.IsNumber(), "Unable to deserialize light quadratic attenuation"))
             return false;
 
         out.m_quadratic = it->value.Get<float>();
@@ -291,14 +291,14 @@ namespace PantheonRendering::Components
 
         auto it = json.FindMember("inner");
 
-        if (!CHECK(it != json.MemberEnd() && it->value.Is<float>(), "Unable to deserialize light inner cuttoff"))
+        if (!CHECK(it != json.MemberEnd() && it->value.IsNumber(), "Unable to deserialize light inner cuttoff"))
             return false;
 
         out.m_inner = it->value.Get<float>();
 
         it = json.FindMember("outer");
 
-        if (!CHECK(it != json.MemberEnd() && it->value.Is<float>(), "Unable to deserialize light outer cuttoff"))
+        if (!CHECK(it != json.MemberEnd() && it->value.IsNumber(), "Unable to deserialize light outer cuttoff"))
             return false;
 
         out.m_outer = it->value.Get<float>();
