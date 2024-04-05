@@ -141,10 +141,30 @@ namespace PantheonRendering::Components
         void setLayerMask(Core::LayerMask layerMask);
 
     private:
+        friend class PantheonCore::ECS::ComponentRegistry;
+
         ModelRef                                        m_model;
         std::vector<MaterialRef>                        m_materials;
         std::vector<std::optional<Resources::Material>> m_materialInstances;
 
         Core::LayerMask m_layerMask;
     };
+}
+
+namespace PantheonCore::ECS
+{
+    template <>
+    bool ComponentRegistry::toBinary(
+        const PantheonRendering::Components::ModelComponent& component, std::vector<char>& out, const EntitiesMap&);
+
+    template <>
+    size_t ComponentRegistry::fromBinary(PantheonRendering::Components::ModelComponent& out, const char* data, size_t length);
+
+    template <>
+    bool ComponentRegistry::toJson(
+        const PantheonRendering::Components::ModelComponent& component, rapidjson::Writer<rapidjson::StringBuffer>& writer,
+        const EntitiesMap&);
+
+    template <>
+    bool ComponentRegistry::fromJson(PantheonRendering::Components::ModelComponent& out, const rapidjson::Value& json);
 }
