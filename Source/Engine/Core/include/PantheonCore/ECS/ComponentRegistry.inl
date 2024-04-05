@@ -14,7 +14,7 @@ namespace PantheonCore::ECS
         if constexpr (std::is_base_of_v<Serialization::IJsonSerializable, T>)
             return component.toJson(writer);
         else
-            return ASSUME(false, "Json serialization is not defined for \"%s\"", typeid(T).name()) && false;
+            return ASSUME_FALSE(false, "Json serialization is not defined for \"%s\"", typeid(T).name());
     }
 
     template <typename T>
@@ -23,7 +23,7 @@ namespace PantheonCore::ECS
         if constexpr (std::is_base_of_v<Serialization::IJsonSerializable, T>)
             return out.fromJson(json);
         else
-            return ASSUME(false, "Json deserialization is not defined for \"%s\"", typeid(T).name()) && false;
+            return ASSUME_FALSE(false, "Json deserialization is not defined for \"%s\"", typeid(T).name());
     }
 
     template <typename T>
@@ -32,7 +32,7 @@ namespace PantheonCore::ECS
         if constexpr (std::is_base_of_v<Serialization::IByteSerializable, T>)
             return component.toBinary(out);
         else
-            return ASSUME(false, "Binary serialization is not defined for \"%s\"", typeid(T).name()) && false;
+            return ASSUME_FALSE(false, "Binary serialization is not defined for \"%s\"", typeid(T).name());
     }
 
     template <typename T>
@@ -41,7 +41,7 @@ namespace PantheonCore::ECS
         if constexpr (std::is_base_of_v<Serialization::IByteSerializable, T>)
             return out.fromBinary(data, length);
         else
-            return (ASSUME(false, "Binary deserialization is not defined for \"%s\"", typeid(T).name()), 0);
+            return ASSUME_FALSE(false, "Binary deserialization is not defined for \"%s\"", typeid(T).name());
     }
 
     inline ComponentRegistry& ComponentRegistry::getInstance()

@@ -43,7 +43,7 @@ namespace PantheonRendering::Components
      * \param length The memory buffer's length
      * \return The number of deserialized bytes on success. 0 otherwise.
      */
-    size_t seserializeAmbient(Core::Light& out, const char* data, size_t length);
+    size_t deserializeAmbient(Core::Light& out, const char* data, size_t length);
 
     /**
      * \brief Serializes the given ambient light to json
@@ -59,7 +59,7 @@ namespace PantheonRendering::Components
      * \param json The input json data
      * \return True on success. False otherwise
      */
-    bool seserializeAmbient(Core::Light& out, const rapidjson::Value& json);
+    bool deserializeAmbient(Core::Light& out, const rapidjson::Value& json);
 
     /**
      * \brief Serializes the given directional light to a byte array
@@ -76,7 +76,7 @@ namespace PantheonRendering::Components
      * \param length The memory buffer's length
      * \return The number of deserialized bytes on success. 0 otherwise.
      */
-    size_t seserializeDirectional(Core::DirectionalLight& out, const char* data, size_t length);
+    size_t deserializeDirectional(Core::DirectionalLight& out, const char* data, size_t length);
 
     /**
      * \brief Serializes the given directional light to json
@@ -92,7 +92,7 @@ namespace PantheonRendering::Components
      * \param json The input json data
      * \return True on success. False otherwise
      */
-    bool seserializeDirectional(Core::DirectionalLight& out, const rapidjson::Value& json);
+    bool deserializeDirectional(Core::DirectionalLight& out, const rapidjson::Value& json);
 
     /**
      * \brief Serializes the given attenuation data to json
