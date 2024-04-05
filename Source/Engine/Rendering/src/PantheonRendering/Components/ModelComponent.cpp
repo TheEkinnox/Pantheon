@@ -191,7 +191,7 @@ namespace PantheonCore::ECS
 
         writer.StartArray();
 
-        for (const ResourceRef material : component.m_materials)
+        for (const ResourceRef<Material>& material : component.m_materials)
         {
             if (!material.toJson(writer))
                 return false;
