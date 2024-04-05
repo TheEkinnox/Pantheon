@@ -1,0 +1,31 @@
+{
+  "shader": {
+    "key": "720e8ec5-4165-4d25-abbf-e65e20e7c6f6",
+    "path": "shaders/Unlit.glsl"
+  },
+  "properties": [
+    {
+      "name": "u_uvScale",
+      "type": 5,
+      "value": "{1,1}"
+    },
+    {
+      "name": "u_diffuse",
+      "type": 10,
+      "value": {
+        "key": "49014ed1-347c-46d1-893f-204fba4331a4",
+        "path": "textures/container.jpg"
+      }
+    },
+    {
+      "name": "u_uvOffset",
+      "type": 5,
+      "value": "{0,0}"
+    },
+    {
+      "name": "u_tint",
+      "type": 7,
+      "value": "{1,1,1,1}"
+    }
+  ]
+}
