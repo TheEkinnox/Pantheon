@@ -168,6 +168,8 @@ namespace PantheonRendering::Components
         void setOrthographic(float size, float zNear, float zFar);
 
     private:
+        friend class PantheonCore::ECS::ComponentRegistry;
+
         LowRenderer::Camera    m_camera;
         Enums::EProjectionType m_projectionType;
 

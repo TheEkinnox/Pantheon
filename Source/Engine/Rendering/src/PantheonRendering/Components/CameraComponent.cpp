@@ -165,10 +165,79 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    size_t ComponentRegistry::fromBinary(CameraComponent& /*out*/, const char* /*data*/, size_t /*length*/)
+    size_t ComponentRegistry::fromBinary(CameraComponent& out, const char* data, size_t length)
     {
-        // TODO: Cam component binary deserialization
-        return (ASSUME(false, "TODO: Cam component binary deserialization"), 0);
+        if (!CHECK(data != nullptr && length > 0, "Unable to deserialize camera component - Empty buffer"))
+            return 0;
+
+        std::string typeString;
+        size_t      offset = IByteSerializable::deserializeString(typeString, data, length);
+
+        if (!CHECK(offset > 0, "Unable to deserialize camera component's projection type"))
+            return 0;
+
+        out.m_projectionType = stringToProjectionType(typeString);
+
+        if (!CHECK(length >= offset, "Unable to read camera component's vertical fov - Invalid offset"))
+            return 0;
+
+        size_t readBytes = IByteSerializable::readNumber<Radian, float>(out.m_fovY, data + offset, length - offset);
+
+        if (!CHECK(readBytes > 0, "Unable to read camera component's vertical fov"))
+            return 0;
+
+        offset += readBytes;
+
+        if (!CHECK(length >= offset, "Unable to read camera component's perspective near clipping plane - Invalid offset"))
+            return 0;
+
+        readBytes = IByteSerializable::readNumber(out.m_perspectiveNear, data + offset, length - offset);
+
+        if (!CHECK(readBytes > 0, "Unable to read camera component's perspective near clipping plane"))
+            return 0;
+
+        offset += readBytes;
+
+        if (!CHECK(length >= offset, "Unable to read camera component's perspective far clipping plane - Invalid offset"))
+            return 0;
+
+        readBytes = IByteSerializable::readNumber(out.m_perspectiveFar, data + offset, length - offset);
+
+        if (!CHECK(readBytes > 0, "Unable to read camera component's perspective far clipping plane"))
+            return 0;
+
+        offset += readBytes;
+
+        if (!CHECK(length >= offset, "Unable to read camera component's orthographic size - Invalid offset"))
+            return 0;
+
+        readBytes = IByteSerializable::readNumber(out.m_orthographicSize, data + offset, length - offset);
+
+        if (!CHECK(readBytes > 0, "Unable to read camera component's orthographic size"))
+            return 0;
+
+        offset += readBytes;
+
+        if (!CHECK(length >= offset, "Unable to read camera component's orthographic near clipping plane - Invalid offset"))
+            return 0;
+
+        readBytes = IByteSerializable::readNumber(out.m_orthographicNear, data + offset, length - offset);
+
+        if (!CHECK(readBytes > 0, "Unable to read camera component's orthographic near clipping plane"))
+            return 0;
+
+        offset += readBytes;
+
+        if (!CHECK(length >= offset, "Unable to read camera component's orthographic far clipping plane - Invalid offset"))
+            return 0;
+
+        readBytes = IByteSerializable::readNumber(out.m_orthographicFar, data + offset, length - offset);
+
+        if (!CHECK(readBytes > 0, "Unable to read camera component's orthographic far clipping plane"))
+            return 0;
+
+        out.recalculate();
+        return offset + readBytes;
     }
 
     template <>
@@ -183,7 +252,7 @@ namespace PantheonCore::ECS
         writer.String(typeString.c_str(), static_cast<rapidjson::SizeType>(typeString.size()));
 
         writer.Key("perspective_fov");
-        writer.Double(component.getFovY().raw());
+        writer.Double(component.getFovY().degree());
 
         writer.Key("perspective_near");
         writer.Double(component.getPerspectiveNear());
@@ -204,9 +273,65 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    bool ComponentRegistry::fromJson(CameraComponent& /*out*/, const rapidjson::Value& /*json*/)
+    bool ComponentRegistry::fromJson(CameraComponent& out, const rapidjson::Value& json)
     {
-        // TODO: Cam component json deserialization
-        return ASSUME(false, "TODO: Cam component json deserialization") && false;
+        if (!CHECK(json.IsObject(), "Unable to deserialize camera component - Json value should be an object"))
+            return false;
+
+        auto it = json.FindMember("type");
+
+        if (!CHECK(it != json.MemberEnd() && it->value.IsString(), "Unable to deserialize camera component's projection type"))
+            return false;
+
+        out.m_projectionType = stringToProjectionType({ it->value.GetString(), it->value.GetStringLength() });
+
+        it = json.FindMember("perspective_fov");
+
+        if (!CHECK(it != json.MemberEnd() && it->value.Is<float>(), "Unable to deserialize camera component's vertical fov"))
+            return false;
+
+        out.m_fovY = Degree(it->value.Get<float>());
+
+        it = json.FindMember("perspective_near");
+
+        if (!CHECK(it != json.MemberEnd() && it->value.Is<float>(),
+                "Unable to deserialize camera component's perspective near clipping plane"))
+            return false;
+
+        out.m_perspectiveNear = it->value.Get<float>();
+
+        it = json.FindMember("perspective_far");
+
+        if (!CHECK(it != json.MemberEnd() && it->value.Is<float>(),
+                "Unable to deserialize camera component's perspective far clipping plane"))
+            return false;
+
+        out.m_perspectiveFar = it->value.Get<float>();
+
+        it = json.FindMember("orthographic_size");
+
+        if (!CHECK(it != json.MemberEnd() && it->value.Is<float>(), "Unable to deserialize camera component's orthographic size"))
+            return false;
+
+        out.m_orthographicSize = it->value.Get<float>();
+
+        it = json.FindMember("orthographic_near");
+
+        if (!CHECK(it != json.MemberEnd() && it->value.Is<float>(),
+                "Unable to deserialize camera component's orthographic near clipping plane"))
+            return false;
+
+        out.m_orthographicNear = it->value.Get<float>();
+
+        it = json.FindMember("orthographic_far");
+
+        if (!CHECK(it != json.MemberEnd() && it->value.Is<float>(),
+                "Unable to deserialize camera component's orthographic far clipping plane"))
+            return false;
+
+        out.m_orthographicFar = it->value.Get<float>();
+
+        out.recalculate();
+        return true;
     }
 }
