@@ -1,4 +1,5 @@
 #pragma once
+#include "PantheonCore/ECS/ComponentRegistry.h"
 #include "PantheonCore/ECS/Entity.h"
 
 namespace PantheonCore::ECS
@@ -243,6 +244,24 @@ namespace PantheonCore::ECS
          */
         template <typename T>
         void remove(const T& instance);
+
+        /**
+         * \brief Gets the number of components owned by the linked entity
+         * \return The number of components owned by the entity
+         */
+        Entity::Id getComponentCount() const;
+
+        /**
+         * \brief Gets the ids of all the component types owned by the linked entity
+         * \return The ids of all the component types owned by the entity
+         */
+        std::vector<ComponentRegistry::TypeId> getComponentIds() const;
+
+        /**
+         * \brief Gets all the components owned by the linked entity
+         * \return The components owned by the entity
+         */
+        std::vector<std::pair<ComponentRegistry::TypeId, void*>> getComponents() const;
 
     private:
         Scene* m_scene;

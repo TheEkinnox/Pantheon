@@ -53,11 +53,9 @@ namespace PantheonCore::ECS
     template <typename T>
     void ComponentRegistry::registerType(const std::string& name)
     {
-        const size_t typeHash = typeid(T).hash_code();
-
         const ComponentTypeInfo typeInfo
         {
-            .m_typeId = typeHash,
+            .m_typeId = ComponentRegistry::getTypeId<T>(),
             .makeStorage = [](Scene* scene)
             {
                 std::unique_ptr<IComponentStorage> storage = std::make_unique<ComponentStorage<T>>(scene);

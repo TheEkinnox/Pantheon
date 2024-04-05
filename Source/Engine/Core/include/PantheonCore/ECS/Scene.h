@@ -13,6 +13,7 @@ namespace PantheonCore::ECS
     class Scene final : public Resources::IResource, public Serialization::IJsonSerializable
     {
         REGISTERED_RESOURCE_BODY()
+        using TypeId = size_t;
 
     public:
         template <typename T>
@@ -217,9 +218,48 @@ namespace PantheonCore::ECS
         template <typename T>
         const Storage<T>& getStorage() const;
 
-    private:
-        using TypeId = size_t;
+        /**
+         * \brief Gets the component storage for the given type
+         * \param id The component's type's id
+         * \return A reference to the storage
+         */
+        IComponentStorage& getStorage(TypeId id);
 
+        /**
+         * \brief Gets the component storage for the given type
+         * \param id The component's type's id
+         * \return A constant reference to the storage
+         */
+        const IComponentStorage& getStorage(TypeId id) const;
+
+        /**
+         * \brief Gets the ids of all the component types
+         * \return The ids of all the component types
+         */
+        std::vector<TypeId> getComponentIds() const;
+
+        /**
+         * \brief Gets the number of components owned by the given entity
+         * \param entity The target entity
+         * \return The number of components owned by the entity
+         */
+        Entity::Id getComponentCount(Entity entity) const;
+
+        /**
+         * \brief Gets the ids of all the component types owned by the given entity
+         * \param owner The components' owner
+         * \return The ids of all the component types owned by the given entity
+         */
+        std::vector<TypeId> getComponentIds(Entity owner) const;
+
+        /**
+         * \brief Gets all the components owned by the given entity
+         * \param owner The components' owner
+         * \return The components owned by the given entity
+         */
+        std::vector<std::pair<TypeId, void*>> getComponents(Entity owner) const;
+
+    private:
         EntityStorage                                                          m_entities;
         mutable std::unordered_map<TypeId, std::unique_ptr<IComponentStorage>> m_components;
 

@@ -8,7 +8,7 @@ namespace PantheonCore::ECS
     template <typename T>
     bool Scene::has(Entity owner) const
     {
-        const auto it = m_components.find(typeid(T).hash_code());
+        const auto it = m_components.find(ComponentRegistry::getTypeId<T>());
 
         if (it == m_components.end())
             return false;
@@ -19,7 +19,7 @@ namespace PantheonCore::ECS
     template <typename T>
     T* Scene::get(Entity owner)
     {
-        const auto it = m_components.find(typeid(T).hash_code());
+        const auto it = m_components.find(ComponentRegistry::getTypeId<T>());
 
         if (it == m_components.end())
             return nullptr;
@@ -30,7 +30,7 @@ namespace PantheonCore::ECS
     template <typename T>
     const T* Scene::get(Entity owner) const
     {
-        const auto it = m_components.find(typeid(T).hash_code());
+        const auto it = m_components.find(ComponentRegistry::getTypeId<T>());
 
         if (it == m_components.end())
             return nullptr;
@@ -71,7 +71,7 @@ namespace PantheonCore::ECS
         }
         else
         {
-            const TypeId typeHash = typeid(T).hash_code();
+            const TypeId typeHash = ComponentRegistry::getTypeId<T>();
             const auto   it       = m_components.find(typeHash);
 
             if (it != m_components.end())
@@ -91,7 +91,7 @@ namespace PantheonCore::ECS
         }
         else
         {
-            const TypeId typeHash = typeid(T).hash_code();
+            const TypeId typeHash = ComponentRegistry::getTypeId<T>();
             const auto   it       = m_components.find(typeHash);
 
             if (it != m_components.end())

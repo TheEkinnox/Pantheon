@@ -235,6 +235,71 @@ namespace PantheonCore::ECS
         return m_entities.has(owner);
     }
 
+    IComponentStorage& Scene::getStorage(const TypeId id)
+    {
+        const auto it = m_components.find(id);
+
+        if (it != m_components.end())
+            return *it->second;
+
+        return *(m_components[id] = ComponentRegistry::getInstance().getTypeInfo(id).makeStorage(this));
+    }
+
+    const IComponentStorage& Scene::getStorage(const TypeId id) const
+    {
+        return const_cast<Scene*>(this)->getStorage(id);
+    }
+
+    std::vector<Scene::TypeId> Scene::getComponentIds() const
+    {
+        const auto view = m_components | std::views::keys;
+        return { view.begin(), view.end() };
+    }
+
+    Entity::Id Scene::getComponentCount(const Entity entity) const
+    {
+        if (!contains(entity))
+            return 0;
+
+        Entity::Id count = 0;
+
+        for (const auto& storage : m_components | std::views::values)
+        {
+            if (storage && storage->contains(entity))
+                ++count;
+        }
+
+        return count;
+    }
+
+    std::vector<Scene::TypeId> Scene::getComponentIds(const Entity owner) const
+    {
+        std::vector<TypeId> ids;
+        ids.reserve(m_components.size());
+
+        for (const auto& [id, storage] : m_components)
+        {
+            if (storage->contains(owner))
+                ids.emplace_back(id);
+        }
+
+        return ids;
+    }
+
+    std::vector<std::pair<Scene::TypeId, void*>> Scene::getComponents(const Entity owner) const
+    {
+        std::vector<std::pair<TypeId, void*>> components;
+        components.reserve(m_components.size());
+
+        for (const auto& [id, storage] : m_components)
+        {
+            if (auto component = storage->findRaw(owner))
+                components.emplace_back(id, component);
+        }
+
+        return components;
+    }
+
     bool Scene::deserializeStorage(const rapidjson::Value& json)
     {
         if (!CHECK(json.IsObject(), "Unable to deserialize scene component storage - Json value should be an object"))

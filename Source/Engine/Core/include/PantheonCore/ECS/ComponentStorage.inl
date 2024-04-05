@@ -156,6 +156,18 @@ namespace PantheonCore::ECS
     }
 
     template <class T>
+    void* ComponentStorage<T>::findRaw(const Entity owner)
+    {
+        return (void*)find(owner);
+    }
+
+    template <class T>
+    const void* ComponentStorage<T>::findRaw(const Entity owner) const
+    {
+        return (const void*)find(owner);
+    }
+
+    template <class T>
     T* ComponentStorage<T>::find(const Entity owner)
     {
         const auto it = m_entityToComponent.find(owner);
