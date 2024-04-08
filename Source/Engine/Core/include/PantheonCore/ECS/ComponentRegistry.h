@@ -24,7 +24,11 @@ namespace PantheonCore::ECS
         std::unique_ptr<IComponentStorage> (*makeStorage)(Scene*);
     };
 
+#ifdef PTH_EDITOR
     class ComponentRegistry final : public Utility::TypeRegistry<Utility::DynamicTypeInfo<ComponentTypeInfo>>
+#else
+    class ComponentRegistry final : public Utility::TypeRegistry<ComponentTypeInfo>
+#endif
     {
     public:
         using EntitiesMap = std::unordered_map<Entity::Id, Entity>;
