@@ -43,7 +43,7 @@ namespace PantheonScripting
         };
 
         m_state = std::make_unique<sol::state>();
-        m_state->open_libraries(sol::lib::base, sol::lib::package, sol::lib::string, sol::lib::math, sol::lib::table);
+        m_state->open_libraries(sol::lib::base, sol::lib::package, sol::lib::math);
         m_state->add_package_loader(loadModule);
         m_isValid = true;
     }
