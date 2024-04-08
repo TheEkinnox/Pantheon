@@ -60,13 +60,20 @@ namespace PantheonScripting
         bool isValid() const;
 
         /**
+         * \brief Registers the given script to the lua context
+         * \param entity The registered script's owner
+         * \param script The script to register to the context
+         * \return True on success. False otherwise
+         */
+        bool registerScript(PantheonCore::ECS::EntityHandle& entity, LuaScriptComponent& script);
+
+        /**
          * \brief Adds the given script to the lua context
          * \param entity The added script's owner
          * \param script The script to add to the context
          * \return True on success. False otherwise
          */
         bool addScript(PantheonCore::ECS::EntityHandle& entity, LuaScriptComponent& script);
-
 
         /**
          * \brief Adds the given script to the lua context

@@ -46,6 +46,14 @@ namespace PantheonScripting
         m_state->open_libraries(sol::lib::base, sol::lib::package, sol::lib::math);
         m_state->add_package_loader(loadModule);
         m_isValid = true;
+
+        for (auto entity : m_scripts | std::views::values)
+        {
+            LuaScriptComponent* script = entity.get<LuaScriptComponent>();
+
+            if (script && !registerScript(entity, *script))
+                return;
+        }
     }
 
     void LuaContext::reset()
@@ -53,7 +61,12 @@ namespace PantheonScripting
         if (m_state)
             m_state.reset();
 
-        m_scripts.clear();
+        for (auto entity : m_scripts | std::views::values)
+        {
+            if (LuaScriptComponent* script = entity.get<LuaScriptComponent>())
+                script->m_table = sol::nil;
+        }
+
         m_isValid = false;
     }
 
@@ -62,16 +75,16 @@ namespace PantheonScripting
         return m_isValid;
     }
 
-    bool LuaContext::addScript(EntityHandle& entity, LuaScriptComponent& script)
+    bool LuaContext::registerScript(EntityHandle& entity, LuaScriptComponent& script)
     {
-        [[maybe_unused]] const char* path = script.m_script.getPath().c_str();
+        [[maybe_unused]] const std::string path = script.m_script.getPath();
 
-        if (!CHECK(isValid(), "Attempted to add script %s to invalid lua context", path))
+        if (!CHECK(isValid(), "Attempted to register script %s to invalid lua context", path.c_str()))
             return false;
 
         const LuaScript* luaScript = script.m_script.get();
 
-        if (!CHECK(luaScript, "Attempted to add unloaded script %s", path))
+        if (!CHECK(luaScript, "Attempted to register unloaded script %s", path.c_str()))
             return (m_isValid = false);
 
         const std::string_view source = luaScript->getSource();
@@ -84,12 +97,33 @@ namespace PantheonScripting
         if (!result.valid())
         {
             [[maybe_unused]] const sol::error err = result;
-            CHECK(false, "Failed to add script %s - %s", path, err.what());
+            CHECK(false, "Failed to register script %s - %s", path.c_str(), err.what());
             return (m_isValid = false);
         }
 
-        if (!CHECK(result.return_count() == 1 && result[0].is<sol::table>(), "Failed to add script %s - Invalid return", path))
+        if (!CHECK(result.return_count() == 1 && result[0].is<sol::table>(), "Failed to register script %s - Invalid return",
+                path.c_str()))
             return (m_isValid = false);
+
+        script.m_table          = result[0];
+        script.m_table["owner"] = static_cast<Entity::Id>(entity.getEntity());
+
+        tryCall(script, ScriptingFunctions::INIT);
+
+        if (m_hasStarted)
+            tryCall(script, ScriptingFunctions::START);
+
+        return (m_isValid = true);
+    }
+
+    bool LuaContext::addScript(EntityHandle& entity, LuaScriptComponent& script)
+    {
+        if (!registerScript(entity, script))
+            return false;
+
+        [[maybe_unused]] const std::string path = script.m_script.getPath();
+
+        LuaScript* luaScript = script.m_script.get();
 
         const LuaScript::OrderT executionOrder = luaScript->getExecutionOrder();
 
@@ -100,16 +134,8 @@ namespace PantheonScripting
                 || reinterpret_cast<size_t>(entity.getScene()) < reinterpret_cast<size_t>(other.second.getScene());
         });
 
-        if (!CHECK(m_scripts.emplace(insertIt, executionOrder, entity) != m_scripts.end(), "Failed to add script %s", path))
+        if (!CHECK(m_scripts.emplace(insertIt, executionOrder, entity) != m_scripts.end(), "Failed to add script %s", path.c_str()))
             return (m_isValid = false);
-
-        script.m_table          = result[0];
-        script.m_table["owner"] = static_cast<Entity::Id>(entity.getEntity());
-
-        tryCall(script, ScriptingFunctions::INIT);
-
-        if (m_hasStarted)
-            tryCall(script, ScriptingFunctions::START);
 
         return (m_isValid = true);
     }
