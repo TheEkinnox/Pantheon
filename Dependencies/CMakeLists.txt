@@ -18,14 +18,17 @@ add_subdirectory(GLFW)
 # Add LibMath
 add_subdirectory(LibMath)
 
+# Add Lua
+add_subdirectory(Lua)
+
 # Add lz4
 add_subdirectory(lz4)
 
-# TODO: Add Mono
-#add_subdirectory(mono)
-
 # Add RapidJSON
 add_subdirectory(RapidJSON)
+
+# Add Sol
+add_subdirectory(Sol)
 
 # Add SoLoud
 add_subdirectory(SoLoud)
@@ -55,10 +58,10 @@ set(LIBMATH_INCLUDE_DIR ${LIBMATH_INCLUDE_DIR} PARENT_SCOPE)
 set(LZ4_NAME ${LZ4_NAME} PARENT_SCOPE)
 set(LZ4_INCLUDE_DIR ${LZ4_INCLUDE_DIR} PARENT_SCOPE)
 
-set(MONO_LIBS ${MONO_LIBRARIES} PARENT_SCOPE)
-set(MONO_INCLUDE_DIRS ${MONO_INCLUDE_DIRS} PARENT_SCOPE)
-
 set(RAPIDJSON_INCLUDE_DIR ${RAPIDJSON_INCLUDE_DIR} PARENT_SCOPE)
+
+set(SOL_NAME ${SOL_NAME} ${LUA_NAME} PARENT_SCOPE)
+set(SOL_INCLUDE_DIR ${SOL_INCLUDE_DIR} ${LUA_INCLUDE_DIR} PARENT_SCOPE)
 
 set(SOLOUD_NAME ${SOLOUD_NAME} PARENT_SCOPE)
 set(SOLOUD_INCLUDE_DIR ${SOLOUD_INCLUDE_DIR} PARENT_SCOPE)
