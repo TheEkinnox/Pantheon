@@ -58,14 +58,14 @@ namespace PantheonTest
         ServiceLocator::provide<ResourceManager>(*m_resourceManager);
         ServiceLocator::provide<LuaContext>(*m_luaContext);
 
-        // #ifndef PTH_HEADLESS_TEST
-        //         m_tests.emplace_back(std::make_unique<WindowTest>());
-        // #endif
-        //
-        //         m_tests.emplace_back(std::make_unique<InputTest>());
-        //         m_tests.emplace_back(std::make_unique<ThreadPoolTest>());
-        //         m_tests.emplace_back(std::make_unique<EntitiesTest>());
-        //         m_tests.emplace_back(std::make_unique<AssetBundlesTest>());
+#ifndef PTH_HEADLESS_TEST
+        m_tests.emplace_back(std::make_unique<WindowTest>());
+#endif
+
+        m_tests.emplace_back(std::make_unique<InputTest>());
+        m_tests.emplace_back(std::make_unique<ThreadPoolTest>());
+        m_tests.emplace_back(std::make_unique<EntitiesTest>());
+        m_tests.emplace_back(std::make_unique<AssetBundlesTest>());
     }
 
     PantheonCore::ECS::Scene g_tmpScene;
