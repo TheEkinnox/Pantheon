@@ -32,7 +32,7 @@ list(APPEND ENGINE_TARGETS ${APP_NAME})
 list(APPEND ENGINE_INCLUDE_DIRS ${APP_INCLUDE_DIR})
 
 # Scripting
-#add_subdirectory(Scripting)
+add_subdirectory(Scripting)
 list(APPEND ENGINE_TARGETS ${SCRIPTING_NAME})
 list(APPEND ENGINE_INCLUDE_DIRS ${SCRIPTING_INCLUDE_DIR})
 
