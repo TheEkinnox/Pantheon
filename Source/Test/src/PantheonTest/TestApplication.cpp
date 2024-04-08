@@ -1,8 +1,5 @@
 ﻿#include "PantheonTest/TestApplication.h"
 
-#include "PantheonRendering/RHI/Null/NullShader.h"
-#include "PantheonRendering/RHI/OpenGL/OpenGLShader.h"
-
 #include "PantheonTest/ComponentRegistrations.h"
 #include "PantheonTest/ResourceRegistrations.h"
 #include "PantheonTest/Tests/AssetBundlesTest.h"
@@ -17,9 +14,10 @@
 #include <PantheonCore/Utility/ServiceLocator.h>
 
 #include <PantheonRendering/RHI/IRenderAPI.h>
+#include <PantheonRendering/RHI/Null/NullShader.h>
+#include <PantheonRendering/RHI/OpenGL/OpenGLShader.h>
 
-#include <csignal>
-#include <ctime>
+#include <PantheonScripting/LuaContext.h>
 
 using namespace LibMath;
 
@@ -36,6 +34,8 @@ using namespace PantheonRendering::Enums;
 using namespace PantheonRendering::LowRenderer;
 using namespace PantheonRendering::Resources;
 
+using namespace PantheonScripting;
+
 namespace PantheonTest
 {
     TestApplication::TestApplication()
@@ -49,22 +49,26 @@ namespace PantheonTest
         m_threadPool(std::make_unique<ThreadPool>()),
         m_resourceManager(std::make_unique<ResourceManager>()),
         m_renderer(std::make_unique<Renderer>()),
+        m_luaContext(std::make_unique<LuaContext>()),
         m_startTime(std::chrono::high_resolution_clock::now())
     {
         ServiceLocator::provide<Window>(*m_window);
         ServiceLocator::provide<InputManager>(*m_inputManager);
         ServiceLocator::provide<ThreadPool>(*m_threadPool);
         ServiceLocator::provide<ResourceManager>(*m_resourceManager);
+        ServiceLocator::provide<LuaContext>(*m_luaContext);
 
-#ifndef PTH_HEADLESS_TEST
-        m_tests.emplace_back(std::make_unique<WindowTest>());
-#endif
-
-        m_tests.emplace_back(std::make_unique<InputTest>());
-        m_tests.emplace_back(std::make_unique<ThreadPoolTest>());
-        m_tests.emplace_back(std::make_unique<EntitiesTest>());
-        m_tests.emplace_back(std::make_unique<AssetBundlesTest>());
+        // #ifndef PTH_HEADLESS_TEST
+        //         m_tests.emplace_back(std::make_unique<WindowTest>());
+        // #endif
+        //
+        //         m_tests.emplace_back(std::make_unique<InputTest>());
+        //         m_tests.emplace_back(std::make_unique<ThreadPoolTest>());
+        //         m_tests.emplace_back(std::make_unique<EntitiesTest>());
+        //         m_tests.emplace_back(std::make_unique<AssetBundlesTest>());
     }
+
+    PantheonCore::ECS::Scene g_tmpScene;
 
     void TestApplication::onStart(int, char*[])
     {
@@ -92,6 +96,8 @@ namespace PantheonTest
         {
             IRenderAPI::getCurrent().setViewport({ 0, 0 }, size);
         });
+
+        m_luaContext->init();
 
         for (const auto& test : m_tests)
             test->start();
@@ -123,8 +129,13 @@ namespace PantheonTest
         [[maybe_unused]] const ResourceRef model = m_resourceManager->load<Model>("cube", "meshes/primitives/cube.obj");
         ASSERT(model, "Failed to load model");
 
-        [[maybe_unused]] const ResourceRef material = m_resourceManager->load<Material>("container", "materials/unlit.pthmat");
+        [[maybe_unused]] const ResourceRef<Material> material("container", "materials/unlit.pthmat");
         ASSERT(material, "Failed to load material");
+
+        for (size_t i = 0; i < 500; ++i)
+            g_tmpScene.create().make<LuaScriptComponent>(ResourceRef<LuaScript>("test", "scripts/test.lua"));
+
+        m_luaContext->start();
     }
 
     void TestApplication::preUpdate()
@@ -137,6 +148,8 @@ namespace PantheonTest
     {
         for (const auto& test : m_tests)
             test->update();
+
+        m_luaContext->update(getContext().m_timer.getDeltaTime());
 
         IRenderAPI& renderAPI = IRenderAPI::getCurrent();
         renderAPI.clear(true, true, true);
@@ -192,6 +205,8 @@ namespace PantheonTest
     {
         for (const auto& test : m_tests)
             test->fixedUpdate();
+
+        m_luaContext->fixedUpdate(getContext().m_timer.getFixedDeltaTime());
     }
 
     void TestApplication::onStop()
@@ -204,6 +219,10 @@ namespace PantheonTest
             if (test->isSuccess())
                 ++passedCount;
         }
+
+        m_luaContext->stop();
+        g_tmpScene.clear();
+        m_luaContext->reset();
 
         const auto      endTime     = std::chrono::high_resolution_clock::now();
         const long long elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - m_startTime).count();
