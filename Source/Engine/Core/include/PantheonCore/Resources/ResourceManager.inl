@@ -15,6 +15,15 @@ namespace PantheonCore::Resources
 
         const std::string savedPath = getResourcePath(key);
 
+        if (savedPath != path)
+        {
+            const auto pathIt = m_resourceKeys.find(path);
+
+            if (pathIt != m_resourceKeys.end() && !CHECK(m_resources[pathIt->second]->getReferenceCount() <= 1,
+                    "Unsafe rebind of path \"%s\" from \"%s\" to \"%s\"", path.c_str(), pathIt->second.c_str(), key.c_str()))
+                return {};
+        }
+
         T*         resource = nullptr;
         const auto it       = m_resources.find(key);
 
