@@ -27,6 +27,7 @@ namespace PantheonTest
         testAdd();
         testSerialization();
 
+        PTH_SERVICE(ResourceManager).clear();
         complete();
     }
 
