@@ -75,7 +75,7 @@ namespace PantheonScripting
         return m_isValid;
     }
 
-    bool LuaContext::registerScript(EntityHandle& entity, LuaScriptComponent& script)
+    bool LuaContext::registerScript(const EntityHandle& entity, LuaScriptComponent& script)
     {
         [[maybe_unused]] const std::string path = script.m_script.getPath();
 
@@ -116,7 +116,7 @@ namespace PantheonScripting
         return (m_isValid = true);
     }
 
-    bool LuaContext::addScript(EntityHandle& entity, LuaScriptComponent& script)
+    bool LuaContext::addScript(const EntityHandle& entity, LuaScriptComponent& script)
     {
         if (!registerScript(entity, script))
             return false;

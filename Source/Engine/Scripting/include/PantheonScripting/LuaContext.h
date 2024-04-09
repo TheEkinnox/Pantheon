@@ -65,7 +65,7 @@ namespace PantheonScripting
          * \param script The script to register to the context
          * \return True on success. False otherwise
          */
-        bool registerScript(PantheonCore::ECS::EntityHandle& entity, LuaScriptComponent& script);
+        bool registerScript(const PantheonCore::ECS::EntityHandle& entity, LuaScriptComponent& script);
 
         /**
          * \brief Adds the given script to the lua context
@@ -73,7 +73,7 @@ namespace PantheonScripting
          * \param script The script to add to the context
          * \return True on success. False otherwise
          */
-        bool addScript(PantheonCore::ECS::EntityHandle& entity, LuaScriptComponent& script);
+        bool addScript(const PantheonCore::ECS::EntityHandle& entity, LuaScriptComponent& script);
 
         /**
          * \brief Adds the given script to the lua context
