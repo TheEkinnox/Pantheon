@@ -64,6 +64,12 @@ namespace PantheonCore::Utility
         void registerType(const std::string& name, const TypeInfo& info);
 
         /**
+         * \brief Gets all the registered type names
+         * \return A list of all the registered type names
+         */
+        std::vector<std::string> getRegisteredNames() const;
+
+        /**
          * \brief Checks whether the given type has been registered or not
          * \param name The searched type name
          * \return True if the given type has been registered. False otherwise

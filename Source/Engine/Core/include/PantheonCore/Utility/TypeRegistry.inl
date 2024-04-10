@@ -2,6 +2,7 @@
 #include "PantheonCore/Debug/Assertion.h"
 #include "PantheonCore/Utility/TypeRegistry.h"
 
+#include <ranges>
 #include <type_traits>
 
 namespace PantheonCore::Utility
@@ -25,6 +26,13 @@ namespace PantheonCore::Utility
         m_typeInfos[id] = info;
         m_typeNames[id] = name;
         m_typeIds[name] = id;
+    }
+
+    template <class TypeInfo>
+    std::vector<std::string> TypeRegistry<TypeInfo>::getRegisteredNames() const
+    {
+        const auto view = m_typeNames | std::ranges::views::values;
+        return { view.begin(), view.end() };
     }
 
     template <class TypeInfo>
