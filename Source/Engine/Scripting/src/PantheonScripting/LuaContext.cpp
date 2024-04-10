@@ -43,14 +43,14 @@ namespace PantheonScripting
 
     void LuaContext::reset()
     {
-        if (m_state)
-            m_state.reset();
-
         for (auto entity : m_scripts | std::views::values)
         {
             if (LuaScriptComponent* script = entity.get<LuaScriptComponent>())
                 script->m_table = sol::nil;
         }
+
+        if (m_state)
+            m_state.reset();
 
         m_isValid = false;
     }
