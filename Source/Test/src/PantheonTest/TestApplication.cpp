@@ -211,6 +211,10 @@ namespace PantheonTest
 
     void TestApplication::onStop()
     {
+        const auto& timer = getContext().m_timer;
+        const double averageFrameTime = static_cast<double>(timer.getUnscaledTime()) / static_cast<double>(timer.getFrameCount());
+        const long long averageFrameRate = static_cast<long long>(1. / averageFrameTime);
+
         size_t passedCount = 0;
         for (const auto& test : m_tests)
         {
@@ -229,11 +233,14 @@ namespace PantheonTest
 
         if (passedCount == m_tests.size())
         {
-            DEBUG_LOG("All %llu tests passed | Total execution time: %dms", passedCount, elapsedTime);
+            DEBUG_LOG("All %llu tests passed | Total execution time: %dms | Avg. frame time: %fs (%dfps)",
+                passedCount, elapsedTime, averageFrameTime, averageFrameRate);
         }
         else
         {
-            DEBUG_LOG_ERROR("%llu/%llu Tests passed | Total execution time: %dms", passedCount, m_tests.size(), elapsedTime);
+            DEBUG_LOG_ERROR("%llu/%llu Tests passed | Total execution time: %dms | Avg. frame time: %fs (%dfps)",
+                passedCount, m_tests.size(), elapsedTime, averageFrameTime, averageFrameRate);
+
             std::quick_exit(-1);
         }
     }
