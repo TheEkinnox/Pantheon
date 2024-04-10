@@ -138,7 +138,7 @@ namespace PantheonCore::ECS
             ComponentT&  component = m_components[index];
 
             ComponentTraits::onRemove<ComponentT>(handle, component);
-            m_onRemove.Invoke(handle, component);
+            m_onRemove.invoke(handle, component);
         }
 
         m_components.clear();
