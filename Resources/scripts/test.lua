@@ -1,22 +1,15 @@
-local tmp = {
+local Test = {
     max_tick = 0
 }
 
 local req = {
     [1] = require("testRequired"),
-    [2] = require("testRequired.lua"),
-    [3] = require("scripts.testRequired"),
-    [4] = require("scripts/testRequired"),
-    [5] = require("scripts.testRequired.lua"),
-    [6] = require("scripts/testRequired.lua"),
-    [7] = require("assets.scripts.testRequired"),
-    [8] = require("assets.scripts/testRequired"),
-    [9] = require("assets/scripts.testRequired"),
-    [10] = require("assets/scripts/testRequired"),
-    [11] = require("assets.scripts.testRequired.lua"),
-    [12] = require("assets.scripts/testRequired.lua"),
-    [13] = require("assets/scripts.testRequired.lua"),
-    [14] = require("assets/scripts/testRequired.lua"),
+    [2] = require("scripts.testRequired"),
+    [3] = require("scripts/testRequired"),
+    [4] = require("assets.scripts.testRequired"),
+    [5] = require("assets.scripts/testRequired"),
+    [6] = require("assets/scripts.testRequired"),
+    [7] = require("assets/scripts/testRequired")
 }
 
 local tick_count = 0
@@ -29,44 +22,49 @@ local function round(x)
     return x >= 0 and math.floor(x + 0.5) or math.ceil(x - 0.5)
 end
 
-function tmp:onInit()
+function Test:onInit()
     tick_count = 0
     self.max_tick = math.random(1, 100)
     print("Entity " .. self.owner .. " now has " .. self.max_tick .. " frames to live. Enjoy!")
 end
 
-function tmp:onStart()
+function Test:onStart()
     print("Entity " .. self.owner .. ", reporting for duty!")
 end
 
-function tmp:onUpdate(deltaTime)
+function Test:onUpdate(deltaTime)
     tick_count = tick_count + 1
     time = time + deltaTime
 
-    if tick_count < self.max_tick then
-        print("Tick " .. tick_count .. "! Owner: " .. self.owner .. " | dt: " .. deltaTime .. "s (" .. round(1 / deltaTime) .. "fps)")
-    elseif tick_count == self.max_tick then
-        print("It's entity " .. self.owner .. "'s last tick!!!")
+    if tick_count == self.max_tick then
+        local avgFrameTime = time / tickCount
+        print("It's entity " .. self.owner .. "'s last tick!!! Average frame time: " .. avgFrameTime .. "s (" .. Round(1 / avgFrameTime) .. "fps)")
 
         for i = 1, #req do
             print("= Call func of require " .. i .. " =")
             req[i]:someFunc()
         end
 
-        self:onDestroy() -- TODO: Actually destroy the entity
+        -- TODO: Actually destroy the entity
     elseif tick_count == self.max_tick + 1 then
         --assert(false, "Not sur I want to give the user access to that...")
     end
 end
 
-function tmp:onFixedUpdate(deltaTime)
+function Test:onFixedUpdate(deltaTime)
     fixed_tick_count = fixed_tick_count + 1
     fixed_time = fixed_time + deltaTime
 end
 
-function tmp:onDestroy()
-    print("Destroyed test script of entity " .. self.owner .. " after " .. tick_count .. " ticks (" .. time .. "s) & " ..
-            fixed_tick_count .. " fixed ticks (" .. fixed_time .. "s)")
+function Test:OnStop()
+    print("Entity " .. self.owner .. " ready to stop")
 end
 
-return tmp
+function Test:onDestroy()
+    local avgFrameTime = time / tick_count
+    print("Destroyed test script of entity " .. self.owner .. " after " .. tick_count .. " ticks (" .. time .. "s) & " ..
+            fixed_tick_count .. " fixed ticks (" .. fixed_time .. "s)" ..
+            "Average frame time: " .. avgFrameTime .. "s (" .. round(1 / avgFrameTime) .. "fps)")
+end
+
+return Test
