@@ -182,8 +182,8 @@ namespace PantheonScripting
 
         for (auto entity : m_scripts | std::views::values)
         {
-            LuaScriptComponent& script = *entity.get<LuaScriptComponent>();
-            tryCall(script, ScriptingFunctions::STOP);
+            if (LuaScriptComponent* script = entity.get<LuaScriptComponent>())
+                tryCall(*script, ScriptingFunctions::STOP);
         }
 
         m_hasStarted = false;
