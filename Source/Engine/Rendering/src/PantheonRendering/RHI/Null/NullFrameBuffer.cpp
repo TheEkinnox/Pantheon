@@ -17,4 +17,16 @@ namespace PantheonRendering::RHI
     void NullFrameBuffer::detach(Enums::EFrameBufferAttachment)
     {
     }
+
+    void NullFrameBuffer::setReadBuffer(Enums::EFrameBufferTarget)
+    {
+    }
+
+    void NullFrameBuffer::setDrawBuffer(Enums::EFrameBufferTarget)
+    {
+    }
+
+    void NullFrameBuffer::setDrawBuffers(const Enums::EFrameBufferTarget*, uint8_t)
+    {
+    }
 }

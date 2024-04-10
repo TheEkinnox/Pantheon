@@ -13,4 +13,14 @@ namespace PantheonRendering::Enums
         DEPTH_STENCIL,
         COLOR
     };
+
+    /**
+     * \brief Gets the color frame buffer attachment for the given index
+     * \param index The color attachment index
+     * \return The resulting color buffer attachment
+     */
+    constexpr EFrameBufferAttachment makeColorAttachment(const uint8_t index)
+    {
+        return static_cast<EFrameBufferAttachment>(static_cast<uint8_t>(EFrameBufferAttachment::COLOR) + index);
+    }
 }

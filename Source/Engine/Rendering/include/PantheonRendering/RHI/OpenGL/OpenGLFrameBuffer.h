@@ -62,6 +62,25 @@ namespace PantheonRendering::RHI
          */
         void detach(Enums::EFrameBufferAttachment attachment) override;
 
+        /**
+         * \brief Sets the frame buffer's read buffer
+         * \param target The target read buffer
+         */
+        void setReadBuffer(Enums::EFrameBufferTarget target) override;
+
+        /**
+         * \brief Sets the frame buffer's draw buffer
+         * \param target The target draw buffer
+         */
+        void setDrawBuffer(Enums::EFrameBufferTarget target) override;
+
+        /**
+         * \brief Sets the frame buffer's draw buffers
+         * \param targets The target draw buffers
+         * \param count The number of targets
+         */
+        void setDrawBuffers(const Enums::EFrameBufferTarget* targets, uint8_t count) override;
+
     private:
         uint32_t m_id;
     };

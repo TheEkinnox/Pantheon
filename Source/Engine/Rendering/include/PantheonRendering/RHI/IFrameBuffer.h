@@ -1,5 +1,6 @@
 #pragma once
 #include "PantheonRendering/Enums/EFrameBufferAttachment.h"
+#include "PantheonRendering/Enums/EFrameBufferTarget.h"
 
 #include <memory>
 
@@ -60,6 +61,25 @@ namespace PantheonRendering::RHI
          * \param attachment The attachment to detach
          */
         virtual void detach(Enums::EFrameBufferAttachment attachment) = 0;
+
+        /**
+         * \brief Sets the frame buffer's read buffer
+         * \param target The target read buffer
+         */
+        virtual void setReadBuffer(Enums::EFrameBufferTarget target) = 0;
+
+        /**
+         * \brief Sets the frame buffer's draw buffers
+         * \param targets The target draw buffers
+         */
+        virtual void setDrawBuffer(Enums::EFrameBufferTarget targets) = 0;
+
+        /**
+         * \brief Sets the frame buffer's draw buffers
+         * \param targets The target draw buffers
+         * \param count The number of targets
+         */
+        virtual void setDrawBuffers(const Enums::EFrameBufferTarget* targets, uint8_t count) = 0;
 
         /**
          * \brief Creates a frame buffer for the current render api

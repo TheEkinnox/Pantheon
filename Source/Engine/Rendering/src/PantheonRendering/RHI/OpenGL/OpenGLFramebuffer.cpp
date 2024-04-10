@@ -25,9 +25,44 @@ namespace PantheonRendering::RHI
             return GL_DEPTH_STENCIL_ATTACHMENT;
         case EFrameBufferAttachment::COLOR:
             return GL_COLOR_ATTACHMENT0;
+        default:
+            return GL_INVALID_ENUM;
+        }
+    }
+
+    GLenum toGLEnum(const EFrameBufferTarget target)
+    {
+        if (target > EFrameBufferTarget::COLOR)
+        {
+            const uint8_t colorIndex = static_cast<uint8_t>(target) - static_cast<uint8_t>(EFrameBufferTarget::COLOR);
+            return colorIndex <= GL_COLOR_ATTACHMENT31 - GL_COLOR_ATTACHMENT0 ? GL_COLOR_ATTACHMENT0 + colorIndex : GL_INVALID_ENUM;
         }
 
-        return GL_INVALID_ENUM;
+        switch (target)
+        {
+        case EFrameBufferTarget::NONE:
+            return GL_NONE;
+        case EFrameBufferTarget::FRONT_LEFT:
+            return GL_FRONT_LEFT;
+        case EFrameBufferTarget::FRONT_RIGHT:
+            return GL_FRONT_RIGHT;
+        case EFrameBufferTarget::BACK_LEFT:
+            return GL_BACK_LEFT;
+        case EFrameBufferTarget::BACK_RIGHT:
+            return GL_BACK_RIGHT;
+        case EFrameBufferTarget::LEFT:
+            return GL_LEFT;
+        case EFrameBufferTarget::RIGHT:
+            return GL_RIGHT;
+        case EFrameBufferTarget::FRONT:
+            return GL_FRONT;
+        case EFrameBufferTarget::BACK:
+            return GL_BACK;
+        case EFrameBufferTarget::COLOR:
+            return GL_COLOR_ATTACHMENT0;
+        default:
+            return GL_INVALID_ENUM;
+        }
     }
 
     OpenGLFrameBuffer::OpenGLFrameBuffer()
@@ -83,5 +118,26 @@ namespace PantheonRendering::RHI
         glBindFramebuffer(GL_FRAMEBUFFER, m_id);
         glFramebufferTexture2D(GL_FRAMEBUFFER, toGLEnum(attachment), GL_TEXTURE_2D, 0, 0);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    void OpenGLFrameBuffer::setReadBuffer(const EFrameBufferTarget target)
+    {
+        glNamedFramebufferReadBuffer(m_id, toGLEnum(target));
+    }
+
+    void OpenGLFrameBuffer::setDrawBuffer(const EFrameBufferTarget target)
+    {
+        glNamedFramebufferDrawBuffer(m_id, toGLEnum(target));
+    }
+
+    void OpenGLFrameBuffer::setDrawBuffers(const EFrameBufferTarget* targets, const uint8_t count)
+    {
+        std::vector<GLenum> enums;
+        enums.reserve(count);
+
+        for (uint8_t i = 0; i < count; ++i)
+            enums.push_back(toGLEnum(targets[i]));
+
+        glNamedFramebufferDrawBuffers(m_id, count, enums.data());
     }
 }
