@@ -108,7 +108,7 @@ namespace PantheonScripting
 
         [[maybe_unused]] const std::string path = script.m_script.getPath();
 
-        LuaScript* luaScript = script.m_script.get();
+        const LuaScript* luaScript = script.m_script.get();
 
         const LuaScript::OrderT executionOrder = luaScript->getExecutionOrder();
 
@@ -134,9 +134,7 @@ namespace PantheonScripting
 
         if (it != m_scripts.end())
         {
-            LuaScriptComponent* scriptComponent = entity.get<LuaScriptComponent>();
-
-            if (scriptComponent)
+            if (LuaScriptComponent* scriptComponent = entity.get<LuaScriptComponent>())
                 tryCall(*scriptComponent, ScriptingFunctions::DESTROY);
 
             m_scripts.erase(it);

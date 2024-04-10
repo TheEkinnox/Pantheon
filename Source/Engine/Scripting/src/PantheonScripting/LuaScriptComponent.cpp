@@ -9,14 +9,14 @@ namespace PantheonCore::ECS
     template <>
     void ComponentTraits::onAdd(EntityHandle& entity, LuaScriptComponent& component)
     {
-        LuaContext& context = PTH_SERVICE(PantheonScripting::LuaContext);
+        LuaContext& context = PTH_SERVICE(LuaContext);
         (void)context.addScript(entity, component);
     }
 
     template <>
     void ComponentTraits::onRemove(EntityHandle& entity, LuaScriptComponent&)
     {
-        LuaContext& context = PTH_SERVICE(PantheonScripting::LuaContext);
+        LuaContext& context = PTH_SERVICE(LuaContext);
         context.removeScript(entity);
     }
 
