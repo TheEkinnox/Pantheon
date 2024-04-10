@@ -121,6 +121,13 @@ namespace PantheonScripting
         std::vector<ScriptHandle>   m_scripts;
 
         bool m_isValid, m_hasStarted;
+
+        /**
+         * \brief Loads a module from the given lua state
+         * \param L The calling lua state
+         * \return The number of elements left in the stack
+         */
+        static int loadModule(lua_State* L);
     };
 }
 

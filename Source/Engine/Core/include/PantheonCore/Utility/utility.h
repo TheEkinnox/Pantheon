@@ -75,6 +75,22 @@ namespace PantheonCore::Utility
     std::string toLower(std::string str);
 
     /**
+     * \brief Replaces the given substring by another one in the given string
+     * \param str The source string
+     * \param from The substring to replace
+     * \param to The substring to replace by
+     */
+    void replaceInPlace(std::string& str, const std::string& from, const std::string& to);
+
+    /**
+     * \brief Replaces the given substring by another one in the given string
+     * \param str The source string
+     * \param from The substring to replace
+     * \param to The substring to replace by
+     */
+    std::string replace(std::string str, const std::string& from, const std::string& to);
+
+    /**
      * \brief Extracts the indicated number of bits from the given packed data
      * \param data The packed data
      * \param bitCount The number of bits to read

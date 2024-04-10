@@ -65,6 +65,25 @@ namespace PantheonCore::Utility
         return str;
     }
 
+    void replaceInPlace(std::string& str, const std::string& from, const std::string& to)
+    {
+        if (str.empty() || from.empty() || from.size() > str.size())
+            return;
+
+        size_t startPos = 0;
+        while ((startPos = str.find(from, startPos)) != std::string::npos)
+        {
+            str.replace(startPos, from.length(), to);
+            startPos += to.length();
+        }
+    }
+
+    std::string replace(std::string str, const std::string& from, const std::string& to)
+    {
+        replaceInPlace(str, from, to);
+        return str;
+    }
+
     std::string sizeToStr(double size, const bool addInitialValue)
     {
         const uint64_t initialValue = static_cast<uint64_t>(size);

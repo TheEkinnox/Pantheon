@@ -2,10 +2,22 @@ local tmp = {
     max_tick = 0
 }
 
-local req = require("scripts/testRequired")
-local req2 = require("scripts/testRequired.lua")
-local req3 = require("assets/scripts/testRequired")
-local req4 = require("assets/scripts/testRequired.lua")
+local req = {
+    [1] = require("testRequired"),
+    [2] = require("testRequired.lua"),
+    [3] = require("scripts.testRequired"),
+    [4] = require("scripts/testRequired"),
+    [5] = require("scripts.testRequired.lua"),
+    [6] = require("scripts/testRequired.lua"),
+    [7] = require("assets.scripts.testRequired"),
+    [8] = require("assets.scripts/testRequired"),
+    [9] = require("assets/scripts.testRequired"),
+    [10] = require("assets/scripts/testRequired"),
+    [11] = require("assets.scripts.testRequired.lua"),
+    [12] = require("assets.scripts/testRequired.lua"),
+    [13] = require("assets/scripts.testRequired.lua"),
+    [14] = require("assets/scripts/testRequired.lua"),
+}
 
 local tick_count = 0
 local time = 0
@@ -36,10 +48,10 @@ function tmp:onUpdate(deltaTime)
     elseif tick_count == self.max_tick then
         print("It's entity " .. self.owner .. "'s last tick!!!")
 
-        req:someFunc()
-        req2:someFunc()
-        req3:someFunc()
-        req4:someFunc()
+        for i = 1, #req do
+            print("= Call func of require " .. i .. " =")
+            req[i]:someFunc()
+        end
 
         self:onDestroy() -- TODO: Actually destroy the entity
     elseif tick_count == self.max_tick + 1 then

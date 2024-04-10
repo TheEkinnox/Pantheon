@@ -27,24 +27,9 @@ namespace PantheonScripting
         if (!ASSUME(!m_state, "Attempted to initialize an already initialized lua context."))
             return;
 
-        lua_CFunction loadModule = [](lua_State* L)
-        {
-            const std::string path = std::filesystem::path(sol::stack::get<std::string>(L, 1)).replace_extension(".lua").string();
-
-            const std::vector<char> script = PTH_SERVICE(ResourceManager).readFile(path);
-
-            if (!script.empty() && luaL_loadbuffer(L, script.data(), script.size(), path.c_str()) == LUA_OK)
-            {
-                sol::stack::push(L, path.c_str());
-                return 2;
-            }
-
-            return 1;
-        };
-
         m_state = std::make_unique<sol::state>();
         m_state->open_libraries(sol::lib::base, sol::lib::package, sol::lib::math);
-        m_state->add_package_loader(loadModule);
+        m_state->add_package_loader(&loadModule);
         m_isValid = true;
 
         for (auto entity : m_scripts | std::views::values)
@@ -202,5 +187,38 @@ namespace PantheonScripting
         }
 
         m_hasStarted = false;
+    }
+
+    int LuaContext::loadModule(lua_State* L)
+    {
+        static constexpr const char* formats[] = { "%s.lua", "%s.lc", "scripts/%s", "scripts/%s.lua", "scripts/%s.lc" };
+
+        const std::string module       = sol::stack::get<std::string>(L, 1);
+        const size_t      moduleLength = module.length();
+
+        if (moduleLength == 0)
+            return 1;
+
+        for (const auto& format : formats)
+        {
+            std::string path(formatString(format, module.c_str()));
+
+            ResourceManager&  resourceManager = PTH_SERVICE(ResourceManager);
+            std::vector<char> script          = resourceManager.readFile(path);
+
+            if (script.empty())
+            {
+                path   = formatString(format, replace(module, ".", "/").c_str());
+                script = resourceManager.readFile(path);
+            }
+
+            if (!script.empty() && luaL_loadbuffer(L, script.data(), script.size(), path.c_str()) == LUA_OK)
+            {
+                sol::stack::push(L, module.c_str());
+                return 2;
+            }
+        }
+
+        return 1;
     }
 }
