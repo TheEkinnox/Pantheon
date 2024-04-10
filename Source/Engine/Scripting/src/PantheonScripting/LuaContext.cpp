@@ -129,9 +129,9 @@ namespace PantheonScripting
 
         const auto insertIt = std::ranges::find_if_not(m_scripts, [&entity, executionOrder](const ScriptHandle& other)
         {
-            return executionOrder < other.first
-                || entity.getEntity() < other.second.getEntity()
-                || reinterpret_cast<size_t>(entity.getScene()) < reinterpret_cast<size_t>(other.second.getScene());
+            return other.first < executionOrder
+                || other.second.getEntity() < entity.getEntity()
+                || reinterpret_cast<size_t>(other.second.getScene()) < reinterpret_cast<size_t>(entity.getScene());
         });
 
         if (!CHECK(m_scripts.emplace(insertIt, executionOrder, entity) != m_scripts.end(), "Failed to add script %s", path.c_str()))
