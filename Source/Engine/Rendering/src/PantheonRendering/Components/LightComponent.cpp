@@ -495,7 +495,7 @@ namespace PantheonCore::ECS
         case ELightType::SPOT:
             return serializeSpot(light.m_spot, out);
         default:
-            return ASSUME_FALSE(false, "Unsupported light type");
+            return ASSUME(false, "Unsupported light type") && false;
         }
     }
 
@@ -521,7 +521,7 @@ namespace PantheonCore::ECS
         case ELightType::SPOT:
             return deserializeSpot(out.m_spot, data + offset, length - offset);
         default:
-            return ASSUME_FALSE(false, "Unsupported light type");
+            return ASSUME(false, "Unsupported light type") && false;
         }
     }
 
@@ -549,7 +549,7 @@ namespace PantheonCore::ECS
         case ELightType::SPOT:
             return serializeSpot(light.m_spot, writer) && CHECK(writer.EndObject());
         default:
-            return ASSUME_FALSE(false, "Unsupported light type");
+            return ASSUME(false, "Unsupported light type") && false;
         }
     }
 
@@ -582,7 +582,7 @@ namespace PantheonCore::ECS
         case ELightType::SPOT:
             return deserializeSpot(out.m_spot, it->value);
         default:
-            return ASSUME_FALSE(false, "Unsupported light type");
+            return ASSUME(false, "Unsupported light type") && false;
         }
     }
 }

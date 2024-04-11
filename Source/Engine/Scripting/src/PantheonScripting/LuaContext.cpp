@@ -24,7 +24,7 @@ namespace PantheonScripting
 
     void LuaContext::init()
     {
-        if (!ASSUME(!m_state, "Attempted to initialize an already initialized lua context."))
+        if (ASSUME_FALSE(m_state, "Attempted to initialize an already initialized lua context."))
             return;
 
         m_state = std::make_unique<sol::state>();
@@ -143,7 +143,7 @@ namespace PantheonScripting
 
     void LuaContext::start()
     {
-        if (!ASSUME(!m_hasStarted, "Attempted to recall start function on started lua context."))
+        if (ASSUME_FALSE(m_hasStarted, "Attempted to recall start function on started lua context."))
             return;
 
         for (auto entity : m_scripts | std::views::values)
