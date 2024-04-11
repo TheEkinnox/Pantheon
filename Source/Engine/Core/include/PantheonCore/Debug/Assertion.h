@@ -62,7 +62,7 @@
 #ifndef ASSUME_FALSE
 #if defined(_DEBUG) || defined(PTH_VERBOSE_LOG)
 
-#define ASSUME_FALSE(condition, ...) CHECK(!(condition) __VA_OPT__(,) __VA_ARGS__)
+#define ASSUME_FALSE(condition, ...) !CHECK(!(condition) __VA_OPT__(,) __VA_ARGS__)
 
 #else
 
