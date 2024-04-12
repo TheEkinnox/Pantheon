@@ -221,7 +221,7 @@ namespace PantheonCore::Resources
         if constexpr (!std::is_same_v<T, IResource>)
             (*this) = { m_key, m_path };
 
-        return basePath == m_path ? offset + readBytes : 0;
+        return CHECK(basePath == m_path, "Unable to deserialize resource ref - Failed to load resource") ? offset + readBytes : 0;
     }
 
     template <class T>
@@ -261,7 +261,7 @@ namespace PantheonCore::Resources
         if constexpr (!std::is_same_v<T, IResource>)
             (*this) = { m_key, m_path };
 
-        return basePath == m_path;
+        return CHECK(basePath == m_path, "Unable to deserialize resource ref - Failed to load resource");
     }
 
     inline GenericResourceRef::GenericResourceRef(
@@ -349,7 +349,7 @@ namespace PantheonCore::Resources
 
         (*this) = { m_type, m_key, m_path };
 
-        return basePath == m_path ? offset + readBytes : 0;
+        return CHECK(basePath == m_path, "Unable to deserialize resource ref - Failed to load resource") ? offset + readBytes : 0;
     }
 
     inline bool GenericResourceRef::toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
@@ -382,6 +382,6 @@ namespace PantheonCore::Resources
         const std::string basePath = m_path;
 
         (*this) = { m_type, m_key, m_path };
-        return basePath == m_path;
+        return CHECK(basePath == m_path, "Unable to deserialize resource ref - Failed to load resource");
     }
 }

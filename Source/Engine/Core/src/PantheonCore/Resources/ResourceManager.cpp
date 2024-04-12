@@ -117,7 +117,9 @@ namespace PantheonCore::Resources
 
         if (shouldLoad && !loadResource(resource, key, path))
         {
-            m_resources.erase(it);
+            if (it != m_resources.end())
+                m_resources.erase(it);
+
             return {};
         }
 
