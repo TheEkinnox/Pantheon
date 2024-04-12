@@ -37,7 +37,6 @@ namespace PantheonTest
         std::unique_ptr<PantheonCore::Utility::ThreadPool>        m_threadPool;
         std::unique_ptr<PantheonCore::Resources::ResourceManager> m_resourceManager;
         std::unique_ptr<PantheonRendering::Core::Renderer>        m_renderer;
-        std::unique_ptr<PantheonScripting::LuaContext>            m_luaContext;
 
         std::vector<std::unique_ptr<ITest>> m_tests;
 
