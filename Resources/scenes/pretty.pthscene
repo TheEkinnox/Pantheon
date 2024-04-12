@@ -60,7 +60,7 @@
             "materials": [
               {
                 "key": "9ae1f054-4bfa-4aac-adb9-83af83278c0d",
-                "path": "materials/default.pthmat"
+                "path": "materials/unlit.pthmat"
               }
             ]
           }
@@ -75,7 +75,7 @@
             "materials": [
               {
                 "key": "9ae1f054-4bfa-4aac-adb9-83af83278c0d",
-                "path": "materials/default.pthmat"
+                "path": "materials/unlit.pthmat"
               }
             ]
           }
