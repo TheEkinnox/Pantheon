@@ -46,7 +46,10 @@ namespace PantheonScripting
         for (auto entity : m_scripts | std::views::values)
         {
             if (LuaScriptComponent* script = entity.get<LuaScriptComponent>())
+            {
+                tryCall(*script, ScriptingFunctions::DESTROY);
                 script->m_table = sol::nil;
+            }
         }
 
         if (m_state)
