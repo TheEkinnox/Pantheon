@@ -216,10 +216,12 @@ namespace PantheonCore::Resources
         if (!CHECK(readBytes != 0, "Unable to deserialize resource ref - Path deserialization failed"))
             return 0;
 
+        const std::string basePath = m_path;
+
         if constexpr (!std::is_same_v<T, IResource>)
             (*this) = { m_key, m_path };
 
-        return offset + readBytes;
+        return basePath == m_path ? offset + readBytes : 0;
     }
 
     template <class T>
@@ -246,18 +248,20 @@ namespace PantheonCore::Resources
         if (!CHECK(it != json.MemberEnd() && it->value.IsString(), "Unable to deserialize resource ref - Invalid resource key"))
             return false;
 
-        m_key = it->value.GetString();
+        m_key = std::string(it->value.GetString(), it->value.GetStringLength());
 
         it = json.FindMember("path");
         if (!CHECK(it != json.MemberEnd() && it->value.IsString(), "Unable to deserialize resource ref - Invalid resource path"))
             return false;
 
-        m_path = it->value.GetString();
+        m_path = std::string(it->value.GetString(), it->value.GetStringLength());
+
+        const std::string basePath = m_path;
 
         if constexpr (!std::is_same_v<T, IResource>)
             (*this) = { m_key, m_path };
 
-        return true;
+        return basePath == m_path;
     }
 
     inline GenericResourceRef::GenericResourceRef(
@@ -341,8 +345,11 @@ namespace PantheonCore::Resources
         if (readBytes == 0)
             return 0;
 
+        const std::string basePath = m_path;
+
         (*this) = { m_type, m_key, m_path };
-        return offset + readBytes;
+
+        return basePath == m_path ? offset + readBytes : 0;
     }
 
     inline bool GenericResourceRef::toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
@@ -367,12 +374,14 @@ namespace PantheonCore::Resources
         if (!CHECK(it != json.MemberEnd() && it->value.IsString(), "Unable to deserialize resource ref - Invalid resource type"))
             return false;
 
-        m_type = it->value.GetString();
+        m_type = std::string(it->value.GetString(), it->value.GetStringLength());
 
         if (!ResourceRef::fromJson(json))
             return false;
 
+        const std::string basePath = m_path;
+
         (*this) = { m_type, m_key, m_path };
-        return true;
+        return basePath == m_path;
     }
 }
