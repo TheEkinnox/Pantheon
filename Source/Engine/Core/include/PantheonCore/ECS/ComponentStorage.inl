@@ -132,10 +132,17 @@ namespace PantheonCore::ECS
     template <class T>
     void ComponentStorage<T>::clear()
     {
-        for (auto [index, entity] : m_componentToEntity)
+        for (size_t i = m_components.size(); i > 0; --i)
         {
-            EntityHandle handle(m_scene, entity);
-            ComponentT&  component = m_components[index];
+            if (i > m_components.size())
+                continue;
+
+            EntityHandle handle(m_scene, m_componentToEntity[i - 1]);
+
+            if (!handle)
+                continue;
+
+            ComponentT& component = m_components[i - 1];
 
             ComponentTraits::onRemove<ComponentT>(handle, component);
             m_onRemove.invoke(handle, component);
