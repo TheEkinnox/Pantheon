@@ -114,6 +114,12 @@ namespace PantheonScripting
          */
         void stop();
 
+        /**
+         * \brief Gets the current native lua state
+         * \return The current native lua state
+         */
+        lua_State* getLuaState();
+
     private:
         using ScriptHandle = std::pair<LuaScript::OrderT, PantheonCore::ECS::EntityHandle>;
 

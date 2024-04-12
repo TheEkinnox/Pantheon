@@ -89,9 +89,13 @@ namespace PantheonScripting
             return (m_isValid = false);
         }
 
-        if (!CHECK(result.return_count() == 1 && result[0].is<sol::table>(), "Failed to register script %s - Invalid return",
-                path.c_str()))
+        if (!CHECK(result.return_count() == 1 && result[0].is<sol::table>(),
+                "Failed to register script %s - Invalid return", path.c_str()))
             return (m_isValid = false);
+
+        if (script.m_table != sol::nil)
+            for (auto& [key, value] : script.m_table)
+                result[0].as<sol::table>()[key] = value;
 
         script.m_table          = result[0];
         script.m_table["owner"] = static_cast<Entity::Id>(entity.getEntity());
@@ -188,6 +192,11 @@ namespace PantheonScripting
         }
 
         m_hasStarted = false;
+    }
+
+    lua_State* LuaContext::getLuaState()
+    {
+        return m_state ? m_state->lua_state() : nullptr;
     }
 
     int LuaContext::loadModule(lua_State* L)

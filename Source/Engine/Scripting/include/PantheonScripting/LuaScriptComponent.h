@@ -1,4 +1,6 @@
 #pragma once
+#include "PantheonCore/ECS/ComponentRegistry.h"
+
 #include "PantheonScripting/LuaScript.h"
 
 #include <PantheonCore/ECS/ComponentTraits.h>
@@ -14,6 +16,14 @@ namespace PantheonScripting
 
         sol::table m_table = sol::nil;
     };
+
+    /**
+     * \brief Deserializes the lua object from json
+     * \param luaState The object's lua state
+     * \param json The input json data
+     * \return The created object on success. A null optional otherwise
+     */
+    std::optional<sol::object> luaObjectFromJson(lua_State* luaState, const rapidjson::Value& json);
 }
 
 namespace PantheonCore::ECS
@@ -49,4 +59,55 @@ namespace PantheonCore::ECS
      */
     template <>
     void ComponentTraits::onChange(EntityHandle& entity, PantheonScripting::LuaScriptComponent& component);
+
+    /**
+     * \brief Serializes the given lua script component to json
+     * \param component The serialized script component instance
+     * \param writer The output json writer
+     * \param toSerialized The entity to serialized entity map
+     * \return True on success. False otherwise
+     */
+    template <>
+    bool ComponentRegistry::toJson(const PantheonScripting::LuaScriptComponent& component,
+                                   rapidjson::Writer<rapidjson::StringBuffer>&  writer, const EntitiesMap& toSerialized);
+
+    /**
+     * \brief Deserializes the lua script component from json
+     * \param out The output lua script component instance
+     * \param json The input json data
+     * \return True on success. False otherwise
+     */
+    template <>
+    bool ComponentRegistry::fromJson(PantheonScripting::LuaScriptComponent& out, const rapidjson::Value& json);
+
+    /**
+     * \brief Serializes the given lua table to json
+     * \param component The serialized lua table
+     * \param writer The output json writer
+     * \param toSerialized The entity to serialized entity map
+     * \return True on success. False otherwise
+     */
+    template <>
+    bool ComponentRegistry::toJson(
+        const sol::table& component, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap& toSerialized);
+
+    /**
+     * \brief Deserializes the lua table from json
+     * \param out The output lua table
+     * \param json The input json data
+     * \return True on success. False otherwise
+     */
+    template <>
+    bool ComponentRegistry::fromJson(sol::table& out, const rapidjson::Value& json);
+
+    /**
+     * \brief Serializes the given lua object to json
+     * \param component The serialized lua object
+     * \param writer The output json writer
+     * \param toSerialized The entity to serialized entity map
+     * \return True on success. False otherwise
+     */
+    template <>
+    bool ComponentRegistry::toJson(
+        const sol::object& component, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap& toSerialized);
 }
