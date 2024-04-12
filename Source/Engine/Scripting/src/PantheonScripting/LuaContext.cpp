@@ -141,8 +141,11 @@ namespace PantheonScripting
 
         if (it != m_scripts.end())
         {
-            if (LuaScriptComponent* scriptComponent = entity.get<LuaScriptComponent>())
-                tryCall(*scriptComponent, ScriptingFunctions::DESTROY);
+            if (LuaScriptComponent* script = entity.get<LuaScriptComponent>())
+            {
+                tryCall(*script, ScriptingFunctions::DESTROY);
+                script->m_table = sol::nil;
+            }
 
             m_scripts.erase(it);
         }
