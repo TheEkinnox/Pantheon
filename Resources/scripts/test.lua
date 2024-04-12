@@ -24,8 +24,12 @@ end
 
 function Test:onInit()
     tick_count = 0
-    self.max_tick = math.random(1, 100)
-    print("Entity " .. self.owner .. " now has " .. self.max_tick .. " frames to live. Enjoy!")
+    if self.max_tick ~= 0 then
+        print("Entity " .. self.owner .. " already has a lifespan of " .. self.max_tick .. " frames...")
+    else
+        self.max_tick = math.random(1, 100)
+        print("Entity " .. self.owner .. " now has " .. self.max_tick .. " frames to live. Enjoy!")
+    end
 end
 
 function Test:onStart()
@@ -37,12 +41,12 @@ function Test:onUpdate(deltaTime)
     time = time + deltaTime
 
     if tick_count == self.max_tick then
-        local avgFrameTime = time / tickCount
-        print("It's entity " .. self.owner .. "'s last tick!!! Average frame time: " .. avgFrameTime .. "s (" .. Round(1 / avgFrameTime) .. "fps)")
+        local avgFrameTime = time / tick_count
+        print("It's entity " .. self.owner .. "'s last tick!!! " ..
+                "Average frame time: " .. avgFrameTime .. "s (" .. round(1 / avgFrameTime) .. "fps)")
 
         for i = 1, #req do
-            print("= Call func of require " .. i .. " =")
-            req[i]:someFunc()
+            print("[require " .. i .. "] " .. req[i]:someFunc() .. " | Passed instance count: " .. req[i].instances)
         end
 
         -- TODO: Actually destroy the entity
@@ -63,7 +67,7 @@ end
 function Test:onDestroy()
     local avgFrameTime = time / tick_count
     print("Destroyed test script of entity " .. self.owner .. " after " .. tick_count .. " ticks (" .. time .. "s) & " ..
-            fixed_tick_count .. " fixed ticks (" .. fixed_time .. "s)" ..
+            fixed_tick_count .. " fixed ticks (" .. fixed_time .. "s) | " ..
             "Average frame time: " .. avgFrameTime .. "s (" .. round(1 / avgFrameTime) .. "fps)")
 end
 
