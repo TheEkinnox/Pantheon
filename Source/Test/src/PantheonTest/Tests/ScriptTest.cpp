@@ -18,14 +18,15 @@ namespace PantheonTest
     ScriptTest::ScriptTest(const std::string& name, const size_t testScriptsCount)
         : ITest(name), m_luaContext(std::make_unique<LuaContext>()), m_testScriptsCount(testScriptsCount)
     {
-        m_scene.getStorage<LuaScriptComponent>().m_onRemove.subscribe([this](Entity, LuaScriptComponent&)
-        {
-            if (++m_destroyedScriptsCount == m_testScriptsCount)
-            {
-                stop();
-                complete();
-            }
-        });
+        // TODO: Uncomment script test auto completion when ECS bindings are implemented
+        // m_scene.getStorage<LuaScriptComponent>().m_onRemove.subscribe([this](Entity, LuaScriptComponent&)
+        // {
+        //     if (++m_destroyedScriptsCount == m_testScriptsCount)
+        //     {
+        //         stop();
+        //         complete();
+        //     }
+        // });
 
         m_luaContext->init();
 
