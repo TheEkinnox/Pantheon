@@ -116,7 +116,7 @@ namespace PantheonScripting
         {
             return other.first < executionOrder
                 || other.second.getEntity() < entity.getEntity()
-                || reinterpret_cast<size_t>(other.second.getScene()) < reinterpret_cast<size_t>(entity.getScene());
+                || std::less<Scene*>{}(other.second.getScene(), entity.getScene());
         });
 
         if (!CHECK(m_scripts.emplace(insertIt, executionOrder, entity) != m_scripts.end(), "Failed to add script %s", path.c_str()))
