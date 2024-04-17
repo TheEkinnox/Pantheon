@@ -201,7 +201,7 @@ namespace PantheonCore::ECS
 
     template <>
     size_t ComponentRegistry::fromBinary<PantheonRendering::Components::LightComponent>(
-        PantheonRendering::Components::LightComponent&, const char*, size_t);
+        PantheonRendering::Components::LightComponent&, const char*, size_t, Scene*);
 
     template <>
     bool ComponentRegistry::toJson<PantheonRendering::Components::LightComponent>(
@@ -209,5 +209,5 @@ namespace PantheonCore::ECS
 
     template <>
     bool ComponentRegistry::fromJson<PantheonRendering::Components::LightComponent>(
-        PantheonRendering::Components::LightComponent&, const rapidjson::Value&);
+        PantheonRendering::Components::LightComponent&, const rapidjson::Value&, Scene*);
 }

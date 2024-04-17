@@ -500,7 +500,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    size_t ComponentRegistry::fromBinary<LightComponent>(LightComponent& out, const char* data, size_t length)
+    size_t ComponentRegistry::fromBinary<LightComponent>(LightComponent& out, const char* data, size_t length, Scene*)
     {
         std::string  typeString;
         const size_t offset = IByteSerializable::deserializeString(typeString, data, length);
@@ -554,7 +554,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    bool ComponentRegistry::fromJson<LightComponent>(LightComponent& out, const rapidjson::Value& json)
+    bool ComponentRegistry::fromJson<LightComponent>(LightComponent& out, const rapidjson::Value& json, Scene*)
     {
         if (!CHECK(json.IsObject(), "Unable to deserialize light - Json value should be an object"))
             return false;

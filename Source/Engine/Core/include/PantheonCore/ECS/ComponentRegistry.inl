@@ -9,7 +9,7 @@ namespace PantheonCore::ECS
 {
     template <typename T>
     bool ComponentRegistry::toJson(
-        const T& component, rapidjson::Writer<rapidjson::StringBuffer>& writer, [[maybe_unused]] const EntitiesMap& toSerialized)
+        const T& component, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap&)
     {
         if constexpr (std::is_base_of_v<Serialization::IJsonSerializable, T>)
             return component.toJson(writer);
@@ -18,7 +18,7 @@ namespace PantheonCore::ECS
     }
 
     template <typename T>
-    bool ComponentRegistry::fromJson(T& out, const rapidjson::Value& json)
+    bool ComponentRegistry::fromJson(T& out, const rapidjson::Value& json, Scene*)
     {
         if constexpr (std::is_base_of_v<Serialization::IJsonSerializable, T>)
             return out.fromJson(json);
@@ -27,7 +27,7 @@ namespace PantheonCore::ECS
     }
 
     template <typename T>
-    bool ComponentRegistry::toBinary(const T& component, std::vector<char>& out, [[maybe_unused]] const EntitiesMap& toSerialized)
+    bool ComponentRegistry::toBinary(const T& component, std::vector<char>& out, const EntitiesMap&)
     {
         if constexpr (std::is_base_of_v<Serialization::IByteSerializable, T>)
             return component.toBinary(out);
@@ -36,7 +36,7 @@ namespace PantheonCore::ECS
     }
 
     template <typename T>
-    size_t ComponentRegistry::fromBinary(T& out, const char* data, const size_t length)
+    size_t ComponentRegistry::fromBinary(T& out, const char* data, const size_t length, Scene*)
     {
         if constexpr (std::is_base_of_v<Serialization::IByteSerializable, T>)
             return out.fromBinary(data, length);

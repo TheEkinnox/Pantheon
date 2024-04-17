@@ -2,8 +2,7 @@
 #include "PantheonCore/ECS/ComponentRegistry.h"
 #include "PantheonCore/ECS/ComponentTraits.h"
 #include "PantheonCore/ECS/Entity.h"
-
-#include <Transform.h>
+#include "PantheonCore/ECS/Serializers/MathSerializers.h"
 
 namespace PantheonCore::ECS
 {
@@ -134,25 +133,11 @@ namespace PantheonCore::ECS
         const HierarchyComponent&, std::vector<char>&, const EntitiesMap&);
 
     template <>
-    size_t ComponentRegistry::fromBinary<HierarchyComponent>(HierarchyComponent&, const char*, size_t);
+    size_t ComponentRegistry::fromBinary<HierarchyComponent>(HierarchyComponent&, const char*, size_t, Scene*);
 
     template <>
     bool ComponentRegistry::toJson(const HierarchyComponent&, rapidjson::Writer<rapidjson::StringBuffer>&, const EntitiesMap&);
 
     template <>
-    bool ComponentRegistry::fromJson<HierarchyComponent>(HierarchyComponent&, const rapidjson::Value&);
-
-    template <>
-    bool ComponentRegistry::toBinary<LibMath::Transform>(
-        const LibMath::Transform&, std::vector<char>&, const EntitiesMap&);
-
-    template <>
-    size_t ComponentRegistry::fromBinary<LibMath::Transform>(LibMath::Transform&, const char*, size_t);
-
-    template <>
-    bool ComponentRegistry::toJson<LibMath::Transform>(
-        const LibMath::Transform&, rapidjson::Writer<rapidjson::StringBuffer>&, const EntitiesMap&);
-
-    template <>
-    bool ComponentRegistry::fromJson<LibMath::Transform>(LibMath::Transform&, const rapidjson::Value&);
+    bool ComponentRegistry::fromJson<HierarchyComponent>(HierarchyComponent&, const rapidjson::Value&, Scene*);
 }

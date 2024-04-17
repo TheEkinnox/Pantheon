@@ -13,7 +13,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    size_t ComponentRegistry::fromBinary<TagComponent>(TagComponent& out, const char* data, size_t length)
+    size_t ComponentRegistry::fromBinary<TagComponent>(TagComponent& out, const char* data, size_t length, Scene*)
     {
         if (!CHECK(data != nullptr && length > 0, "Unable to deserialize tag - Empty buffer"))
             return 0;
@@ -34,7 +34,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    bool ComponentRegistry::fromJson<TagComponent>(TagComponent& out, const rapidjson::Value& json)
+    bool ComponentRegistry::fromJson<TagComponent>(TagComponent& out, const rapidjson::Value& json, Scene*)
     {
         if (!CHECK(json.IsString(), "Unable to deserialize tag - Json value should be a string"))
             return false;

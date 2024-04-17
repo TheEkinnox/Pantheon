@@ -289,7 +289,7 @@ namespace PantheonCore::ECS
 
             offset += readBytes;
             ComponentT component;
-            readBytes = length >= offset ? ComponentRegistry::fromBinary(component, data + offset, length - offset) : 0;
+            readBytes = length >= offset ? ComponentRegistry::fromBinary(component, data + offset, length - offset, m_scene) : 0;
 
             if (readBytes == 0)
                 return false;
@@ -353,7 +353,7 @@ namespace PantheonCore::ECS
                 return false;
 
             ComponentT component;
-            if (!ComponentRegistry::fromJson(component, it->value))
+            if (!ComponentRegistry::fromJson(component, it->value, m_scene))
                 return false;
 
             set(owner, component);

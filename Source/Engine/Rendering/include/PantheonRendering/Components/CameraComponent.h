@@ -192,7 +192,8 @@ namespace PantheonCore::ECS
         const PantheonRendering::Components::CameraComponent& component, std::vector<char>& out, const EntitiesMap&);
 
     template <>
-    size_t ComponentRegistry::fromBinary(PantheonRendering::Components::CameraComponent& out, const char* data, size_t length);
+    size_t ComponentRegistry::fromBinary(
+        PantheonRendering::Components::CameraComponent& out, const char* data, size_t length, Scene*);
 
     template <>
     bool ComponentRegistry::toJson(
@@ -200,5 +201,5 @@ namespace PantheonCore::ECS
         const EntitiesMap&);
 
     template <>
-    bool ComponentRegistry::fromJson(PantheonRendering::Components::CameraComponent& out, const rapidjson::Value& json);
+    bool ComponentRegistry::fromJson(PantheonRendering::Components::CameraComponent& out, const rapidjson::Value& json, Scene*);
 }

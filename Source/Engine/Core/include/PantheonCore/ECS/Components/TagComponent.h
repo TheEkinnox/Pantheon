@@ -24,7 +24,7 @@ namespace PantheonCore::ECS
      * \return The number of deserialized bytes on success. 0 otherwise.
      */
     template <>
-    size_t ComponentRegistry::fromBinary<TagComponent>(TagComponent& out, const char* data, size_t length);
+    size_t ComponentRegistry::fromBinary<TagComponent>(TagComponent& out, const char* data, size_t length, Scene*);
 
     /**
      * \brief Serializes the tag component to json
@@ -41,5 +41,5 @@ namespace PantheonCore::ECS
      * \return True on success. False otherwise.
      */
     template <>
-    bool ComponentRegistry::fromJson<TagComponent>(TagComponent& tag, const rapidjson::Value& json);
+    bool ComponentRegistry::fromJson<TagComponent>(TagComponent& tag, const rapidjson::Value& json, Scene*);
 }

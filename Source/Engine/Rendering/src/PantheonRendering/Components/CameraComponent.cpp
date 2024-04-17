@@ -165,7 +165,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    size_t ComponentRegistry::fromBinary(CameraComponent& out, const char* data, size_t length)
+    size_t ComponentRegistry::fromBinary(CameraComponent& out, const char* data, size_t length, Scene*)
     {
         if (!CHECK(data != nullptr && length > 0, "Unable to deserialize camera component - Empty buffer"))
             return 0;
@@ -273,7 +273,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    bool ComponentRegistry::fromJson(CameraComponent& out, const rapidjson::Value& json)
+    bool ComponentRegistry::fromJson(CameraComponent& out, const rapidjson::Value& json, Scene*)
     {
         if (!CHECK(json.IsObject(), "Unable to deserialize camera component - Json value should be an object"))
             return false;

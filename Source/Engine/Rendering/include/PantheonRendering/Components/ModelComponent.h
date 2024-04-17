@@ -158,7 +158,8 @@ namespace PantheonCore::ECS
         const PantheonRendering::Components::ModelComponent& component, std::vector<char>& out, const EntitiesMap&);
 
     template <>
-    size_t ComponentRegistry::fromBinary(PantheonRendering::Components::ModelComponent& out, const char* data, size_t length);
+    size_t ComponentRegistry::fromBinary(
+        PantheonRendering::Components::ModelComponent& out, const char* data, size_t length, Scene*);
 
     template <>
     bool ComponentRegistry::toJson(
@@ -166,5 +167,5 @@ namespace PantheonCore::ECS
         const EntitiesMap&);
 
     template <>
-    bool ComponentRegistry::fromJson(PantheonRendering::Components::ModelComponent& out, const rapidjson::Value& json);
+    bool ComponentRegistry::fromJson(PantheonRendering::Components::ModelComponent& out, const rapidjson::Value& json, Scene*);
 }
