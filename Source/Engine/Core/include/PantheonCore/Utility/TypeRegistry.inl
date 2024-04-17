@@ -16,16 +16,16 @@ namespace PantheonCore::Utility
 
     template <class TypeInfo>
     template <typename T>
-    void TypeRegistry<TypeInfo>::registerType(const std::string& name, const TypeInfo& info)
+    TypeInfo& TypeRegistry<TypeInfo>::registerType(const std::string& name, const TypeInfo& info)
     {
         ASSERT(!m_typeIds.contains(name), "Type name \"%s\" has already been registered", name.c_str());
 
         TypeId id = getTypeId<T>();
         ASSERT(!m_typeInfos.contains(id), "Type %llu (\"%s\") has already been registered", id, typeid(T).name());
 
-        m_typeInfos[id] = info;
         m_typeNames[id] = name;
         m_typeIds[name] = id;
+        return (m_typeInfos[id] = info);
     }
 
     template <class TypeInfo>

@@ -61,7 +61,7 @@ namespace PantheonCore::Utility
          * \param info The registered type's info
          */
         template <typename T>
-        void registerType(const std::string& name, const TypeInfo& info);
+        TypeInfo& registerType(const std::string& name, const TypeInfo& info);
 
         /**
          * \brief Gets all the registered type names
