@@ -53,6 +53,13 @@ namespace PantheonCore::ECS
         virtual bool contains(Entity entity) const = 0;
 
         /**
+         * \brief Finds or assigns a default component instance to the given entity
+         * \param owner The component's owner
+         * \return True on success. False otherwise
+         */
+        virtual void* getOrCreateRaw(Entity owner) = 0;
+
+        /**
          * \brief Finds the component owned by the given entity
          * \param owner The searched component's owner
          * \return A pointer to the found component on success. Nullptr otherwise
@@ -253,6 +260,13 @@ namespace PantheonCore::ECS
          * \return True if the entity owns a component of in the storage. False otherwise
          */
         bool has(Entity owner) const;
+
+        /**
+         * \brief Finds or assigns a default component instance to the given entity
+         * \param owner The component's owner
+         * \return True on success. False otherwise
+         */
+        void* getOrCreateRaw(Entity owner) override;
 
         /**
          * \brief Finds the component owned by the given entity
