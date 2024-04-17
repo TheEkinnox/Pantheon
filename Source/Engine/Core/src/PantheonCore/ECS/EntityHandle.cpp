@@ -3,11 +3,18 @@
 #include "PantheonCore/ECS/Scene.h"
 #include "PantheonCore/ECS/Components/Hierarchy.h"
 
+using namespace PantheonCore::Serialization;
+
 namespace PantheonCore::ECS
 {
     EntityHandle::EntityHandle(Scene* scene, const Entity entity)
         : m_scene(scene), m_entity(entity)
     {
+    }
+
+    bool EntityHandle::operator==(const EntityHandle& other) const
+    {
+        return m_entity == other.m_entity && m_scene == other.m_scene;
     }
 
     EntityHandle::operator bool() const
@@ -150,5 +157,74 @@ namespace PantheonCore::ECS
     std::vector<std::pair<ComponentRegistry::TypeId, void*>> EntityHandle::getComponents() const
     {
         return m_scene ? m_scene->getComponents(m_entity) : std::vector<std::pair<ComponentRegistry::TypeId, void*>>();
+    }
+
+    std::ostream& operator<<(std::ostream& stream, const EntityHandle& handle)
+    {
+        return stream << handle.getEntity();
+    }
+
+    template <>
+    bool ComponentRegistry::toBinary(const EntityHandle& component, std::vector<char>& out, const EntitiesMap& toSerialized)
+    {
+        Entity entity = component.getEntity();
+
+        if (entity != NULL_ENTITY)
+        {
+            const auto it = toSerialized.find(entity);
+
+            if (!CHECK(it != toSerialized.end(), "Unable to serialize entity handle - Entity is not serialized"))
+                return false;
+
+            entity = it->second;
+        }
+
+        return CHECK(IByteSerializable::writeNumber(entity, out), "Failed to write entity handle's enity");
+    }
+
+    template <>
+    size_t ComponentRegistry::fromBinary(EntityHandle& out, const char* data, size_t length, Scene* scene)
+    {
+        if (!CHECK(data != nullptr && length > 0, "Unable to deserialize entity handle - Empty buffer"))
+            return 0;
+
+        Entity entity;
+
+        const size_t readBytes = IByteSerializable::readNumber<Entity, Entity::Id>(entity, data, length);
+
+        if (!CHECK(readBytes != 0, "Failed to read entity handle's entity"))
+            return 0;
+
+        out = { scene, entity };
+        return readBytes;
+    }
+
+    template <>
+    bool ComponentRegistry::toJson(
+        const EntityHandle& component, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap& toSerialized)
+    {
+        Entity entity = component.getEntity();
+
+        if (entity != NULL_ENTITY)
+        {
+            const auto it = toSerialized.find(entity);
+
+            if (!CHECK(it != toSerialized.end(), "Unable to serialize entity handle - Entity is not serialized"))
+                return false;
+
+            entity = it->second;
+        }
+
+        return writer.Uint64(entity);
+    }
+
+    template <>
+    bool ComponentRegistry::fromJson(EntityHandle& out, const rapidjson::Value& json, Scene* scene)
+    {
+        if (!CHECK(json.Is<Entity::Id>(), "Unable to deserialize entity handle - Json value should be castable to Entity::Id"))
+            return false;
+
+        out = { scene, Entity(json.Get<Entity::Id>()) };
+        return true;
     }
 }

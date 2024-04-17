@@ -55,6 +55,13 @@ namespace PantheonCore::ECS
         EntityHandle& operator=(EntityHandle&& other) noexcept = default;
 
         /**
+         * \brief Checks whether the given handle references the same entity as this one
+         * \param other The compared entity handle
+         * \return True if the other handle references the same entity. False otherwise
+         */
+        bool operator==(const EntityHandle& other) const;
+
+        /**
          * \brief Checks whether the entity is valid or not
          * \return True if the entity is valid. False otherwise.
          */
@@ -267,6 +274,27 @@ namespace PantheonCore::ECS
         Scene* m_scene;
         Entity m_entity;
     };
+
+    /**
+     * \brief Adds an entity handle's string representation to the given output stream
+     * \param stream The output stream
+     * \param handle The output entity handle
+     * \return The modified stream
+     */
+    std::ostream& operator<<(std::ostream& stream, const EntityHandle& handle);
+
+    template <>
+    bool ComponentRegistry::toBinary(const EntityHandle& component, std::vector<char>& out, const EntitiesMap& toSerialized);
+
+    template <>
+    size_t ComponentRegistry::fromBinary(EntityHandle& out, const char* data, size_t length, Scene* scene);
+
+    template <>
+    bool ComponentRegistry::toJson(
+        const EntityHandle& component, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap& toSerialized);
+
+    template <>
+    bool ComponentRegistry::fromJson(EntityHandle& out, const rapidjson::Value& json, Scene* scene);
 }
 
 #include "PantheonCore/ECS/EntityHandle.inl"
