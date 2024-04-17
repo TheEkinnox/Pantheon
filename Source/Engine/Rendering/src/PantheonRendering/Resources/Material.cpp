@@ -110,9 +110,54 @@ namespace PantheonRendering::Resources
 
     size_t Material::fromBinary(const char* data, const size_t length)
     {
-        // TODO: Implement material binary deserialization
-        DEBUG_LOG_ERROR("Not implemented - Load material from %llu bytes memory buffer @(%p)", length, data);
-        return 0;
+        m_properties.clear();
+
+        if (!CHECK(data != nullptr && length > 0, "Unable to deserialize material - Empty buffer"))
+            return 0;
+
+        size_t offset = m_shader.fromBinary(data, length);
+
+        if (offset == 0)
+            return 0;
+
+        if (!CHECK(length >= offset, "Unable to deserialize material property count - Invalid offset"))
+            return 0;
+
+        ElemCountT propertyCount;
+        size_t     readBytes = readNumber(propertyCount, data + offset, length - offset);
+
+        if (!CHECK(readBytes > 0, "Failed to read material property count"))
+            return 0;
+
+        offset += readBytes;
+
+        for (ElemCountT i = 0; i < propertyCount; ++i)
+        {
+            if (!CHECK(length >= offset, "Unable to deserialize material property name - Invalid offset"))
+                return 0;
+
+            std::string name;
+            readBytes = deserializeString(name, data + offset, length - offset);
+
+            if (!CHECK(readBytes > 0, "Failed to deserialize material property name"))
+                return 0;
+
+            offset += readBytes;
+
+            if (!CHECK(length >= offset, "Unable to deserialize material property - Invalid offset"))
+                return 0;
+
+            Property property;
+            readBytes = deserializeProperty(property, data + offset, length - offset);
+
+            if (readBytes == 0)
+                return 0;
+
+            m_properties[name] = property;
+            offset += readBytes;
+        }
+
+        return offset;
     }
 
     IShader& Material::getShader() const
@@ -484,6 +529,132 @@ namespace PantheonRendering::Resources
         default:
             ASSERT(false, "Unable to serialize material property - Unknown/Invalid type");
             return false;
+        }
+    }
+
+    size_t Material::deserializeProperty(Property& out, const char* data, const size_t length)
+    {
+        if (!CHECK(data != nullptr && length > 0, "Unable to deserialize material property - Empty buffer"))
+            return 0;
+
+        out.m_type              = static_cast<EShaderDataType>(data[0]);
+        constexpr size_t offset = sizeof(char);
+
+        if (!CHECK(length >= offset, "Unable to deserialize material property - Invalid offset"))
+            return 0;
+
+        switch (out.m_type)
+        {
+        case EShaderDataType::BOOL:
+        {
+            if (!CHECK(length - offset >= 1, "Unable to deserialize boolean material property - Invalid offset"))
+                return 0;
+
+            out.m_value = static_cast<bool>(data[offset]);
+            return offset + sizeof(char);
+        }
+        case EShaderDataType::INT:
+        {
+            int          val;
+            const size_t readBytes = readNumber(val, data + offset, length - offset);
+
+            if (!CHECK(readBytes > 0, "Failed to deserialize integer material property"))
+                return 0;
+
+            out.m_value = val;
+            return offset + readBytes;
+        }
+        case EShaderDataType::UNSIGNED_INT:
+        {
+            uint32_t     val;
+            const size_t readBytes = readNumber(val, data + offset, length - offset);
+
+            if (!CHECK(readBytes > 0, "Failed to deserialize unsigned integer material property"))
+                return 0;
+
+            out.m_value = val;
+            return offset + readBytes;
+        }
+        case EShaderDataType::FLOAT:
+        {
+            float        val;
+            const size_t readBytes = readNumber(val, data + offset, length - offset);
+
+            if (!CHECK(readBytes > 0, "Failed to deserialize float material property"))
+                return 0;
+
+            out.m_value = val;
+            return offset + readBytes;
+        }
+        case EShaderDataType::VEC2:
+        {
+            Vector2      val;
+            const size_t readBytes = deserializeVector2(val, data + offset, length - offset);
+
+            if (!CHECK(readBytes > 0, "Failed to deserialize Vector2 material property"))
+                return 0;
+
+            out.m_value = val;
+            return offset + readBytes;
+        }
+        case EShaderDataType::VEC3:
+        {
+            Vector3      val;
+            const size_t readBytes = deserializeVector3(val, data + offset, length - offset);
+
+            if (!CHECK(readBytes > 0, "Failed to deserialize Vector3 material property"))
+                return 0;
+
+            out.m_value = val;
+            return offset + readBytes;
+        }
+        case EShaderDataType::VEC4:
+        {
+            Vector4      val;
+            const size_t readBytes = deserializeVector4(val, data + offset, length - offset);
+
+            if (!CHECK(readBytes > 0, "Failed to deserialize Vector4 material property"))
+                return 0;
+
+            out.m_value = val;
+            return offset + readBytes;
+        }
+        case EShaderDataType::MAT3:
+        {
+            Matrix3      val;
+            const size_t readBytes = deserializeMatrix(val, data + offset, length - offset);
+
+            if (!CHECK(readBytes > 0, "Failed to deserialize Matrix3 material property"))
+                return 0;
+
+            out.m_value = val;
+            return offset + readBytes;
+        }
+        case EShaderDataType::MAT4:
+        {
+            Matrix4      val;
+            const size_t readBytes = deserializeMatrix(val, data + offset, length - offset);
+
+            if (!CHECK(readBytes > 0, "Failed to deserialize Matrix4 material property"))
+                return 0;
+
+            out.m_value = val;
+            return offset + readBytes;
+        }
+        case EShaderDataType::TEXTURE:
+        {
+            ResourceRef<ITexture> texture;
+            const size_t          readBytes = texture.fromBinary(data + offset, length - offset);
+
+            if (readBytes == 0)
+                return 0;
+
+            out.m_value = texture;
+            return offset + readBytes;
+        }
+        case EShaderDataType::UNKNOWN:
+        default:
+            return 0;
         }
     }
 }

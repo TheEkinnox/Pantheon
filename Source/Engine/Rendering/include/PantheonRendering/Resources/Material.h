@@ -199,7 +199,7 @@ namespace PantheonRendering::Resources
         bool deserializeProperties(const rapidjson::Value& json);
 
         /**
-         * \brief Deserializes the material from json
+         * \brief Deserializes the material property from json
          * \param json The input json data
          * \param out The output property
          * \return True on success. False otherwise.
@@ -213,6 +213,15 @@ namespace PantheonRendering::Resources
          * \return True on success. False otherwise.
          */
         static bool serializeProperty(const Property& property, std::vector<char>& output);
+
+        /**
+         * \brief Deserializes the given material property from the given memory buffer
+         * \param out The output property
+         * \param data The input memory buffer
+         * \param length The memory buffer's length
+         * \return The number of read bytes on success. 0 otherwise.
+         */
+        static size_t deserializeProperty(Property& out, const char* data, size_t length);
     };
 
     template <typename T>
