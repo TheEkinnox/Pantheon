@@ -258,6 +258,31 @@ namespace PantheonCore::Resources
         return path;
     }
 
+    std::string ResourceManager::getRelativePath(std::string path) const
+    {
+        if (path.empty())
+            return {};
+
+        path = Utility::getAbsolutePath(getFullPath(path));
+
+        size_t bestMatch = 0;
+
+        const char* appDir = Utility::getApplicationDirectory();
+
+        if (path.starts_with(appDir))
+            bestMatch = strlen(appDir);
+
+        for (const auto& searchPath : m_searchPaths)
+        {
+            const std::string absSearchPath = Utility::getAbsolutePath(searchPath);
+
+            if (absSearchPath.size() > bestMatch && path.starts_with(absSearchPath))
+                bestMatch = absSearchPath.size() + 1;
+        }
+
+        return path.substr(bestMatch);
+    }
+
     void ResourceManager::importBundle(const AssetBundle& bundle)
     {
         const auto assets = bundle.getAssets();

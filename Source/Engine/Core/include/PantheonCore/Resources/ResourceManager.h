@@ -187,6 +187,13 @@ namespace PantheonCore::Resources
          */
         std::string getFullPath(const std::string& path) const;
 
+        /**
+         * \brief Gets the relative path of a resource from its full path
+         * \param path The resource's full path
+         * \return The resource's relative path
+         */
+        std::string getRelativePath(std::string path) const;
+
     private:
         BundlesMap  m_bundles;
         ResourceMap m_resources;
