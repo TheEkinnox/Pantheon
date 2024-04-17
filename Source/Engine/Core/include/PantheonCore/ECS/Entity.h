@@ -1,6 +1,7 @@
 #pragma once
 #include <climits>
 #include <cstdint>
+#include <ostream>
 
 namespace PantheonCore::ECS
 {
@@ -67,6 +68,14 @@ namespace PantheonCore::ECS
          */
         static constexpr Id make(Id index, Id version);
     };
+
+    /**
+     * \brief Adds an entity's string representation to the given output stream
+     * \param stream The output stream
+     * \param entity The output entity
+     * \return The modified stream
+     */
+    std::ostream& operator<<(std::ostream& stream, const Entity& entity);
 }
 
 #include "PantheonCore/ECS/Entity.inl"
