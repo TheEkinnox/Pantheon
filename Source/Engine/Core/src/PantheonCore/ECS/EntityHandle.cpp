@@ -130,8 +130,8 @@ namespace PantheonCore::ECS
 
     EntityHandle EntityHandle::copy() const
     {
-        if (*this)
-            return *this;
+        if (!*this)
+            return {};
 
         return m_scene->create(m_entity);
     }
