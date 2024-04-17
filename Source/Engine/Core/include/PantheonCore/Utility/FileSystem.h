@@ -39,6 +39,13 @@ namespace PantheonCore::Utility
     std::string appendPath(const std::string& root, const std::string& path);
 
     /**
+     * \brief Converts the given path to an absolute path
+     * \param path The path to convert to an absolute path
+     * \return The absolute path
+     */
+    std::string getAbsolutePath(const std::string& path);
+
+    /**
      * \brief Checks whether the given file path exists
      * \param path The path to check
      * \return True if the path exists. False otherwise

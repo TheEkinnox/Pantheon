@@ -122,6 +122,11 @@ namespace PantheonCore::Utility
         return std::filesystem::path(root).append(path).make_preferred().string();
     }
 
+    std::string getAbsolutePath(const std::string& path)
+    {
+        return std::filesystem::absolute(path).string();
+    }
+
     bool pathExists(const std::string& path)
     {
         return std::filesystem::exists(path);
