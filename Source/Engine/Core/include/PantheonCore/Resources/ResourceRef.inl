@@ -114,6 +114,12 @@ namespace PantheonCore::Resources
     }
 
     template <class T>
+    bool ResourceRef<T>::operator==(const ResourceRef& other) const
+    {
+        return m_path == other.m_path;
+    }
+
+    template <class T>
     T& ResourceRef<T>::operator*() const
     {
         return *getOrDefault();

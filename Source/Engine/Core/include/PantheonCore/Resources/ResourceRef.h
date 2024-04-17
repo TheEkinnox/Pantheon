@@ -8,8 +8,12 @@
 
 namespace PantheonCore::Resources
 {
+    class ResourceRefBase
+    {
+    };
+
     template <class T>
-    class ResourceRef
+    class ResourceRef : public ResourceRefBase
     {
         static_assert(std::is_same_v<IResource, T> || std::is_base_of_v<IResource, T>);
 
@@ -84,6 +88,13 @@ namespace PantheonCore::Resources
          * \return A reference to the modified resource reference
          */
         ResourceRef& operator=(ResourceRef&& other) noexcept;
+
+        /**
+         * \brief Checks whether the given resource reference is equivalent to this one
+         * \param other The compared resource reference
+         * \return True if the other resource reference is equivalent to this one. False otherwise
+         */
+        bool operator==(const ResourceRef& other) const;
 
         /**
          * \brief Gets a reference to the referenced resource
