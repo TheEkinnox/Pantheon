@@ -102,7 +102,7 @@ namespace PantheonCore::ECS
          * \brief Gets the current number of entities
          * \return The current number of entities
          */
-        virtual Entity::Id getCount() const = 0;
+        virtual Entity::Id size() const = 0;
 
         /**
          * \brief Serializes the component storage to a byte array
@@ -252,7 +252,7 @@ namespace PantheonCore::ECS
          * \brief Gets the current number of entities
          * \return The current number of entities
          */
-        Entity::Id getCount() const override;
+        Entity::Id size() const override;
 
         /**
          * \brief Checks if the given entity owns a component in the storage

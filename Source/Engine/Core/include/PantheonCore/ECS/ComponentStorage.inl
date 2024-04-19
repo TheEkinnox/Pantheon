@@ -160,7 +160,7 @@ namespace PantheonCore::ECS
     }
 
     template <class T>
-    Entity::Id ComponentStorage<T>::getCount() const
+    Entity::Id ComponentStorage<T>::size() const
     {
         return static_cast<Entity::Id>(m_components.size());
     }
@@ -248,10 +248,10 @@ namespace PantheonCore::ECS
     template <class T>
     bool ComponentStorage<T>::toBinary(std::vector<char>& output, const EntitiesMap& entitiesMap) const
     {
-        if (!CHECK(Serialization::IByteSerializable::writeNumber(getCount(), output), "Failed to write component storage size"))
+        if (!CHECK(Serialization::IByteSerializable::writeNumber(size(), output), "Failed to write component storage size"))
             return false;
 
-        output.reserve(output.size() + getCount() * (sizeof(T) + sizeof(Entity::Id)));
+        output.reserve(output.size() + size() * (sizeof(T) + sizeof(Entity::Id)));
 
         for (const auto [index, entity] : m_componentToEntity)
         {

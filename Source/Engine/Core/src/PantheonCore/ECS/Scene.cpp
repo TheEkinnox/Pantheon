@@ -39,7 +39,7 @@ namespace PantheonCore::ECS
 
     bool Scene::toBinary(std::vector<char>& output) const
     {
-        if (!CHECK(writeNumber(m_entities.getCount(), output), "Unable to write scene entity count to memory buffer"))
+        if (!CHECK(writeNumber(m_entities.size(), output), "Unable to write scene entity count to memory buffer"))
             return false;
 
         IComponentStorage::EntitiesMap entitiesMap;
@@ -54,7 +54,7 @@ namespace PantheonCore::ECS
 
         for (const auto& [typeId, storage] : m_components)
         {
-            if (!storage || storage->getCount() == 0)
+            if (!storage || storage->size() == 0)
                 continue;
 
             const std::string& typeName = ComponentRegistry::getInstance().getRegisteredTypeName(typeId);
@@ -117,7 +117,7 @@ namespace PantheonCore::ECS
         writer.StartObject();
 
         writer.Key("entities");
-        writer.Uint64(m_entities.getCount());
+        writer.Uint64(m_entities.size());
 
         writer.Key("components");
         writer.StartArray();
@@ -130,7 +130,7 @@ namespace PantheonCore::ECS
 
         for (const auto& [typeId, storage] : m_components)
         {
-            if (!storage || storage->getCount() == 0)
+            if (!storage || storage->size() == 0)
                 continue;
 
             writer.StartObject();

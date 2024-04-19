@@ -77,17 +77,17 @@ namespace PantheonTest
             TEST_CHECK(i == 4, "Setting a component for an existing entity should have updated it's value");
         }
 
-        TEST_CHECK(scene.getStorage<Entity>().getCount() == 5);
-        TEST_CHECK(scene.getStorage<int>().getCount() == 5);
+        TEST_CHECK(scene.getStorage<Entity>().size() == 5);
+        TEST_CHECK(scene.getStorage<int>().size() == 5);
 
         scene.remove<const int>(Entity(1));
-        TEST_CHECK(scene.getStorage<int>().getCount() == 4);
+        TEST_CHECK(scene.getStorage<int>().size() == 4);
 
         scene.remove<int>(*scene.get<int>(lastEntity));
-        TEST_CHECK(scene.getStorage<int>().getCount() == 3);
+        TEST_CHECK(scene.getStorage<int>().size() == 3);
 
         scene.remove<int>(lastEntity);
-        TEST_CHECK(scene.getStorage<int>().getCount() == 3);
+        TEST_CHECK(scene.getStorage<int>().size() == 3);
 
         SceneView<int, char, float> view(scene);
 
@@ -95,9 +95,9 @@ namespace PantheonTest
         lastEntity.set<char>('j');
         lastEntity.set<float>(2.5f);
 
-        TEST_CHECK(scene.getStorage<int>().getCount() == 4);
-        TEST_CHECK(scene.getStorage<float>().getCount() == 1);
-        TEST_CHECK(scene.getStorage<char>().getCount() == 1);
+        TEST_CHECK(scene.getStorage<int>().size() == 4);
+        TEST_CHECK(scene.getStorage<float>().size() == 1);
+        TEST_CHECK(scene.getStorage<char>().size() == 1);
 
         const char c1       = *view.get<char>(lastEntity);
         auto       [i1, f1] = view.get<int, float>(lastEntity);
@@ -135,10 +135,10 @@ namespace PantheonTest
 
         lastEntity.destroy();
 
-        TEST_CHECK(scene.getStorage<Entity>().getCount() == 4);
-        TEST_CHECK(scene.getStorage<int>().getCount() == 3);
-        TEST_CHECK(scene.getStorage<float>().getCount() == 0);
-        TEST_CHECK(scene.getStorage<char>().getCount() == 0);
+        TEST_CHECK(scene.getStorage<Entity>().size() == 4);
+        TEST_CHECK(scene.getStorage<int>().size() == 3);
+        TEST_CHECK(scene.getStorage<float>().size() == 0);
+        TEST_CHECK(scene.getStorage<char>().size() == 0);
 
         auto [iDestroyed, cDestroyed, fDestroyed] = view.get(lastEntity);
 
@@ -153,10 +153,10 @@ namespace PantheonTest
 
         lastEntity = scene.create();
 
-        TEST_CHECK(scene.getStorage<Entity>().getCount() == 5);
-        TEST_CHECK(scene.getStorage<int>().getCount() == 3);
-        TEST_CHECK(scene.getStorage<float>().getCount() == 0);
-        TEST_CHECK(scene.getStorage<char>().getCount() == 0);
+        TEST_CHECK(scene.getStorage<Entity>().size() == 5);
+        TEST_CHECK(scene.getStorage<int>().size() == 3);
+        TEST_CHECK(scene.getStorage<float>().size() == 0);
+        TEST_CHECK(scene.getStorage<char>().size() == 0);
 
         for ([[maybe_unused]] const auto _ : view)
         {
