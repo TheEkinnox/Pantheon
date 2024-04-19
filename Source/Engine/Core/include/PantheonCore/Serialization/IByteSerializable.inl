@@ -45,12 +45,12 @@ namespace PantheonCore::Serialization
         if (data == nullptr || length < sizeof(U))
             return 0;
 
-        U elemSize = 0;
+        U value{};
 
-        if (!Utility::memCopy(&elemSize, sizeof(U), data, sizeof(U)))
+        if (!Utility::memCopy(&value, sizeof(U), data, sizeof(U)))
             return 0;
 
-        out = static_cast<T>(Utility::fromBigEndian(elemSize));
+        out = static_cast<T>(Utility::fromBigEndian(value));
         return sizeof(U);
     }
 
