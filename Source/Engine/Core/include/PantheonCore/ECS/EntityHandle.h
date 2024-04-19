@@ -65,7 +65,7 @@ namespace PantheonCore::ECS
          * \brief Checks whether the entity is valid or not
          * \return True if the entity is valid. False otherwise.
          */
-        explicit operator bool() const;
+        operator bool() const;
 
         /**
          * \brief Implicitly converts the handle to it's linked entity
