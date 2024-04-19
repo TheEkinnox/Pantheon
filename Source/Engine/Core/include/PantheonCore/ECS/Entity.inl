@@ -37,13 +37,13 @@ namespace PantheonCore::ECS
         m_id = make(getIndex(), version + 1);
     }
 
-    inline std::ostream& operator<<(std::ostream& stream, const Entity& entity)
-    {
-        return stream << entity.getIndex() << ':' << entity.getVersion();
-    }
-
     constexpr Entity::Id Entity::make(const Id index, const Id version)
     {
         return (index & INDEX_MASK) | ((version & VERSION_MASK) << INDEX_BITS);
+    }
+
+    inline std::ostream& operator<<(std::ostream& stream, const Entity& entity)
+    {
+        return stream << entity.getIndex() << ':' << entity.getVersion();
     }
 }

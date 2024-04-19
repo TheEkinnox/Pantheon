@@ -1,8 +1,11 @@
 #pragma once
 #include "PantheonCore/ECS/Entity.h"
-#include "PantheonCore/Utility/DynamicTypeInfo.h"
 #include "PantheonCore/Serialization/IJsonSerializable.h"
 #include "PantheonCore/Utility/TypeRegistry.h"
+
+#ifdef PTH_EDITOR
+#include "PantheonCore/Utility/DynamicTypeInfo.h"
+#endif
 
 #include <cstdint>
 #include <memory>

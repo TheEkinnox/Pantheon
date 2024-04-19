@@ -18,7 +18,7 @@ namespace PantheonCore::ECS
     template <>
     bool ComponentRegistry::fromJson(LibMath::Transform&, const rapidjson::Value&, Scene*);
 
-    /* Angles */
+    /* Degree */
     template <>
     bool ComponentRegistry::toBinary(const LibMath::Degree&, std::vector<char>&, const EntitiesMap&);
 
@@ -31,6 +31,7 @@ namespace PantheonCore::ECS
     template <>
     bool ComponentRegistry::fromJson(LibMath::Degree&, const rapidjson::Value&, Scene*);
 
+    /* Radian */
     template <>
     bool ComponentRegistry::toBinary(const LibMath::Radian&, std::vector<char>&, const EntitiesMap&);
 

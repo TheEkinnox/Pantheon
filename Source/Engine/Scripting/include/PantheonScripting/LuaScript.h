@@ -3,7 +3,7 @@
 
 namespace PantheonScripting
 {
-    class LuaScript : public PantheonCore::Resources::IResource
+    class LuaScript final : public PantheonCore::Resources::IResource
     {
         REGISTERED_RESOURCE_BODY()
 
