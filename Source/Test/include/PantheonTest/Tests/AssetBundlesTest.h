@@ -24,7 +24,5 @@ namespace PantheonTest
 
         static void testAssetWithGuid(
             const PantheonCore::Assets::AssetBundle& bundle, const std::shared_ptr<const PantheonCore::Assets::Asset>& asset);
-
-        static bool compareBuffers(const std::vector<char>& buffer1, const std::vector<char>& buffer2);
     };
 }

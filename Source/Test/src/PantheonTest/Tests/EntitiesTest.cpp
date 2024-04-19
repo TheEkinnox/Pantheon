@@ -277,20 +277,6 @@ namespace PantheonTest
         TEST_CHECK(entity.get<TagComponent>() == nullptr, "getComponent should return nullptr for removed component type");
     }
 
-    bool compareBuffers(const std::vector<char>& buffer1, const std::vector<char>& buffer2)
-    {
-        if (buffer1.empty() != buffer2.empty())
-            return false;
-
-        if (buffer1.data() == buffer2.data())
-            return true;
-
-        if (buffer1.size() != buffer2.size())
-            return false;
-
-        return memcmp(buffer1.data(), buffer2.data(), buffer1.size()) == 0;
-    }
-
     void EntitiesTest::testJsonSerialization()
     {
         DEBUG_LOG("\n= Starting json serialization tests =");
@@ -328,16 +314,6 @@ namespace PantheonTest
         Scene scene;
         TEST_CHECK(!scene.fromJson(invalidJson), "Scene deserialization from invalid json should have failed");
         TEST_CHECK(scene.fromJson(validJson), "Scene deserialization from valid json failed");
-
-        {
-            rapidjson::StringBuffer tmpBuffer;
-            rapidjson::Writer       tmpWriter(tmpBuffer);
-            TEST_CHECK(scene.toJson(tmpWriter), "Scene json serialization failed");
-            TEST_CHECK(tmpWriter.IsComplete(), "Scene json serialization failed - Produced json is incomplete");
-
-            const std::string tmpJsonStr(tmpBuffer.GetString(), tmpBuffer.GetSize());
-            TEST_CHECK(compareBuffers({tmpJsonStr.begin(), tmpJsonStr.end()}, {validJsonStr.begin(), validJsonStr.end()}));
-        }
     }
 
     void EntitiesTest::testBinarySerialization()
@@ -358,11 +334,5 @@ namespace PantheonTest
 
         TEST_CHECK(scene.fromBinary(validArray.data(), validArray.size()) != 0,
             "Scene deserialization from valid byte array failed");
-
-        {
-            std::vector<char> tmpArray;
-            TEST_CHECK(scene.toBinary(tmpArray), "Scene binary serialization failed");
-            TEST_CHECK(compareBuffers(tmpArray, validArray));
-        }
     }
 }

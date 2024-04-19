@@ -35,6 +35,8 @@ namespace PantheonTest
 
         explicit ITest(std::string name);
 
+        static bool compareBuffers(const std::vector<char>& buffer1, const std::vector<char>& buffer2);
+
         virtual void onStart();
 
         virtual void onPreUpdate();

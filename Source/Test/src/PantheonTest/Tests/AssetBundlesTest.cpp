@@ -165,18 +165,4 @@ namespace PantheonTest
         else
             DEBUG_LOG_ERROR("\"%s\": %s", asset->getGuid(), "INVALID");
     }
-
-    bool AssetBundlesTest::compareBuffers(const std::vector<char>& buffer1, const std::vector<char>& buffer2)
-    {
-        if (buffer1.empty() != buffer2.empty())
-            return false;
-
-        if (buffer1.data() == buffer2.data())
-            return true;
-
-        if (buffer1.size() != buffer2.size())
-            return false;
-
-        return memcmp(buffer1.data(), buffer2.data(), buffer1.size()) == 0;
-    }
 }
