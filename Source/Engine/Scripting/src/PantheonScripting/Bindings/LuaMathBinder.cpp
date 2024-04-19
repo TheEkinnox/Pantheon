@@ -83,7 +83,7 @@ namespace PantheonScripting::Bindings
         ));
 
         math.set_function("isNear",
-            [](float a, float b)
+            [](const float a, const float b)
             {
                 return floatEquals(a, b);
             }

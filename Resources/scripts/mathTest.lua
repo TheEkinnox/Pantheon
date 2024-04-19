@@ -6,7 +6,7 @@ local function testAngles()
     assert(type(deg) == "userdata", "Expected \"userdata\" - Received \"" .. type(deg) .. "\"")
     assert(deg.__type.name == Degree.__type.name, "Expected: " .. Degree.__type.name)
 
-    assert(deg:raw() == 180)
+    assert(deg.raw == 180)
     assert(deg + deg == Degree.new(360))
     assert(deg - deg == Degree.new(0))
     assert(deg * 2 == Degree.new(360))
@@ -19,7 +19,7 @@ local function testAngles()
     assert(type(rad) == "userdata", "Expected \"userdata\" - Received \"" .. type(rad) .. "\"")
     assert(rad.__type.name == Radian.__type.name, "Expected: " .. Radian.__type.name)
 
-    assert(math.isNear(rad:raw(), math.pi))
+    assert(math.isNear(rad.raw, math.pi))
     assert(rad + rad == Radian.new(math.pi * 2))
     assert(rad - rad == Radian.new(0))
     assert(rad * 2 == Radian.new(math.pi * 2))
@@ -112,7 +112,7 @@ local function testVectors()
     ctor.x = 6
     ctor.y = 9
     assert(ctor.x == 6 and ctor.y == 9)
-    assert(Vector3.new(6, 9, 2):xy() == ctor)
+    assert(Vector3.new(6, 9, 2).xy == ctor)
     assert(Vector3.new(ctor) == Vector3.new(6, 9, 0))
 end
 

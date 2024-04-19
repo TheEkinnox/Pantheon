@@ -56,7 +56,7 @@ namespace PantheonScripting::Bindings
             sol::meta_function::multiplication, sol::resolve<T(T, float)>(&operator*),
             sol::meta_function::division, sol::resolve<T(T, float)>(&operator/),
             "wrap", &T::wrap,
-            "raw", &T::raw
+            "raw", sol::readonly_property(&T::raw)
         );
 
         angleType["__type"]["name"] = typeName;

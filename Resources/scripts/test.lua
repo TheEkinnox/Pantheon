@@ -38,10 +38,9 @@ local function testScene(scene)
     assert(scene:isValid(entity))
     assert(scene:contains(entity))
 
-    local entities = scene:getEntities()
     local found = false
 
-    for _, sceneEntity in ipairs(entities) do
+    for _, sceneEntity in ipairs(scene.entities) do
         found = found or sceneEntity == entity
     end
 
@@ -55,7 +54,7 @@ local function testScene(scene)
     assert(copy)
     assert(type(copy) == "userdata", "Expected \"userdata\" - Received \"" .. type(copy) .. "\"")
     assert(copy.__type.name == typeName, "Expected \"" .. typeName .. "\" - Received \"" .. copy.__type.name .. "\"")
-    assert(copy:isValid())
+    assert(copy.isValid)
     assert(copy ~= entity)
 
     assert(copy:get("Tag").value == tag.value)
@@ -63,28 +62,28 @@ local function testScene(scene)
     scene:destroy(copy)
 
     assert(copy)
-    assert(not copy:isValid())
+    assert(not copy.isValid)
 
     scene:destroy(entity)
 end
 
 local function testComponents(entity)
-    assert(entity:getComponentCount() == 1)
+    assert(entity.componentCount == 1)
 
     local componentType = "Transform"
 
     assert(not entity:has(componentType))
-    assert(not entity:get(componentType):isValid())
+    assert(not entity:get(componentType).isValid)
 
     local transform = entity:getOrCreate(componentType)
 
-    assert(transform:isValid())
+    assert(transform.isValid)
     assert(transform.__type.name == Transform.__type.name)
     assert(entity:has(componentType))
-    assert(entity:getComponentCount() == 2)
+    assert(entity.componentCount == 2)
 
     local get = entity:get(componentType)
-    assert(get:isValid())
+    assert(get.isValid)
     assert(get == transform)
 
     local startPos = transform.position
@@ -103,21 +102,21 @@ end
 
 local function testScripts(entity)
     assert(not entity:hasScript("scripts.test"))
-    assert(not entity:getScript("scripts.test"):isValid())
+    assert(not entity:getScript("scripts.test").isValid)
 
     local script = entity:addScript("scripts.test")
 
-    assert(script:isValid())
+    assert(script.isValid)
     assert(script.owner == entity)
     assert(entity:hasScript("scripts.test"))
     assert(script.ping() == "pong")
 
     local invalid = entity:addScript("scripts.test")
-    assert(not invalid:isValid())
+    assert(not invalid.isValid)
 
     local getTest = entity:getScript("scripts.test")
 
-    assert(getTest:isValid())
+    assert(getTest.isValid)
     assert(getTest == script)
 
     assert(not script.test_bool)
@@ -129,40 +128,40 @@ local function testScripts(entity)
     assert(script.test_bool)
 
     entity:removeScript("scripts.test")
-    assert(not script:isValid())
+    assert(not script.isValid)
 end
 
 local function testHierarchy(entity)
-    assert(not entity.parent:isValid())
-    assert(entity:getRoot() == entity)
-    assert(not entity:getNextSibling():isValid())
-    assert(not entity:getPreviousSibling():isValid())
-    assert(entity:getChildCount() == 0)
-    assert(not entity:getChild(5):isValid())
-    assert(#entity:getChildren() == 0)
+    assert(not entity.parent.isValid)
+    assert(entity.root == entity)
+    assert(not entity.nextSibling.isValid)
+    assert(not entity.previousSibling.isValid)
+    assert(entity.childCount == 0)
+    assert(not entity:getChild(5).isValid)
+    assert(#entity.children == 0)
 
     local child1 = entity:copy()
     local child2 = entity:copy()
 
     child1.parent = entity
 
-    assert(child1.parent:isValid())
+    assert(child1.parent.isValid)
     assert(child1.parent == entity)
-    assert(child1:getRoot() == entity)
-    assert(entity:getChildCount() == 1)
-    assert(#entity:getChildren() == 1)
-    assert(entity:getChild(0):isValid())
+    assert(child1.root == entity)
+    assert(entity.childCount == 1)
+    assert(#entity.children == 1)
+    assert(entity:getChild(0).isValid)
     assert(entity:getChild(0) == child1)
 
     child2.parent = entity
 
-    assert(child1:getPreviousSibling():isValid())
-    assert(child1:getPreviousSibling() == child2)
-    assert(not child1:getNextSibling():isValid())
+    assert(child1.previousSibling.isValid)
+    assert(child1.previousSibling == child2)
+    assert(not child1.nextSibling.isValid)
 
-    assert(child2:getNextSibling():isValid())
-    assert(child2:getNextSibling() == child1)
-    assert(not child2:getPreviousSibling():isValid())
+    assert(child2.nextSibling.isValid)
+    assert(child2.nextSibling == child1)
+    assert(not child2.previousSibling.isValid)
 end
 
 local function testECS(entity)
@@ -170,16 +169,16 @@ local function testECS(entity)
 
     assert(type(entity) == "userdata", "Expected \"userdata\" - Received \"" .. type(entity) .. "\"")
     assert(entity.__type.name == typeName, "Expected \"" .. typeName .. "\" - Received \"" .. entity.__type.name .. "\"")
-    assert(entity:isValid())
+    assert(entity.isValid)
 
-    testScene(entity:getScene())
+    testScene(entity.scene)
 
     local copy = entity:copy()
 
     assert(copy)
     assert(type(copy) == "userdata", "Expected \"userdata\" - Received \"" .. type(copy) .. "\"")
     assert(copy.__type.name == typeName, "Expected \"" .. typeName .. "\" - Received \"" .. copy.__type.name .. "\"")
-    assert(copy:isValid())
+    assert(copy.isValid)
     assert(copy ~= entity)
 
     testComponents(copy)
@@ -191,7 +190,7 @@ local function testECS(entity)
     copy:destroy()
 
     assert(copy)
-    assert(not copy:isValid())
+    assert(not copy.isValid)
 end
 
 function Test:onInit()

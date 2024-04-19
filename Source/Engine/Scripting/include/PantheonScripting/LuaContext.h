@@ -164,7 +164,7 @@ namespace PantheonScripting
          * \brief Gets the current native lua state
          * \return The current native lua state
          */
-        lua_State* getLuaState();
+        lua_State* getLuaState() const;
 
         /**
          * \brief Gets the given module's name

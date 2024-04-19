@@ -44,7 +44,7 @@ namespace PantheonScripting::Bindings
                     return oss.str();
                 }
             ),
-            "hasParent", &Transform::hasParent,
+            "hasParent", sol::readonly_property(&Transform::hasParent),
             "parent", sol::property(
                 sol::resolve<Transform*()>(&Transform::getParent),
                 [](Transform& self, Transform* parent)

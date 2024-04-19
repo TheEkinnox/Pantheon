@@ -144,10 +144,10 @@ namespace PantheonScripting::Bindings
             "right", sol::readonly_property(&Vector3::right),
             "front", sol::readonly_property(&Vector3::front),
             "back", sol::readonly_property(&Vector3::back),
-            "xy", [](const Vector3& self)
+            "xy", sol::readonly_property([](const Vector3& self)
             {
                 return Vector2(self.m_x, self.m_y);
-            },
+            }),
             "angleFrom", &Vector3::angleFrom,
             "signedAngleFrom", &Vector3::signedAngleFrom,
             "cross", &Vector3::cross,

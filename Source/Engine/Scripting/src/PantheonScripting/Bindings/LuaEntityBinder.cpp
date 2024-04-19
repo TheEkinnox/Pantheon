@@ -99,17 +99,17 @@ namespace PantheonScripting::Bindings
                     return oss.str();
                 }
             ),
-            "isValid", &EntityHandle::operator bool,
-            "getScene", &EntityHandle::getScene,
+            "isValid", sol::readonly_property(&EntityHandle::operator bool),
+            "scene", sol::readonly_property(&EntityHandle::getScene),
             "copy", &EntityHandle::copy,
             "destroy", &EntityHandle::destroy,
-            "getRoot", &EntityHandle::getRoot,
+            "root", sol::readonly_property(&EntityHandle::getRoot),
             "parent", sol::property(&EntityHandle::getParent, &EntityHandle::setParent),
-            "getNextSibling", &EntityHandle::getNextSibling,
-            "getPreviousSibling", &EntityHandle::getPreviousSibling,
-            "getChildCount", &EntityHandle::getChildCount,
+            "nextSibling", sol::readonly_property(&EntityHandle::getNextSibling),
+            "previousSibling", sol::readonly_property(&EntityHandle::getPreviousSibling),
+            "childCount", sol::readonly_property(&EntityHandle::getChildCount),
             "getChild", &EntityHandle::getChild,
-            "getChildren", &EntityHandle::getChildren,
+            "children", sol::readonly_property(&EntityHandle::getChildren),
             "hasScript", [](const EntityHandle& self, const std::string& name) -> bool
             {
                 const LuaScriptList* script = self.get<LuaScriptList>();
@@ -150,7 +150,7 @@ namespace PantheonScripting::Bindings
                 return self.getScene()->getStorage(typeId).contains(self.getEntity());
             },
             "get", getComponent,
-            "getOrCreate", [](EntityHandle& self, const std::string& type) -> ComponentHandle
+            "getOrCreate", [](const EntityHandle& self, const std::string& type) -> ComponentHandle
             {
                 if (type.empty())
                     return {};
@@ -170,7 +170,7 @@ namespace PantheonScripting::Bindings
             "getInParent", getInParent,
             "getInChildren", getInChildren,
             "getInHierarchy",
-            [](const EntityHandle& self, const std::string& type, EntityHandle::EComponentSearchOrigin searchOrigin)
+            [](const EntityHandle& self, const std::string& type, const EntityHandle::EComponentSearchOrigin searchOrigin)
             -> ComponentHandle
             {
                 switch (searchOrigin)
@@ -198,7 +198,7 @@ namespace PantheonScripting::Bindings
                     return {};
                 }
             },
-            "remove", [](EntityHandle& self, const std::string& type)
+            "remove", [](const EntityHandle& self, const std::string& type)
             {
                 if (!self || type.empty())
                     return;
@@ -211,8 +211,8 @@ namespace PantheonScripting::Bindings
                 const auto typeId = components.getTypeInfo(type).m_typeId;
                 self.getScene()->getStorage(typeId).remove(self);
             },
-            "getComponentCount", &EntityHandle::getComponentCount,
-            "getComponents", [](EntityHandle& self) -> std::vector<ComponentHandle>
+            "componentCount", sol::readonly_property(&EntityHandle::getComponentCount),
+            "components", sol::readonly_property([](EntityHandle& self) -> std::vector<ComponentHandle>
             {
                 const auto ids = self.getComponentIds();
 
@@ -222,7 +222,7 @@ namespace PantheonScripting::Bindings
                     components.emplace_back(self, id);
 
                 return components;
-            }
+            })
         );
 
         handleType["__type"]["name"] = typeName;

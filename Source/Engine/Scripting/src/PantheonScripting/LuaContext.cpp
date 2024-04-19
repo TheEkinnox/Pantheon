@@ -66,10 +66,7 @@ namespace PantheonScripting
             if (i > m_scripts.size())
                 continue;
 
-            EntityHandle   entity = m_scripts[i - 1].m_owner;
-            LuaScriptList* script = entity.get<LuaScriptList>();
-
-            if (script && !registerScript(m_scripts[i - 1]))
+            if (!registerScript(m_scripts[i - 1]))
                 return;
         }
     }
@@ -245,7 +242,7 @@ namespace PantheonScripting
         m_hasStarted = false;
     }
 
-    lua_State* LuaContext::getLuaState()
+    lua_State* LuaContext::getLuaState() const
     {
         return m_state ? m_state->lua_state() : nullptr;
     }

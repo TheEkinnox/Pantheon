@@ -100,18 +100,20 @@ namespace PantheonScripting::Bindings
                     return self.isValid(handle);
                 }
             ),
-            "getEntities", [](Scene& self) -> std::vector<EntityHandle>
-            {
-                std::vector<EntityHandle> out;
+            "entities", sol::readonly_property(
+                [](Scene& self) -> std::vector<EntityHandle>
+                {
+                    std::vector<EntityHandle> out;
 
-                const auto& storage = self.getStorage<Entity>();
-                out.reserve(storage.size());
+                    const auto& storage = self.getStorage<Entity>();
+                    out.reserve(storage.size());
 
-                for (const auto& entity : storage)
-                    out.emplace_back(&self, entity);
+                    for (const auto& entity : storage)
+                        out.emplace_back(&self, entity);
 
-                return out;
-            },
+                    return out;
+                }
+            ),
             "contains", sol::overload(
                 &Scene::contains,
                 [](const Scene& self, const EntityHandle& handle)
@@ -133,8 +135,8 @@ namespace PantheonScripting::Bindings
 
         sol::usertype componentType = luaState.new_usertype<ComponentHandle>(
             typeName,
-            "isValid", &ComponentHandle::operator bool,
-            sol::meta_function::index, [&luaState](ComponentHandle& self, const sol::object& index) -> sol::object
+            "isValid", sol::readonly_property(&ComponentHandle::operator bool),
+            sol::meta_function::index, [&luaState](const ComponentHandle& self, const sol::object& index) -> sol::object
             {
                 if (!self.m_owner)
                     return sol::nil;
@@ -142,7 +144,7 @@ namespace PantheonScripting::Bindings
                 void* component = self.m_owner.getScene()->getStorage(self.m_typeId).findRaw(self.m_owner);
                 return LuaTypeRegistry::getInstance().getTypeInfo(self.m_typeId).toLua(component, luaState)[index];
             },
-            sol::meta_function::new_index, [&luaState](ComponentHandle& self, const sol::object& key, sol::object value)
+            sol::meta_function::new_index, [&luaState](const ComponentHandle& self, const sol::object& key, sol::object value)
             {
                 if (!self.m_owner)
                     return;
@@ -159,7 +161,7 @@ namespace PantheonScripting::Bindings
                 data[key] = value;
                 typeInfo.fromLua(component, data);
             },
-            "set", [](ComponentHandle& self, sol::object value)
+            "set", [](const ComponentHandle& self, const sol::userdata& value)
             {
                 if (!self.m_owner)
                     return;
@@ -186,8 +188,8 @@ namespace PantheonScripting::Bindings
 
         sol::usertype componentType = luaState.new_usertype<LuaContext::ScriptHandle>(
             typeName,
-            "isValid", &LuaContext::ScriptHandle::operator bool,
-            sol::meta_function::index, [](LuaContext::ScriptHandle& self, const sol::object& index) -> sol::object
+            "isValid", sol::readonly_property(&LuaContext::ScriptHandle::operator bool),
+            sol::meta_function::index, [](const LuaContext::ScriptHandle& self, const sol::object& index) -> sol::object
             {
                 if (!self)
                     return sol::nil;

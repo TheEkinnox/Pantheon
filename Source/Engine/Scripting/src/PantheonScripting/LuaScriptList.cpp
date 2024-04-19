@@ -66,7 +66,7 @@ namespace PantheonScripting
         if (!handle.m_table.valid())
             return {};
 
-        // Note: Refetch is necessary to avoid issues when entities are created during script initialization
+        // Note: Re-fetch is necessary to avoid issues when entities are created during script initialization
         handle.m_owner.get<LuaScriptList>()->m_scripts[script] = handle.m_table;
         return handle;
     }
