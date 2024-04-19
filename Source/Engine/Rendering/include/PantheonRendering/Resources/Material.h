@@ -3,13 +3,15 @@
 
 #include <PantheonCore/Resources/IResource.h>
 #include <PantheonCore/Resources/ResourceRef.h>
-#include <PantheonCore/Serialization/IJsonSerializable.h>
+
+#include <rapidjson/document.h>
+#include <rapidjson/writer.h>
 
 #include <any>
 
 namespace PantheonRendering::Resources
 {
-    class Material final : public PantheonCore::Resources::IResource, public PantheonCore::Serialization::IJsonSerializable
+    class Material final : public PantheonCore::Resources::IResource
     {
         REGISTERED_RESOURCE_BODY()
 
@@ -79,14 +81,14 @@ namespace PantheonRendering::Resources
          * \param writer The output json writer
          * \return True on success. False otherwise.
          */
-        bool toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const override;
+        bool toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const;
 
         /**
          * \brief Deserializes the material from json
          * \param json The input json data
          * \return True on success. False otherwise.
          */
-        bool fromJson(const rapidjson::Value& json) override;
+        bool fromJson(const rapidjson::Value& json);
 
         /**
          * \brief Serializes the material to a byte array

@@ -1,11 +1,13 @@
 #pragma once
 #include "PantheonCore/ECS/Entity.h"
-#include "PantheonCore/Serialization/IJsonSerializable.h"
 #include "PantheonCore/Utility/TypeRegistry.h"
 
 #ifdef PTH_EDITOR
 #include "PantheonCore/Utility/DynamicTypeInfo.h"
 #endif
+
+#include <rapidjson/document.h>
+#include <rapidjson/writer.h>
 
 #include <cstdint>
 #include <memory>
@@ -37,13 +39,13 @@ namespace PantheonCore::ECS
         using EntitiesMap = std::unordered_map<Entity::Id, Entity>;
 
         template <typename T>
-        static bool toJson(const T& component, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap& toSerialized);
+        static bool toJson(const T& in, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap& toSerialized);
 
         template <typename T>
         static bool fromJson(T& out, const rapidjson::Value& json, Scene* scene);
 
         template <typename T>
-        static bool toBinary(const T& component, std::vector<char>& out, const EntitiesMap& toSerialized);
+        static bool toBinary(const T& in, std::vector<char>& out, const EntitiesMap& toSerialized);
 
         template <typename T>
         static size_t fromBinary(T& out, const char* data, size_t length, Scene* scene);

@@ -47,51 +47,36 @@ namespace PantheonScripting
 
                 const T& obj = *object.as<T*>();
 
-                if constexpr (std::is_base_of_v<ResourceRefBase, T> || std::is_base_of_v<IByteSerializable, T>)
-                    return obj.toBinary(out);
-                else
-                    return ComponentRegistry::toBinary<T>(obj, out, toSerialized);
+                return ComponentRegistry::toBinary<T>(obj, out, toSerialized);
             },
             .fromBinary = [](lua_State* luaState, const char* data, size_t length, size_t& readBytes, [[maybe_unused]] Scene* scene)
             -> sol::optional<sol::object>
             {
                 T out;
 
-                if constexpr (std::is_base_of_v<ResourceRefBase, T> || std::is_base_of_v<IByteSerializable, T>)
-                    readBytes = out.fromBinary(data, length);
-                else
-                    readBytes = ComponentRegistry::fromBinary(out, data, length, scene);
+                readBytes = ComponentRegistry::fromBinary(out, data, length, scene);
 
                 if (readBytes > 0)
                     return sol::make_object(luaState, out);
 
                 return sol::nullopt;
             },
-            .toJson = [](const sol::userdata& object, JsonWriter& writer, [[maybe_unused]] const EntitiesMap& toSerialized)
+            .toJson = [](const sol::userdata& object, JsonWriter& writer, const EntitiesMap& toSerialized)
             {
                 if (!object.valid() || !object.is<T>())
                     return false;
 
                 const T& obj = *object.as<T*>();
 
-                if constexpr (std::is_base_of_v<ResourceRefBase, T> || std::is_base_of_v<IJsonSerializable, T>)
-                    return obj.toJson(writer);
-                else
-                    return ComponentRegistry::toJson<T>(obj, writer, toSerialized);
+                return ComponentRegistry::toJson(obj, writer, toSerialized);
             },
             .fromJson =
-            [](lua_State* luaState, const rapidjson::Value& json, [[maybe_unused]] Scene* scene)
+            [](lua_State* luaState, const rapidjson::Value& json, Scene* scene)
             -> sol::optional<sol::object>
             {
-                T    out;
-                bool result;
+                T out;
 
-                if constexpr (std::is_base_of_v<ResourceRefBase, T> || std::is_base_of_v<IJsonSerializable, T>)
-                    result = out.fromJson(json);
-                else
-                    result = ComponentRegistry::fromJson(out, json, scene);
-
-                if (result)
+                if (ComponentRegistry::fromJson(out, json, scene))
                     return sol::make_object(luaState, out);
 
                 return sol::nullopt;
