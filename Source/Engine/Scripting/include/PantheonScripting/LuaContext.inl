@@ -4,25 +4,25 @@
 namespace PantheonScripting
 {
     template <typename... Args>
-    bool LuaContext::tryCall(LuaScriptComponent& component, const std::string& name, Args&&... args)
+    ELuaCallResult LuaContext::tryCall(sol::table& table, const std::string& name, Args&&... args)
     {
-        if (!m_isValid || !component.m_table.valid())
-            return false;
+        if (!m_isValid || !table.valid())
+            return ELuaCallResult::INVALID_STATE;
 
-        sol::protected_function func = component.m_table[name];
+        sol::protected_function func = table[name];
 
         if (!func.valid())
-            return false;
+            return ELuaCallResult::NOT_FOUND;
 
-        const auto result = func.call(component.m_table, std::forward<Args>(args)...);
+        const auto result = func.call(table, std::forward<Args>(args)...);
 
         if (!result.valid())
         {
             [[maybe_unused]] const sol::error err = result;
-            return CHECK(false, "Call to function %s of script %s failed - %s",
-                    name.c_str(), component.m_script.getPath().c_str(), err.what());
+            CHECK(false, "Call to lua script function %s failed - %s", name.c_str(), err.what());
+            return ELuaCallResult::FAILURE;
         }
 
-        return true;
+        return ELuaCallResult::SUCCESS;
     }
 }

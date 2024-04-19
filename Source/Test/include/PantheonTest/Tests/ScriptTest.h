@@ -1,7 +1,13 @@
 #pragma once
-#include "ITest.h"
+#include "PantheonTest/Tests/ITest.h"
 
-#include "PantheonScripting/LuaContext.h"
+#include <PantheonCore/ECS/Scene.h>
+
+namespace PantheonScripting
+{
+    class LuaContext;
+    class LuaScriptList;
+}
 
 namespace PantheonTest
 {
@@ -10,13 +16,12 @@ namespace PantheonTest
     public:
         explicit ScriptTest(size_t testScriptsCount = 250);
         explicit ScriptTest(const std::string& name, size_t testScriptsCount = 250);
-        ~ScriptTest() override;
 
     protected:
         void onStart() override;
         void onUpdate() override;
-        void onPostUpdate() override;
         void onFixedUpdate() override;
+        void onPostUpdate() override;
         void onStop() override;
 
     private:
@@ -28,6 +33,8 @@ namespace PantheonTest
         size_t m_testScriptsCount;
         size_t m_destroyedScriptsCount;
 
-        void testJsonSerialization(const PantheonScripting::LuaScriptComponent& testComponent);
+        void testModuleUtility();
+        void testJsonSerialization(const PantheonScripting::LuaScriptList& testComponent);
+        void testBinarySerialization(const PantheonScripting::LuaScriptList& testComponent);
     };
 }

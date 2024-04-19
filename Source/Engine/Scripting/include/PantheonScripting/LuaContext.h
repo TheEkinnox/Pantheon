@@ -1,15 +1,52 @@
 #pragma once
-#include "PantheonScripting/LuaScriptComponent.h"
+#include "PantheonScripting/LuaScript.h"
 
 #include <PantheonCore/ECS/EntityHandle.h>
+#include <PantheonCore/Resources/ResourceRef.h>
+
+#include <cstdint>
 
 #include <sol/sol.hpp>
 
 namespace PantheonScripting
 {
+    enum class ELuaCallResult : uint8_t
+    {
+        INVALID_STATE,
+        NOT_FOUND,
+        SUCCESS,
+        FAILURE
+    };
+
     class LuaContext
     {
     public:
+        struct ScriptHandle
+        {
+            PantheonCore::Resources::ResourceRef<LuaScript> m_script;
+            PantheonCore::ECS::EntityHandle                 m_owner;
+            sol::table                                      m_table = sol::nil;
+
+            /**
+             * \brief Checks whether this script handle should be ordered before the given one or not
+             * \param other The script handle to compare against
+             * \return True if this script handle should be ordered before the given one. False otherwise
+             */
+            bool operator<(const ScriptHandle& other) const;
+
+            /**
+             * \brief Checks whether the given script handle references the same script as this one or not
+             * \param other The script handle to compare against
+             * \return True if the given script handle references the same script as this one. False otherwise
+             */
+            bool operator==(const ScriptHandle& other) const;
+
+            /**
+             * \brief Checks whether the script handle is valid or not
+             */
+            operator bool() const;
+        };
+
         /**
          * \brief Creates a lua context
          */
@@ -61,36 +98,45 @@ namespace PantheonScripting
 
         /**
          * \brief Registers the given script to the lua context
-         * \param entity The registered script's owner
-         * \param script The script to register to the context
+         * \param handle The script to register to the context
          * \return True on success. False otherwise
          */
-        bool registerScript(const PantheonCore::ECS::EntityHandle& entity, LuaScriptComponent& script);
+        bool registerScript(ScriptHandle& handle);
 
         /**
          * \brief Adds the given script to the lua context
-         * \param entity The added script's owner
          * \param script The script to add to the context
-         * \return True on success. False otherwise
+         * \param owner The added script's owner
+         * \param hint The added script's base table
+         * \return A handle to the added script on success. An empty handle otherwise
          */
-        bool addScript(const PantheonCore::ECS::EntityHandle& entity, LuaScriptComponent& script);
+        ScriptHandle addScript(const std::string& script, const PantheonCore::ECS::EntityHandle& owner, const sol::table& hint);
 
         /**
-         * \brief Adds the given script to the lua context
-         * \param entity The removed script's owner
+         * \brief Gets a handle to the given script owned by the given entity
+         * \param script The script to get a handle for
+         * \param owner The script's owner
+         * \return A handle to the found script. An empty handle if the script wasn't found
          */
-        void removeScript(PantheonCore::ECS::EntityHandle& entity);
+        ScriptHandle getScript(const std::string& script, const PantheonCore::ECS::EntityHandle& owner) const;
 
         /**
-         * \brief Calls the function with the given name and parameters on the given script
+         * \brief Removes the given script from the lua context
+         * \param script The script to remove
+         * \param owner The removed script's owner
+         */
+        void removeScript(const std::string& script, PantheonCore::ECS::EntityHandle& owner);
+
+        /**
+         * \brief Calls the function with the given name and parameters on the given lua object
          * \tparam Args The function parameter types
-         * \param component The script on which the function should be called
+         * \param table The lua object on which the function should be called
          * \param name The function's name
          * \param args The function's parameters
-         * \return True if the function could be called. False otherwise
+         * \return The lua call result
          */
         template <typename... Args>
-        bool tryCall(LuaScriptComponent& component, const std::string& name, Args&&... args);
+        ELuaCallResult tryCall(sol::table& table, const std::string& name, Args&&... args);
 
         /**
          * \brief Initializes and starts all the registered scripts
@@ -105,9 +151,9 @@ namespace PantheonScripting
 
         /**
          * \brief Updates all the registered scripts at a fixed interval
-         * \param fixedDeltaTime The elapsed time since the last update
+         * \param deltaTime The fixed elapsed time since the last fixed update
          */
-        void fixedUpdate(float fixedDeltaTime);
+        void fixedUpdate(float deltaTime);
 
         /**
          * \brief Stops all the registered scripts
@@ -120,8 +166,25 @@ namespace PantheonScripting
          */
         lua_State* getLuaState();
 
+        /**
+         * \brief Gets the given module's name
+         * \param module The target module
+         * \return The module's name
+         */
+        static const std::string& getModuleName(std::string module);
+
+        /**
+         * \brief Gets the given module's path
+         * \param module The target module
+         * \return The module's path
+         */
+        static const std::string& getModulePath(std::string module);
+
     private:
-        using ScriptHandle = std::pair<LuaScript::OrderT, PantheonCore::ECS::EntityHandle>;
+        static constexpr const char* EXTENSIONS[] = { ".lua", ".lc" };
+
+        inline static std::unordered_map<std::string, std::string> s_moduleNames;
+        inline static std::unordered_map<std::string, std::string> s_modulePaths;
 
         std::unique_ptr<sol::state> m_state;
         std::vector<ScriptHandle>   m_scripts;
@@ -134,6 +197,12 @@ namespace PantheonScripting
          * \return The number of elements left in the stack
          */
         static int loadModule(lua_State* L);
+
+        /**
+         * \brief Binds the necessary custom types
+         * \param luaState The lua state to bind to
+         */
+        static void bindUserTypes(sol::state& luaState);
     };
 }
 

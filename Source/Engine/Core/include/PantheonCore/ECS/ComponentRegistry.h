@@ -21,7 +21,7 @@ namespace PantheonCore::ECS
 
         TypeId m_typeId;
 
-        std::unique_ptr<IComponentStorage> (*makeStorage)(Scene*);
+        std::shared_ptr<IComponentStorage> (*makeStorage)(Scene*);
     };
 
 #ifdef PTH_EDITOR

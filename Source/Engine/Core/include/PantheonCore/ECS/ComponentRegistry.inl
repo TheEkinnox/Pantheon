@@ -58,7 +58,7 @@ namespace PantheonCore::ECS
             .m_typeId = ComponentRegistry::getTypeId<T>(),
             .makeStorage = [](Scene* scene)
             {
-                std::unique_ptr<IComponentStorage> storage = std::make_unique<ComponentStorage<T>>(scene);
+                std::shared_ptr<IComponentStorage> storage = std::make_shared<ComponentStorage<T>>(scene);
                 return storage;
             }
         };
