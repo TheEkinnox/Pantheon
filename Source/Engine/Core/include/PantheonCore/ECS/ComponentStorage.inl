@@ -139,7 +139,7 @@ namespace PantheonCore::ECS
 
             EntityHandle handle(m_scene, m_componentToEntity[i - 1]);
 
-            if (!handle)
+            if (!static_cast<bool>(handle)) // GCC doesn't seem to like the implicit conversion on this specific line
                 continue;
 
             ComponentT& component = m_components[i - 1];
