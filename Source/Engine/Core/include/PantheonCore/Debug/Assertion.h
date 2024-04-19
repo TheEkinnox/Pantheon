@@ -69,4 +69,4 @@
 #define ASSUME_FALSE(condition, ...) false
 
 #endif // _DEBUG || PTH_VERBOSE_LOG
-#endif // !ASSUME
+#endif // !ASSUME_FALSE
