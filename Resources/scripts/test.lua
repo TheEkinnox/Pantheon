@@ -18,10 +18,6 @@ local fixed_time = 0
 local tick_count = 0
 local time = 0
 
-local function round(x)
-    return x >= 0 and math.floor(x + 0.5) or math.ceil(x - 0.5)
-end
-
 local function testScene(scene)
     local typeName = Scene.__type.name
 
@@ -226,7 +222,7 @@ function Test:onUpdate(deltaTime)
     if tick_count == self.max_tick then
         local avgFrameTime = time / tick_count
         print("It's entity " .. self.owner .. "'s last tick!!! " ..
-                "Average frame time: " .. avgFrameTime .. "s (" .. round(1 / avgFrameTime) .. "fps)")
+                "Average frame time: " .. avgFrameTime .. "s (" .. math.round(1 / avgFrameTime) .. "fps)")
 
         for i = 1, #req do
             print("[require " .. i .. "] " .. req[i]:someFunc() .. " | Passed instance count: " .. req[i].instances)
@@ -246,7 +242,7 @@ function Test:onDestroy()
     local avgFrameTime = time / tick_count
     print("Destroyed test script of entity " .. self.owner .. " after " .. tick_count .. " ticks (" .. time .. "s) & " ..
             fixed_tick_count .. " fixed ticks (" .. fixed_time .. "s) | " ..
-            "Average frame time: " .. avgFrameTime .. "s (" .. round(1 / avgFrameTime) .. "fps)")
+            "Average frame time: " .. avgFrameTime .. "s (" .. math.round(1 / avgFrameTime) .. "fps)")
 end
 
 return Test
