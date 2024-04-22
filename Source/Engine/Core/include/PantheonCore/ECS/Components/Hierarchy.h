@@ -2,7 +2,7 @@
 #include "PantheonCore/ECS/ComponentRegistry.h"
 #include "PantheonCore/ECS/ComponentTraits.h"
 #include "PantheonCore/ECS/Entity.h"
-#include "PantheonCore/ECS/Serializers/MathSerializers.h"
+#include "PantheonCore/Serialization/MathSerializers.h"
 
 namespace PantheonCore::ECS
 {

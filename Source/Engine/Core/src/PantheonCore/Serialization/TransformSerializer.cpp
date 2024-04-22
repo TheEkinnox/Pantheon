@@ -1,12 +1,13 @@
-#include "PantheonCore/ECS/Serializers/MathSerializers.h"
+#include "PantheonCore/Debug/Assertion.h"
+#include "PantheonCore/Serialization/IByteSerializable.h"
+#include "PantheonCore/Serialization/MathSerializers.h"
 
 using namespace LibMath;
-using namespace PantheonCore::Serialization;
 
-namespace PantheonCore::ECS
+namespace PantheonCore::Serialization
 {
     template <>
-    bool ComponentRegistry::toBinary(const Transform& transform, std::vector<char>& out, const EntitiesMap&)
+    bool toBinary(const Transform& transform, std::vector<char>& out)
     {
         out.reserve(out.size() + sizeof(Vector3) * 2 + sizeof(Quaternion));
 
@@ -23,7 +24,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    size_t ComponentRegistry::fromBinary(Transform& out, const char* data, size_t length, Scene*)
+    size_t fromBinary(Transform& out, const char* data, const size_t length)
     {
         if (!CHECK(data != nullptr && length > 0, "Unable to deserialize transform - Empty buffer"))
             return 0;
@@ -53,8 +54,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    bool ComponentRegistry::toJson(
-        const Transform& transform, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap&)
+    bool toJson(const Transform& transform, rapidjson::Writer<rapidjson::StringBuffer>& writer)
     {
         writer.StartObject();
 
@@ -74,7 +74,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    bool ComponentRegistry::fromJson(Transform& transform, const rapidjson::Value& json, Scene*)
+    bool fromJson(Transform& transform, const rapidjson::Value& json)
     {
         if (!CHECK(json.IsObject(), "Unable to deserialize transform - Invalid json object"))
             return false;

@@ -1,8 +1,7 @@
 #pragma once
 #include "PantheonCore/ECS/ComponentRegistry.h"
 #include "PantheonCore/ECS/ComponentStorage.h"
-
-#include "PantheonCore/Debug/Assertion.h"
+#include "PantheonCore/Serialization/EnumSerializer.h"
 
 namespace PantheonCore::ECS
 {
@@ -14,17 +13,10 @@ namespace PantheonCore::ECS
             in.toJson(writer, toSerialized);
         };
 
-        constexpr bool hasToJson = requires
-        {
-            in.toJson(writer);
-        };
-
         if constexpr (hasToJsonWithMap)
             return in.toJson(writer, toSerialized);
-        else if constexpr (hasToJson)
-            return in.toJson(writer);
         else
-            return ASSUME(false, "Json serialization is not defined for \"%s\"", typeid(T).name()) && false;
+            return Serialization::toJson(in, writer);
     }
 
     template <typename T>
@@ -35,17 +27,10 @@ namespace PantheonCore::ECS
             out.fromJson(json, scene);
         };
 
-        constexpr bool hasFromJson = requires
-        {
-            out.fromJson(json);
-        };
-
         if constexpr (hasFromJsonWithScene)
             return out.fromJson(json, scene);
-        else if constexpr (hasFromJson)
-            return out.fromJson(json);
         else
-            return ASSUME(false, "Json deserialization is not defined for \"%s\"", typeid(T).name()) && false;
+            return Serialization::fromJson(out, json);
     }
 
     template <typename T>
@@ -56,17 +41,10 @@ namespace PantheonCore::ECS
             in.toBinary(out, toSerialized);
         };
 
-        constexpr bool hasToBinary = requires
-        {
-            in.toBinary(out);
-        };
-
         if constexpr (hasToBinaryWithMap)
             return in.toBinary(out, toSerialized);
-        else if constexpr (hasToBinary)
-            return in.toBinary(out);
         else
-            return ASSUME(false, "Binary serialization is not defined for \"%s\"", typeid(T).name()) && false;
+            return Serialization::toBinary(in, out);
     }
 
     template <typename T>
@@ -77,17 +55,10 @@ namespace PantheonCore::ECS
             out.fromBinary(data, length, scene);
         };
 
-        constexpr bool hasFromBinary = requires
-        {
-            out.fromBinary(data, length);
-        };
-
         if constexpr (hasFromBinaryWithScene)
             return out.fromBinary(data, length, scene);
-        else if constexpr (hasFromBinary)
-            return out.fromBinary(data, length);
         else
-            return ASSUME(false, "Binary deserialization is not defined for \"%s\"", typeid(T).name()) && false;
+            return Serialization::fromBinary(out, data, length);
     }
 
     inline ComponentRegistry& ComponentRegistry::getInstance()

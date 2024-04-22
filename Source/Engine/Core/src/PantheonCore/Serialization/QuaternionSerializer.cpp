@@ -1,32 +1,33 @@
-#include "PantheonCore/ECS/Serializers/MathSerializers.h"
+#include "PantheonCore/Debug/Assertion.h"
+#include "PantheonCore/Serialization/IByteSerializable.h"
+#include "PantheonCore/Serialization/MathSerializers.h"
 
 using namespace LibMath;
-using namespace PantheonCore::Serialization;
 
-namespace PantheonCore::ECS
+namespace PantheonCore::Serialization
 {
     template <>
-    bool ComponentRegistry::toBinary(const Quaternion& vector, std::vector<char>& out, const EntitiesMap&)
+    bool toBinary(const Quaternion& quaternion, std::vector<char>& out)
     {
-        return CHECK(IByteSerializable::serializeQuaternion(vector, out));
+        return CHECK(IByteSerializable::serializeQuaternion(quaternion, out));
     }
 
     template <>
-    size_t ComponentRegistry::fromBinary(Quaternion& out, const char* data, size_t length, Scene*)
+    size_t fromBinary(Quaternion& out, const char* data, const size_t length)
     {
         const size_t offset = IByteSerializable::deserializeQuaternion(out, data, length);
         return CHECK(offset != 0, "Failed to deserialize Quaternion") ? offset : 0;
     }
 
     template <>
-    bool ComponentRegistry::toJson(const Quaternion& quat, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap&)
+    bool toJson(const Quaternion& quaternion, rapidjson::Writer<rapidjson::StringBuffer>& writer)
     {
-        const std::string str = quat.string();
+        const std::string str = quaternion.string();
         return CHECK(writer.String(str.c_str(), static_cast<rapidjson::SizeType>(str.size())), "Failed to serialize Quaternion");
     }
 
     template <>
-    bool ComponentRegistry::fromJson(Quaternion& out, const rapidjson::Value& json, Scene*)
+    bool fromJson(Quaternion& out, const rapidjson::Value& json)
     {
         if (!CHECK(json.IsString(), "Unable to deserialize Quaternion - Invalid json value"))
             return false;

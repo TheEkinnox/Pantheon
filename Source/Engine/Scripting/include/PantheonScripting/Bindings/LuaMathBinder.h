@@ -1,5 +1,5 @@
 #pragma once
-#include <PantheonCore/ECS/Serializers/MathSerializers.h>
+#include <PantheonCore/Serialization/MathSerializers.h>
 
 namespace sol
 {
