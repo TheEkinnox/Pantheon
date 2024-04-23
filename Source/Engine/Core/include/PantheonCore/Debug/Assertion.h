@@ -9,8 +9,9 @@
 
 #define ASSERT(condition, ...) if (!(condition))      \
 {                                                     \
-    DEBUG_LOG_ERROR("Assertion failed: " #condition); \
-    __VA_OPT__(DEBUG_LOG_ERROR(__VA_ARGS__);)         \
+    DEBUG_LOG_ERROR("Assertion failed: " #condition   \
+    __VA_OPT__( "\n%s", PantheonCore::Utility::formatString(__VA_ARGS__).c_str()) \
+    );                                                \
     DEBUG_BREAK();                                    \
     abort();                                          \
 } ((void)0)
@@ -29,8 +30,9 @@
 {                                                       \
     if (!(condition))                                   \
     {                                                   \
-        DEBUG_LOG_ERROR("Check failed: " #condition);   \
-        __VA_OPT__(DEBUG_LOG_ERROR(__VA_ARGS__);)       \
+        DEBUG_LOG_ERROR("Check failed: " #condition     \
+        __VA_OPT__( "\n%s", PantheonCore::Utility::formatString(__VA_ARGS__).c_str()) \
+        );                                              \
         DEBUG_BREAK();                                  \
         return false;                                   \
     }                                                   \
