@@ -42,6 +42,12 @@ namespace PantheonApp::Input
         Windowing::Window::CursorPosT getMousePosition() const;
 
         /**
+         * \brief Sets the mouse position
+         * \param position The new mouse position
+         */
+        void setMousePosition(Windowing::Window::CursorPosT position);
+
+        /**
          * \brief Gets the delta between the current and last mouse positions
          * \return The difference between the current and previous mouse positions
          */
@@ -61,6 +67,27 @@ namespace PantheonApp::Input
          * \return The name of the given key or scancode
          */
         static const char* getKeyName(EKey key, int scanCode);
+
+        /**
+         * \brief Gets the given key's current state
+         * \param key The key to get the state of
+         * \return The current state of the given key
+         */
+        EKeyState getKeyState(EKey key) const;
+
+        /**
+         * \brief Gets the given key's current state
+         * \param scanCode The scan code of the key to get the state of
+         * \return The current state of the given key
+         */
+        EKeyState getScanCodeState(int scanCode) const;
+
+        /**
+         * \brief Gets the given key's current state
+         * \param button The mouse button to get the state of
+         * \return The current state of the given key
+         */
+        EMouseButtonState getMouseState(EMouseButton button) const;
 
         /**
          * \brief Checks whether a given key is up
@@ -157,13 +184,13 @@ namespace PantheonApp::Input
         struct KeyInfo
         {
             EKeyState m_keyState;
-            uint64_t m_stateChangeFrame;
+            uint64_t  m_stateChangeFrame;
         };
 
         struct MouseButtonInfo
         {
             EMouseButtonState m_buttonState;
-            uint64_t m_stateChangeFrame;
+            uint64_t          m_stateChangeFrame;
         };
 
         Windowing::Window& m_window;
@@ -171,14 +198,15 @@ namespace PantheonApp::Input
         Windowing::Window::CursorPosT m_mousePos;
         Windowing::Window::CursorPosT m_lastMousePos;
         Windowing::Window::CursorPosT m_mouseDelta;
-        bool m_isFirstMouse;
+        bool                          m_isFirstMouse;
 
-        uint64_t m_keyCallbackId = 0;
+        uint64_t m_keyCallbackId         = 0;
         uint64_t m_mouseButtonCallbackId = 0;
-        uint64_t m_currentFrame = 0;
+        uint64_t m_focusGainedCallbackId = 0;
+        uint64_t m_currentFrame          = 0;
 
-        std::unordered_map<EKey, KeyInfo> m_keyInfos;
-        std::unordered_map<int, KeyInfo> m_scanCodeInfo;
+        std::unordered_map<EKey, KeyInfo>                 m_keyInfos;
+        std::unordered_map<int, KeyInfo>                  m_scanCodeInfo;
         std::unordered_map<EMouseButton, MouseButtonInfo> m_mouseButtonInfo;
 
         /**

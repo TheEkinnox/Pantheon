@@ -26,8 +26,15 @@ namespace PantheonApp::Input
             this->mouseButtonCallback(button, state, mods);
         };
 
+        const auto focusGainedDelegate = [this]
+        {
+            this->resetFirstMouse();
+            clearStates();
+        };
+
         m_keyCallbackId         = m_window.m_keyEvent.subscribe(keyDelegate);
         m_mouseButtonCallbackId = m_window.m_mouseButtonEvent.subscribe(mouseDelegate);
+        m_focusGainedCallbackId = m_window.m_gainFocusEvent.subscribe(focusGainedDelegate);
     }
 
     InputManager::~InputManager()
@@ -55,12 +62,19 @@ namespace PantheonApp::Input
 
     void InputManager::resetFirstMouse()
     {
-        m_isFirstMouse = false;
+        m_isFirstMouse = true;
     }
 
     Window::CursorPosT InputManager::getMousePosition() const
     {
         return m_mousePos;
+    }
+
+    void InputManager::setMousePosition(const Window::CursorPosT position)
+    {
+        m_window.setCursorPosition(position);
+        update();
+        --m_currentFrame;
     }
 
     Window::CursorPosT InputManager::getMouseDelta() const
@@ -78,84 +92,104 @@ namespace PantheonApp::Input
         return glfwGetKeyName(static_cast<int>(key), scanCode);
     }
 
+    EKeyState InputManager::getKeyState(const EKey key) const
+    {
+        const auto it = m_keyInfos.find(key);
+        return it != m_keyInfos.end() ? it->second.m_keyState : EKeyState::RELEASED;
+    }
+
+    EKeyState InputManager::getScanCodeState(const int scanCode) const
+    {
+        const auto it = m_scanCodeInfo.find(scanCode);
+        return it != m_scanCodeInfo.end() ? it->second.m_keyState : EKeyState::RELEASED;
+    }
+
+    EMouseButtonState InputManager::getMouseState(const EMouseButton button) const
+    {
+        const auto it = m_mouseButtonInfo.find(button);
+        return it != m_mouseButtonInfo.end() ? it->second.m_buttonState : EMouseButtonState::RELEASED;
+    }
+
     bool InputManager::isKeyUp(const EKey key) const
     {
-        return !m_keyInfos.contains(key)
-            || m_keyInfos.at(key).m_keyState == EKeyState::RELEASED;
+        return getKeyState(key) == EKeyState::RELEASED;
     }
 
     bool InputManager::isKeyUp(const int scanCode) const
     {
-        return !m_scanCodeInfo.contains(scanCode)
-            || m_scanCodeInfo.at(scanCode).m_keyState == EKeyState::RELEASED;
+        return getScanCodeState(scanCode) == EKeyState::RELEASED;
     }
 
     bool InputManager::isKeyDown(const EKey key) const
     {
-        return m_keyInfos.contains(key)
-            && (m_keyInfos.at(key).m_keyState == EKeyState::PRESSED
-                || m_keyInfos.at(key).m_keyState == EKeyState::REPEATED);
+        const EKeyState state = getKeyState(key);
+        return state == EKeyState::PRESSED || state == EKeyState::REPEATED;
     }
 
     bool InputManager::isKeyDown(const int scanCode) const
     {
-        return m_scanCodeInfo.contains(scanCode)
-            && (m_scanCodeInfo.at(scanCode).m_keyState == EKeyState::PRESSED
-                || m_scanCodeInfo.at(scanCode).m_keyState == EKeyState::REPEATED);
+        const EKeyState state = getScanCodeState(scanCode);
+        return state == EKeyState::PRESSED || state == EKeyState::REPEATED;
     }
 
     bool InputManager::isKeyPressed(const EKey key) const
     {
-        return m_keyInfos.contains(key)
-            && m_keyInfos.at(key).m_keyState == EKeyState::PRESSED
-            && m_keyInfos.at(key).m_stateChangeFrame == m_currentFrame;
+        const auto it = m_keyInfos.find(key);
+        return it != m_keyInfos.end()
+            && it->second.m_keyState == EKeyState::PRESSED
+            && it->second.m_stateChangeFrame == m_currentFrame;
     }
 
     bool InputManager::isKeyPressed(const int scanCode) const
     {
-        return m_scanCodeInfo.contains(scanCode)
-            && m_scanCodeInfo.at(scanCode).m_keyState == EKeyState::PRESSED
-            && m_scanCodeInfo.at(scanCode).m_stateChangeFrame == m_currentFrame;
+        const auto it = m_scanCodeInfo.find(scanCode);
+        return it != m_scanCodeInfo.end()
+            && it->second.m_keyState == EKeyState::PRESSED
+            && it->second.m_stateChangeFrame == m_currentFrame;
     }
 
     bool InputManager::isKeyReleased(const EKey key) const
     {
-        return m_keyInfos.contains(key)
-            && m_keyInfos.at(key).m_keyState == EKeyState::RELEASED
-            && m_keyInfos.at(key).m_stateChangeFrame == m_currentFrame;
+        const auto it = m_keyInfos.find(key);
+        return it != m_keyInfos.end()
+            && it->second.m_keyState == EKeyState::RELEASED
+            && it->second.m_stateChangeFrame == m_currentFrame;
     }
 
     bool InputManager::isKeyReleased(const int scanCode) const
     {
-        return m_scanCodeInfo.contains(scanCode)
-            && m_scanCodeInfo.at(scanCode).m_keyState == EKeyState::RELEASED
-            && m_scanCodeInfo.at(scanCode).m_stateChangeFrame == m_currentFrame;
+        const auto it = m_scanCodeInfo.find(scanCode);
+        return it != m_scanCodeInfo.end()
+            && it->second.m_keyState == EKeyState::RELEASED
+            && it->second.m_stateChangeFrame == m_currentFrame;
     }
 
     bool InputManager::isMouseButtonUp(const EMouseButton button) const
     {
-        return !m_mouseButtonInfo.contains(button)
-            || m_mouseButtonInfo.at(button).m_buttonState == EMouseButtonState::RELEASED;
+        const EMouseButtonState state = getMouseState(button);
+        return state == EMouseButtonState::RELEASED;
     }
 
     bool InputManager::isMouseButtonDown(const EMouseButton button) const
     {
-        return m_mouseButtonInfo.contains(button)
-            && m_mouseButtonInfo.at(button).m_buttonState == EMouseButtonState::PRESSED;
+        const EMouseButtonState state = getMouseState(button);
+        return state == EMouseButtonState::PRESSED;
     }
 
     bool InputManager::isMouseButtonPressed(const EMouseButton button) const
     {
-        return m_mouseButtonInfo.contains(button)
-            && m_mouseButtonInfo.at(button).m_buttonState == EMouseButtonState::PRESSED
-            && m_mouseButtonInfo.at(button).m_stateChangeFrame == m_currentFrame;
+        const auto it = m_mouseButtonInfo.find(button);
+        return it != m_mouseButtonInfo.end()
+            && it->second.m_buttonState == EMouseButtonState::PRESSED
+            && it->second.m_stateChangeFrame == m_currentFrame;
     }
 
     bool InputManager::isMouseButtonReleased(const EMouseButton button) const
     {
-        return m_mouseButtonInfo.contains(button)
-            && m_mouseButtonInfo.at(button).m_buttonState == EMouseButtonState::RELEASED
-            && m_mouseButtonInfo.at(button).m_stateChangeFrame == m_currentFrame;
+        const auto it = m_mouseButtonInfo.find(button);
+        return it != m_mouseButtonInfo.end()
+            && it->second.m_buttonState == EMouseButtonState::RELEASED
+            && it->second.m_stateChangeFrame == m_currentFrame;
     }
 
     void InputManager::clearStates()
