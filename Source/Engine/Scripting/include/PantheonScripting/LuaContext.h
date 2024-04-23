@@ -1,7 +1,6 @@
 #pragma once
-#include "PantheonScripting/LuaScript.h"
+#include "PantheonScripting/LuaScriptHandle.h"
 
-#include <PantheonCore/ECS/EntityHandle.h>
 #include <PantheonCore/Resources/ResourceRef.h>
 
 #include <cstdint>
@@ -21,32 +20,6 @@ namespace PantheonScripting
     class LuaContext
     {
     public:
-        struct ScriptHandle
-        {
-            PantheonCore::Resources::ResourceRef<LuaScript> m_script;
-            PantheonCore::ECS::EntityHandle                 m_owner;
-            sol::table                                      m_table = sol::nil;
-
-            /**
-             * \brief Checks whether this script handle should be ordered before the given one or not
-             * \param other The script handle to compare against
-             * \return True if this script handle should be ordered before the given one. False otherwise
-             */
-            bool operator<(const ScriptHandle& other) const;
-
-            /**
-             * \brief Checks whether the given script handle references the same script as this one or not
-             * \param other The script handle to compare against
-             * \return True if the given script handle references the same script as this one. False otherwise
-             */
-            bool operator==(const ScriptHandle& other) const;
-
-            /**
-             * \brief Checks whether the script handle is valid or not
-             */
-            operator bool() const;
-        };
-
         /**
          * \brief Creates a lua context
          */
@@ -101,7 +74,7 @@ namespace PantheonScripting
          * \param handle The script to register to the context
          * \return True on success. False otherwise
          */
-        bool registerScript(ScriptHandle& handle);
+        bool registerScript(LuaScriptHandle& handle);
 
         /**
          * \brief Adds the given script to the lua context
@@ -110,7 +83,7 @@ namespace PantheonScripting
          * \param hint The added script's base table
          * \return A handle to the added script on success. An empty handle otherwise
          */
-        ScriptHandle addScript(const std::string& script, const PantheonCore::ECS::EntityHandle& owner, const sol::table& hint);
+        LuaScriptHandle addScript(const std::string& script, const PantheonCore::ECS::EntityHandle& owner, const sol::table& hint);
 
         /**
          * \brief Gets a handle to the given script owned by the given entity
@@ -118,7 +91,7 @@ namespace PantheonScripting
          * \param owner The script's owner
          * \return A handle to the found script. An empty handle if the script wasn't found
          */
-        ScriptHandle getScript(const std::string& script, const PantheonCore::ECS::EntityHandle& owner) const;
+        LuaScriptHandle getScript(const std::string& script, const PantheonCore::ECS::EntityHandle& owner) const;
 
         /**
          * \brief Removes the given script from the lua context
@@ -186,8 +159,8 @@ namespace PantheonScripting
         inline static std::unordered_map<std::string, std::string> s_moduleNames;
         inline static std::unordered_map<std::string, std::string> s_modulePaths;
 
-        std::unique_ptr<sol::state> m_state;
-        std::vector<ScriptHandle>   m_scripts;
+        std::unique_ptr<sol::state>  m_state;
+        std::vector<LuaScriptHandle> m_scripts;
 
         bool m_isValid, m_hasStarted;
 

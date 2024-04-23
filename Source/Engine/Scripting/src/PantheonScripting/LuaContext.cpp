@@ -16,29 +16,6 @@ using namespace PantheonCore::Utility;
 
 namespace PantheonScripting
 {
-    bool LuaContext::ScriptHandle::operator<(const ScriptHandle& other) const
-    {
-        return (m_script && other.m_script && m_script->getExecutionOrder() < other.m_script->getExecutionOrder())
-            || m_script.getKey().compare(other.m_script.getKey()) < 0
-            || m_script.getPath().compare(other.m_script.getPath()) < 0
-            || m_owner.getEntity() < other.m_owner.getEntity()
-            || std::less<Scene*>{}(m_owner.getScene(), other.m_owner.getScene());
-    }
-
-    bool LuaContext::ScriptHandle::operator==(const ScriptHandle& other) const
-    {
-        return m_owner == other.m_owner && m_script == other.m_script;
-    }
-
-    LuaContext::ScriptHandle::operator bool() const
-    {
-        if (!m_owner || !m_script)
-            return false;
-
-        const LuaScriptList* scripts = m_owner.get<LuaScriptList>();
-        return scripts->contains(m_script.getKey());
-    }
-
     LuaContext::LuaContext()
         : m_isValid(false), m_hasStarted(false)
     {
@@ -95,7 +72,7 @@ namespace PantheonScripting
         return m_isValid;
     }
 
-    bool LuaContext::registerScript(ScriptHandle& handle)
+    bool LuaContext::registerScript(LuaScriptHandle& handle)
     {
         if (!CHECK(isValid(), "Attempted to register script \"%s\" to invalid lua context", handle.m_script.getPath().c_str()))
             return false;
@@ -139,38 +116,38 @@ namespace PantheonScripting
         return m_isValid;
     }
 
-    LuaContext::ScriptHandle LuaContext::addScript(const std::string& script, const EntityHandle& owner, const sol::table& hint)
+    LuaScriptHandle LuaContext::addScript(const std::string& script, const EntityHandle& owner, const sol::table& hint)
     {
         const ResourceRef<LuaScript> scriptRef(getModuleName(script), getModulePath(script));
 
-        ScriptHandle handle = { scriptRef, owner, hint };
+        LuaScriptHandle handle = { scriptRef, owner, hint };
 
         if (!registerScript(handle))
             return {};
 
-        const auto insertIt = std::ranges::find_if_not(m_scripts, [&handle](const ScriptHandle& other)
+        const auto insertIt = std::ranges::find_if_not(m_scripts, [&handle](const LuaScriptHandle& other)
         {
             return handle < other;
         });
 
         m_isValid = CHECK(m_scripts.insert(insertIt, handle) != m_scripts.end(), "Failed to add script \"%s\"", script.c_str());
 
-        return m_isValid ? handle : ScriptHandle{};
+        return m_isValid ? handle : LuaScriptHandle{};
     }
 
-    LuaContext::ScriptHandle LuaContext::getScript(const std::string& script, const EntityHandle& owner) const
+    LuaScriptHandle LuaContext::getScript(const std::string& script, const EntityHandle& owner) const
     {
         const auto& moduleName = getModuleName(script);
         const auto& modulePath = getModulePath(script);
 
-        const auto it = std::ranges::find_if(m_scripts, [&moduleName, &modulePath, &owner](const ScriptHandle& other)
+        const auto it = std::ranges::find_if(m_scripts, [&moduleName, &modulePath, &owner](const LuaScriptHandle& other)
         {
             return (other.m_script.getKey() == moduleName || other.m_script.getPath() == modulePath)
                 && other.m_owner.getEntity() == owner.getEntity()
                 && other.m_owner.getScene() == owner.getScene();
         });
 
-        return it != m_scripts.end() ? *it : ScriptHandle{};
+        return it != m_scripts.end() ? *it : LuaScriptHandle{};
     }
 
     void LuaContext::removeScript(const std::string& script, EntityHandle& owner)
@@ -178,7 +155,7 @@ namespace PantheonScripting
         const auto& moduleName = getModuleName(script);
         const auto& modulePath = getModulePath(script);
 
-        const auto it = std::ranges::find_if(m_scripts, [&moduleName, &modulePath, &owner](const ScriptHandle& other)
+        const auto it = std::ranges::find_if(m_scripts, [&moduleName, &modulePath, &owner](const LuaScriptHandle& other)
         {
             return (other.m_script.getKey() == moduleName || other.m_script.getPath() == modulePath)
                 && other.m_owner.getEntity() == owner.getEntity()

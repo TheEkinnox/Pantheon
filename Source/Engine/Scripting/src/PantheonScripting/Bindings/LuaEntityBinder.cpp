@@ -1,3 +1,4 @@
+#include "PantheonScripting/LuaComponentHandle.h"
 #include "PantheonScripting/LuaScriptList.h"
 #include "PantheonScripting/LuaTypeRegistry.h"
 #include "PantheonScripting/Bindings/LuaECSBinder.h"
@@ -12,7 +13,8 @@ namespace PantheonScripting::Bindings
     {
         static constexpr const char* typeName = "Entity";
 
-        static const auto getComponent = [](const EntityHandle& self, const std::string& type) -> ComponentHandle
+        static const auto getComponent = [](const EntityHandle& self, const std::string& type)
+            -> LuaComponentHandle
         {
             if (type.empty())
                 return {};
@@ -25,7 +27,8 @@ namespace PantheonScripting::Bindings
             return { self, components.getTypeInfo(type).m_typeId };
         };
 
-        static const auto getInParent = [](const EntityHandle& self, const std::string& type) -> ComponentHandle
+        static const auto getInParent = [](const EntityHandle& self, const std::string& type)
+            -> LuaComponentHandle
         {
             if (!self || type.empty())
                 return {};
@@ -37,7 +40,7 @@ namespace PantheonScripting::Bindings
 
             const auto typeId = components.getTypeInfo(type).m_typeId;
 
-            ComponentHandle current{ self, typeId };
+            LuaComponentHandle current{ self, typeId };
 
             if (current)
                 return current;
@@ -55,7 +58,8 @@ namespace PantheonScripting::Bindings
             return {};
         };
 
-        static const auto getInChildren = [](const EntityHandle& self, const std::string& type) -> ComponentHandle
+        static const auto getInChildren = [](const EntityHandle& self, const std::string& type)
+            -> LuaComponentHandle
         {
             if (!self || type.empty())
                 return {};
@@ -67,7 +71,7 @@ namespace PantheonScripting::Bindings
 
             const auto typeId = components.getTypeInfo(type).m_typeId;
 
-            ComponentHandle current{ self, typeId };
+            LuaComponentHandle current{ self, typeId };
 
             if (current)
                 return current;
@@ -115,12 +119,12 @@ namespace PantheonScripting::Bindings
                 const LuaScriptList* script = self.get<LuaScriptList>();
                 return script ? script->contains(name) : false;
             },
-            "getScript", [](const EntityHandle& self, const std::string& name) -> LuaContext::ScriptHandle
+            "getScript", [](const EntityHandle& self, const std::string& name)
             {
                 const LuaScriptList* script = self.get<LuaScriptList>();
-                return script ? script->get(name) : LuaContext::ScriptHandle{};
+                return script ? script->get(name) : LuaScriptHandle{};
             },
-            "addScript", [](EntityHandle& self, const std::string& name) -> LuaContext::ScriptHandle
+            "addScript", [](EntityHandle& self, const std::string& name)
             {
                 LuaScriptList* script = self.get<LuaScriptList>();
 
@@ -150,7 +154,8 @@ namespace PantheonScripting::Bindings
                 return self.getScene()->getStorage(typeId).contains(self.getEntity());
             },
             "get", getComponent,
-            "getOrCreate", [](const EntityHandle& self, const std::string& type) -> ComponentHandle
+            "getOrCreate", [](const EntityHandle& self, const std::string& type)
+            -> LuaComponentHandle
             {
                 if (type.empty())
                     return {};
@@ -171,7 +176,7 @@ namespace PantheonScripting::Bindings
             "getInChildren", getInChildren,
             "getInHierarchy",
             [](const EntityHandle& self, const std::string& type, const EntityHandle::EComponentSearchOrigin searchOrigin)
-            -> ComponentHandle
+            -> LuaComponentHandle
             {
                 switch (searchOrigin)
                 {
@@ -181,14 +186,14 @@ namespace PantheonScripting::Bindings
                 }
                 case EntityHandle::EComponentSearchOrigin::PARENT:
                 {
-                    if (const ComponentHandle component = getInParent(self, type))
+                    if (const LuaComponentHandle component = getInParent(self, type))
                         return component;
 
                     return getInChildren(self, type);
                 }
                 case EntityHandle::EComponentSearchOrigin::CHILDREN:
                 {
-                    if (const ComponentHandle component = getInChildren(self, type))
+                    if (const LuaComponentHandle component = getInChildren(self, type))
                         return component;
 
                     return getInParent(self, type);
@@ -212,11 +217,11 @@ namespace PantheonScripting::Bindings
                 self.getScene()->getStorage(typeId).remove(self);
             },
             "componentCount", sol::readonly_property(&EntityHandle::getComponentCount),
-            "components", sol::readonly_property([](EntityHandle& self) -> std::vector<ComponentHandle>
+            "components", sol::readonly_property([](EntityHandle& self)-> std::vector<LuaComponentHandle>
             {
                 const auto ids = self.getComponentIds();
 
-                std::vector<ComponentHandle> components;
+                std::vector<LuaComponentHandle> components;
 
                 for (auto id : ids)
                     components.emplace_back(self, id);

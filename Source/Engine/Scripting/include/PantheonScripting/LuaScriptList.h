@@ -63,7 +63,7 @@ namespace PantheonScripting
          * \param script The script to get
          * \return A handle to the found script on success. An empty handle otherwise
          */
-        LuaContext::ScriptHandle get(const std::string& script) const;
+        LuaScriptHandle get(const std::string& script) const;
 
         /**
          * \brief Adds the given lua script to the list
@@ -71,7 +71,7 @@ namespace PantheonScripting
          * \param hint The added script's base table
          * \return A handle to the added script on success. An empty handle otherwise
          */
-        LuaContext::ScriptHandle add(std::string script, const sol::table& hint = sol::nil);
+        LuaScriptHandle add(std::string script, const sol::table& hint = sol::nil);
 
         /**
          * \brief Removes the given lua script from the list

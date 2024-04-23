@@ -1,6 +1,7 @@
 #include "PantheonScripting/LuaScriptList.h"
 
 #include "PantheonScripting/LuaContext.h"
+#include "PantheonScripting/LuaScriptHandle.h"
 #include "PantheonScripting/LuaTypeRegistry.h"
 
 using namespace PantheonCore::Serialization;
@@ -45,12 +46,12 @@ namespace PantheonScripting
         return m_scripts.contains(LuaContext::getModuleName(script));
     }
 
-    LuaContext::ScriptHandle LuaScriptList::get(const std::string& script) const
+    LuaScriptHandle LuaScriptList::get(const std::string& script) const
     {
         return PTH_SERVICE(LuaContext).getScript(script, m_owner);
     }
 
-    LuaContext::ScriptHandle LuaScriptList::add(std::string script, const sol::table& hint)
+    LuaScriptHandle LuaScriptList::add(std::string script, const sol::table& hint)
     {
         script = LuaContext::getModuleName(script);
 
@@ -61,7 +62,7 @@ namespace PantheonScripting
                 script.c_str(), m_owner.getEntity().getIndex(), m_owner.getEntity().getVersion()))
             return {};
 
-        LuaContext::ScriptHandle handle = PTH_SERVICE(LuaContext).addScript(script, m_owner, hint);
+        LuaScriptHandle handle = PTH_SERVICE(LuaContext).addScript(script, m_owner, hint);
 
         if (!handle.m_table.valid())
             return {};
