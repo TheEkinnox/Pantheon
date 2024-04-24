@@ -300,7 +300,7 @@ namespace PantheonCore::Resources
 
             if (!resource)
             {
-                DEBUG_LOG("[WARNING] Skipped bundle asset at path \"%s\" - Unable to create resource of type \"%s\"", path, type);
+                DEBUG_LOG_WARNING("Skipped bundle asset at path \"%s\" - Unable to create resource of type \"%s\"", path, type);
                 continue;
             }
 
@@ -308,7 +308,7 @@ namespace PantheonCore::Resources
 
             if (assetData.empty())
             {
-                DEBUG_LOG("[WARNING] Skipped bundle asset at path \"%s\" - Empty data", path);
+                DEBUG_LOG_WARNING("Skipped bundle asset at path \"%s\" - Empty data", path);
                 remove(guid);
                 removePath(path);
                 continue;
@@ -316,7 +316,7 @@ namespace PantheonCore::Resources
 
             if (resource->fromBinary(assetData.data(), assetData.size()) == 0 || !resource->init())
             {
-                DEBUG_LOG("[WARNING] Skipped bundle asset at path \"%s\" - Unable to load resource", path);
+                DEBUG_LOG_WARNING("Skipped bundle asset at path \"%s\" - Unable to load resource", path);
                 remove(guid);
                 removePath(path);
             }

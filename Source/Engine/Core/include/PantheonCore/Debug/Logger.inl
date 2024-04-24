@@ -20,22 +20,41 @@ namespace PantheonCore::Debug
     }
 
     template <typename... Args>
-    void Logger::print(const char* format, const bool isError, Args... args)
+    void Logger::print(const char* format, const ELogType type, Args... args)
     {
         const std::string message = Utility::formatString(format, args...);
 
-        (isError ? std::cerr : std::cout) << message << std::flush;
+        std::string prefix;
+
+        switch (type)
+        {
+        case ELogType::LOG_INFO:
+            prefix = "[INFO] ";
+            break;
+        case ELogType::LOG_WARNING:
+            prefix = "[WARNING] ";
+            break;
+        case ELogType::LOG_ERROR:
+            prefix = "[ERROR] ";
+            break;
+        case ELogType::LOG_RAW:
+        default:
+            break;
+        }
+
+        (type == ELogType::LOG_ERROR ? std::cerr : std::cout) << prefix << message << std::flush;
 
         if (m_filePath.empty())
             return;
 
         std::ofstream file(m_filePath, std::ios::app);
         assert(file.is_open());
-        file << message << std::flush;
+
+        file << prefix << message << std::flush;
     }
 
     template <typename... Args>
-    void Logger::debugLog(const char* file, const size_t line, const char* format, const bool isError, Args... args)
+    void Logger::debugLog(const char* file, const size_t line, const char* format, const ELogType type, Args... args)
     {
         std::string message = Utility::formatString(format, args...);
 
@@ -47,6 +66,6 @@ namespace PantheonCore::Debug
         (void)sizeof(line);
 #endif // _DEBUG || PTH_VERBOSE_LOG
 
-        print(message.c_str(), isError);
+        print(message.c_str(), type);
     }
 }

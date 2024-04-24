@@ -376,7 +376,7 @@ namespace PantheonCore::ECS
 
             if (out.m_scripts.contains(name))
             {
-                DEBUG_LOG("[WARNING] Ignoring duplicate lua script \"%s\"", name.c_str());
+                DEBUG_LOG_WARNING("Ignoring duplicate lua script \"%s\"", name.c_str());
                 continue;
             }
 
@@ -443,7 +443,7 @@ namespace PantheonCore::ECS
 
             if (out.m_scripts.contains(script))
             {
-                DEBUG_LOG("[WARNING] Ignoring duplicate lua script \"%s\"", script.c_str());
+                DEBUG_LOG_WARNING("Ignoring duplicate lua script \"%s\"", script.c_str());
                 continue;
             }
 
