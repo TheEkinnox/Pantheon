@@ -43,7 +43,7 @@ namespace PantheonCore::ECS
         return m_childCount;
     }
 
-    std::vector<Transform*> GetChildTransforms(const EntityHandle& entity)
+    std::vector<Transform*> getChildTransforms(const EntityHandle& entity)
     {
         std::vector<Transform*> linkedTransforms;
 
@@ -57,7 +57,7 @@ namespace PantheonCore::ECS
             }
             else
             {
-                const std::vector<Transform*> childTransforms = GetChildTransforms(child);
+                const std::vector<Transform*> childTransforms = getChildTransforms(child);
                 linkedTransforms.insert(linkedTransforms.end(), childTransforms.begin(), childTransforms.end());
             }
         }
@@ -65,7 +65,7 @@ namespace PantheonCore::ECS
         return linkedTransforms;
     }
 
-    void LinkTransforms(EntityHandle& entity)
+    void linkTransforms(EntityHandle& entity)
     {
         Transform* parentTransform = entity.getParent().getInParent<Transform>();
         Transform* transform       = entity.get<Transform>();
@@ -73,7 +73,7 @@ namespace PantheonCore::ECS
         if (transform)
             transform->setParent(parentTransform, parentTransform == nullptr);
 
-        const std::vector<Transform*> childTransforms = GetChildTransforms(entity);
+        const std::vector<Transform*> childTransforms = getChildTransforms(entity);
 
         for (Transform* childTransform : childTransforms)
         {
@@ -82,11 +82,11 @@ namespace PantheonCore::ECS
         }
     }
 
-    void UnlinkTransforms(const EntityHandle& entity)
+    void unlinkTransforms(const EntityHandle& entity)
     {
         Transform* parentTransform = entity.getParent().getInParent<Transform>();
 
-        const std::vector<Transform*> linkedTransforms = GetChildTransforms(entity);
+        const std::vector<Transform*> linkedTransforms = getChildTransforms(entity);
 
         for (Transform* transform : linkedTransforms)
             transform->setParent(parentTransform, true);
@@ -122,7 +122,7 @@ namespace PantheonCore::ECS
         }
 
         hierarchy.m_childCount = 0;
-        UnlinkTransforms(entity);
+        unlinkTransforms(entity);
     }
 
     template <>
@@ -185,25 +185,25 @@ namespace PantheonCore::ECS
             parentHierarchy->m_childCount = 1;
         }
 
-        LinkTransforms(entity);
+        linkTransforms(entity);
     }
 
     template <>
     void ComponentTraits::onAdd<Transform>(EntityHandle& entity, Transform&)
     {
-        LinkTransforms(entity);
+        linkTransforms(entity);
     }
 
     template <>
     void ComponentTraits::onRemove<Transform>(EntityHandle& entity, Transform&)
     {
-        UnlinkTransforms(entity);
+        unlinkTransforms(entity);
     }
 
     template <>
     void ComponentTraits::onChange<Transform>(EntityHandle& entity, Transform&)
     {
-        LinkTransforms(entity);
+        linkTransforms(entity);
     }
 
     template <>

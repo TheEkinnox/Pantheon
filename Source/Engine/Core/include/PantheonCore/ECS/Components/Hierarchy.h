@@ -93,19 +93,19 @@ namespace PantheonCore::ECS
         size_t m_childCount      = 0;
     };
 
-    std::vector<LibMath::Transform*> GetChildTransforms(const EntityHandle& entity);
+    std::vector<LibMath::Transform*> getChildTransforms(const EntityHandle& entity);
 
     /**
      * \brief Links the relevant transforms to this entity
      * \param entity The entity for which the transforms should be linked
      */
-    void LinkTransforms(EntityHandle& entity);
+    void linkTransforms(EntityHandle& entity);
 
     /**
      * \brief Unlinks the relevant transforms from this entity
      * \param entity The entity for which the transforms should be unlinked
      */
-    void UnlinkTransforms(const EntityHandle& entity);
+    void unlinkTransforms(const EntityHandle& entity);
 
     template <>
     void ComponentTraits::onAdd<HierarchyComponent>(EntityHandle&, HierarchyComponent&);
