@@ -140,6 +140,17 @@ namespace PantheonRendering::RHI
         return CHECK(parseSource(), "Unable to initialize shader - Couldn't parse source");
     }
 
+    bool OpenGLShader::save(const std::string& fileName) const
+    {
+        std::ofstream fs(fileName);
+
+        if (!CHECK(fs.is_open(), "Unable to open file at path \"%s\"", fileName.c_str()))
+            return false;
+
+        fs << m_source;
+        return CHECK(!fs.bad(), "Failed to write shader source to \"%s\"", fileName.c_str());
+    }
+
     bool OpenGLShader::toBinary(std::vector<char>& output) const
     {
         if (m_source.empty())

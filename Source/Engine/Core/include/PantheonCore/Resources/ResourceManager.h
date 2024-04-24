@@ -133,6 +133,14 @@ namespace PantheonCore::Resources
         GenericResourceRef getOrCreate(const std::string& type, const std::string& key, const std::string& path);
 
         /**
+         * \brief Saves the resource with the given key or path.
+         * \tparam T The resource's type
+         * \param keyOrPath The resource's key or path
+         * \return A pointer to the resource on success, nullptr otherwise.
+         */
+        bool save(const std::string& keyOrPath) const;
+
+        /**
          * \brief Reads the content of the resource at the given path
          * \param keyOrPath The key or path of the resource file to read
          * \return The resource's file content

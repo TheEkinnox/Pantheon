@@ -48,6 +48,13 @@ namespace PantheonRendering::Resources
         bool init() override;
 
         /**
+         * \brief Saves the model to the given file
+         * \param fileName The target save path
+         * \return True if the model was successfully saved. False otherwise.
+         */
+        bool save(const std::string& fileName) const override;
+
+        /**
          * \brief Serializes the model to a byte array
          * \param output The output memory buffer
          * \return True on success. False otherwise.

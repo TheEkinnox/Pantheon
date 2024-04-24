@@ -40,5 +40,21 @@ namespace PantheonCore::Resources
          * \return True on success. False otherwise.
          */
         virtual bool init() = 0;
+
+        /**
+         * \brief Saves the resource to the given file
+         * \param fileName The target save path
+         * \return True if the resource was successfully saved. False otherwise.
+         */
+        virtual bool save(const std::string& fileName) const = 0;
+
+    protected:
+        static std::string getMetaPath(const std::string& fileName)
+        {
+            return fileName + META_EXTENSION;
+        }
+
+    private:
+        static constexpr const char* META_EXTENSION = ".meta";
     };
 }

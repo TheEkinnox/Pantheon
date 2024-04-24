@@ -63,6 +63,13 @@ namespace PantheonScripting
         }
 
         /**
+         * \brief Saves the lua script to the given file
+         * \param fileName The target save path
+         * \return True if the lua script was successfully saved. False otherwise.
+         */
+        bool save(const std::string& fileName) const override;
+
+        /**
          * \brief Serializes the lua script to a byte array
          * \param output The output memory buffer
          * \return True on success. False otherwise.

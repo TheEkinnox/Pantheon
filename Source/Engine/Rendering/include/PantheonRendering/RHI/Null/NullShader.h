@@ -56,6 +56,13 @@ namespace PantheonRendering::RHI
         bool init() override;
 
         /**
+         * \brief Saves the shader to the given file
+         * \param fileName The target save path
+         * \return True if the shader was successfully saved. False otherwise.
+         */
+        bool save(const std::string& fileName) const override;
+
+        /**
          * \brief Serializes the shader to a byte array
          * \param output The output memory buffer
          * \return True on success. False otherwise.

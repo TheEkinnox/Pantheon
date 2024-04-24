@@ -33,6 +33,24 @@ namespace PantheonCore::ECS
         return fromJson(json);
     }
 
+    bool Scene::save(const std::string& fileName) const
+    {
+        rapidjson::StringBuffer buffer;
+        JsonWriter              writer(buffer);
+
+        if (!toJson(writer) || !ASSUME(writer.IsComplete(), "Failed to save scene - Generated json is incomplete"))
+            return false;
+
+        std::ofstream fs(fileName);
+
+        if (!CHECK(fs.is_open(), "Unable to open scene file at path \"%s\"", fileName.c_str()))
+            return false;
+
+        fs << std::string_view(buffer.GetString(), buffer.GetLength());
+
+        return CHECK(!fs.bad(), "Failed to write scene to \"%s\"", fileName.c_str());
+    }
+
     bool Scene::toBinary(std::vector<char>& output) const
     {
         if (!CHECK(writeNumber(m_entities.size(), output), "Unable to write scene entity count to memory buffer"))

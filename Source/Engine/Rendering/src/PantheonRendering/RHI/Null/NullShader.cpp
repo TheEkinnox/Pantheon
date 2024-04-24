@@ -12,6 +12,11 @@ namespace PantheonRendering::RHI
         return true;
     }
 
+    bool NullShader::save(const std::string&) const
+    {
+        return true;
+    }
+
     bool NullShader::toBinary(std::vector<char>& output) const
     {
         output.resize(output.size() + 1); // Can't not write anything. Deserialization considers 0 as failure

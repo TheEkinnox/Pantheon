@@ -194,6 +194,10 @@ namespace PantheonRendering::RHI
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_width, m_height, 0, getGLFormat(m_channels), GL_UNSIGNED_BYTE, m_data);
 
         glBindTexture(GL_TEXTURE_2D, 0);
+
+        if (m_loadInfo.m_generateMipmap)
+            generateMipmap();
+
         return true;
     }
 
@@ -201,10 +205,10 @@ namespace PantheonRendering::RHI
     {
         glBindTextureUnit(slot, m_id);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, toGLInt(m_wrapModeU));
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, toGLInt(m_wrapModeV));
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, toGLInt(m_minFilter));
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, toGLInt(m_magFilter));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, toGLInt(m_loadInfo.m_wrapModeU));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, toGLInt(m_loadInfo.m_wrapModeV));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, toGLInt(m_loadInfo.m_minFilter));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, toGLInt(m_loadInfo.m_magFilter));
     }
 
     void OpenGLTexture::unbind(const uint8_t slot)

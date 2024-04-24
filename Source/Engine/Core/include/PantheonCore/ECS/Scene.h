@@ -72,6 +72,13 @@ namespace PantheonCore::ECS
         }
 
         /**
+         * \brief Saves the scene to the given file
+         * \param fileName The target save path
+         * \return True if the scene was successfully saved. False otherwise.
+         */
+        bool save(const std::string& fileName) const override;
+
+        /**
          * \brief Serializes the object to a byte array
          * \param output The output memory buffer
          * \return True on success. False otherwise.

@@ -166,6 +166,16 @@ namespace PantheonCore::Resources
         return resource ? resource : create(type, key, path, true);
     }
 
+    bool ResourceManager::save(const std::string& keyOrPath) const
+    {
+        ResourceRef<IResource> resource = get<IResource>(keyOrPath);
+
+        if (!CHECK(resource, "Attempted to save not loaded resource \"%s\"", keyOrPath.c_str()))
+            return false;
+
+        return resource->save(getFullPath(resource.getPath()));
+    }
+
     std::vector<char> ResourceManager::readFile(const std::string& keyOrPath) const
     {
         std::vector<char> resourceData;

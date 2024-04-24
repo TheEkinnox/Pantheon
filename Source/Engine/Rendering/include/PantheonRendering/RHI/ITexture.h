@@ -2,6 +2,7 @@
 #include "PantheonRendering/Enums/EPixelDataFormat.h"
 #include "PantheonRendering/Enums/ETextureFilter.h"
 #include "PantheonRendering/Enums/ETextureWrapMode.h"
+#include "PantheonRendering/Resources/TextureMetaData.h"
 
 #include <PantheonCore/Resources/IResource.h>
 
@@ -57,6 +58,13 @@ namespace PantheonRendering::RHI
          * \return True if the texture was successfully loaded. False otherwise.
          */
         bool load(const std::string& fileName) override;
+
+        /**
+         * \brief Saves the texture to the given file
+         * \param fileName The target save path
+         * \return True if the texture was successfully saved. False otherwise.
+         */
+        bool save(const std::string& fileName) const override;
 
         /**
          * \brief Serializes the texture to a byte array
@@ -142,14 +150,11 @@ namespace PantheonRendering::RHI
         static std::shared_ptr<ITexture> create(int width, int height, Enums::EPixelDataFormat format);
 
     protected:
-        unsigned char*          m_data      = nullptr;
-        int                     m_width     = 0;
-        int                     m_height    = 0;
-        uint8_t                 m_channels  = 0;
-        Enums::ETextureFilter   m_minFilter = Enums::ETextureFilter::LINEAR;
-        Enums::ETextureFilter   m_magFilter = Enums::ETextureFilter::LINEAR;
-        Enums::ETextureWrapMode m_wrapModeU = Enums::ETextureWrapMode::REPEAT;
-        Enums::ETextureWrapMode m_wrapModeV = Enums::ETextureWrapMode::REPEAT;
+        unsigned char*             m_data     = nullptr;
+        int                        m_width    = 0;
+        int                        m_height   = 0;
+        uint8_t                    m_channels = 0;
+        Resources::TextureMetaData m_loadInfo;
 
         /**
          * \brief Creates a default texture

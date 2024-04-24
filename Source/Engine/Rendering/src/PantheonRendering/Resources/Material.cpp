@@ -35,6 +35,24 @@ namespace PantheonRendering::Resources
         return fromJson(json);
     }
 
+    bool Material::save(const std::string& fileName) const
+    {
+        rapidjson::StringBuffer buffer;
+        JsonWriter              writer(buffer);
+
+        if (!toJson(writer) || !ASSUME(writer.IsComplete(), "Failed to save material - Generated json is incomplete"))
+            return false;
+
+        std::ofstream fs(fileName);
+
+        if (!CHECK(fs.is_open(), "Unable to open material file at path \"%s\"", fileName.c_str()))
+            return false;
+
+        fs << std::string_view(buffer.GetString(), buffer.GetLength());
+
+        return CHECK(!fs.bad(), "Failed to write material to \"%s\"", fileName.c_str());
+    }
+
     bool Material::toJson(JsonWriter& writer) const
     {
         writer.StartObject();

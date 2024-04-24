@@ -1,6 +1,5 @@
 #include "PantheonRendering/Resources/Model.h"
 
-#include "PantheonRendering/LowRenderer/Camera.h"
 #include "PantheonRendering/Resources/Mesh.h"
 
 #include <PantheonCore/Resources/ResourceRef.h>
@@ -119,6 +118,12 @@ namespace PantheonRendering::Resources
         }
 
         return true;
+    }
+
+    bool Model::save(const std::string& fileName) const
+    {
+        // TODO: Save model meta data
+        return CHECK(false, getMetaPath(fileName));
     }
 
     bool Model::toBinary(std::vector<char>& output) const

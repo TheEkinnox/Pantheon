@@ -6,11 +6,15 @@
 
 #include <PantheonCore/Debug/Assertion.h>
 #include <PantheonCore/Debug/Logger.h>
+#include <PantheonCore/Utility/FileSystem.h>
+
+#include <rapidjson/istreamwrapper.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ASSERT(x) ASSERT(x)
 #include <stb_image.h>
 
+using namespace PantheonCore::Serialization;
 using namespace PantheonCore::Utility;
 using namespace PantheonRendering::Enums;
 using namespace PantheonRendering::RHI;
@@ -80,6 +84,7 @@ namespace PantheonRendering::RHI
         m_width    = other.m_width;
         m_height   = other.m_height;
         m_channels = other.m_channels;
+        m_loadInfo = other.m_loadInfo;
 
         if (m_data != nullptr)
             stbi_image_free(m_data);
@@ -108,11 +113,7 @@ namespace PantheonRendering::RHI
         m_height   = other.m_height;
         m_channels = other.m_channels;
         m_data     = other.m_data;
-
-        m_minFilter = other.m_minFilter;
-        m_magFilter = other.m_magFilter;
-        m_wrapModeU = other.m_wrapModeU;
-        m_wrapModeV = other.m_wrapModeV;
+        m_loadInfo = other.m_loadInfo;
 
         other.m_data = nullptr;
 
@@ -145,7 +146,44 @@ namespace PantheonRendering::RHI
         if (!CHECK(m_data != nullptr, "Unable to load texture from path \"%s\"", fileName.c_str()))
             return false;
 
-        return true;
+        const std::string metaPath = getMetaPath(fileName);
+
+        if (!pathExists(metaPath))
+            return true;
+
+        std::ifstream fs(metaPath);
+
+        if (!CHECK(fs.is_open(), "Unable to open texture meta file at path \"%s\"", metaPath.c_str()))
+            return false;
+
+        rapidjson::IStreamWrapper isw(fs);
+
+        rapidjson::Document json;
+        json.ParseStream(isw);
+
+        if (!CHECK(!json.HasParseError(), "Unable to parse texture meta data from file - Parse error %d", json.GetParseError()))
+            return false;
+
+        return m_loadInfo.fromJson(json);
+    }
+
+    bool ITexture::save(const std::string& fileName) const
+    {
+        rapidjson::StringBuffer buffer;
+        JsonWriter              writer(buffer);
+
+        if (!m_loadInfo.toJson(writer) || !ASSUME(writer.IsComplete(), "Failed to save texture data - Produced json is incomplete"))
+            return false;
+
+        const std::string metaPath = getMetaPath(fileName);
+        std::ofstream     fs(metaPath);
+
+        if (!CHECK(fs.is_open(), "Unable to open texture meta file at path \"%s\"", metaPath.c_str()))
+            return false;
+
+        fs << std::string_view(buffer.GetString(), buffer.GetLength());
+
+        return CHECK(!fs.bad(), "Failed to write texture meta data to \"%s\"", metaPath.c_str());
     }
 
     bool ITexture::toBinary(std::vector<char>& output) const
@@ -153,10 +191,7 @@ namespace PantheonRendering::RHI
         if (m_data == nullptr)
             return false;
 
-        const uint32_t textureInfo = static_cast<uint32_t>(m_minFilter) | (static_cast<uint32_t>(m_magFilter) << 8)
-            | (static_cast<uint32_t>(m_wrapModeU) << 16) | (static_cast<uint32_t>(m_wrapModeU) << 24);
-
-        if (!CHECK(writeNumber(textureInfo, output), "Unable to serialize texture - Failed to write load info"))
+        if (!m_loadInfo.toBinary(output))
             return false;
 
         const ElemSizeT bufferSize = static_cast<ElemSizeT>(m_width) * m_height * m_channels;
@@ -181,28 +216,19 @@ namespace PantheonRendering::RHI
 
     size_t ITexture::fromBinary(const char* data, const size_t length)
     {
-        if (data == nullptr || length == 0)
-        {
-            DEBUG_LOG_ERROR("Unable to load texture from memory - Empty buffer");
-            return 0;
-        }
-
         if (m_data != nullptr)
         {
             stbi_image_free(m_data);
             m_data = nullptr;
         }
 
-        uint32_t textureInfo;
-        size_t   offset = readNumber(textureInfo, data, length);
-
-        if (!CHECK(offset != 0, "Unable to load texture from memory - Failed to read load info"))
+        if (!CHECK(data && length > 0, "Unable to load texture from memory - Empty buffer"))
             return 0;
 
-        m_minFilter = static_cast<ETextureFilter>(readBits(textureInfo, 8, 0));
-        m_magFilter = static_cast<ETextureFilter>(readBits(textureInfo, 8, 8));
-        m_wrapModeU = static_cast<ETextureWrapMode>(readBits(textureInfo, 8, 16));
-        m_wrapModeV = static_cast<ETextureWrapMode>(readBits(textureInfo, 8, 24));
+        size_t offset = m_loadInfo.fromBinary(data, length);
+
+        if (offset == 0)
+            return 0;
 
         ElemSizeT    bufferSize;
         const size_t readBytes = readNumber(bufferSize, data + offset, length - offset);
@@ -237,22 +263,22 @@ namespace PantheonRendering::RHI
 
     void ITexture::setWrapModeU(const ETextureWrapMode wrapMode)
     {
-        m_wrapModeU = wrapMode;
+        m_loadInfo.m_wrapModeU = wrapMode;
     }
 
     void ITexture::setWrapModeV(const ETextureWrapMode wrapMode)
     {
-        m_wrapModeV = wrapMode;
+        m_loadInfo.m_wrapModeV = wrapMode;
     }
 
     void ITexture::setMinFilter(const ETextureFilter filter)
     {
-        m_minFilter = filter;
+        m_loadInfo.m_minFilter = filter;
     }
 
     void ITexture::setMagFilter(const ETextureFilter filter)
     {
-        m_magFilter = filter;
+        m_loadInfo.m_magFilter = filter;
     }
 
     uint8_t ITexture::toChannelCount(const EPixelDataFormat format)

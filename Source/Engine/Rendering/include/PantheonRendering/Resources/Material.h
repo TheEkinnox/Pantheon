@@ -75,6 +75,13 @@ namespace PantheonRendering::Resources
         }
 
         /**
+         * \brief Saves the material to the given file
+         * \param fileName The target save path
+         * \return True if the material was successfully saved. False otherwise.
+         */
+        bool save(const std::string& fileName) const override;
+
+        /**
          * \brief Serializes the material to json
          * \param writer The output json writer
          * \return True on success. False otherwise.

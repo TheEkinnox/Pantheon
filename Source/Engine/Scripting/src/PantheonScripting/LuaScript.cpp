@@ -29,6 +29,21 @@ namespace PantheonScripting
         return !m_source.empty();
     }
 
+    bool LuaScript::save(const std::string& fileName) const
+    {
+        if (!CHECK(!fileName.empty(), "Attempted to save lua script to empty path"))
+            return false;
+
+        std::ofstream file(fileName, std::ios::binary);
+
+        if (!CHECK(file.is_open(), "Unable to save lua script - Failed to open file at path \"%s\"", fileName.c_str()))
+            return false;
+
+        file << m_source;
+
+        return CHECK(!file.bad(), "Failed to save lua script to \"%s\"", fileName.c_str());
+    }
+
     bool LuaScript::toBinary(std::vector<char>& output) const
     {
         return CHECK(serializeString(m_source, output), "Failed to serialize lua script source")
