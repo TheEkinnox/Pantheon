@@ -29,90 +29,105 @@ namespace PantheonRendering::RHI
         if (id == 131169 || id == 131185 || id == 131218 || id == 131204)
             return;
 
-        Logger& logger = Logger::getInstance();
+        std::ostringstream oss;
 
-        logger.print("---------------\n");
-        logger.print("Debug message (%u): %s\n", false, id, message);
+        oss << "---------------\n";
+        oss << "Debug message (" << id << "): " << message << '\n';
 
         switch (source)
         {
         case GL_DEBUG_SOURCE_API:
-            logger.print("Source: API");
+            oss << "Source: API";
             break;
         case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
-            logger.print("Source: Window System");
+            oss << "Source: Window System";
             break;
         case GL_DEBUG_SOURCE_SHADER_COMPILER:
-            logger.print("Source: Shader Compiler");
+            oss << "Source: Shader Compiler";
             break;
         case GL_DEBUG_SOURCE_THIRD_PARTY:
-            logger.print("Source: Third Party");
+            oss << "Source: Third Party";
             break;
         case GL_DEBUG_SOURCE_APPLICATION:
-            logger.print("Source: Application");
+            oss << "Source: Application";
             break;
         case GL_DEBUG_SOURCE_OTHER:
         default:
-            logger.print("Source: Other");
+            oss << "Source: Other";
             break;
         }
 
-        logger.print("\n");
+        oss << '\n';
+
+        ELogType logType = ELogType::LOG_INFO;
 
         switch (type)
         {
         case GL_DEBUG_TYPE_ERROR:
-            logger.print("Type: Error", true);
+            oss << "Type: Error";
+            logType = ELogType::LOG_ERROR;
             break;
         case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
-            logger.print("Type: Deprecated Behaviour", true);
+            oss << "Type: Deprecated Behaviour";
+            logType = ELogType::LOG_ERROR;
             break;
         case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
-            logger.print("Type: Undefined Behaviour", true);
+            oss << "Type: Undefined Behaviour";
+            logType = ELogType::LOG_ERROR;
             break;
         case GL_DEBUG_TYPE_PORTABILITY:
-            logger.print("Type: Portability", true);
+            oss << "Type: Portability";
+            logType = ELogType::LOG_ERROR;
             break;
         case GL_DEBUG_TYPE_PERFORMANCE:
-            logger.print("Type: Performance", true);
+            oss << "Type: Performance";
+            logType = ELogType::LOG_ERROR;
             break;
         case GL_DEBUG_TYPE_MARKER:
-            logger.print("Type: Marker");
+            oss << "Type: Marker";
             break;
         case GL_DEBUG_TYPE_PUSH_GROUP:
-            logger.print("Type: Push Group");
+            oss << "Type: Push Group";
             break;
         case GL_DEBUG_TYPE_POP_GROUP:
-            logger.print("Type: Pop Group");
+            oss << "Type: Pop Group";
             break;
         case GL_DEBUG_TYPE_OTHER:
         default:
-            logger.print("Type: Other");
+            oss << "Type: Other";
             break;
         }
 
-        logger.print("\n");
+        oss << '\n';
 
         switch (severity)
         {
         case GL_DEBUG_SEVERITY_HIGH:
-            logger.print("Severity: high");
+            oss << "Severity: high";
+
+            logType = ELogType::LOG_ERROR;
             break;
         case GL_DEBUG_SEVERITY_MEDIUM:
-            logger.print("Severity: medium");
+            oss << "Severity: medium";
+
+            if (logType != ELogType::LOG_ERROR)
+                logType = ELogType::LOG_WARNING;
+
             break;
         case GL_DEBUG_SEVERITY_LOW:
-            logger.print("Severity: low");
+            oss << "Severity: low";
             break;
         case GL_DEBUG_SEVERITY_NOTIFICATION:
-            logger.print("Severity: notification");
+            oss << "Severity: notification";
             break;
         default:
-            logger.print("Severity: unknown");
+            oss << "Severity: unknown";
             break;
         }
 
-        logger.print("\n\n");
+        oss << "\n\n";
+
+        Logger::getInstance().print(oss.str().c_str(), logType);
     }
 
     std::string getGLString(const GLenum name)
