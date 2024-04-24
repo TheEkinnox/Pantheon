@@ -1,9 +1,7 @@
 #pragma once
 #include "PantheonCore/ECS/EntityStorage.h"
 #include "PantheonCore/Resources/IResource.h"
-
-#include <rapidjson/document.h>
-#include <rapidjson/writer.h>
+#include "PantheonCore/Serialization/Serializer.h"
 
 namespace PantheonCore::ECS
 {
@@ -93,14 +91,14 @@ namespace PantheonCore::ECS
          * \param writer The output json writer
          * \return True on success. False otherwise.
          */
-        bool toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const;
+        bool toJson(Serialization::JsonWriter& writer) const;
 
         /**
          * \brief Deserializes the scene from json
          * \param json The input json data
          * \return True on success. False otherwise.
          */
-        bool fromJson(const rapidjson::Value& json);
+        bool fromJson(const Serialization::JsonValue& json);
 
         /**
          * \brief Creates a new entity
@@ -270,7 +268,7 @@ namespace PantheonCore::ECS
          * \param json The input json data
          * \return True on success. False otherwise
          */
-        bool deserializeStorage(const rapidjson::Value& json);
+        bool deserializeStorage(const Serialization::JsonValue& json);
 
         /**
          * \brief Deserializes a component storage from the given memory buffer

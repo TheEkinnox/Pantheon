@@ -1,6 +1,7 @@
 #pragma once
 #include "PantheonCore/ECS/Entity.h"
 #include "PantheonCore/Eventing/Event.h"
+#include "PantheonCore/Serialization/Serializer.h"
 
 #include <unordered_map>
 
@@ -126,14 +127,14 @@ namespace PantheonCore::ECS
          * \param entitiesMap The entity index to scene entity map
          * \return True on success. False otherwise.
          */
-        virtual bool toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap& entitiesMap) const = 0;
+        virtual bool toJson(Serialization::JsonWriter& writer, const EntitiesMap& entitiesMap) const = 0;
 
         /**
          * \brief Deserializes the component storage from json
          * \param json The input json data
          * \return True on success. False otherwise.
          */
-        virtual bool fromJson(const rapidjson::Value& json) = 0;
+        virtual bool fromJson(const Serialization::JsonValue& json) = 0;
 
     protected:
         /**
@@ -349,14 +350,14 @@ namespace PantheonCore::ECS
          * \param entitiesMap The entity index to scene entity map
          * \return True on success. False otherwise.
          */
-        bool toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap& entitiesMap) const override;
+        bool toJson(Serialization::JsonWriter& writer, const EntitiesMap& entitiesMap) const override;
 
         /**
          * \brief Deserializes the component storage from json
          * \param json The input json data
          * \return True on success. False otherwise.
          */
-        bool fromJson(const rapidjson::Value& json) override;
+        bool fromJson(const Serialization::JsonValue& json) override;
 
     private:
         std::vector<ComponentT>                m_components;

@@ -136,8 +136,8 @@ namespace PantheonCore::ECS
     size_t ComponentRegistry::fromBinary<HierarchyComponent>(HierarchyComponent&, const char*, size_t, Scene*);
 
     template <>
-    bool ComponentRegistry::toJson(const HierarchyComponent&, rapidjson::Writer<rapidjson::StringBuffer>&, const EntitiesMap&);
+    bool ComponentRegistry::toJson(const HierarchyComponent&, Serialization::JsonWriter&, const EntitiesMap&);
 
     template <>
-    bool ComponentRegistry::fromJson<HierarchyComponent>(HierarchyComponent&, const rapidjson::Value&, Scene*);
+    bool ComponentRegistry::fromJson<HierarchyComponent>(HierarchyComponent&, const Serialization::JsonValue&, Scene*);
 }

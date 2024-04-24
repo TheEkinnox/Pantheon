@@ -1,10 +1,8 @@
 #pragma once
 #include "PantheonCore/Resources/IResource.h"
+#include "PantheonCore/Serialization/Serializer.h"
 
 #include <type_traits>
-
-#include <rapidjson/document.h>
-#include <rapidjson/writer.h>
 
 namespace PantheonCore::Resources
 {
@@ -158,7 +156,6 @@ namespace PantheonCore::Resources
 
         /**
          * \brief Deserializes the resource reference from the given memory buffer
-         * \note On success the read bytes will always be sizeof(KeySizeT) + getKey().size() + sizeof(PathSizeT) + getPath().size()
          * \param data A pointer to the beginning of the memory buffer
          * \param length The memory buffer's length
          * \return The number of deserialized bytes on success. 0 otherwise.
@@ -170,14 +167,14 @@ namespace PantheonCore::Resources
          * \param writer The output json writer
          * \return True on success. False otherwise.
          */
-        virtual bool toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const;
+        virtual bool toJson(Serialization::JsonWriter& writer) const;
 
         /**
          * \brief Deserializes the resource reference from json
          * \param json The input json data
          * \return True on success. False otherwise.
          */
-        virtual bool fromJson(const rapidjson::Value& json);
+        virtual bool fromJson(const Serialization::JsonValue& json);
 
     protected:
         template <typename U>
@@ -221,11 +218,34 @@ namespace PantheonCore::Resources
 
         std::string getType() const;
 
-        bool   toBinary(std::vector<char>& output) const override;
+        /**
+         * \brief Serializes the generic resource reference to a byte array
+         * \param output The output memory buffer
+         * \return True on success. False otherwise.
+         */
+        bool toBinary(std::vector<char>& output) const override;
+
+        /**
+         * \brief Deserializes the generic resource reference from the given memory buffer
+         * \param data A pointer to the beginning of the memory buffer
+         * \param length The memory buffer's length
+         * \return The number of deserialized bytes on success. 0 otherwise.
+         */
         size_t fromBinary(const char* data, size_t length) override;
 
-        bool toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const override;
-        bool fromJson(const rapidjson::Value& json) override;
+        /**
+         * \brief Serializes the generic resource reference to json
+         * \param writer The output json writer
+         * \return True on success. False otherwise.
+         */
+        bool toJson(Serialization::JsonWriter& writer) const override;
+
+        /**
+         * \brief Deserializes the generic resource reference from json
+         * \param json The input json data
+         * \return True on success. False otherwise.
+         */
+        bool fromJson(const Serialization::JsonValue& json) override;
 
     private:
         std::string m_type;

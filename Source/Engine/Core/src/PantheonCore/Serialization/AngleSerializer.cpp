@@ -20,13 +20,13 @@ namespace PantheonCore::Serialization
     }
 
     template <>
-    bool toJson(const Radian& angle, rapidjson::Writer<rapidjson::StringBuffer>& writer)
+    bool toJson(const Radian& angle, JsonWriter& writer)
     {
         return CHECK(writer.Double(angle.raw()), "Failed to write radian");
     }
 
     template <>
-    bool fromJson(Radian& out, const rapidjson::Value& json)
+    bool fromJson(Radian& out, const JsonValue& json)
     {
         if (!CHECK(json.IsNumber(), "Unable to read radian - Json value should be a number"))
             return false;
@@ -49,13 +49,13 @@ namespace PantheonCore::Serialization
     }
 
     template <>
-    bool toJson(const Degree& angle, rapidjson::Writer<rapidjson::StringBuffer>& writer)
+    bool toJson(const Degree& angle, JsonWriter& writer)
     {
         return CHECK(writer.Double(angle.raw()), "Failed to write degrees");
     }
 
     template <>
-    bool fromJson(Degree& out, const rapidjson::Value& json)
+    bool fromJson(Degree& out, const JsonValue& json)
     {
         if (!CHECK(json.IsNumber(), "Unable to read degrees - Json value should be a number"))
             return false;

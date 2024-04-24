@@ -291,10 +291,10 @@ namespace PantheonCore::ECS
 
     template <>
     bool ComponentRegistry::toJson(
-        const EntityHandle& component, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap& toSerialized);
+        const EntityHandle& component, Serialization::JsonWriter& writer, const EntitiesMap& toSerialized);
 
     template <>
-    bool ComponentRegistry::fromJson(EntityHandle& out, const rapidjson::Value& json, Scene* scene);
+    bool ComponentRegistry::fromJson(EntityHandle& out, const Serialization::JsonValue& json, Scene* scene);
 }
 
 #include "PantheonCore/ECS/EntityHandle.inl"

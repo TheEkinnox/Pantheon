@@ -7,7 +7,10 @@ namespace PantheonCore::ECS
     {
         std::string m_tag;
     };
+}
 
+namespace PantheonCore::Serialization
+{
     /**
      * \brief Serializes the given tag component into the given byte array
      * \param tag The component to serialize
@@ -15,7 +18,7 @@ namespace PantheonCore::ECS
      * \return True on success. False otherwise.
      */
     template <>
-    bool ComponentRegistry::toBinary<TagComponent>(const TagComponent& tag, std::vector<char>& output, const EntitiesMap&);
+    bool toBinary(const ECS::TagComponent& tag, std::vector<char>& output);
 
     /**
      * \brief Deserializes the tag component from the given memory buffer
@@ -24,7 +27,7 @@ namespace PantheonCore::ECS
      * \return The number of deserialized bytes on success. 0 otherwise.
      */
     template <>
-    size_t ComponentRegistry::fromBinary<TagComponent>(TagComponent& out, const char* data, size_t length, Scene*);
+    size_t fromBinary(ECS::TagComponent& out, const char* data, size_t length);
 
     /**
      * \brief Serializes the tag component to json
@@ -32,8 +35,7 @@ namespace PantheonCore::ECS
      * \return True on success. False otherwise.
      */
     template <>
-    bool ComponentRegistry::toJson<TagComponent>(
-        const TagComponent& tag, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap&);
+    bool toJson(const ECS::TagComponent& tag, JsonWriter& writer);
 
     /**
      * \brief Deserializes the tag component from json
@@ -41,5 +43,5 @@ namespace PantheonCore::ECS
      * \return True on success. False otherwise.
      */
     template <>
-    bool ComponentRegistry::fromJson<TagComponent>(TagComponent& tag, const rapidjson::Value& json, Scene*);
+    bool fromJson(ECS::TagComponent& tag, const JsonValue& json);
 }

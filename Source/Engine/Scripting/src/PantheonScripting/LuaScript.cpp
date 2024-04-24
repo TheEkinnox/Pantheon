@@ -11,12 +11,12 @@ namespace PantheonScripting
 
     bool LuaScript::load(const std::string& fileName)
     {
-        if (!CHECK(!fileName.empty(), "Attempted to load script from empty path"))
+        if (!CHECK(!fileName.empty(), "Attempted to load lua script from empty path"))
             return false;
 
         std::ifstream file(fileName, std::ios::binary | std::ios::ate);
 
-        if (!CHECK(file.is_open(), "Unable to load script - Failed to open file at path \"%s\"", fileName.c_str()))
+        if (!CHECK(file.is_open(), "Unable to load lua script - Failed to open file at path \"%s\"", fileName.c_str()))
             return false;
 
         const std::ifstream::pos_type length = file.tellg();

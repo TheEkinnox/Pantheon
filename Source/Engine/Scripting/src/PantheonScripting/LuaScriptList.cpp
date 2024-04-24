@@ -88,7 +88,7 @@ namespace PantheonScripting
         m_scripts.clear();
     }
 
-    sol::optional<sol::object> luaObjectFromJson(lua_State* luaState, const rapidjson::Value& json, Scene* scene)
+    sol::optional<sol::object> luaObjectFromJson(lua_State* luaState, const JsonValue& json, Scene* scene)
     {
         if (!CHECK(luaState, "Unable to deserialize lua object - No lua state"))
             return sol::nullopt;
@@ -329,8 +329,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    bool ComponentRegistry::toJson(
-        const LuaScriptList& component, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap& toSerialized)
+    bool ComponentRegistry::toJson(const LuaScriptList& component, JsonWriter& writer, const EntitiesMap& toSerialized)
     {
         writer.StartArray();
 
@@ -357,7 +356,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    bool ComponentRegistry::fromJson(LuaScriptList& out, const rapidjson::Value& json, Scene* scene)
+    bool ComponentRegistry::fromJson(LuaScriptList& out, const JsonValue& json, Scene* scene)
     {
         out.clear();
 
@@ -465,8 +464,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    bool ComponentRegistry::toJson(
-        const sol::table& component, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap& toSerialized)
+    bool ComponentRegistry::toJson(const sol::table& component, JsonWriter& writer, const EntitiesMap& toSerialized)
     {
         if (component == sol::nil)
             return writer.Null();
@@ -495,7 +493,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    bool ComponentRegistry::fromJson(sol::table& out, const rapidjson::Value& json, Scene* scene)
+    bool ComponentRegistry::fromJson(sol::table& out, const JsonValue& json, Scene* scene)
     {
         if (!CHECK(json.IsArray(), "Unable to deserialize lua table - Json value should be an array"))
             return false;
@@ -605,8 +603,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    bool ComponentRegistry::toJson(
-        const sol::object& component, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap& toSerialized)
+    bool ComponentRegistry::toJson(const sol::object& component, JsonWriter& writer, const EntitiesMap& toSerialized)
     {
         if (!CHECK(component.valid(), "Unable to seriliaze lua object - Invalid value"))
             return false;

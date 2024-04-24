@@ -20,14 +20,14 @@ namespace PantheonCore::Serialization
     }
 
     template <>
-    bool toJson(const Vector2& vector, rapidjson::Writer<rapidjson::StringBuffer>& writer)
+    bool toJson(const Vector2& vector, JsonWriter& writer)
     {
         const std::string str = vector.string();
         return CHECK(writer.String(str.c_str(), static_cast<rapidjson::SizeType>(str.size())), "Failed to serialize Vector2");
     }
 
     template <>
-    bool fromJson(Vector2& out, const rapidjson::Value& json)
+    bool fromJson(Vector2& out, const JsonValue& json)
     {
         if (!CHECK(json.IsString(), "Unable to deserialize Vector2 - Invalid json value"))
             return false;
@@ -52,14 +52,14 @@ namespace PantheonCore::Serialization
     }
 
     template <>
-    bool toJson(const Vector3& vector, rapidjson::Writer<rapidjson::StringBuffer>& writer)
+    bool toJson(const Vector3& vector, JsonWriter& writer)
     {
         const std::string str = vector.string();
         return CHECK(writer.String(str.c_str(), static_cast<rapidjson::SizeType>(str.size())), "Failed to serialize Vector3");
     }
 
     template <>
-    bool fromJson(Vector3& out, const rapidjson::Value& json)
+    bool fromJson(Vector3& out, const JsonValue& json)
     {
         if (!CHECK(json.IsString(), "Unable to deserialize Vector3 - Invalid json value"))
             return false;
@@ -84,14 +84,14 @@ namespace PantheonCore::Serialization
     }
 
     template <>
-    bool toJson(const Vector4& vector, rapidjson::Writer<rapidjson::StringBuffer>& writer)
+    bool toJson(const Vector4& vector, JsonWriter& writer)
     {
         const std::string str = vector.string();
         return CHECK(writer.String(str.c_str(), static_cast<rapidjson::SizeType>(str.size())), "Failed to serialize Vector4");
     }
 
     template <>
-    bool fromJson(Vector4& out, const rapidjson::Value& json)
+    bool fromJson(Vector4& out, const JsonValue& json)
     {
         if (!CHECK(json.IsString(), "Unable to deserialize Vector4 - Invalid json value"))
             return false;

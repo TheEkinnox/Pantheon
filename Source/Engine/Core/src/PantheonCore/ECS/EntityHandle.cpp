@@ -200,8 +200,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    bool ComponentRegistry::toJson(
-        const EntityHandle& component, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap& toSerialized)
+    bool ComponentRegistry::toJson(const EntityHandle& component, JsonWriter& writer, const EntitiesMap& toSerialized)
     {
         Entity entity = component.getEntity();
 
@@ -219,7 +218,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    bool ComponentRegistry::fromJson(EntityHandle& out, const rapidjson::Value& json, Scene* scene)
+    bool ComponentRegistry::fromJson(EntityHandle& out, const JsonValue& json, Scene* scene)
     {
         if (!CHECK(json.Is<Entity::Id>(), "Unable to deserialize entity handle - Json value should be castable to Entity::Id"))
             return false;

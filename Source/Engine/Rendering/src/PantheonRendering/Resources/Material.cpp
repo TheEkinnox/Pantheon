@@ -6,6 +6,7 @@
 
 using namespace LibMath;
 using namespace PantheonCore::Resources;
+using namespace PantheonCore::Serialization;
 using namespace PantheonRendering::Enums;
 using namespace PantheonRendering::RHI;
 
@@ -20,27 +21,21 @@ namespace PantheonRendering::Resources
     {
         std::ifstream fs(fileName);
 
-        if (!fs.is_open())
-        {
-            DEBUG_LOG_ERROR("Unable to open material file at path \"%s\"", fileName.c_str());
+        if (!CHECK(fs.is_open(), "Unable to open material file at path \"%s\"", fileName.c_str()))
             return false;
-        }
 
         rapidjson::IStreamWrapper isw(fs);
 
         rapidjson::Document json;
         json.ParseStream(isw);
 
-        if (json.HasParseError())
-        {
-            DEBUG_LOG_ERROR("Unable to parse material from file - Parse error %d", json.GetParseError());
+        if (!CHECK(!json.HasParseError(), "Unable to parse material from file - Parse error %d", json.GetParseError()))
             return false;
-        }
 
         return fromJson(json);
     }
 
-    bool Material::toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
+    bool Material::toJson(JsonWriter& writer) const
     {
         writer.StartObject();
 
@@ -73,7 +68,7 @@ namespace PantheonRendering::Resources
         return writer.EndObject();
     }
 
-    bool Material::fromJson(const rapidjson::Value& json)
+    bool Material::fromJson(const JsonValue& json)
     {
         if (!CHECK(json.IsObject(), "Unable to deserialize material - Json value should be an object"))
             return false;
@@ -299,7 +294,7 @@ namespace PantheonRendering::Resources
         }
     }
 
-    bool Material::serializePropertyValue(rapidjson::Writer<rapidjson::StringBuffer>& writer, const Property& property)
+    bool Material::serializePropertyValue(JsonWriter& writer, const Property& property)
     {
         switch (property.m_type)
         {
@@ -344,7 +339,7 @@ namespace PantheonRendering::Resources
         }
     }
 
-    bool Material::deserializeProperties(const rapidjson::Value& json)
+    bool Material::deserializeProperties(const JsonValue& json)
     {
         m_properties.clear();
 
@@ -376,7 +371,7 @@ namespace PantheonRendering::Resources
         return true;
     }
 
-    bool Material::deserializePropertyValue(const rapidjson::Value& json, Property& out)
+    bool Material::deserializePropertyValue(const JsonValue& json, Property& out)
     {
         switch (out.m_type)
         {

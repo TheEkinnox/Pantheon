@@ -41,6 +41,118 @@ namespace PantheonRendering::Components
         return m_model.getOrDefault();
     }
 
+    bool ModelComponent::toBinary(std::vector<char>& out) const
+    {
+        if (!m_model.toBinary(out))
+            return false;
+
+        const auto materialCount = static_cast<IByteSerializable::ElemCountT>(m_materials.size());
+        if (!CHECK(IByteSerializable::writeNumber(materialCount, out), "Unable to write model component's material count"))
+            return false;
+
+        for (IByteSerializable::ElemCountT i = 0; i < materialCount; ++i)
+        {
+            if (!m_materials[i].toBinary(out))
+                return false;
+        }
+
+        return true;
+    }
+
+    size_t ModelComponent::fromBinary(const char* data, size_t length)
+    {
+        if (!CHECK(data != nullptr && length > 0, "Unable to deserialize model component - Empty buffer"))
+            return 0;
+
+        size_t offset = m_model.fromBinary(data, length);
+
+        if (offset == 0 || !CHECK(length >= offset, "Unable to deserialize model component's material count - Invalid offset"))
+            return 0;
+
+        IByteSerializable::ElemCountT materialCount;
+
+        size_t readBytes = IByteSerializable::readNumber(materialCount, data + offset, length - offset);
+
+        if (!CHECK(readBytes > 0, "Unable to deserialize model component's material count"))
+            return 0;
+
+        m_materials.reserve(materialCount);
+        offset += readBytes;
+
+        for (IByteSerializable::ElemCountT i = 0; i < materialCount; ++i)
+        {
+            if (!CHECK(length >= offset, "Unable to deserialize model component's material %u - Invalid offset", i))
+                return 0;
+
+            ResourceRef<Material>& mat = m_materials.emplace_back();
+
+            readBytes = mat.fromBinary(data + offset, length - offset);
+
+            if (readBytes == 0)
+                return 0;
+
+            offset += readBytes;
+        }
+
+        return offset;
+    }
+
+    bool ModelComponent::toJson(JsonWriter& writer) const
+    {
+        writer.StartObject();
+
+        writer.Key("model");
+        if (!m_model.toJson(writer))
+            return false;
+
+        writer.Key("materials");
+
+        writer.StartArray();
+
+        for (const ResourceRef<Material>& material : m_materials)
+        {
+            if (!material.toJson(writer))
+                return false;
+        }
+
+        writer.EndArray();
+
+        return writer.EndObject();
+    }
+
+    bool ModelComponent::fromJson(const JsonValue& json)
+    {
+        if (!CHECK(json.IsObject(), "Unable to deserialize model component - Json value should be an object"))
+            return false;
+
+        auto it = json.FindMember("model");
+
+        if (!CHECK(it != json.MemberEnd(), "Unable to deserialize model component's model"))
+            return false;
+
+        if (!m_model.fromJson(it->value))
+            return false;
+
+        it = json.FindMember("materials");
+
+        if (!CHECK(it != json.MemberEnd() && it->value.IsArray(),
+                "Unable to deserialize model component's materials - Json value should be an array"))
+            return false;
+
+        const auto jsonMaterials = it->value.GetArray();
+        m_materials.reserve(jsonMaterials.Size());
+
+        for (const auto& jsonMaterial : jsonMaterials)
+        {
+            ResourceRef<Material>& mat = m_materials.emplace_back();
+
+            if (!mat.fromJson(jsonMaterial))
+                return false;
+        }
+
+        return true;
+    }
+
     void ModelComponent::setModel(ModelRef model)
     {
         m_model = std::move(model);
@@ -112,127 +224,5 @@ namespace PantheonRendering::Components
     void ModelComponent::setLayerMask(LayerMask layerMask)
     {
         m_layerMask = layerMask;
-    }
-}
-
-namespace PantheonCore::ECS
-{
-    using namespace PantheonRendering::Components;
-
-    template <>
-    bool ComponentRegistry::toBinary(const ModelComponent& component, std::vector<char>& out, const EntitiesMap&)
-    {
-        if (!component.m_model.toBinary(out))
-            return false;
-
-        const auto materialCount = static_cast<IByteSerializable::ElemCountT>(component.m_materials.size());
-        if (!CHECK(IByteSerializable::writeNumber(materialCount, out), "Unable to write model component's material count"))
-            return false;
-
-        for (IByteSerializable::ElemCountT i = 0; i < materialCount; ++i)
-        {
-            if (!component.m_materials[i].toBinary(out))
-                return false;
-        }
-
-        return true;
-    }
-
-    template <>
-    size_t ComponentRegistry::fromBinary(ModelComponent& out, const char* data, size_t length, Scene*)
-    {
-        if (!CHECK(data != nullptr && length > 0, "Unable to deserialize model component - Empty buffer"))
-            return 0;
-
-        size_t offset = out.m_model.fromBinary(data, length);
-
-        if (offset == 0 || !CHECK(length >= offset, "Unable to deserialize model component's material count - Invalid offset"))
-            return 0;
-
-        IByteSerializable::ElemCountT materialCount;
-
-        size_t readBytes = IByteSerializable::readNumber(materialCount, data + offset, length - offset);
-
-        if (!CHECK(readBytes > 0, "Unable to deserialize model component's material count"))
-            return 0;
-
-        out.m_materials.reserve(materialCount);
-        offset += readBytes;
-
-        for (IByteSerializable::ElemCountT i = 0; i < materialCount; ++i)
-        {
-            if (!CHECK(length >= offset, "Unable to deserialize model component's material %u - Invalid offset", i))
-                return 0;
-
-            ResourceRef<Material>& mat = out.m_materials.emplace_back();
-
-            readBytes = mat.fromBinary(data + offset, length - offset);
-
-            if (readBytes == 0)
-                return 0;
-
-            offset += readBytes;
-        }
-
-        return offset;
-    }
-
-    template <>
-    bool ComponentRegistry::toJson(
-        const ModelComponent& component, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap&)
-    {
-        writer.StartObject();
-
-        writer.Key("model");
-        if (!component.m_model.toJson(writer))
-            return false;
-
-        writer.Key("materials");
-
-        writer.StartArray();
-
-        for (const ResourceRef<Material>& material : component.m_materials)
-        {
-            if (!material.toJson(writer))
-                return false;
-        }
-
-        writer.EndArray();
-
-        return writer.EndObject();
-    }
-
-    template <>
-    bool ComponentRegistry::fromJson(ModelComponent& out, const rapidjson::Value& json, Scene*)
-    {
-        if (!CHECK(json.IsObject(), "Unable to deserialize model component - Json value should be an object"))
-            return false;
-
-        auto it = json.FindMember("model");
-
-        if (!CHECK(it != json.MemberEnd(), "Unable to deserialize model component's model"))
-            return false;
-
-        if (!out.m_model.fromJson(it->value))
-            return false;
-
-        it = json.FindMember("materials");
-
-        if (!CHECK(it != json.MemberEnd() && it->value.IsArray(),
-                "Unable to deserialize model component's materials - Json value should be an array"))
-            return false;
-
-        const auto jsonMaterials = it->value.GetArray();
-        out.m_materials.reserve(jsonMaterials.Size());
-
-        for (const auto& jsonMaterial : jsonMaterials)
-        {
-            ResourceRef<Material>& mat = out.m_materials.emplace_back();
-
-            if (!mat.fromJson(jsonMaterial))
-                return false;
-        }
-
-        return true;
     }
 }

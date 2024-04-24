@@ -207,8 +207,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    bool ComponentRegistry::toBinary<HierarchyComponent>(
-        const HierarchyComponent& hierarchy, std::vector<char>& out, const EntitiesMap& toSerialized)
+    bool ComponentRegistry::toBinary(const HierarchyComponent& hierarchy, std::vector<char>& out, const EntitiesMap& toSerialized)
     {
         Entity parent = hierarchy.getParent();
 
@@ -226,7 +225,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    size_t ComponentRegistry::fromBinary<HierarchyComponent>(HierarchyComponent& out, const char* data, size_t length, Scene*)
+    size_t ComponentRegistry::fromBinary(HierarchyComponent& out, const char* data, size_t length, Scene*)
     {
         if (!CHECK(data != nullptr && length > 0, "Unable to deserialize hierarchy - Empty buffer"))
             return 0;
@@ -235,8 +234,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    bool ComponentRegistry::toJson<HierarchyComponent>(
-        const HierarchyComponent& hierarchy, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap& toSerialized)
+    bool ComponentRegistry::toJson(const HierarchyComponent& hierarchy, JsonWriter& writer, const EntitiesMap& toSerialized)
     {
         Entity parent = hierarchy.getParent();
 
@@ -259,7 +257,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    bool ComponentRegistry::fromJson<HierarchyComponent>(HierarchyComponent& out, const rapidjson::Value& json, Scene*)
+    bool ComponentRegistry::fromJson(HierarchyComponent& out, const JsonValue& json, Scene*)
     {
         if (!CHECK(json.IsObject(), "Unable to deserialize hierarchy - Json value should be an object"))
             return false;

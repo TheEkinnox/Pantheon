@@ -100,7 +100,7 @@ namespace PantheonScripting
      * \return The created object on success. A null optional otherwise
      */
     sol::optional<sol::object> luaObjectFromJson(
-        lua_State* luaState, const rapidjson::Value& json, PantheonCore::ECS::Scene* scene);
+        lua_State* luaState, const PantheonCore::Serialization::JsonValue& json, PantheonCore::ECS::Scene* scene);
 
     /**
      * \brief Deserializes the lua object from binary
@@ -157,8 +157,8 @@ namespace PantheonCore::ECS
      * \return True on success. False otherwise
      */
     template <>
-    bool ComponentRegistry::toJson(const PantheonScripting::LuaScriptList&     component,
-                                   rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap& toSerialized);
+    bool ComponentRegistry::toJson(
+        const PantheonScripting::LuaScriptList& component, Serialization::JsonWriter& writer, const EntitiesMap& toSerialized);
 
     /**
      * \brief Deserializes the lua script component from json
@@ -167,7 +167,7 @@ namespace PantheonCore::ECS
      * \return True on success. False otherwise
      */
     template <>
-    bool ComponentRegistry::fromJson(PantheonScripting::LuaScriptList& out, const rapidjson::Value& json, Scene* scene);
+    bool ComponentRegistry::fromJson(PantheonScripting::LuaScriptList& out, const Serialization::JsonValue& json, Scene* scene);
 
     /**
      * \brief Serializes the given lua script component to binary
@@ -199,7 +199,7 @@ namespace PantheonCore::ECS
      */
     template <>
     bool ComponentRegistry::toJson(
-        const sol::table& component, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap& toSerialized);
+        const sol::table& component, Serialization::JsonWriter& writer, const EntitiesMap& toSerialized);
 
     /**
      * \brief Deserializes the lua table from json
@@ -208,7 +208,7 @@ namespace PantheonCore::ECS
      * \return True on success. False otherwise
      */
     template <>
-    bool ComponentRegistry::fromJson(sol::table& out, const rapidjson::Value& json, Scene* scene);
+    bool ComponentRegistry::fromJson(sol::table& out, const Serialization::JsonValue& json, Scene* scene);
 
     /**
      * \brief Serializes the given lua table to binary
@@ -239,7 +239,7 @@ namespace PantheonCore::ECS
      */
     template <>
     bool ComponentRegistry::toJson(
-        const sol::object& component, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap& toSerialized);
+        const sol::object& component, Serialization::JsonWriter& writer, const EntitiesMap& toSerialized);
 
     /**
      * \brief Serializes the given lua object to binary

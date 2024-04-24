@@ -231,7 +231,7 @@ namespace PantheonCore::Resources
     }
 
     template <class T>
-    bool ResourceRef<T>::toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
+    bool ResourceRef<T>::toJson(Serialization::JsonWriter& writer) const
     {
         writer.StartObject();
 
@@ -245,7 +245,7 @@ namespace PantheonCore::Resources
     }
 
     template <class T>
-    bool ResourceRef<T>::fromJson(const rapidjson::Value& json)
+    bool ResourceRef<T>::fromJson(const Serialization::JsonValue& json)
     {
         if (!CHECK(json.IsObject(), "Unable to deserialize resource ref - Json value should be an object"))
             return false;
@@ -358,7 +358,7 @@ namespace PantheonCore::Resources
         return CHECK(basePath == m_path, "Unable to deserialize resource ref - Failed to load resource") ? offset + readBytes : 0;
     }
 
-    inline bool GenericResourceRef::toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
+    inline bool GenericResourceRef::toJson(Serialization::JsonWriter& writer) const
     {
         writer.StartObject();
 
@@ -374,7 +374,7 @@ namespace PantheonCore::Resources
         return writer.EndObject();
     }
 
-    inline bool GenericResourceRef::fromJson(const rapidjson::Value& json)
+    inline bool GenericResourceRef::fromJson(const Serialization::JsonValue& json)
     {
         const auto it = json.FindMember("type");
         if (!CHECK(it != json.MemberEnd() && it->value.IsString(), "Unable to deserialize resource ref - Invalid resource type"))

@@ -1,5 +1,5 @@
 #pragma once
-#include "PantheonCore/Serialization/EnumSerializer.h"
+#include "PantheonCore/Serialization/Serializer.h"
 
 #include <Transform.h>
 #include <Vector.h>
@@ -13,9 +13,9 @@ namespace PantheonCore::Serialization
     size_t fromBinary(LibMath::Transform&, const char*, size_t);
 
     template <>
-    bool toJson(const LibMath::Transform&, rapidjson::Writer<rapidjson::StringBuffer>&);
+    bool toJson(const LibMath::Transform&, JsonWriter&);
     template <>
-    bool fromJson(LibMath::Transform&, const rapidjson::Value&);
+    bool fromJson(LibMath::Transform&, const JsonValue&);
 
     /* Degree */
     template <>
@@ -24,9 +24,9 @@ namespace PantheonCore::Serialization
     size_t fromBinary(LibMath::Degree&, const char*, size_t);
 
     template <>
-    bool toJson(const LibMath::Degree&, rapidjson::Writer<rapidjson::StringBuffer>&);
+    bool toJson(const LibMath::Degree&, JsonWriter&);
     template <>
-    bool fromJson(LibMath::Degree&, const rapidjson::Value&);
+    bool fromJson(LibMath::Degree&, const JsonValue&);
 
     /* Radian */
     template <>
@@ -35,9 +35,9 @@ namespace PantheonCore::Serialization
     size_t fromBinary(LibMath::Radian&, const char*, size_t);
 
     template <>
-    bool toJson(const LibMath::Radian&, rapidjson::Writer<rapidjson::StringBuffer>&);
+    bool toJson(const LibMath::Radian&, JsonWriter&);
     template <>
-    bool fromJson(LibMath::Radian&, const rapidjson::Value&);
+    bool fromJson(LibMath::Radian&, const JsonValue&);
 
     /* Quaternion */
     template <>
@@ -46,9 +46,9 @@ namespace PantheonCore::Serialization
     size_t fromBinary(LibMath::Quaternion&, const char*, size_t);
 
     template <>
-    bool toJson(const LibMath::Quaternion&, rapidjson::Writer<rapidjson::StringBuffer>&);
+    bool toJson(const LibMath::Quaternion&, JsonWriter&);
     template <>
-    bool fromJson(LibMath::Quaternion&, const rapidjson::Value&);
+    bool fromJson(LibMath::Quaternion&, const JsonValue&);
 
     /* Vector2 */
     template <>
@@ -57,9 +57,9 @@ namespace PantheonCore::Serialization
     size_t fromBinary(LibMath::Vector2&, const char*, size_t);
 
     template <>
-    bool toJson(const LibMath::Vector2&, rapidjson::Writer<rapidjson::StringBuffer>&);
+    bool toJson(const LibMath::Vector2&, JsonWriter&);
     template <>
-    bool fromJson(LibMath::Vector2&, const rapidjson::Value&);
+    bool fromJson(LibMath::Vector2&, const JsonValue&);
 
     /* Vector3 */
     template <>
@@ -68,9 +68,9 @@ namespace PantheonCore::Serialization
     size_t fromBinary(LibMath::Vector3&, const char*, size_t);
 
     template <>
-    bool toJson(const LibMath::Vector3&, rapidjson::Writer<rapidjson::StringBuffer>&);
+    bool toJson(const LibMath::Vector3&, JsonWriter&);
     template <>
-    bool fromJson(LibMath::Vector3&, const rapidjson::Value&);
+    bool fromJson(LibMath::Vector3&, const JsonValue&);
 
     /* Vector4 */
     template <>
@@ -79,9 +79,9 @@ namespace PantheonCore::Serialization
     size_t fromBinary(LibMath::Vector4&, const char*, size_t);
 
     template <>
-    bool toJson(const LibMath::Vector4&, rapidjson::Writer<rapidjson::StringBuffer>&);
+    bool toJson(const LibMath::Vector4&, JsonWriter&);
     template <>
-    bool fromJson(LibMath::Vector4&, const rapidjson::Value&);
+    bool fromJson(LibMath::Vector4&, const JsonValue&);
 
     /* Matrix3 */
     template <>
@@ -90,9 +90,9 @@ namespace PantheonCore::Serialization
     size_t fromBinary(LibMath::Matrix3&, const char*, size_t);
 
     template <>
-    bool toJson(const LibMath::Matrix3&, rapidjson::Writer<rapidjson::StringBuffer>&);
+    bool toJson(const LibMath::Matrix3&, JsonWriter&);
     template <>
-    bool fromJson(LibMath::Matrix3&, const rapidjson::Value&);
+    bool fromJson(LibMath::Matrix3&, const JsonValue&);
 
     /* Matrix4 */
     template <>
@@ -101,7 +101,7 @@ namespace PantheonCore::Serialization
     size_t fromBinary(LibMath::Matrix4&, const char*, size_t);
 
     template <>
-    bool toJson(const LibMath::Matrix4&, rapidjson::Writer<rapidjson::StringBuffer>&);
+    bool toJson(const LibMath::Matrix4&, JsonWriter&);
     template <>
-    bool fromJson(LibMath::Matrix4&, const rapidjson::Value&);
+    bool fromJson(LibMath::Matrix4&, const JsonValue&);
 }

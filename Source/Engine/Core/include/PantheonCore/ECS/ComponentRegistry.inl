@@ -1,26 +1,47 @@
 #pragma once
 #include "PantheonCore/ECS/ComponentRegistry.h"
 #include "PantheonCore/ECS/ComponentStorage.h"
-#include "PantheonCore/Serialization/EnumSerializer.h"
 
 namespace PantheonCore::ECS
 {
-    template <typename T>
-    bool ComponentRegistry::toJson(const T& in, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap& toSerialized)
+    inline ComponentRegistry& ComponentRegistry::getInstance()
     {
-        constexpr bool hasToJsonWithMap = requires
-        {
-            in.toJson(writer, toSerialized);
-        };
-
-        if constexpr (hasToJsonWithMap)
-            return in.toJson(writer, toSerialized);
-        else
-            return Serialization::toJson(in, writer);
+        static ComponentRegistry instance;
+        return instance;
     }
 
     template <typename T>
-    bool ComponentRegistry::fromJson(T& out, const rapidjson::Value& json, Scene* scene)
+    void ComponentRegistry::registerType(const std::string& name)
+    {
+        const ComponentTypeInfo typeInfo
+        {
+            .m_typeId = ComponentRegistry::getTypeId<T>(),
+            .makeStorage = [](Scene* scene)
+            {
+                std::shared_ptr<IComponentStorage> storage = std::make_shared<ComponentStorage<T>>(scene);
+                return storage;
+            }
+        };
+
+        TypeRegistry::registerType<T>(name, typeInfo);
+    }
+
+    template <typename T>
+    bool ComponentRegistry::toJson(const T& value, Serialization::JsonWriter& writer, const EntitiesMap& toSerialized)
+    {
+        constexpr bool hasToJsonWithMap = requires
+        {
+            value.toJson(writer, toSerialized);
+        };
+
+        if constexpr (hasToJsonWithMap)
+            return value.toJson(writer, toSerialized);
+        else
+            return Serialization::toJson(value, writer);
+    }
+
+    template <typename T>
+    bool ComponentRegistry::fromJson(T& out, const Serialization::JsonValue& json, Scene* scene)
     {
         constexpr bool hasFromJsonWithScene = requires
         {
@@ -59,27 +80,5 @@ namespace PantheonCore::ECS
             return out.fromBinary(data, length, scene);
         else
             return Serialization::fromBinary(out, data, length);
-    }
-
-    inline ComponentRegistry& ComponentRegistry::getInstance()
-    {
-        static ComponentRegistry instance;
-        return instance;
-    }
-
-    template <typename T>
-    void ComponentRegistry::registerType(const std::string& name)
-    {
-        const ComponentTypeInfo typeInfo
-        {
-            .m_typeId = ComponentRegistry::getTypeId<T>(),
-            .makeStorage = [](Scene* scene)
-            {
-                std::shared_ptr<IComponentStorage> storage = std::make_shared<ComponentStorage<T>>(scene);
-                return storage;
-            }
-        };
-
-        TypeRegistry::registerType<T>(name, typeInfo);
     }
 }

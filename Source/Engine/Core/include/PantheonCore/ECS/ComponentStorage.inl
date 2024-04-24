@@ -309,7 +309,7 @@ namespace PantheonCore::ECS
     }
 
     template <class T>
-    bool ComponentStorage<T>::toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap& entitiesMap) const
+    bool ComponentStorage<T>::toJson(Serialization::JsonWriter& writer, const EntitiesMap& entitiesMap) const
     {
         writer.StartArray();
 
@@ -337,7 +337,7 @@ namespace PantheonCore::ECS
     }
 
     template <class T>
-    bool ComponentStorage<T>::fromJson(const rapidjson::Value& json)
+    bool ComponentStorage<T>::fromJson(const Serialization::JsonValue& json)
     {
         if (!CHECK(json.IsArray(), "Failed to deserialize component storage - Json value should be an array"))
             return false;

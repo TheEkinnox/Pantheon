@@ -6,6 +6,8 @@
 
 #include <rapidjson/istreamwrapper.h>
 
+using namespace PantheonCore::Serialization;
+
 namespace PantheonCore::ECS
 {
     Scene::Scene()
@@ -17,22 +19,16 @@ namespace PantheonCore::ECS
     {
         std::ifstream fs(fileName);
 
-        if (!fs.is_open())
-        {
-            DEBUG_LOG_ERROR("Unable to open scene file at path \"%s\"", fileName.c_str());
+        if (!CHECK(fs.is_open(), "Unable to open scene file at path \"%s\"", fileName.c_str()))
             return false;
-        }
 
         rapidjson::IStreamWrapper isw(fs);
 
         rapidjson::Document json;
         json.ParseStream(isw);
 
-        if (json.HasParseError())
-        {
-            DEBUG_LOG_ERROR("Unable to parse scene from file - Parse error %d", json.GetParseError());
+        if (!CHECK(!json.HasParseError(), "Unable to parse scene from file - Parse error %d", json.GetParseError()))
             return false;
-        }
 
         return fromJson(json);
     }
@@ -112,7 +108,7 @@ namespace PantheonCore::ECS
         return offset;
     }
 
-    bool Scene::toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const
+    bool Scene::toJson(JsonWriter& writer) const
     {
         writer.StartObject();
 
@@ -153,7 +149,7 @@ namespace PantheonCore::ECS
         return writer.EndObject();
     }
 
-    bool Scene::fromJson(const rapidjson::Value& json)
+    bool Scene::fromJson(const JsonValue& json)
     {
         clear();
 
@@ -300,7 +296,7 @@ namespace PantheonCore::ECS
         return components;
     }
 
-    bool Scene::deserializeStorage(const rapidjson::Value& json)
+    bool Scene::deserializeStorage(const JsonValue& json)
     {
         if (!CHECK(json.IsObject(), "Unable to deserialize scene component storage - Json value should be an object"))
             return false;

@@ -26,6 +26,106 @@ namespace PantheonRendering::Components
     {
     }
 
+    bool LightComponent::toBinary(std::vector<char>& out) const
+    {
+        if (!CHECK(IByteSerializable::writeNumber(m_type, out)))
+            return false;
+
+        switch (m_type)
+        {
+        case ELightType::AMBIENT:
+            return serializeAmbient(m_ambient, out);
+        case ELightType::DIRECTIONAL:
+            return serializeDirectional(m_directional, out);
+        case ELightType::POINT:
+            return serializePoint(m_point, out);
+        case ELightType::SPOT:
+            return serializeSpot(m_spot, out);
+        default:
+            return ASSUME(false, "Unsupported light type") && false;
+        }
+    }
+
+    size_t LightComponent::fromBinary(const char* data, size_t length)
+    {
+        const size_t offset = IByteSerializable::readNumber(m_type, data, length);
+
+        if (!CHECK(offset > 0 && offset <= length, "Unable to deserialize light type string"))
+            return 0;
+
+        switch (m_type)
+        {
+        case ELightType::AMBIENT:
+            return deserializeAmbient(m_ambient, data + offset, length - offset);
+        case ELightType::DIRECTIONAL:
+            return deserializeDirectional(m_directional, data + offset, length - offset);
+        case ELightType::POINT:
+            return deserializePoint(m_point, data + offset, length - offset);
+        case ELightType::SPOT:
+            return deserializeSpot(m_spot, data + offset, length - offset);
+        default:
+            return ASSUME(false, "Unsupported light type") && false;
+        }
+    }
+
+    bool LightComponent::toJson(JsonWriter& writer) const
+    {
+        writer.StartObject();
+
+        const std::string typeString = lightTypeToString(ELightType::AMBIENT);
+
+        writer.Key("type");
+        writer.String(typeString.c_str(), static_cast<rapidjson::SizeType>(typeString.size()));
+
+        writer.Key("data");
+
+        switch (m_type)
+        {
+        case ELightType::AMBIENT:
+            return serializeAmbient(m_ambient, writer) && CHECK(writer.EndObject());
+        case ELightType::DIRECTIONAL:
+            return serializeDirectional(m_directional, writer);
+        case ELightType::POINT:
+            return serializePoint(m_point, writer) && CHECK(writer.EndObject());
+        case ELightType::SPOT:
+            return serializeSpot(m_spot, writer) && CHECK(writer.EndObject());
+        default:
+            return ASSUME(false, "Unsupported light type") && false;
+        }
+    }
+
+    bool LightComponent::fromJson(const JsonValue& json)
+    {
+        if (!CHECK(json.IsObject(), "Unable to deserialize light - Json value should be an object"))
+            return false;
+
+        auto it = json.FindMember("type");
+
+        if (!CHECK(it != json.MemberEnd() && it->value.IsString(), "Unable to deserialize light - Invalid type string"))
+            return false;
+
+        m_type = stringToLightType(std::string(it->value.GetString(), it->value.GetStringLength()));
+
+        it = json.FindMember("data");
+
+        if (!CHECK(it != json.MemberEnd(), "Unable to deserialize light - Light data not found"))
+            return false;
+
+        switch (m_type)
+        {
+        case ELightType::AMBIENT:
+            return deserializeAmbient(m_ambient, it->value);
+        case ELightType::DIRECTIONAL:
+            return deserializeDirectional(m_directional, it->value);
+        case ELightType::POINT:
+            return deserializePoint(m_point, it->value);
+        case ELightType::SPOT:
+            return deserializeSpot(m_spot, it->value);
+        default:
+            return ASSUME(false, "Unsupported light type") && false;
+        }
+    }
+
     bool serializeAmbient(const Core::Light& light, std::vector<char>& out)
     {
         out.reserve(out.size() + sizeof(Core::Light));
@@ -45,7 +145,7 @@ namespace PantheonRendering::Components
         return readBytes;
     }
 
-    bool serializeAmbient(const Core::Light& light, rapidjson::Writer<rapidjson::StringBuffer>& writer)
+    bool serializeAmbient(const Core::Light& light, JsonWriter& writer)
     {
         writer.StartObject();
 
@@ -56,7 +156,7 @@ namespace PantheonRendering::Components
         return CHECK(writer.EndObject());
     }
 
-    bool deserializeAmbient(Core::Light& out, const rapidjson::Value& json)
+    bool deserializeAmbient(Core::Light& out, const JsonValue& json)
     {
         if (!CHECK(json.IsObject(), "Unable to deserialize ambient light - Json value should be an object"))
             return false;
@@ -100,7 +200,7 @@ namespace PantheonRendering::Components
         return CHECK(dirBytes > 0, "Unable to deserialize directional light direction") ? offset + dirBytes : 0;
     }
 
-    bool serializeDirectional(const Core::DirectionalLight& light, rapidjson::Writer<rapidjson::StringBuffer>& writer)
+    bool serializeDirectional(const Core::DirectionalLight& light, JsonWriter& writer)
     {
         writer.StartObject();
 
@@ -115,7 +215,7 @@ namespace PantheonRendering::Components
         return CHECK(writer.EndObject());
     }
 
-    bool deserializeDirectional(Core::DirectionalLight& out, const rapidjson::Value& json)
+    bool deserializeDirectional(Core::DirectionalLight& out, const JsonValue& json)
     {
         if (!CHECK(json.IsObject(), "Unable to deserialize directional light - Json value should be an object"))
             return false;
@@ -146,7 +246,7 @@ namespace PantheonRendering::Components
         return true;
     }
 
-    bool serializeAttenuation(const Core::Attenuation& attenuation, rapidjson::Writer<rapidjson::StringBuffer>& writer)
+    bool serializeAttenuation(const Core::Attenuation& attenuation, JsonWriter& writer)
     {
         writer.StartObject();
 
@@ -162,7 +262,7 @@ namespace PantheonRendering::Components
         return CHECK(writer.EndObject());
     }
 
-    bool deserializeAttenuation(Core::Attenuation& out, const rapidjson::Value& json)
+    bool deserializeAttenuation(Core::Attenuation& out, const JsonValue& json)
     {
         if (!CHECK(json.IsObject(), "Unable to deserialize light attenuation - Json value should be an object"))
             return false;
@@ -233,7 +333,7 @@ namespace PantheonRendering::Components
         return offset + readBytes;
     }
 
-    bool serializePoint(const Core::PointLight& light, rapidjson::Writer<rapidjson::StringBuffer>& writer)
+    bool serializePoint(const Core::PointLight& light, JsonWriter& writer)
     {
         writer.StartObject();
 
@@ -253,7 +353,7 @@ namespace PantheonRendering::Components
         return CHECK(writer.EndObject());
     }
 
-    bool deserializePoint(Core::PointLight& out, const rapidjson::Value& json)
+    bool deserializePoint(Core::PointLight& out, const JsonValue& json)
     {
         if (!CHECK(json.IsObject(), "Unable to deserialize point light - Json value should be an object"))
             return false;
@@ -289,7 +389,7 @@ namespace PantheonRendering::Components
         return deserializeAttenuation(out.m_attenuation, it->value);
     }
 
-    bool serializeCutoff(const Core::Cutoff& cutoff, rapidjson::Writer<rapidjson::StringBuffer>& writer)
+    bool serializeCutoff(const Core::Cutoff& cutoff, JsonWriter& writer)
     {
         writer.StartObject();
 
@@ -302,7 +402,7 @@ namespace PantheonRendering::Components
         return CHECK(writer.EndObject());
     }
 
-    bool deserializeCutoff(Core::Cutoff& out, const rapidjson::Value& json)
+    bool deserializeCutoff(Core::Cutoff& out, const JsonValue& json)
     {
         if (!CHECK(json.IsObject(), "Unable to deserialize light cutoff - Json value should be an object"))
             return false;
@@ -390,7 +490,7 @@ namespace PantheonRendering::Components
         return offset + readBytes;
     }
 
-    bool serializeSpot(const Core::SpotLight& light, rapidjson::Writer<rapidjson::StringBuffer>& writer)
+    bool serializeSpot(const Core::SpotLight& light, JsonWriter& writer)
     {
         writer.StartObject();
 
@@ -419,7 +519,7 @@ namespace PantheonRendering::Components
         return CHECK(writer.EndObject());
     }
 
-    bool deserializeSpot(Core::SpotLight& out, const rapidjson::Value& json)
+    bool deserializeSpot(Core::SpotLight& out, const JsonValue& json)
     {
         if (!CHECK(json.IsObject(), "Unable to deserialize spot light - Json value should be an object"))
             return false;
@@ -471,118 +571,5 @@ namespace PantheonRendering::Components
             return false;
 
         return deserializeCutoff(out.m_cutoff, it->value);
-    }
-}
-
-namespace PantheonCore::ECS
-{
-    using namespace PantheonRendering::Components;
-
-    template <>
-    bool ComponentRegistry::toBinary<LightComponent>(const LightComponent& light, std::vector<char>& out, const EntitiesMap&)
-    {
-        if (!CHECK(IByteSerializable::serializeString(lightTypeToString(light.m_type), out)))
-            return false;
-
-        switch (light.m_type)
-        {
-        case ELightType::AMBIENT:
-            return serializeAmbient(light.m_ambient, out);
-        case ELightType::DIRECTIONAL:
-            return serializeDirectional(light.m_directional, out);
-        case ELightType::POINT:
-            return serializePoint(light.m_point, out);
-        case ELightType::SPOT:
-            return serializeSpot(light.m_spot, out);
-        default:
-            return ASSUME(false, "Unsupported light type") && false;
-        }
-    }
-
-    template <>
-    size_t ComponentRegistry::fromBinary<LightComponent>(LightComponent& out, const char* data, size_t length, Scene*)
-    {
-        std::string  typeString;
-        const size_t offset = IByteSerializable::deserializeString(typeString, data, length);
-
-        if (!CHECK(offset > 0 && offset <= length, "Unable to deserialize light type string"))
-            return 0;
-
-        out.m_type = stringToLightType(typeString);
-
-        switch (out.m_type)
-        {
-        case ELightType::AMBIENT:
-            return deserializeAmbient(out.m_ambient, data + offset, length - offset);
-        case ELightType::DIRECTIONAL:
-            return deserializeDirectional(out.m_directional, data + offset, length - offset);
-        case ELightType::POINT:
-            return deserializePoint(out.m_point, data + offset, length - offset);
-        case ELightType::SPOT:
-            return deserializeSpot(out.m_spot, data + offset, length - offset);
-        default:
-            return ASSUME(false, "Unsupported light type") && false;
-        }
-    }
-
-    template <>
-    bool ComponentRegistry::toJson<LightComponent>(
-        const LightComponent& light, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap&)
-    {
-        writer.StartObject();
-
-        const std::string typeString = lightTypeToString(ELightType::AMBIENT);
-
-        writer.Key("type");
-        writer.String(typeString.c_str(), static_cast<rapidjson::SizeType>(typeString.size()));
-
-        writer.Key("data");
-
-        switch (light.m_type)
-        {
-        case ELightType::AMBIENT:
-            return serializeAmbient(light.m_ambient, writer) && CHECK(writer.EndObject());
-        case ELightType::DIRECTIONAL:
-            return serializeDirectional(light.m_directional, writer);
-        case ELightType::POINT:
-            return serializePoint(light.m_point, writer) && CHECK(writer.EndObject());
-        case ELightType::SPOT:
-            return serializeSpot(light.m_spot, writer) && CHECK(writer.EndObject());
-        default:
-            return ASSUME(false, "Unsupported light type") && false;
-        }
-    }
-
-    template <>
-    bool ComponentRegistry::fromJson<LightComponent>(LightComponent& out, const rapidjson::Value& json, Scene*)
-    {
-        if (!CHECK(json.IsObject(), "Unable to deserialize light - Json value should be an object"))
-            return false;
-
-        auto it = json.FindMember("type");
-
-        if (!CHECK(it != json.MemberEnd() && it->value.IsString(), "Unable to deserialize light - Invalid type string"))
-            return false;
-
-        out.m_type = stringToLightType(std::string(it->value.GetString(), it->value.GetStringLength()));
-
-        it = json.FindMember("data");
-
-        if (!CHECK(it != json.MemberEnd(), "Unable to deserialize light - Light data not found"))
-            return false;
-
-        switch (out.m_type)
-        {
-        case ELightType::AMBIENT:
-            return deserializeAmbient(out.m_ambient, it->value);
-        case ELightType::DIRECTIONAL:
-            return deserializeDirectional(out.m_directional, it->value);
-        case ELightType::POINT:
-            return deserializePoint(out.m_point, it->value);
-        case ELightType::SPOT:
-            return deserializeSpot(out.m_spot, it->value);
-        default:
-            return ASSUME(false, "Unsupported light type") && false;
-        }
     }
 }

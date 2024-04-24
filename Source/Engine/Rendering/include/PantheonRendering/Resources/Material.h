@@ -3,9 +3,7 @@
 
 #include <PantheonCore/Resources/IResource.h>
 #include <PantheonCore/Resources/ResourceRef.h>
-
-#include <rapidjson/document.h>
-#include <rapidjson/writer.h>
+#include <PantheonCore/Serialization/Serializer.h>
 
 #include <any>
 
@@ -81,14 +79,14 @@ namespace PantheonRendering::Resources
          * \param writer The output json writer
          * \return True on success. False otherwise.
          */
-        bool toJson(rapidjson::Writer<rapidjson::StringBuffer>& writer) const;
+        bool toJson(PantheonCore::Serialization::JsonWriter& writer) const;
 
         /**
          * \brief Deserializes the material from json
          * \param json The input json data
          * \return True on success. False otherwise.
          */
-        bool fromJson(const rapidjson::Value& json);
+        bool fromJson(const PantheonCore::Serialization::JsonValue& json);
 
         /**
          * \brief Serializes the material to a byte array
@@ -191,14 +189,14 @@ namespace PantheonRendering::Resources
          * \param property The property to serialize
          * \return True on success. False otherwise.
          */
-        static bool serializePropertyValue(rapidjson::Writer<rapidjson::StringBuffer>& writer, const Property& property);
+        static bool serializePropertyValue(PantheonCore::Serialization::JsonWriter& writer, const Property& property);
 
         /**
          * \brief Deserializes the material's properties from json
          * \param json The input json data
          * \return True on success. False otherwise.
          */
-        bool deserializeProperties(const rapidjson::Value& json);
+        bool deserializeProperties(const PantheonCore::Serialization::JsonValue& json);
 
         /**
          * \brief Deserializes the material property from json
@@ -206,7 +204,7 @@ namespace PantheonRendering::Resources
          * \param out The output property
          * \return True on success. False otherwise.
          */
-        static bool deserializePropertyValue(const rapidjson::Value& json, Property& out);
+        static bool deserializePropertyValue(const PantheonCore::Serialization::JsonValue& json, Property& out);
 
         /**
          * \brief Writes the given property into the given memory buffer

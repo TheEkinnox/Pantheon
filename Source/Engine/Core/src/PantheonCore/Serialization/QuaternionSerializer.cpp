@@ -20,14 +20,14 @@ namespace PantheonCore::Serialization
     }
 
     template <>
-    bool toJson(const Quaternion& quaternion, rapidjson::Writer<rapidjson::StringBuffer>& writer)
+    bool toJson(const Quaternion& quaternion, JsonWriter& writer)
     {
         const std::string str = quaternion.string();
         return CHECK(writer.String(str.c_str(), static_cast<rapidjson::SizeType>(str.size())), "Failed to serialize Quaternion");
     }
 
     template <>
-    bool fromJson(Quaternion& out, const rapidjson::Value& json)
+    bool fromJson(Quaternion& out, const JsonValue& json)
     {
         if (!CHECK(json.IsString(), "Unable to deserialize Quaternion - Invalid json value"))
             return false;

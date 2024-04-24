@@ -1,5 +1,5 @@
 #pragma once
-#include "PantheonRendering/LowRenderer/Camera.h"
+#include "PantheonRendering/Core/Layer.h"
 #include "PantheonRendering/Resources/Model.h"
 
 #include <PantheonCore/ECS/ComponentRegistry.h>
@@ -82,6 +82,35 @@ namespace PantheonRendering::Components
         const Resources::Model* operator->() const;
 
         /**
+         * \brief Serializes the model component to binary
+         * \param out The output memory buffer
+         * \return True on success. False otherwise
+         */
+        bool toBinary(std::vector<char>& out) const;
+
+        /**
+         * \brief Deserializes the model component from binary
+         * \param data The input memory buffer
+         * \param length The memory buffer's length
+         * \return The number of read bytes on success. 0 otherwise
+         */
+        size_t fromBinary(const char* data, size_t length);
+
+        /**
+         * \brief Serializes the model component to json
+         * \param writer The output json writer
+         * \return True on success. False otherwise
+         */
+        bool toJson(PantheonCore::Serialization::JsonWriter& writer) const;
+
+        /**
+         * \brief Deserializes the model component from json
+         * \param json The input json value
+         * \return True on success. False otherwise
+         */
+        bool fromJson(const PantheonCore::Serialization::JsonValue& json);
+
+        /**
          * \brief Sets the component's model reference
          * \param model The component's new model resource
          */
@@ -149,23 +178,4 @@ namespace PantheonRendering::Components
 
         Core::LayerMask m_layerMask;
     };
-}
-
-namespace PantheonCore::ECS
-{
-    template <>
-    bool ComponentRegistry::toBinary(
-        const PantheonRendering::Components::ModelComponent& component, std::vector<char>& out, const EntitiesMap&);
-
-    template <>
-    size_t ComponentRegistry::fromBinary(
-        PantheonRendering::Components::ModelComponent& out, const char* data, size_t length, Scene*);
-
-    template <>
-    bool ComponentRegistry::toJson(
-        const PantheonRendering::Components::ModelComponent& component, rapidjson::Writer<rapidjson::StringBuffer>& writer,
-        const EntitiesMap&);
-
-    template <>
-    bool ComponentRegistry::fromJson(PantheonRendering::Components::ModelComponent& out, const rapidjson::Value& json, Scene*);
 }

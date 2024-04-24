@@ -19,7 +19,6 @@ namespace PantheonScripting
         using namespace PantheonCore::Serialization;
 
         using EntitiesMap = LuaTypeInfo::EntitiesMap;
-        using JsonWriter = LuaTypeInfo::JsonWriter;
 
         const LuaTypeInfo typeInfo
         {
@@ -71,7 +70,7 @@ namespace PantheonScripting
                 return ComponentRegistry::toJson(obj, writer, toSerialized);
             },
             .fromJson =
-            [](lua_State* luaState, const rapidjson::Value& json, Scene* scene)
+            [](lua_State* luaState, const JsonValue& json, Scene* scene)
             -> sol::optional<sol::object>
             {
                 T out;

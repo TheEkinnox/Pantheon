@@ -2,18 +2,18 @@
 
 #include "PantheonCore/ECS/EntityHandle.h"
 
-using namespace PantheonCore::Serialization;
+using namespace PantheonCore::ECS;
 
-namespace PantheonCore::ECS
+namespace PantheonCore::Serialization
 {
     template <>
-    bool ComponentRegistry::toBinary<TagComponent>(const TagComponent& tag, std::vector<char>& output, const EntitiesMap&)
+    bool toBinary(const TagComponent& tag, std::vector<char>& output)
     {
         return IByteSerializable::serializeString(tag.m_tag, output);
     }
 
     template <>
-    size_t ComponentRegistry::fromBinary<TagComponent>(TagComponent& out, const char* data, size_t length, Scene*)
+    size_t fromBinary(TagComponent& out, const char* data, size_t length)
     {
         if (!CHECK(data != nullptr && length > 0, "Unable to deserialize tag - Empty buffer"))
             return 0;
@@ -27,14 +27,13 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    bool ComponentRegistry::toJson<TagComponent>(
-        const TagComponent& tag, rapidjson::Writer<rapidjson::StringBuffer>& writer, const EntitiesMap&)
+    bool toJson(const TagComponent& tag, JsonWriter& writer)
     {
         return CHECK(writer.String(tag.m_tag.c_str(), static_cast<rapidjson::SizeType>(tag.m_tag.size())));
     }
 
     template <>
-    bool ComponentRegistry::fromJson<TagComponent>(TagComponent& out, const rapidjson::Value& json, Scene*)
+    bool fromJson(TagComponent& out, const JsonValue& json)
     {
         if (!CHECK(json.IsString(), "Unable to deserialize tag - Json value should be a string"))
             return false;

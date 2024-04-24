@@ -9,7 +9,8 @@ namespace PantheonScripting
     struct LuaTypeInfo
     {
         using EntitiesMap = PantheonCore::ECS::ComponentRegistry::EntitiesMap;
-        using JsonWriter = rapidjson::Writer<rapidjson::StringBuffer>;
+        using JsonWriter = PantheonCore::Serialization::JsonWriter;
+        using JsonValue = PantheonCore::Serialization::JsonValue;
 
         /* Lua conversion */
         sol::userdata (*toLua)(void* object, sol::state& luaState);
@@ -25,7 +26,7 @@ namespace PantheonScripting
         /* Json serialization */
         bool (*toJson)(const sol::userdata& component, JsonWriter& writer, const EntitiesMap& toSerialized);
 
-        sol::optional<sol::object> (*fromJson)(lua_State* luaState, const rapidjson::Value& json, PantheonCore::ECS::Scene* scene);
+        sol::optional<sol::object> (*fromJson)(lua_State* luaState, const JsonValue& json, PantheonCore::ECS::Scene* scene);
     };
 
     class LuaTypeRegistry final : public PantheonCore::Utility::TypeRegistry<LuaTypeInfo>

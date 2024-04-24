@@ -54,7 +54,7 @@ namespace PantheonCore::Serialization
     }
 
     template <>
-    bool toJson(const Transform& transform, rapidjson::Writer<rapidjson::StringBuffer>& writer)
+    bool toJson(const Transform& transform, JsonWriter& writer)
     {
         writer.StartObject();
 
@@ -74,7 +74,7 @@ namespace PantheonCore::Serialization
     }
 
     template <>
-    bool fromJson(Transform& transform, const rapidjson::Value& json)
+    bool fromJson(Transform& transform, const JsonValue& json)
     {
         if (!CHECK(json.IsObject(), "Unable to deserialize transform - Invalid json object"))
             return false;
