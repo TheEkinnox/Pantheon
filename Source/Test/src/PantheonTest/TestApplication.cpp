@@ -32,7 +32,6 @@ using namespace PantheonApp::Windowing;
 using namespace PantheonRendering::RHI;
 using namespace PantheonRendering::Core;
 using namespace PantheonRendering::Enums;
-using namespace PantheonRendering::LowRenderer;
 using namespace PantheonRendering::Resources;
 
 using namespace PantheonScripting;
@@ -158,7 +157,8 @@ namespace PantheonTest
             material,
             modelMat1,
             model.getBoundingBox(),
-            Layer::ALL
+            Layer::ALL,
+            reinterpret_cast<void*>(1)
         });
 
         m_renderer->submit({
@@ -166,11 +166,26 @@ namespace PantheonTest
             material,
             modelMat2,
             model.getBoundingBox(),
-            Layer::ALL
+            Layer::ALL,
+            reinterpret_cast<void*>(2)
         });
 
-        const Camera cam(projMat, viewMat, ECullingMode::MODEL);
-        m_renderer->render(cam);
+        const Camera cam(projMat * viewMat);
+
+        const Renderer::RenderPass renderPass
+        {
+            .m_camera = &cam,
+            .m_target = nullptr,
+            .m_viewPos = Vector3::zero(),
+            .m_cullingMask = Layer::ALL,
+            .m_cullingMode = ECullingMode::MODEL,
+            .m_onDraw = [](const Renderer::DrawInfo& drawInfo)
+            {
+                DEBUG_LOG("DRAWING ELEMENT %d", reinterpret_cast<intptr_t>(drawInfo.m_extra));
+            }
+        };
+
+        m_renderer->render(renderPass);
         m_renderer->clearQueue();
     }
 

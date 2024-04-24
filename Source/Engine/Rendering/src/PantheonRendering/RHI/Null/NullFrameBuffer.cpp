@@ -29,4 +29,8 @@ namespace PantheonRendering::RHI
     void NullFrameBuffer::setDrawBuffers(const Enums::EFrameBufferTarget*, uint8_t)
     {
     }
+
+    void NullFrameBuffer::bindDefault()
+    {
+    }
 }

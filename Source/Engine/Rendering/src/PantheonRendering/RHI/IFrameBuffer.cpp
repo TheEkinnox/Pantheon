@@ -19,4 +19,20 @@ namespace PantheonRendering::RHI
             return {};
         }
     }
+
+    void IFrameBuffer::bindDefault()
+    {
+        switch (IRenderAPI::getCurrent().getBackend())
+        {
+        case EGraphicsAPI::NONE:
+            NullFrameBuffer::bindDefault();
+            break;
+        case EGraphicsAPI::OPENGL:
+            OpenGLFrameBuffer::bindDefault();
+            break;
+        default:
+            ASSERT(false, "Failed to bind default frame buffer - Unsupported graphics api");
+            break;
+        }
+    }
 }

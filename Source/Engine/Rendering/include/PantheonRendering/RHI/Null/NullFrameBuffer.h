@@ -80,5 +80,10 @@ namespace PantheonRendering::RHI
          * \param count The number of targets
          */
         void setDrawBuffers(const Enums::EFrameBufferTarget* targets, uint8_t count) override;
+
+        /**
+         * \brief Binds the default null frame buffer
+         */
+        static void bindDefault();
     };
 }

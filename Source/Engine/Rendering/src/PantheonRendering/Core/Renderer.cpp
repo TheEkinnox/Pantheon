@@ -2,13 +2,13 @@
 
 #include "PantheonRendering/Resources/Material.h"
 #include "PantheonRendering/Resources/Mesh.h"
+#include "PantheonRendering/RHI/IFrameBuffer.h"
 #include "PantheonRendering/RHI/IRenderAPI.h"
 #include "PantheonRendering/RHI/IUniformBuffer.h"
 
 using namespace LibMath;
 using namespace PantheonRendering::Enums;
 using namespace PantheonRendering::Geometry;
-using namespace PantheonRendering::LowRenderer;
 using namespace PantheonRendering::Resources;
 using namespace PantheonRendering::RHI;
 
@@ -27,14 +27,25 @@ namespace PantheonRendering::Core
             m_renderQueue.emplace(std::move(drawInfo));
     }
 
-    void Renderer::render(const Camera& camera) const
+    void Renderer::render(const RenderPass& renderPass)
     {
-        const LayerMask camLayerMask = camera.getCullingMask();
+        ASSERT(renderPass.m_camera);
 
-        if (camLayerMask == Layer::NONE)
+        if (renderPass.m_cullingMask == Layer::NONE)
             return;
 
-        IRenderAPI& api = IRenderAPI::getCurrent();
+        if (m_currentTarget != renderPass.m_target)
+        {
+            if (renderPass.m_target)
+                renderPass.m_target->bind();
+            else
+                IFrameBuffer::bindDefault();
+
+            m_currentTarget = renderPass.m_target;
+        }
+
+        IRenderAPI&   api    = IRenderAPI::getCurrent();
+        const Camera& camera = *renderPass.m_camera;
 
         const Frustum&  frustum          = camera.getFrustum();
         const Material* previousMaterial = nullptr;
@@ -46,19 +57,24 @@ namespace PantheonRendering::Core
         CameraUBO camUBO
         {
             camera.getViewProjection().transposed(),
-            (camera.getView().inverse() * Vector4(.0f, .0f, .0f, 1.f)).xyz()
+            renderPass.m_viewPos
         };
 
         camBuffer->setData(&camUBO, 1);
         camBuffer->bind();
         modelBuffer->bind();
 
-        for (const auto& [mesh, material, modelMat, modelBoundingBox, layerMask] : m_renderQueue)
+        if (renderPass.m_shaderOverride)
+            renderPass.m_shaderOverride->bind();
+
+        for (const auto& drawInfo : m_renderQueue)
         {
-            if ((camLayerMask & layerMask) == 0)
+            const auto& [mesh, material, modelMat, modelBoundingBox, layerMask, extra] = drawInfo;
+
+            if ((renderPass.m_cullingMask & layerMask) == 0)
                 continue;
 
-            switch (camera.getCullingMode())
+            switch (renderPass.m_cullingMode)
             {
             case ECullingMode::MODEL:
             {
@@ -79,13 +95,15 @@ namespace PantheonRendering::Core
                 break;
             }
 
-            if (previousMaterial != material || previousMesh != mesh)
+            const bool materialChanged = (!renderPass.m_shaderOverride && previousMaterial != material);
+
+            if (materialChanged || previousMesh != mesh)
             {
                 mesh->bind();
                 previousMesh = mesh;
             }
 
-            if (previousMaterial != material)
+            if (materialChanged)
             {
                 material->bind();
                 previousMaterial = material;
@@ -99,13 +117,26 @@ namespace PantheonRendering::Core
 
             modelBuffer->setData(&modelUbo, 1);
 
+            if (renderPass.m_onDraw)
+                renderPass.m_onDraw(drawInfo);
+
             api.drawElements(mesh->getPrimitiveType(), mesh->getIndexCount());
         }
 
         camBuffer->unbind();
         modelBuffer->unbind();
-        previousMaterial->getShader().unbind();
-        previousMesh->unbind();
+
+        if (previousMaterial)
+            previousMaterial->getShader().unbind();
+
+        if (renderPass.m_shaderOverride)
+            renderPass.m_shaderOverride->unbind();
+
+        if (previousMesh)
+            previousMesh->unbind();
+
+        if (renderPass.m_target)
+            renderPass.m_target->unbind();
     }
 
     void Renderer::clearQueue()

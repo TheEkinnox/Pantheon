@@ -8,6 +8,7 @@ namespace PantheonRendering::Enums
      */
     enum class EPixelDataFormat : uint8_t
     {
+        NONE,
         STENCIL_INDEX,
         DEPTH_COMPONENT,
         DEPTH_STENCIL,

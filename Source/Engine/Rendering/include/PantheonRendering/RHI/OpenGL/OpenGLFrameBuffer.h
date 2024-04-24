@@ -81,6 +81,11 @@ namespace PantheonRendering::RHI
          */
         void setDrawBuffers(const Enums::EFrameBufferTarget* targets, uint8_t count) override;
 
+        /**
+         * \brief Binds the default opengl frame buffer
+         */
+        static void bindDefault();
+
     private:
         uint32_t m_id;
     };

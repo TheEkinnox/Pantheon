@@ -1,5 +1,6 @@
 #include "PantheonRendering/Core/SceneRenderer.h"
 
+#include "PantheonRendering/Components/CameraComponent.h"
 #include "PantheonRendering/Components/ModelComponent.h"
 #include "PantheonRendering/RHI/IRenderAPI.h"
 
@@ -12,13 +13,12 @@ using namespace PantheonCore::ECS;
 using namespace PantheonRendering::RHI;
 using namespace PantheonRendering::Resources;
 using namespace PantheonRendering::Components;
-using namespace PantheonRendering::LowRenderer;
 
 namespace PantheonRendering::Core
 {
     void SceneRenderer::init(const Scene& scene)
     {
-        m_renderQueue.clear();
+        clearQueue();
 
         SceneView<const ModelComponent, const Transform> models(scene);
 
@@ -50,15 +50,32 @@ namespace PantheonRendering::Core
 
         IRenderAPI& api = IRenderAPI::getCurrent();
 
-        const Color       initialClearColor = api.getClearColor();
-        SceneView<Camera> cameras(scene);
+        const Color                initialClearColor = api.getClearColor();
+        SceneView<CameraComponent> cameras(scene);
 
         for (const auto entity : cameras)
         {
-            Camera& cam = *cameras.get<Camera>(entity);
+            CameraComponent& cam = *cameras.get<CameraComponent>(entity);
+
+            const PantheonCore::Resources::ResourceRef<RenderTarget> target = cam.getTarget();
+
+            RenderPass renderPass{
+                .m_camera = &*cam,
+                .m_target = target ? &target->getFrameBuffer() : nullptr,
+                .m_viewPos = Vector3::zero(),
+                .m_cullingMask = cam.getCullingMask(),
+                .m_cullingMode = cam.getCullingMode()
+            };
 
             if (const Transform* transform = scene.get<const Transform>(entity))
-                cam.setView(transform->getWorldMatrix().inverse());
+            {
+                cam.recalculate(transform->getWorldMatrix().inverse());
+                renderPass.m_viewPos = transform->getWorldPosition();
+            }
+            else
+            {
+                cam.recalculate(Matrix4(1.f));
+            }
 
             api.setClearColor(cam.getClearColor());
 
@@ -66,7 +83,7 @@ namespace PantheonRendering::Core
             cam.getClearMask(clearColor, clearDepth, clearStencil);
             api.clear(clearColor, clearDepth, clearStencil);
 
-            Renderer::render(cam);
+            Renderer::render(renderPass);
         }
 
         clearQueue();

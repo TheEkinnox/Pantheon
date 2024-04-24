@@ -87,6 +87,11 @@ namespace PantheonRendering::RHI
          */
         static std::unique_ptr<IFrameBuffer> create();
 
+        /**
+         * \brief Binds the default frame buffer for the current render api
+         */
+        static void bindDefault();
+
     protected:
         IFrameBuffer() = default;
     };

@@ -101,7 +101,7 @@ namespace PantheonRendering::RHI
 
     void OpenGLFrameBuffer::unbind()
     {
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        bindDefault();
     }
 
     void OpenGLFrameBuffer::attach(const ITexture& texture, const EFrameBufferAttachment attachment)
@@ -139,5 +139,10 @@ namespace PantheonRendering::RHI
             enums.push_back(toGLEnum(targets[i]));
 
         glNamedFramebufferDrawBuffers(m_id, count, enums.data());
+    }
+
+    void OpenGLFrameBuffer::bindDefault()
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 }

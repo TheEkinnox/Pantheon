@@ -7,8 +7,6 @@ namespace PantheonRendering::Core
 {
     class SceneRenderer : public Renderer
     {
-        using CamerasList = std::vector<const LowRenderer::Camera*>;
-
     public:
         SceneRenderer()                               = default;
         SceneRenderer(const SceneRenderer& other)     = default;

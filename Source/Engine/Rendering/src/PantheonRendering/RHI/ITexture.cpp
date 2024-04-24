@@ -301,6 +301,7 @@ namespace PantheonRendering::RHI
         case EPixelDataFormat::RGBA:
         case EPixelDataFormat::BGRA:
             return 4;
+        case EPixelDataFormat::NONE:
         default:
             return 0;
         }
