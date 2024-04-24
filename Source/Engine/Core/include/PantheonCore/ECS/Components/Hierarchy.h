@@ -108,36 +108,35 @@ namespace PantheonCore::ECS
     void unlinkTransforms(const EntityHandle& entity);
 
     template <>
-    void ComponentTraits::onAdd<HierarchyComponent>(EntityHandle&, HierarchyComponent&);
+    void ComponentTraits::onAdd(EntityHandle&, HierarchyComponent&);
 
     template <>
-    void ComponentTraits::onRemove<HierarchyComponent>(EntityHandle&, HierarchyComponent&);
+    void ComponentTraits::onRemove(EntityHandle&, HierarchyComponent&);
 
     template <>
-    void ComponentTraits::onBeforeChange<HierarchyComponent>(EntityHandle&, HierarchyComponent&);
+    void ComponentTraits::onBeforeChange(EntityHandle&, HierarchyComponent&);
 
     template <>
-    void ComponentTraits::onChange<HierarchyComponent>(EntityHandle&, HierarchyComponent&);
+    void ComponentTraits::onChange(EntityHandle&, HierarchyComponent&);
 
     template <>
-    void ComponentTraits::onAdd<LibMath::Transform>(EntityHandle&, LibMath::Transform&);
+    void ComponentTraits::onAdd(EntityHandle&, LibMath::Transform&);
 
     template <>
-    void ComponentTraits::onRemove<LibMath::Transform>(EntityHandle&, LibMath::Transform&);
+    void ComponentTraits::onRemove(EntityHandle&, LibMath::Transform&);
 
     template <>
-    void ComponentTraits::onChange<LibMath::Transform>(EntityHandle&, LibMath::Transform&);
+    void ComponentTraits::onChange(EntityHandle&, LibMath::Transform&);
 
     template <>
-    bool ComponentRegistry::toBinary<HierarchyComponent>(
-        const HierarchyComponent&, std::vector<char>&, const EntitiesMap&);
+    bool ComponentRegistry::toBinary(const HierarchyComponent&, std::vector<char>&, const EntitiesMap&);
 
     template <>
-    size_t ComponentRegistry::fromBinary<HierarchyComponent>(HierarchyComponent&, const char*, size_t, Scene*);
+    size_t ComponentRegistry::fromBinary(HierarchyComponent&, const char*, size_t, Scene*);
 
     template <>
     bool ComponentRegistry::toJson(const HierarchyComponent&, Serialization::JsonWriter&, const EntitiesMap&);
 
     template <>
-    bool ComponentRegistry::fromJson<HierarchyComponent>(HierarchyComponent&, const Serialization::JsonValue&, Scene*);
+    bool ComponentRegistry::fromJson(HierarchyComponent&, const Serialization::JsonValue&, Scene*);
 }

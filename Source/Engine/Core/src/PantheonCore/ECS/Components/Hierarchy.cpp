@@ -93,7 +93,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    void ComponentTraits::onAdd<HierarchyComponent>(EntityHandle& owner, HierarchyComponent& hierarchy)
+    void ComponentTraits::onAdd(EntityHandle& owner, HierarchyComponent& hierarchy)
     {
         ASSERT(hierarchy.m_firstChild == NULL_ENTITY, "Adding a pre-existing hierarchy is not supported");
         ASSERT(hierarchy.m_previousSibling == NULL_ENTITY, "Adding a pre-existing hierarchy is not supported");
@@ -104,7 +104,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    void ComponentTraits::onRemove<HierarchyComponent>(EntityHandle& entity, HierarchyComponent& hierarchy)
+    void ComponentTraits::onRemove(EntityHandle& entity, HierarchyComponent& hierarchy)
     {
         onBeforeChange(entity, hierarchy);
 
@@ -126,7 +126,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    void ComponentTraits::onBeforeChange<HierarchyComponent>(EntityHandle& entity, HierarchyComponent& hierarchy)
+    void ComponentTraits::onBeforeChange(EntityHandle& entity, HierarchyComponent& hierarchy)
     {
         Scene* scene = entity.getScene();
         ASSERT(scene);
@@ -155,7 +155,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    void ComponentTraits::onChange<HierarchyComponent>(EntityHandle& entity, HierarchyComponent& hierarchy)
+    void ComponentTraits::onChange(EntityHandle& entity, HierarchyComponent& hierarchy)
     {
         Scene* scene = entity.getScene();
         ASSERT(scene);
