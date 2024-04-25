@@ -1,6 +1,6 @@
 #pragma once
-#include "PantheonCore/ECS/ComponentRegistry.h"
 #include "PantheonCore/ECS/Entity.h"
+#include "PantheonCore/Utility/TypeRegistry.h"
 
 namespace PantheonCore::ECS
 {
@@ -262,13 +262,13 @@ namespace PantheonCore::ECS
          * \brief Gets the ids of all the component types owned by the linked entity
          * \return The ids of all the component types owned by the entity
          */
-        std::vector<ComponentRegistry::TypeId> getComponentIds() const;
+        std::vector<Utility::TypeId> getComponentIds() const;
 
         /**
          * \brief Gets all the components owned by the linked entity
          * \return The components owned by the entity
          */
-        std::vector<std::pair<ComponentRegistry::TypeId, void*>> getComponents() const;
+        std::vector<std::pair<Utility::TypeId, void*>> getComponents() const;
 
     private:
         Scene* m_scene;
@@ -282,19 +282,6 @@ namespace PantheonCore::ECS
      * \return The modified stream
      */
     std::ostream& operator<<(std::ostream& stream, const EntityHandle& handle);
-
-    template <>
-    bool ComponentRegistry::toBinary(const EntityHandle& component, std::vector<char>& out, const EntitiesMap& toSerialized);
-
-    template <>
-    size_t ComponentRegistry::fromBinary(EntityHandle& out, const char* data, size_t length, Scene* scene);
-
-    template <>
-    bool ComponentRegistry::toJson(
-        const EntityHandle& component, Serialization::JsonWriter& writer, const EntitiesMap& toSerialized);
-
-    template <>
-    bool ComponentRegistry::fromJson(EntityHandle& out, const Serialization::JsonValue& json, Scene* scene);
 }
 
 #include "PantheonCore/ECS/EntityHandle.inl"

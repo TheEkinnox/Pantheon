@@ -71,8 +71,8 @@ namespace PantheonCore::ECS
         }
         else
         {
-            const TypeId typeHash = ComponentRegistry::getTypeId<T>();
-            const auto   it       = m_components.find(typeHash);
+            const Utility::TypeId typeHash = ComponentRegistry::getTypeId<T>();
+            const auto            it       = m_components.find(typeHash);
 
             if (it != m_components.end())
                 return reinterpret_cast<ComponentStorage<T>&>(*it->second);
@@ -91,8 +91,8 @@ namespace PantheonCore::ECS
         }
         else
         {
-            const TypeId typeHash = ComponentRegistry::getTypeId<T>();
-            const auto   it       = m_components.find(typeHash);
+            const Utility::TypeId typeHash = ComponentRegistry::getTypeId<T>();
+            const auto            it       = m_components.find(typeHash);
 
             if (it != m_components.end())
                 return reinterpret_cast<const ComponentStorage<T>&>(*it->second);

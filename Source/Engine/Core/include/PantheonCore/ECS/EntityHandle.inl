@@ -4,6 +4,19 @@
 
 namespace PantheonCore::ECS
 {
+    template <>
+    bool ComponentRegistry::toBinary(const EntityHandle& component, std::vector<char>& out, const EntitiesMap& toSerialized);
+
+    template <>
+    size_t ComponentRegistry::fromBinary(EntityHandle& out, const char* data, size_t length, Scene* scene);
+
+    template <>
+    bool ComponentRegistry::toJson(
+        const EntityHandle& component, Serialization::JsonWriter& writer, const EntitiesMap& toSerialized);
+
+    template <>
+    bool ComponentRegistry::fromJson(EntityHandle& out, const Serialization::JsonValue& json, Scene* scene);
+
     template <typename T>
     bool EntityHandle::has() const
     {

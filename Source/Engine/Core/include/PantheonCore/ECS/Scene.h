@@ -13,7 +13,6 @@ namespace PantheonCore::ECS
     class Scene final : public Resources::IResource
     {
         REGISTERED_RESOURCE_BODY()
-        using TypeId = size_t;
 
     public:
         template <typename T>
@@ -230,20 +229,20 @@ namespace PantheonCore::ECS
          * \param id The component's type's id
          * \return A reference to the storage
          */
-        IComponentStorage& getStorage(TypeId id);
+        IComponentStorage& getStorage(Utility::TypeId id);
 
         /**
          * \brief Gets the component storage for the given type
          * \param id The component's type's id
          * \return A constant reference to the storage
          */
-        const IComponentStorage& getStorage(TypeId id) const;
+        const IComponentStorage& getStorage(Utility::TypeId id) const;
 
         /**
          * \brief Gets the ids of all the component types
          * \return The ids of all the component types
          */
-        std::vector<TypeId> getComponentIds() const;
+        std::vector<Utility::TypeId> getComponentIds() const;
 
         /**
          * \brief Gets the number of components owned by the given entity
@@ -257,18 +256,18 @@ namespace PantheonCore::ECS
          * \param owner The components' owner
          * \return The ids of all the component types owned by the given entity
          */
-        std::vector<TypeId> getComponentIds(Entity owner) const;
+        std::vector<Utility::TypeId> getComponentIds(Entity owner) const;
 
         /**
          * \brief Gets all the components owned by the given entity
          * \param owner The components' owner
          * \return The components owned by the given entity
          */
-        std::vector<std::pair<TypeId, void*>> getComponents(Entity owner) const;
+        std::vector<std::pair<Utility::TypeId, void*>> getComponents(Entity owner) const;
 
     private:
-        EntityStorage                                                          m_entities;
-        mutable std::unordered_map<TypeId, std::shared_ptr<IComponentStorage>> m_components;
+        EntityStorage                                                                   m_entities;
+        mutable std::unordered_map<Utility::TypeId, std::shared_ptr<IComponentStorage>> m_components;
 
         /**
          * \brief Deserializes a component storage from json

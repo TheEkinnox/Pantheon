@@ -4,6 +4,7 @@
 #include "PantheonCore/ECS/Components/Hierarchy.h"
 
 using namespace PantheonCore::Serialization;
+using namespace PantheonCore::Utility;
 
 namespace PantheonCore::ECS
 {
@@ -149,14 +150,14 @@ namespace PantheonCore::ECS
         return m_scene ? m_scene->getComponentCount(m_entity) : 0;
     }
 
-    std::vector<ComponentRegistry::TypeId> EntityHandle::getComponentIds() const
+    std::vector<TypeId> EntityHandle::getComponentIds() const
     {
-        return m_scene ? m_scene->getComponentIds(m_entity) : std::vector<ComponentRegistry::TypeId>();
+        return m_scene ? m_scene->getComponentIds(m_entity) : std::vector<TypeId>();
     }
 
-    std::vector<std::pair<ComponentRegistry::TypeId, void*>> EntityHandle::getComponents() const
+    std::vector<std::pair<TypeId, void*>> EntityHandle::getComponents() const
     {
-        return m_scene ? m_scene->getComponents(m_entity) : std::vector<std::pair<ComponentRegistry::TypeId, void*>>();
+        return m_scene ? m_scene->getComponents(m_entity) : std::vector<std::pair<TypeId, void*>>();
     }
 
     std::ostream& operator<<(std::ostream& stream, const EntityHandle& handle)

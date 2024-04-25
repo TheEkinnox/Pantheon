@@ -9,7 +9,7 @@ namespace PantheonCore::Utility
 {
     template <class TypeInfo>
     template <typename T>
-    typename TypeRegistry<TypeInfo>::TypeId TypeRegistry<TypeInfo>::getTypeId()
+    TypeId TypeRegistry<TypeInfo>::getTypeId()
     {
         return typeid(std::remove_cvref_t<T>).hash_code();
     }

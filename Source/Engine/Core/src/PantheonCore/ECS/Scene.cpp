@@ -7,6 +7,7 @@
 #include <rapidjson/istreamwrapper.h>
 
 using namespace PantheonCore::Serialization;
+using namespace PantheonCore::Utility;
 
 namespace PantheonCore::ECS
 {
@@ -264,7 +265,7 @@ namespace PantheonCore::ECS
         return const_cast<Scene*>(this)->getStorage(id);
     }
 
-    std::vector<Scene::TypeId> Scene::getComponentIds() const
+    std::vector<TypeId> Scene::getComponentIds() const
     {
         const auto view = m_components | std::views::keys;
         return { view.begin(), view.end() };
@@ -286,7 +287,7 @@ namespace PantheonCore::ECS
         return count;
     }
 
-    std::vector<Scene::TypeId> Scene::getComponentIds(const Entity owner) const
+    std::vector<TypeId> Scene::getComponentIds(const Entity owner) const
     {
         std::vector<TypeId> ids;
         ids.reserve(m_components.size());
@@ -300,7 +301,7 @@ namespace PantheonCore::ECS
         return ids;
     }
 
-    std::vector<std::pair<Scene::TypeId, void*>> Scene::getComponents(const Entity owner) const
+    std::vector<std::pair<TypeId, void*>> Scene::getComponents(const Entity owner) const
     {
         std::vector<std::pair<TypeId, void*>> components;
         components.reserve(m_components.size());

@@ -6,8 +6,8 @@ namespace PantheonScripting
 {
     struct LuaComponentHandle
     {
-        PantheonCore::ECS::EntityHandle              m_owner;
-        PantheonCore::ECS::ComponentRegistry::TypeId m_typeId;
+        PantheonCore::ECS::EntityHandle m_owner;
+        PantheonCore::Utility::TypeId   m_typeId;
 
         /**
          * \brief Checks whether the given handle references the same component as this one or not
