@@ -6,7 +6,7 @@
 namespace PantheonCore::Serialization
 {
     template <typename T>
-    bool toBinary(const T& value, std::vector<char>& out) requires !std::is_enum_v<T>
+    bool toBinary(const T& value, std::vector<char>& out) requires (!std::is_enum_v<T>)
     {
         constexpr bool hasToBinary = requires
         {
@@ -20,7 +20,7 @@ namespace PantheonCore::Serialization
     }
 
     template <typename T>
-    size_t fromBinary(T& out, const char* data, const size_t length) requires !std::is_enum_v<T>
+    size_t fromBinary(T& out, const char* data, const size_t length) requires (!std::is_enum_v<T>)
     {
         constexpr bool hasFromBinary = requires
         {
@@ -47,7 +47,7 @@ namespace PantheonCore::Serialization
     }
 
     template <typename T>
-    bool toJson(const T& value, JsonWriter& writer) requires !std::is_enum_v<T>
+    bool toJson(const T& value, JsonWriter& writer) requires (!std::is_enum_v<T>)
     {
         constexpr bool hasToJson = requires
         {
@@ -61,7 +61,7 @@ namespace PantheonCore::Serialization
     }
 
     template <typename T>
-    bool fromJson(T& out, const JsonValue& json) requires !std::is_enum_v<T>
+    bool fromJson(T& out, const JsonValue& json) requires (!std::is_enum_v<T>)
     {
         constexpr bool hasFromJson = requires
         {

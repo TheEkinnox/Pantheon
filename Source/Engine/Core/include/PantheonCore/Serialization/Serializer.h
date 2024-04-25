@@ -10,10 +10,10 @@ namespace PantheonCore::Serialization
     using JsonValue = rapidjson::Value;
 
     template <typename T>
-    bool toBinary(const T& value, std::vector<char>& out) requires !std::is_enum_v<T>;
+    bool toBinary(const T& value, std::vector<char>& out) requires (!std::is_enum_v<T>);
 
     template <typename T>
-    size_t fromBinary(T& out, const char* data, size_t length) requires !std::is_enum_v<T>;
+    size_t fromBinary(T& out, const char* data, size_t length) requires (!std::is_enum_v<T>);
 
     template <typename T>
     bool toBinary(const T& value, std::vector<char>& out) requires std::is_enum_v<T>;
@@ -22,10 +22,10 @@ namespace PantheonCore::Serialization
     size_t fromBinary(T& out, const char* data, size_t length) requires std::is_enum_v<T>;
 
     template <typename T>
-    bool toJson(const T& value, JsonWriter& writer) requires !std::is_enum_v<T>;
+    bool toJson(const T& value, JsonWriter& writer) requires (!std::is_enum_v<T>);
 
     template <typename T>
-    bool fromJson(T& value, const JsonValue& json) requires !std::is_enum_v<T>;
+    bool fromJson(T& value, const JsonValue& json) requires (!std::is_enum_v<T>);
 
     template <typename T>
     bool toJson(const T& value, JsonWriter& writer) requires std::is_enum_v<T>;
