@@ -164,9 +164,12 @@ namespace PantheonRendering::RHI
             return GL_RGBA;
         case EPixelDataFormat::BGRA:
             return GL_BGRA;
+        case EPixelDataFormat::NONE:
+            return GL_NONE;
+        default:
+            ASSERT(false, "Invalid pixel data format");
+            return GL_INVALID_ENUM;
         }
-
-        return GL_INVALID_ENUM;
     }
 
     GLenum OpenGLAPI::toGLEnum(const EPixelDataType dataType)
@@ -211,9 +214,10 @@ namespace PantheonRendering::RHI
             return GL_UNSIGNED_INT_10_10_10_2;
         case EPixelDataType::UNSIGNED_INT_2_10_10_10_REV:
             return GL_UNSIGNED_INT_2_10_10_10_REV;
+        default:
+            ASSERT(false, "Invalid pixel data type");
+            return GL_INVALID_ENUM;
         }
-
-        return GL_INVALID_ENUM;
     }
 
     GLenum OpenGLAPI::toGLEnum(const EPrimitiveType primitiveType)
@@ -244,9 +248,10 @@ namespace PantheonRendering::RHI
             return GL_TRIANGLE_STRIP_ADJACENCY;
         case EPrimitiveType::PATCHES:
             return GL_PATCHES;
+        default:
+            ASSERT(false, "Invalid primitive type");
+            return GL_INVALID_ENUM;
         }
-
-        return GL_INVALID_ENUM;
     }
 
     GLenum OpenGLAPI::toGLEnum(const ERenderingCapability capability)
@@ -273,9 +278,10 @@ namespace PantheonRendering::RHI
             return GL_STENCIL_TEST;
         case ERenderingCapability::MULTISAMPLE:
             return GL_MULTISAMPLE;
+        default:
+            ASSERT(false, "Invalid rendering capability");
+            return GL_INVALID_ENUM;
         }
-
-        return GL_INVALID_ENUM;
     }
 
     GLenum OpenGLAPI::toGLEnum(const ECompareAlgorithm algorithm)
@@ -298,9 +304,10 @@ namespace PantheonRendering::RHI
             return GL_GEQUAL;
         case ECompareAlgorithm::ALWAYS:
             return GL_ALWAYS;
+        default:
+            ASSERT(false, "Invalid compare algorithm");
+            return GL_INVALID_ENUM;
         }
-
-        return GL_INVALID_ENUM;
     }
 
     GLenum OpenGLAPI::toGLEnum(const ECullFace cullFace)
@@ -313,9 +320,10 @@ namespace PantheonRendering::RHI
             return GL_BACK;
         case ECullFace::FRONT_AND_BACK:
             return GL_FRONT_AND_BACK;
+        default:
+            ASSERT(false, "Invalid cull face");
+            return GL_INVALID_ENUM;
         }
-
-        return GL_INVALID_ENUM;
     }
 
     GLenum OpenGLAPI::toGLEnum(const EBlendFactor blendFactor)
@@ -350,9 +358,10 @@ namespace PantheonRendering::RHI
             return GL_CONSTANT_ALPHA;
         case EBlendFactor::ONE_MINUS_CONSTANT_ALPHA:
             return GL_ONE_MINUS_CONSTANT_ALPHA;
+        default:
+            ASSERT(false, "Invalid blend factor");
+            return GL_INVALID_ENUM;
         }
-
-        return GL_INVALID_ENUM;
     }
 
     GLenum OpenGLAPI::toGLEnum(const EAccessMode accessSpecifier)
