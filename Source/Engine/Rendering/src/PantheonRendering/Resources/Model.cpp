@@ -120,10 +120,9 @@ namespace PantheonRendering::Resources
         return true;
     }
 
-    bool Model::save(const std::string& fileName) const
+    bool Model::save(const std::string&) const
     {
-        // TODO: Save model meta data
-        return CHECK(false, getMetaPath(fileName));
+        return true;
     }
 
     bool Model::toBinary(std::vector<char>& output) const
