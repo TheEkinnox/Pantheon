@@ -89,6 +89,14 @@
           "owner": 2,
           "data": {
             "type": "perspective",
+            "target": {
+              "key": "",
+              "path": ""
+            },
+            "culling_mode": 1,
+            "clear_mask": 6,
+            "clear_color": "{0, 0, 0, 1}",
+            "culling_mask": 4294967295,
             "perspective_fov": 90,
             "perspective_near": 0.01,
             "perspective_far": 14,
