@@ -224,7 +224,7 @@ namespace PantheonRendering::Components
 
         auto it = json.FindMember("target");
 
-        if (!CHECK(it != json.MemberEnd(), "Unable to deserialize camera component's render target") || !m_target.fromJson(json))
+        if (!CHECK(it != json.MemberEnd(), "Unable to deserialize camera component's target") || !m_target.fromJson(it->value))
             return false;
 
         it = json.FindMember("type");
