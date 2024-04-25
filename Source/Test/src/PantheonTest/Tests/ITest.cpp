@@ -2,6 +2,8 @@
 
 #include <PantheonCore/Debug/Logger.h>
 
+#include <cstring>
+
 namespace PantheonTest
 {
     void ITest::start()
