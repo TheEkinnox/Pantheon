@@ -22,3 +22,22 @@ namespace PantheonScripting
         operator bool() const;
     };
 }
+
+namespace PantheonCore::ECS
+{
+    template <>
+    bool ComponentRegistry::toBinary(
+        const PantheonScripting::LuaComponentHandle& value, std::vector<char>& out, const EntitiesMap& toSerialized);
+
+    template <>
+    size_t ComponentRegistry::fromBinary(
+        PantheonScripting::LuaComponentHandle& out, const char* data, size_t length, Scene* scene);
+
+    template <>
+    bool ComponentRegistry::toJson(
+        const PantheonScripting::LuaComponentHandle& value, Serialization::JsonWriter& writer, const EntitiesMap& toSerialized);
+
+    template <>
+    bool ComponentRegistry::fromJson(
+        PantheonScripting::LuaComponentHandle& out, const Serialization::JsonValue& json, Scene* scene);
+}
