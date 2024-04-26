@@ -48,16 +48,16 @@ namespace PantheonCore::ECS
         void registerType(const std::string& name);
 
         template <typename T>
+        static bool toBinary(const T& value, std::vector<char>& out, const EntitiesMap& toSerialized);
+
+        template <typename T>
+        static size_t fromBinary(T& out, const char* data, size_t length, Scene* scene);
+
+        template <typename T>
         static bool toJson(const T& value, Serialization::JsonWriter& writer, const EntitiesMap& toSerialized);
 
         template <typename T>
         static bool fromJson(T& out, const Serialization::JsonValue& json, Scene* scene);
-
-        template <typename T>
-        static bool toBinary(const T& in, std::vector<char>& out, const EntitiesMap& toSerialized);
-
-        template <typename T>
-        static size_t fromBinary(T& out, const char* data, size_t length, Scene* scene);
     };
 }
 

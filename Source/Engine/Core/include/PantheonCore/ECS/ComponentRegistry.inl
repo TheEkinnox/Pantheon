@@ -27,6 +27,34 @@ namespace PantheonCore::ECS
     }
 
     template <typename T>
+    bool ComponentRegistry::toBinary(const T& value, std::vector<char>& out, const EntitiesMap& toSerialized)
+    {
+        constexpr bool hasToBinaryWithMap = requires
+        {
+            value.toBinary(out, toSerialized);
+        };
+
+        if constexpr (hasToBinaryWithMap)
+            return value.toBinary(out, toSerialized);
+        else
+            return Serialization::toBinary(value, out);
+    }
+
+    template <typename T>
+    size_t ComponentRegistry::fromBinary(T& out, const char* data, const size_t length, Scene* scene)
+    {
+        constexpr bool hasFromBinaryWithScene = requires
+        {
+            out.fromBinary(data, length, scene);
+        };
+
+        if constexpr (hasFromBinaryWithScene)
+            return out.fromBinary(data, length, scene);
+        else
+            return Serialization::fromBinary(out, data, length);
+    }
+
+    template <typename T>
     bool ComponentRegistry::toJson(const T& value, Serialization::JsonWriter& writer, const EntitiesMap& toSerialized)
     {
         constexpr bool hasToJsonWithMap = requires
@@ -52,33 +80,5 @@ namespace PantheonCore::ECS
             return out.fromJson(json, scene);
         else
             return Serialization::fromJson(out, json);
-    }
-
-    template <typename T>
-    bool ComponentRegistry::toBinary(const T& in, std::vector<char>& out, const EntitiesMap& toSerialized)
-    {
-        constexpr bool hasToBinaryWithMap = requires
-        {
-            in.toBinary(out, toSerialized);
-        };
-
-        if constexpr (hasToBinaryWithMap)
-            return in.toBinary(out, toSerialized);
-        else
-            return Serialization::toBinary(in, out);
-    }
-
-    template <typename T>
-    size_t ComponentRegistry::fromBinary(T& out, const char* data, const size_t length, Scene* scene)
-    {
-        constexpr bool hasFromBinaryWithScene = requires
-        {
-            out.fromBinary(data, length, scene);
-        };
-
-        if constexpr (hasFromBinaryWithScene)
-            return out.fromBinary(data, length, scene);
-        else
-            return Serialization::fromBinary(out, data, length);
     }
 }
