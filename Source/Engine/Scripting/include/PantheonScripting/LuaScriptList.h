@@ -1,9 +1,8 @@
 #pragma once
-#include "PantheonScripting/LuaContext.h"
+#include "PantheonScripting/LuaScriptHandle.h"
 
 #include <PantheonCore/ECS/ComponentRegistry.h>
 #include <PantheonCore/ECS/ComponentTraits.h>
-#include <PantheonCore/Resources/ResourceRef.h>
 
 #include <string>
 #include <unordered_map>

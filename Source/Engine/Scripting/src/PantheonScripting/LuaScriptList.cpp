@@ -1,7 +1,6 @@
 #include "PantheonScripting/LuaScriptList.h"
 
 #include "PantheonScripting/LuaContext.h"
-#include "PantheonScripting/LuaScriptHandle.h"
 #include "PantheonScripting/LuaTypeRegistry.h"
 
 using namespace PantheonCore::Serialization;
