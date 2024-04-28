@@ -1,5 +1,4 @@
 #pragma once
-#include "PantheonCore/Serialization/IByteSerializable.h"
 #include "PantheonCore/Serialization/Serializer.h"
 
 #include "PantheonRendering/Enums/ETextureFilter.h"
@@ -11,14 +10,14 @@ namespace PantheonRendering::Resources
 {
     struct TextureMetaData
     {
-        static constexpr uint8_t WRAP_MODE_BITS = 4;
-        static constexpr uint8_t FILTER_BITS    = 6;
+        static constexpr uint8_t WRAP_MODE_BITS = 2;
+        static constexpr uint8_t FILTER_BITS    = 3;
         static constexpr uint8_t BOOL_BITS      = 1;
 
-        Enums::ETextureWrapMode m_wrapModeU       : WRAP_MODE_BITS = Enums::ETextureWrapMode::REPEAT;
-        Enums::ETextureWrapMode m_wrapModeV       : WRAP_MODE_BITS = Enums::ETextureWrapMode::REPEAT;
-        Enums::ETextureFilter   m_minFilter       : FILTER_BITS    = Enums::ETextureFilter::LINEAR;
-        Enums::ETextureFilter   m_magFilter       : FILTER_BITS    = Enums::ETextureFilter::LINEAR;
+        Enums::ETextureWrapMode m_wrapModeU      : WRAP_MODE_BITS = Enums::ETextureWrapMode::REPEAT;
+        Enums::ETextureWrapMode m_wrapModeV      : WRAP_MODE_BITS = Enums::ETextureWrapMode::REPEAT;
+        Enums::ETextureFilter   m_minFilter      : FILTER_BITS    = Enums::ETextureFilter::LINEAR;
+        Enums::ETextureFilter   m_magFilter      : FILTER_BITS    = Enums::ETextureFilter::LINEAR;
         bool                    m_generateMipmap : BOOL_BITS      = true;
 
         /**
