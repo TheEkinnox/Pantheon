@@ -2,6 +2,7 @@
 #include "PantheonCore/Assets/BundleAsset.h"
 #include "PantheonCore/Utility/ECompressionMode.h"
 #include "PantheonCore/Utility/macros.h"
+#include "PantheonCore/Utility/TypeTraits.h"
 
 #include <climits>
 #include <memory>
@@ -19,8 +20,8 @@ namespace PantheonCore::Assets
         static constexpr int DATA_SIZE_BITS        = 62;
         static constexpr int HEADER_SIZE           = ALIGN(COMPRESSION_MODE_BITS + DATA_SIZE_BITS, CHAR_BIT) / CHAR_BIT;
 
-        using block_t = SMALLEST_UNSIGNED_TYPE(DATA_SIZE_BITS);
-        using header_t = SMALLEST_UNSIGNED_TYPE(COMPRESSION_MODE_BITS + DATA_SIZE_BITS);
+        using block_t = Utility::SmallestUInt<DATA_SIZE_BITS>;
+        using header_t = Utility::SmallestUInt<COMPRESSION_MODE_BITS + DATA_SIZE_BITS>;
 
         /**
          * \brief Creates an empty asset bundle

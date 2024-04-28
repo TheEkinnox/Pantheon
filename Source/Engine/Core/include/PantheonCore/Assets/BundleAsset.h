@@ -1,8 +1,7 @@
 ﻿#pragma once
 #include "PantheonCore/Assets/Asset.h"
-#include "PantheonCore/Utility/macros.h"
+#include "PantheonCore/Utility/TypeTraits.h"
 
-#include <cstdint>
 #include <memory>
 #include <ostream>
 
@@ -14,7 +13,7 @@ namespace PantheonCore::Assets
         static constexpr int BLOCK_SIZE_BITS  = 62;
         static constexpr int BLOCK_START_BITS = BLOCK_SIZE_BITS + 1;
 
-        using block_t = SMALLEST_UNSIGNED_TYPE(BLOCK_SIZE_BITS);
+        using block_t = Utility::SmallestUInt<BLOCK_SIZE_BITS>;
 
         /**
          * \brief Creates a default bundle asset

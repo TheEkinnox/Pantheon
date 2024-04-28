@@ -2,7 +2,7 @@
 
 #include "PantheonCore/Debug/Assertion.h"
 #include "PantheonCore/Serialization/IByteSerializable.h"
-#include "PantheonCore/Utility/macros.h"
+#include "PantheonCore/Utility/TypeTraits.h"
 
 using namespace PantheonCore::Serialization;
 using namespace PantheonCore::Utility;
@@ -15,7 +15,7 @@ namespace PantheonRendering::Resources
     static constexpr uint8_t WRAP_V_OFFSET     = WRAP_U_OFFSET + TextureMetaData::WRAP_MODE_BITS;
     static constexpr uint8_t GEN_MIP_OFFSET    = WRAP_V_OFFSET + TextureMetaData::WRAP_MODE_BITS;
 
-    using HeaderT = SMALLEST_UNSIGNED_TYPE(GEN_MIP_OFFSET + TextureMetaData::BOOL_BITS);
+    using HeaderT = SmallestUInt<GEN_MIP_OFFSET + TextureMetaData::BOOL_BITS>;
 
     bool TextureMetaData::toBinary(std::vector<char>& out) const
     {

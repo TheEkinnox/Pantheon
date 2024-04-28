@@ -1,4 +1,5 @@
 #pragma once
+#include <climits>
 #include <type_traits>
 
 namespace PantheonCore::Utility
@@ -27,15 +28,21 @@ namespace PantheonCore::Utility
     template <typename T, typename First>
     constexpr size_t IndexOf<T, First> = std::is_same_v<T, First> ? 0 : 1;
 
-    template <typename T>
-    using SmallestIntT =
-    std::conditional_t<sizeof(T) <= sizeof(int8_t), int8_t,
-        std::conditional_t<sizeof(T) <= sizeof(int16_t), int16_t,
-            std::conditional_t<sizeof(T) <= sizeof(int32_t), int32_t, int64_t>>>;
+    template <uint8_t Size>
+    using SmallestInt =
+    std::conditional_t<Size <= 8, int8_t,
+        std::conditional_t<Size <= 16, int16_t,
+            std::conditional_t<Size <= 32, int32_t, int64_t>>>;
+
+    template <uint8_t Size>
+    using SmallestUInt =
+    std::conditional_t<Size <= 8, uint8_t,
+        std::conditional_t<Size <= 16, uint16_t,
+            std::conditional_t<Size <= 32, uint32_t, uint64_t>>>;
 
     template <typename T>
-    using SmallestUIntT =
-    std::conditional_t<sizeof(T) <= sizeof(uint8_t), uint8_t,
-        std::conditional_t<sizeof(T) <= sizeof(uint16_t), uint16_t,
-            std::conditional_t<sizeof(T) <= sizeof(uint32_t), uint32_t, uint64_t>>>;
+    using SmallestIntT = SmallestInt<sizeof(T) * CHAR_BIT>;
+
+    template <typename T>
+    using SmallestUIntT = SmallestUInt<sizeof(T) * CHAR_BIT>;
 }
