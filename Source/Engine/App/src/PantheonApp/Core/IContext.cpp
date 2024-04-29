@@ -22,16 +22,16 @@ namespace PantheonApp::Core
         m_timer.tick();
     }
 
-    std::unique_ptr<IContext> IContext::create(const EGraphicsAPI backend, bool useVsync, int sampleCount)
+    std::unique_ptr<IContext> IContext::create(const EGraphicsAPI backend, bool useVsync, int sampleCount, const int refreshRate)
     {
         IRenderAPI::setCurrent(backend);
 
         switch (backend)
         {
         case EGraphicsAPI::NONE:
-            return std::make_unique<NullContext>(useVsync, sampleCount);
+            return std::make_unique<NullContext>(useVsync, sampleCount, refreshRate);
         case EGraphicsAPI::OPENGL:
-            return std::make_unique<OpenGLContext>(useVsync, sampleCount);
+            return std::make_unique<OpenGLContext>(useVsync, sampleCount, refreshRate);
         default:
             ASSERT(false, "Unable to create context - Unsupported backend");
             return {};

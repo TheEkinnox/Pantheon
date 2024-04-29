@@ -51,7 +51,7 @@ namespace PantheonTest
         m_renderer(std::make_unique<Renderer>()),
         m_startTime(std::chrono::high_resolution_clock::now())
     {
-        m_window->makeCurrentContext();
+        m_window->makeMain();
 
         IRenderAPI::getCurrent()
             .init(true)

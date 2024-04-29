@@ -1,6 +1,7 @@
 #include "PantheonTest/Tests/WindowTest.h"
 
 #include <PantheonApp/Windowing/Window.h>
+#include <PantheonApp/Core/IContext.h>
 
 #include <PantheonCore/Utility/ServiceLocator.h>
 
@@ -34,9 +35,12 @@ namespace PantheonTest
 
     void WindowTest::testExtra()
     {
-        const std::string title = m_window->getTitle();
-        const float aspect = m_window->getAspect();
-        const int refreshRate = m_window->getRefreshRate();
+        const std::string title  = m_window->getTitle();
+        const float       aspect = m_window->getAspect();
+
+        auto&     context     = m_window->getContext();
+        const int refreshRate = context.getRefreshRate();
+
         DEBUG_LOG("Window title: %s | Aspect: %f | Refresh rate: %d", title.c_str(), aspect, refreshRate);
 
         m_window->setTitle(title);
@@ -50,22 +54,22 @@ namespace PantheonTest
         m_window->setTitle(title);
         TEST_CHECK(m_window->getTitle() == title, "Window title should have been reset");
 
-        m_window->setRefreshRate(refreshRate);
-        TEST_CHECK(m_window->getRefreshRate() == refreshRate, "Window refresh rate shouldn't have changed");
+        context.setRefreshRate(refreshRate);
+        TEST_CHECK(context.getRefreshRate() == refreshRate, "Context refresh rate shouldn't have changed");
 
-        m_window->setRefreshRate(refreshRate + 5);
-        TEST_CHECK(m_window->getRefreshRate() != refreshRate, "Window refresh rate should have changed");
-        TEST_CHECK(m_window->getRefreshRate() == refreshRate + 5, "Window refresh rate should match new value");
+        context.setRefreshRate(refreshRate + 5);
+        TEST_CHECK(context.getRefreshRate() != refreshRate, "Context refresh rate should have changed");
+        TEST_CHECK(context.getRefreshRate() == refreshRate + 5, "Context refresh rate should match new value");
 
-        m_window->setRefreshRate(refreshRate);
-        TEST_CHECK(m_window->getRefreshRate() == refreshRate, "Window refresh rate should have been reset");
+        context.setRefreshRate(refreshRate);
+        TEST_CHECK(context.getRefreshRate() == refreshRate, "Context refresh rate should have been reset");
     }
 
     void WindowTest::testSize()
     {
         const Window::DimensionsT windowSize = m_window->getSize();
-        const Window::DimensionsT minSize = m_window->getMinSize();
-        const Window::DimensionsT maxSize = m_window->getMaxSize();
+        const Window::DimensionsT minSize    = m_window->getMinSize();
+        const Window::DimensionsT maxSize    = m_window->getMaxSize();
 
         DEBUG_LOG("Window size: %s | Min size: %s | Max size: %s", windowSize.string().c_str(),
             minSize.string().c_str(), maxSize.string().c_str());
@@ -126,8 +130,8 @@ namespace PantheonTest
 
     void WindowTest::testFullscreen()
     {
-        const Window::PosT windowPos = m_window->getPosition();
-        const bool isFullscreen = m_window->isFullScreen();
+        const Window::PosT windowPos    = m_window->getPosition();
+        const bool         isFullscreen = m_window->isFullScreen();
         DEBUG_LOG("Window fullscreen: %s", isFullscreen ? "on" : "off");
 
         m_window->setFullScreen(isFullscreen);

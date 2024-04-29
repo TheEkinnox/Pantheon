@@ -1,5 +1,4 @@
 #pragma once
-#include "PantheonApp/Core/IContext.h"
 #include "PantheonApp/Input/EInputModifier.h"
 #include "PantheonApp/Input/EKey.h"
 #include "PantheonApp/Input/EKeyState.h"
@@ -11,8 +10,10 @@
 
 #include <Vector/Vector2.h>
 
-// Forward declaration of GLFWwindow to avoid including glfw in the header
-struct GLFWwindow;
+namespace PantheonApp::Core
+{
+    class IContext;
+}
 
 namespace PantheonApp::Windowing
 {
@@ -69,9 +70,15 @@ namespace PantheonApp::Windowing
         Window& operator=(Window&&) = delete;
 
         /**
-         * \brief Sets the window as glfw's current context
+         * \brief Sets the window as it's context's main window
          */
-        void makeCurrentContext() const;
+        void makeMain() const;
+
+        /**
+         * \brief Gets the window's context
+         * \return The window's context
+         */
+        Core::IContext& getContext() const;
 
         /**
          * \brief Gets the window's title
@@ -101,6 +108,12 @@ namespace PantheonApp::Windowing
          * \return The window's current size
          */
         DimensionsT getSize() const;
+
+        /**
+         * \brief Gets the window's aspect ratio
+         * \return The window's aspect ratio
+         */
+        float getAspect() const;
 
         /**
          * \brief Sets the window's size
@@ -163,33 +176,10 @@ namespace PantheonApp::Windowing
         bool shouldClose() const;
 
         /**
-         * \brief Swaps the render buffers
-         */
-        void swapBuffers();
-
-        /**
          * \brief Sets whether the window should close or not
          * \param shouldClose Whether the window should close or not
          */
         void setShouldClose(bool shouldClose) const;
-
-        /**
-         * \brief Gets the window's aspect ratio
-         * \return The window's aspect ratio
-         */
-        float getAspect() const;
-
-        /**
-         * \brief Gets the window's refresh rate
-         * \return The window's refresh rate
-         */
-        int getRefreshRate() const;
-
-        /**
-         * \brief Sets the window's refresh rate
-         * \param refreshRate The window's new refresh rate
-         */
-        void setRefreshRate(int refreshRate);
 
         /**
          * \brief Gets the window's refresh rate
@@ -208,113 +198,24 @@ namespace PantheonApp::Windowing
          */
         void toggleFullScreen();
 
-    private:
-        inline static std::unordered_map<void*, Window*> s_windowsMap;
+        /**
+         * \brief Swaps the render buffers
+         */
+        void swapBuffers();
 
+    private:
         std::string m_title;
-        DimensionsT m_size;
         DimensionsT m_minSize;
         DimensionsT m_maxSize;
-        PosT        m_pos;
 
         Core::IContext* m_context;
         void*           m_handle;
 
-        int  m_refreshRate;
         bool m_isFullScreen;
-
-        /**
-         * \brief Creates a glfw window with the given settings
-         * \param settings The window creation settings
-         */
-        void createHandle(const WindowSettings& settings);
-
-        /**
-         * \brief Binds the glfw callbacks
-         */
-        void bindCallbacks() const;
 
         /**
          * \brief Updates the glfw window's size limits based
          */
         void updateSizeLimits() const;
-
-        /**
-         * \brief Finds the window linked to the given handle
-         * \param window The glfw window linked to the window to find.
-         * \return A pointer to the found window or nullptr if no window was found.
-         */
-        static Window* getInstance(void* window);
-
-        /**
-         * \brief GLFW key action callback
-         * \param glfwWindow The window for which a key action has been performed
-         * \param key The key that has been interacted with
-         * \param scanCode The scan code of the key that has been interacted with
-         * \param action The action that has been performed
-         * \param mods The input modifiers of the key event
-         */
-        static void onKey(GLFWwindow* glfwWindow, int key, int scanCode, int action, int mods);
-
-        /**
-         * \brief GLFW mouse button action callback
-         * \param glfwWindow The window for which a mouse button has been interacted with
-         * \param button The mouse button that has been interacted with
-         * \param action The action that has been performed
-         * \param mods The input modifiers of the key event
-         */
-        static void onMouseButton(GLFWwindow* glfwWindow, int button, int action, int mods);
-
-        /**
-         * \brief GLFW cursor position callback
-         * \param glfwWindow The window in which the cursor moved
-         * \param x The cursor's new x position
-         * \param y The cursor's new y position
-         */
-        static void onCursorMove(GLFWwindow* glfwWindow, double x, double y);
-
-        /**
-         * \brief GLFW window move callback
-         * \param glfwWindow The moved window
-         * \param x The window's new x position
-         * \param y The window's new y position
-         */
-        static void onMove(GLFWwindow* glfwWindow, int x, int y);
-
-        /**
-         * \brief GLFW window size change callback
-         * \param glfwWindow The window for which the frame buffer size has changed
-         * \param width The window's frame buffer's new width
-         * \param height The window's frame buffer's new height
-         */
-        static void onResize(GLFWwindow* glfwWindow, int width, int height);
-
-        /**
-         * \brief GLFW frame buffer size change callback
-         * \param glfwWindow The window for which the frame buffer size has changed
-         * \param width The window's frame buffer's new width
-         * \param height The window's frame buffer's new height
-         */
-        static void onFrameBufferResize(GLFWwindow* glfwWindow, int width, int height);
-
-        /**
-         * \brief GLFW window focus change callback
-         * \param glfwWindow The window of which focus status changed
-         * \param focused Whether the window is focused or not
-         */
-        static void onFocus(GLFWwindow* glfwWindow, int focused);
-
-        /**
-         * \brief GLFW window iconification callback
-         * \param glfwWindow The window of which iconification status changed
-         * \param iconified Whether the window is iconified or not
-         */
-        static void onIconify(GLFWwindow* glfwWindow, int iconified);
-
-        /**
-         * \brief GLFW window close callback
-         * \param glfwWindow THe closed window
-         */
-        static void onClose(GLFWwindow* glfwWindow);
     };
 }
