@@ -31,7 +31,6 @@ namespace PantheonRendering::RHI
 
         std::ostringstream oss;
 
-        oss << "---------------\n";
         oss << "Debug message (" << id << "): " << message << '\n';
 
         switch (source)
