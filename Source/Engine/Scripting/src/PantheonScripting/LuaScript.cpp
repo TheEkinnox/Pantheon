@@ -32,7 +32,7 @@ namespace PantheonScripting
         file.read(m_source.data(), length);
         file.close();
 
-        return !m_source.empty() && loadMeta(path);
+        return !m_source.empty() && loadMeta(getMetaPath(path));
     }
 
     bool LuaScript::save(const std::string& path) const
