@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <functional>
 
 namespace PantheonCore::Eventing
@@ -11,9 +12,9 @@ namespace PantheonCore::Eventing
 
         virtual ~IEvent() = default;
 
-        virtual void unsubscribe(ListenerId listener) = 0;
+        virtual void   unsubscribe(ListenerId listener) = 0;
         virtual size_t subscribersCount() const = 0;
-        virtual void clear() = 0;
+        virtual void   clear() = 0;
 
     protected:
         inline static ListenerId m_currentId = 1;
