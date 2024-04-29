@@ -2,7 +2,7 @@
 FetchContent_Declare(
 	zstd
 	GIT_REPOSITORY https://github.com/facebook/zstd
-	GIT_TAG v1.5.5
+	GIT_TAG v1.5.6
 	GIT_SHALLOW ON
 )
 
