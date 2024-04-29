@@ -51,6 +51,15 @@ namespace PantheonTest
         m_renderer(std::make_unique<Renderer>()),
         m_startTime(std::chrono::high_resolution_clock::now())
     {
+        m_window->makeCurrentContext();
+
+        IRenderAPI::getCurrent()
+            .init(true)
+            .setCullFace(ECullFace::BACK)
+            .setClearColor(Color::black)
+            .setCapability(ERenderingCapability::DEPTH_TEST, true)
+            .setViewport({ 0, 0 }, m_window->getSize());
+
         ServiceLocator::provide<Window>(*m_window);
         ServiceLocator::provide<InputManager>(*m_inputManager);
         ServiceLocator::provide<ThreadPool>(*m_threadPool);
@@ -80,14 +89,6 @@ namespace PantheonTest
         ASSERT(workingDir == appDir, "Invalid working directory - Expected: \"%s\"", appDir);
 
         m_resourceManager->addSearchPath("assets");
-
-        m_window->makeCurrentContext();
-
-        IRenderAPI::getCurrent().init(true)
-                                .setCullFace(ECullFace::BACK)
-                                .setClearColor(Color::black)
-                                .setCapability(ERenderingCapability::DEPTH_TEST, true)
-                                .setViewport({ 0, 0 }, m_window->getSize());
 
         m_window->m_framebufferResizeEvent.subscribe([](const DimensionsT size)
         {
