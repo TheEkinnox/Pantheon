@@ -1,6 +1,12 @@
 #include "PantheonScripting/LuaScript.h"
 
+#include "PantheonCore/Utility/FileSystem.h"
+#include "PantheonCore/Serialization/Serializer.h"
+
 #include <sol/state.hpp>
+
+using namespace PantheonCore::Utility;
+using namespace PantheonCore::Serialization;
 
 namespace PantheonScripting
 {
@@ -9,14 +15,14 @@ namespace PantheonScripting
     {
     }
 
-    bool LuaScript::load(const std::string& fileName)
+    bool LuaScript::load(const std::string& path)
     {
-        if (!CHECK(!fileName.empty(), "Attempted to load lua script from empty path"))
+        if (!CHECK(!path.empty(), "Attempted to load lua script from empty path"))
             return false;
 
-        std::ifstream file(fileName, std::ios::binary | std::ios::ate);
+        std::ifstream file(path, std::ios::binary | std::ios::ate);
 
-        if (!CHECK(file.is_open(), "Unable to load lua script - Failed to open file at path \"%s\"", fileName.c_str()))
+        if (!CHECK(file.is_open(), "Unable to load lua script - Failed to open file at path \"%s\"", path.c_str()))
             return false;
 
         const std::ifstream::pos_type length = file.tellg();
@@ -26,22 +32,12 @@ namespace PantheonScripting
         file.read(m_source.data(), length);
         file.close();
 
-        return !m_source.empty();
+        return !m_source.empty() && loadMeta(path);
     }
 
-    bool LuaScript::save(const std::string& fileName) const
+    bool LuaScript::save(const std::string& path) const
     {
-        if (!CHECK(!fileName.empty(), "Attempted to save lua script to empty path"))
-            return false;
-
-        std::ofstream file(fileName, std::ios::binary);
-
-        if (!CHECK(file.is_open(), "Unable to save lua script - Failed to open file at path \"%s\"", fileName.c_str()))
-            return false;
-
-        file << m_source;
-
-        return CHECK(!file.bad(), "Failed to save lua script to \"%s\"", fileName.c_str());
+        return saveMeta(getMetaPath(path));
     }
 
     bool LuaScript::toBinary(std::vector<char>& output) const
@@ -73,5 +69,51 @@ namespace PantheonScripting
     LuaScript::OrderT LuaScript::getExecutionOrder() const
     {
         return m_executionOrder;
+    }
+
+    void LuaScript::SetExecutionOrder(const OrderT p_executionOrder)
+    {
+        m_executionOrder = p_executionOrder;
+    }
+
+    bool LuaScript::loadMeta(const std::string& p_path)
+    {
+        if (!pathExists(p_path))
+            return true;
+
+        JsonDocument json = loadJsonFile(p_path);
+
+        const auto it = json.FindMember("order");
+
+        if (!CHECK(it != json.MemberEnd(), "Unable to deserialize lua script meta data - Missing execution order"))
+            return false;
+
+        if (!CHECK(it->value.IsInt(), "Unable to deserialize lua script execution order - Json value should be an int"))
+            return false;
+
+        m_executionOrder = static_cast<OrderT>(it->value.GetInt());
+
+        return true;
+    }
+
+    bool LuaScript::saveMeta(const std::string& p_path) const
+    {
+        std::ofstream fs(p_path);
+
+        if (!CHECK(fs.is_open(), "Unable to open lua script meta file at path \"%s\"", p_path.c_str()))
+            return false;
+
+        JsonOStream    jos(fs);
+        JsonFileWriter writer(jos);
+
+        writer.StartObject();
+
+        writer.Key("order");
+        writer.Int(m_executionOrder);
+
+        if (!writer.EndObject() || !ASSUME(writer.IsComplete(), "Failed to save lua script meta - Generated json is incomplete"))
+            return false;
+
+        return CHECK(!fs.bad(), "Failed to write lua script meta data to \"%s\"", p_path.c_str());
     }
 }

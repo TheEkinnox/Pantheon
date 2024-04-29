@@ -48,10 +48,10 @@ namespace PantheonScripting
 
         /**
          * \brief Loads the lua script from the given path
-         * \param fileName The script's path
+         * \param path The script's path
          * \return True on success. False otherwise
          */
-        bool load(const std::string& fileName) override;
+        bool load(const std::string& path) override;
 
         /**
          * \brief Initializes the lua script
@@ -63,11 +63,11 @@ namespace PantheonScripting
         }
 
         /**
-         * \brief Saves the lua script to the given file
-         * \param fileName The target save path
-         * \return True if the lua script was successfully saved. False otherwise.
+         * \brief Saves the meta data of the script at the given path
+         * \param path The script's path
+         * \return True on success. False otherwise
          */
-        bool save(const std::string& fileName) const override;
+        bool save(const std::string& path) const override;
 
         /**
          * \brief Serializes the lua script to a byte array
@@ -96,8 +96,28 @@ namespace PantheonScripting
          */
         OrderT getExecutionOrder() const;
 
+        /**
+         * \brief Sets the lua script's execution order
+         * \param p_executionOrder The script's new execution order
+         */
+        void SetExecutionOrder(OrderT p_executionOrder);
+
     private:
         std::string m_source;
         OrderT      m_executionOrder;
+
+        /**
+         * \brief Loads the lua script's meta data from the given path
+         * \param p_path The lua script's meta path
+         * \return True on success. False otherwise
+         */
+        bool loadMeta(const std::string& p_path);
+
+        /**
+         * \brief Saves the lua script's meta data to the given path
+         * \param p_path The lua script's meta path
+         * \return True on success. False otherwise
+         */
+        bool saveMeta(const std::string& p_path) const;
     };
 }
