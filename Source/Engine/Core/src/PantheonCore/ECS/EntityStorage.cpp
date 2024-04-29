@@ -45,6 +45,14 @@ namespace PantheonCore::ECS
 
     void EntityStorage::clear()
     {
+        for (size_t i = m_count; i > 0; --i)
+        {
+            if (i > m_count)
+                continue;
+
+            m_onRemove.invoke({ m_scene, m_entities[i - 1] });
+        }
+
         m_entities.clear();
         m_count = 0;
     }
