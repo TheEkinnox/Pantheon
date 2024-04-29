@@ -37,8 +37,6 @@ namespace PantheonApp::Platform
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-        setVsync(useVsync);
-
         m_isInitialized = true;
     }
 
@@ -74,6 +72,7 @@ namespace PantheonApp::Platform
     {
         glfwMakeContextCurrent(static_cast<GLFWwindow*>(handle));
         m_windowHandle = static_cast<GLFWwindow*>(handle);
+        setVsync(m_useVsync);
     }
 
     void OpenGLContext::swapBuffers()
