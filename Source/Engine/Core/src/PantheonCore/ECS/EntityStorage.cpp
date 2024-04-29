@@ -12,7 +12,11 @@ namespace PantheonCore::ECS
     Entity EntityStorage::add()
     {
         if (m_entities.size() == m_count)
-            return m_entities.emplace_back(m_count++, Entity::Version{});
+        {
+            const Entity entity = m_entities.emplace_back(m_count++, Entity::Version{});
+            m_onAdd.invoke({ m_scene, entity });
+            return entity;
+        }
 
         Entity& entity = m_entities[m_count++];
         entity.bumpVersion();
