@@ -3,14 +3,13 @@
 #ifdef _DEBUG
     #if defined(_WIN32)
         #include "PantheonCore/Utility/LeanWin.h"
-        #include <intrin.h>
 
         inline bool isDebuggerPresent()
         {
             return IsDebuggerPresent();
         }
 
-        #define DEBUG_BREAK_IMPL() (__nop(), __debugbreak())
+        #define DEBUG_BREAK_IMPL() (((void)0), __debugbreak())
     #elif defined(__unix__)
         #include <fstream>
         #include <string>

@@ -4,6 +4,7 @@
 #include <Vector/Vector3.h>
 #include <Vector/Vector4.h>
 
+#include <cstdint>
 #include <string>
 #include <vector>
 

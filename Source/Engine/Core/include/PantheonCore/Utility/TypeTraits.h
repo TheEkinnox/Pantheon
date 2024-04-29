@@ -1,5 +1,6 @@
 #pragma once
 #include <climits>
+#include <cstdint>
 #include <type_traits>
 
 namespace PantheonCore::Utility

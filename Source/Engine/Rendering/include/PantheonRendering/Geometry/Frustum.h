@@ -2,6 +2,8 @@
 #include "PantheonRendering/Geometry/BoundingBox.h"
 #include "PantheonRendering/Geometry/BoundingSphere.h"
 
+#include <cstdint>
+
 namespace PantheonRendering::Geometry
 {
     class Frustum

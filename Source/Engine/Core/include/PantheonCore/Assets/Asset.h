@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <istream>
 #include <vector>
+#include <cstdint>
 
 namespace PantheonCore::Assets
 {

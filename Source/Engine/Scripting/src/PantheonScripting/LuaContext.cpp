@@ -130,15 +130,16 @@ namespace PantheonScripting
             return handle < other;
         });
 
-        m_isValid = CHECK(m_scripts.insert(insertIt, handle) != m_scripts.end(), "Failed to add script \"%s\"", script.c_str());
+        const auto it = m_scripts.insert(insertIt, handle);
+        m_isValid     = CHECK(it != m_scripts.end(), "Failed to add script \"%s\"", script.c_str());
 
         return m_isValid ? handle : LuaScriptHandle{};
     }
 
     LuaScriptHandle LuaContext::getScript(const std::string& script, const EntityHandle& owner) const
     {
-        const auto& moduleName = getModuleName(script);
-        const auto& modulePath = getModulePath(script);
+        const std::string& moduleName = getModuleName(script);
+        const std::string& modulePath = getModulePath(script);
 
         const auto it = std::ranges::find_if(m_scripts, [&moduleName, &modulePath, &owner](const LuaScriptHandle& other)
         {
