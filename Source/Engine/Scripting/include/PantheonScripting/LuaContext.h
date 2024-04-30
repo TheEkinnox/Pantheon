@@ -144,14 +144,14 @@ namespace PantheonScripting
          * \param module The target module
          * \return The module's name
          */
-        static const std::string& getModuleName(std::string module);
+        static const std::string& getModuleName(const std::string& module);
 
         /**
          * \brief Gets the given module's path
          * \param module The target module
          * \return The module's path
          */
-        static const std::string& getModulePath(std::string module);
+        static const std::string& getModulePath(const std::string& module);
 
     private:
         static constexpr const char* EXTENSIONS[] = { ".lua", ".lc" };

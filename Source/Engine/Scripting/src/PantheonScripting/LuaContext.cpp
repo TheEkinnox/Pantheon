@@ -225,7 +225,7 @@ namespace PantheonScripting
         return m_state ? m_state->lua_state() : nullptr;
     }
 
-    const std::string& LuaContext::getModuleName(std::string module)
+    const std::string& LuaContext::getModuleName(const std::string& module)
     {
         static std::string empty;
 
@@ -237,25 +237,25 @@ namespace PantheonScripting
         if (it != s_moduleNames.end())
             return it->second;
 
-        const std::string base = module;
+        std::string name = module;
 
         for (const auto& extension : EXTENSIONS)
         {
-            if (module.ends_with(extension))
-                module = module.substr(0, module.size() - strlen(extension));
+            if (name.ends_with(extension))
+                name = name.substr(0, name.size() - strlen(extension));
         }
 
-        replaceInPlace(module, ".", "/");
+        replaceInPlace(name, ".", "/");
 
-        module = PTH_SERVICE(ResourceManager).getRelativePath(module);
+        name = PTH_SERVICE(ResourceManager).getRelativePath(name);
 
-        replaceInPlace(module, "/", ".");
-        replaceInPlace(module, "\\", ".");
+        replaceInPlace(name, "/", ".");
+        replaceInPlace(name, "\\", ".");
 
-        return (s_moduleNames[base] = module);
+        return (s_moduleNames[module] = name);
     }
 
-    const std::string& LuaContext::getModulePath(std::string module)
+    const std::string& LuaContext::getModulePath(const std::string& module)
     {
         static std::string empty;
 
@@ -267,18 +267,16 @@ namespace PantheonScripting
         if (it != s_modulePaths.end())
             return it->second;
 
-        const std::string base = module;
-
-        module = replace(getModuleName(module), ".", "/");
+        const std::string path = replace(getModuleName(module), ".", "/");
 
         const ResourceManager& resourceManager = PTH_SERVICE(ResourceManager);
 
         for (const auto& extension : EXTENSIONS)
         {
-            std::string path(resourceManager.getFullPath(module + extension));
+            std::string fullPath(resourceManager.getFullPath(path + extension));
 
-            if (pathExists(path))
-                return (s_modulePaths[base] = path);
+            if (pathExists(fullPath))
+                return (s_modulePaths[module] = fullPath);
         }
 
         return empty;
