@@ -20,6 +20,8 @@
 
 #include <PantheonScripting/LuaContext.h>
 
+#include <cstdlib>
+
 using namespace LibMath;
 
 using namespace PantheonCore::Utility;
