@@ -1,6 +1,7 @@
 #pragma once
 #include "PantheonCore/Assets/AssetBundle.h"
 
+#include <memory>
 #include <string>
 #include <unordered_map>
 
