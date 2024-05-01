@@ -72,7 +72,7 @@ namespace PantheonRendering::Components
     {
         writer.StartObject();
 
-        const std::string typeString = lightTypeToString(ELightType::AMBIENT);
+        const std::string typeString = lightTypeToString(m_type);
 
         writer.Key("type");
         writer.String(typeString.c_str(), static_cast<rapidjson::SizeType>(typeString.size()));
