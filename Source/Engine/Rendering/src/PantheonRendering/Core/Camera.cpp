@@ -1,7 +1,6 @@
 #include "PantheonRendering/Core/Camera.h"
 
 using namespace LibMath;
-using namespace PantheonRendering::Geometry;
 
 namespace PantheonRendering::Core
 {

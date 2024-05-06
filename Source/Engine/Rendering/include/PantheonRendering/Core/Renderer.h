@@ -30,7 +30,7 @@ namespace PantheonRendering::Core
             const Resources::Mesh*     m_mesh;
             const Resources::Material* m_material;
             LibMath::Matrix4           m_modelMat;
-            Geometry::BoundingBox      m_modelBoundingBox;
+            LibMath::BoundingBox       m_modelBoundingBox;
             LayerMask                  m_layerMask;
             void*                      m_extra = nullptr;
 

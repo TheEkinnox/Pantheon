@@ -99,12 +99,12 @@ namespace PantheonRendering::Resources
          * \brief Gets the mesh's bounding box
          * \return The mesh's bounding box
          */
-        Geometry::BoundingBox getBoundingBox() const;
+        LibMath::BoundingBox getBoundingBox() const;
 
     private:
-        std::vector<Mesh>     m_meshes;
-        size_t                m_materialCount;
-        Geometry::BoundingBox m_boundingBox;
+        std::vector<Mesh>    m_meshes;
+        size_t               m_materialCount;
+        LibMath::BoundingBox m_boundingBox;
 
         bool   serializeMeshes(std::vector<char>& output) const;
         size_t deserializeMeshes(const char* data, size_t length);

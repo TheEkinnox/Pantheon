@@ -1,10 +1,11 @@
 #pragma once
-#include "PantheonRendering/Geometry/Vertex.h"
 #include "PantheonRendering/Enums/EPrimitiveType.h"
-#include "PantheonRendering/Geometry/BoundingBox.h"
+#include "PantheonRendering/Geometry/Vertex.h"
 #include "PantheonRendering/RHI/IVertexArray.h"
 
 #include <PantheonCore/Serialization/IByteSerializable.h>
+
+#include <Geometry/BoundingBox.h>
 
 namespace PantheonRendering::Resources
 {
@@ -98,7 +99,7 @@ namespace PantheonRendering::Resources
          * \brief Gets the mesh's bounding box
          * \return The mesh's bounding box
          */
-        Geometry::BoundingBox getBoundingBox() const;
+        LibMath::BoundingBox getBoundingBox() const;
 
         /**
          * \brief Gets the mesh's primitive type
@@ -116,7 +117,7 @@ namespace PantheonRendering::Resources
         std::vector<Geometry::Vertex> m_vertices;
         std::vector<uint32_t>         m_indices;
 
-        Geometry::BoundingBox m_boundingBox;
+        LibMath::BoundingBox  m_boundingBox;
         Enums::EPrimitiveType m_primitiveType;
         uint32_t              m_materialIndex;
 

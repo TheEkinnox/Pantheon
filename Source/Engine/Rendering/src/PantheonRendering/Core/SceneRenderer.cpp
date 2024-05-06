@@ -26,9 +26,9 @@ namespace PantheonRendering::Core
         {
             auto [modelComponent, transform] = models.get(entity);
 
-            const Model*                model       = **modelComponent;
-            const Matrix4               modelMatrix = transform ? transform->getWorldMatrix() : Matrix4(1.f);
-            const Geometry::BoundingBox boundingBox = model->getBoundingBox();
+            const Model*      model       = **modelComponent;
+            const Matrix4     modelMatrix = transform ? transform->getWorldMatrix() : Matrix4(1.f);
+            const BoundingBox boundingBox = model->getBoundingBox();
 
             for (size_t i = 0; i < model->getMeshCount(); ++i)
             {
