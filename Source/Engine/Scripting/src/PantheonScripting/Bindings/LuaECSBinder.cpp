@@ -1,9 +1,9 @@
 #include "PantheonScripting/Bindings/LuaECSBinder.h"
 
-#include "PantheonScripting/LuaComponentHandle.h"
 #include "PantheonScripting/LuaScriptHandle.h"
 #include "PantheonScripting/LuaTypeRegistry.h"
 
+#include <PantheonCore/ECS/ComponentHandle.h>
 #include <PantheonCore/ECS/Components/TagComponent.h>
 
 #include <sol/state.hpp>
@@ -124,23 +124,23 @@ namespace PantheonScripting::Bindings
     {
         static constexpr const char* typeName = "Component";
 
-        sol::usertype componentType = luaState.new_usertype<LuaComponentHandle>(
+        sol::usertype componentType = luaState.new_usertype<ComponentHandle>(
             typeName,
-            "isValid", sol::readonly_property(&LuaComponentHandle::operator bool),
-            sol::meta_function::index, [&luaState](const LuaComponentHandle& self, const sol::object& index) -> sol::object
+            "isValid", sol::readonly_property(&ComponentHandle::operator bool),
+            sol::meta_function::index, [&luaState](const ComponentHandle& self, const sol::object& index) -> sol::object
             {
                 if (!self.m_owner)
                     return sol::nil;
 
-                void* component = self.m_owner.getScene()->getStorage(self.m_typeId).findRaw(self.m_owner);
+                void* component = self.get();
                 return LuaTypeRegistry::getInstance().getTypeInfo(self.m_typeId).toLua(component, luaState)[index];
             },
-            sol::meta_function::new_index, [&luaState](const LuaComponentHandle& self, const sol::object& key, sol::object value)
+            sol::meta_function::new_index, [&luaState](const ComponentHandle& self, const sol::object& key, sol::object value)
             {
                 if (!self.m_owner)
                     return;
 
-                void* component = self.m_owner.getScene()->getStorage(self.m_typeId).findRaw(self.m_owner);
+                void* component = self.get();
 
                 if (!component)
                     return;
@@ -152,7 +152,7 @@ namespace PantheonScripting::Bindings
                 data[key] = value;
                 typeInfo.fromLua(component, data);
             },
-            "set", [](const LuaComponentHandle& self, const sol::userdata& value)
+            "set", [](const ComponentHandle& self, const sol::userdata& value)
             {
                 if (!self.m_owner)
                     return;
@@ -169,7 +169,7 @@ namespace PantheonScripting::Bindings
 
         componentType["__type"]["name"] = typeName;
 
-        static const LuaTypeInfo& typeInfo = LuaTypeRegistry::getInstance().registerType<LuaComponentHandle>(typeName);
+        static const LuaTypeInfo& typeInfo = LuaTypeRegistry::getInstance().registerType<ComponentHandle>(typeName);
         return (void)typeInfo;
     }
 

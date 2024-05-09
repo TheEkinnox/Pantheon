@@ -1,7 +1,8 @@
-#include "PantheonScripting/LuaComponentHandle.h"
 #include "PantheonScripting/LuaScriptList.h"
 #include "PantheonScripting/LuaTypeRegistry.h"
 #include "PantheonScripting/Bindings/LuaECSBinder.h"
+
+#include <PantheonCore/ECS/ComponentHandle.h>
 
 #include <sol/state.hpp>
 
@@ -14,7 +15,7 @@ namespace PantheonScripting::Bindings
         static constexpr const char* typeName = "Entity";
 
         static const auto getComponent = [](const EntityHandle& self, const std::string& type)
-            -> LuaComponentHandle
+            -> ComponentHandle
         {
             if (type.empty())
                 return {};
@@ -28,7 +29,7 @@ namespace PantheonScripting::Bindings
         };
 
         static const auto getInParent = [](const EntityHandle& self, const std::string& type)
-            -> LuaComponentHandle
+            -> ComponentHandle
         {
             if (!self || type.empty())
                 return {};
@@ -40,7 +41,7 @@ namespace PantheonScripting::Bindings
 
             const auto typeId = components.getTypeInfo(type).m_typeId;
 
-            LuaComponentHandle current{ self, typeId };
+            ComponentHandle current{ self, typeId };
 
             if (current)
                 return current;
@@ -59,7 +60,7 @@ namespace PantheonScripting::Bindings
         };
 
         static const auto getInChildren = [](const EntityHandle& self, const std::string& type)
-            -> LuaComponentHandle
+            -> ComponentHandle
         {
             if (!self || type.empty())
                 return {};
@@ -71,7 +72,7 @@ namespace PantheonScripting::Bindings
 
             const auto typeId = components.getTypeInfo(type).m_typeId;
 
-            LuaComponentHandle current{ self, typeId };
+            ComponentHandle current{ self, typeId };
 
             if (current)
                 return current;
@@ -155,7 +156,7 @@ namespace PantheonScripting::Bindings
             },
             "get", getComponent,
             "getOrCreate", [](const EntityHandle& self, const std::string& type)
-            -> LuaComponentHandle
+            -> ComponentHandle
             {
                 if (type.empty())
                     return {};
@@ -176,7 +177,7 @@ namespace PantheonScripting::Bindings
             "getInChildren", getInChildren,
             "getInHierarchy",
             [](const EntityHandle& self, const std::string& type, const EntityHandle::EComponentSearchOrigin searchOrigin)
-            -> LuaComponentHandle
+            -> ComponentHandle
             {
                 switch (searchOrigin)
                 {
@@ -186,14 +187,14 @@ namespace PantheonScripting::Bindings
                 }
                 case EntityHandle::EComponentSearchOrigin::PARENT:
                 {
-                    if (const LuaComponentHandle component = getInParent(self, type))
+                    if (const ComponentHandle component = getInParent(self, type))
                         return component;
 
                     return getInChildren(self, type);
                 }
                 case EntityHandle::EComponentSearchOrigin::CHILDREN:
                 {
-                    if (const LuaComponentHandle component = getInChildren(self, type))
+                    if (const ComponentHandle component = getInChildren(self, type))
                         return component;
 
                     return getInParent(self, type);
@@ -217,11 +218,11 @@ namespace PantheonScripting::Bindings
                 self.getScene()->getStorage(typeId).remove(self);
             },
             "componentCount", sol::readonly_property(&EntityHandle::getComponentCount),
-            "components", sol::readonly_property([](EntityHandle& self)-> std::vector<LuaComponentHandle>
+            "components", sol::readonly_property([](EntityHandle& self)-> std::vector<ComponentHandle>
             {
                 const auto ids = self.getComponentIds();
 
-                std::vector<LuaComponentHandle> components;
+                std::vector<ComponentHandle> components;
 
                 for (auto id : ids)
                     components.emplace_back(self, id);

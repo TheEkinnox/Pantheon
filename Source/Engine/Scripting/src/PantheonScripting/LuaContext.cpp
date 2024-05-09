@@ -3,7 +3,6 @@
 #include "PantheonCore/Utility/FileSystem.h"
 
 #include "PantheonScripting/FunctionNames.h"
-#include "PantheonScripting/LuaScriptList.h"
 #include "PantheonScripting/Bindings/LuaECSBinder.h"
 #include "PantheonScripting/Bindings/LuaMathBinder.h"
 

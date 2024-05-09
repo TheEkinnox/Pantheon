@@ -1,25 +1,21 @@
-#include "PantheonScripting/LuaComponentHandle.h"
+#include "PantheonCore/ECS/ComponentHandle.h"
 
-namespace PantheonScripting
+using namespace PantheonCore::Serialization;
+
+namespace PantheonCore::ECS
 {
-    bool LuaComponentHandle::operator==(const LuaComponentHandle& other) const
+    bool ComponentHandle::operator==(const ComponentHandle& other) const
     {
         return m_typeId == other.m_typeId && m_owner == other.m_owner;
     }
 
-    LuaComponentHandle::operator bool() const
+    ComponentHandle::operator bool() const
     {
         return m_owner && m_owner.getScene()->getStorage(m_typeId).contains(m_owner);
     }
-}
-
-namespace PantheonCore::ECS
-{
-    using namespace PantheonScripting;
-    using namespace Serialization;
 
     template <>
-    bool ComponentRegistry::toBinary(const LuaComponentHandle& value, std::vector<char>& out, const EntitiesMap& toSerialized)
+    bool ComponentRegistry::toBinary(const ComponentHandle& value, std::vector<char>& out, const EntitiesMap& toSerialized)
     {
         return toBinary(value.m_owner, out, toSerialized)
                && value.m_typeId == 0
@@ -29,7 +25,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    size_t ComponentRegistry::fromBinary(LuaComponentHandle& out, const char* data, size_t length, Scene* scene)
+    size_t ComponentRegistry::fromBinary(ComponentHandle& out, const char* data, size_t length, Scene* scene)
     {
         if (!CHECK(data && length > 0, "Unable to deserialize lua component handle - Empty buffer"))
             return false;
@@ -64,7 +60,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    bool ComponentRegistry::toJson(const LuaComponentHandle& value, JsonWriter& writer, const EntitiesMap& toSerialized)
+    bool ComponentRegistry::toJson(const ComponentHandle& value, JsonWriter& writer, const EntitiesMap& toSerialized)
     {
         writer.StartObject();
 
@@ -90,7 +86,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    bool ComponentRegistry::fromJson(LuaComponentHandle& out, const JsonValue& json, Scene* scene)
+    bool ComponentRegistry::fromJson(ComponentHandle& out, const JsonValue& json, Scene* scene)
     {
         if (!CHECK(json.IsObject(), "Unable to deserialize lua component handle - Json value should be an object"))
             return false;
