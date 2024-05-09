@@ -9,7 +9,7 @@ namespace PantheonCore::ECS
     class EntityHandle final
     {
     public:
-        enum class EComponentSearchOrigin
+        enum class EComponentSearchOrigin : uint8_t
         {
             ROOT,
             PARENT,
