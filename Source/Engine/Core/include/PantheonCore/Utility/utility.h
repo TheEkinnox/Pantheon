@@ -30,7 +30,7 @@ namespace PantheonCore::Utility
      * \param str The string to trim
      * \param compareFunc The function used to check if a character should be trimmed
      */
-    template <class CompareFunc>
+    template <class CompareFunc = decltype(&isspace)>
     void trimStringStart(std::string& str, CompareFunc compareFunc = &isspace);
 
     /**
@@ -38,7 +38,7 @@ namespace PantheonCore::Utility
      * \param str The string to trim
      * \param compareFunc The function used to check if a character should be trimmed
      */
-    template <class CompareFunc>
+    template <class CompareFunc = decltype(&isspace)>
     void trimStringEnd(std::string& str, CompareFunc compareFunc = &isspace);
 
     /**
@@ -46,7 +46,7 @@ namespace PantheonCore::Utility
      * \param str The string to trim
      * \param compareFunc The function used to check if a character should be trimmed
      */
-    template <class CompareFunc>
+    template <class CompareFunc = decltype(&isspace)>
     void trimString(std::string& str, CompareFunc compareFunc = &isspace);
 
     /**
