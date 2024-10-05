@@ -95,10 +95,10 @@ namespace PantheonCore::ECS
     template <>
     void ComponentTraits::onAdd(EntityHandle& owner, HierarchyComponent& hierarchy)
     {
-        ASSERT(hierarchy.m_firstChild == NULL_ENTITY, "Adding a pre-existing hierarchy is not supported");
-        ASSERT(hierarchy.m_previousSibling == NULL_ENTITY, "Adding a pre-existing hierarchy is not supported");
-        ASSERT(hierarchy.m_nextSibling == NULL_ENTITY, "Adding a pre-existing hierarchy is not supported");
-        ASSERT(hierarchy.m_childCount == 0, "Adding a pre-existing hierarchy is not supported");
+        PTH_ASSERT(hierarchy.m_firstChild == NULL_ENTITY, "Adding a pre-existing hierarchy is not supported");
+        PTH_ASSERT(hierarchy.m_previousSibling == NULL_ENTITY, "Adding a pre-existing hierarchy is not supported");
+        PTH_ASSERT(hierarchy.m_nextSibling == NULL_ENTITY, "Adding a pre-existing hierarchy is not supported");
+        PTH_ASSERT(hierarchy.m_childCount == 0, "Adding a pre-existing hierarchy is not supported");
 
         onChange(owner, hierarchy);
     }
@@ -129,7 +129,7 @@ namespace PantheonCore::ECS
     void ComponentTraits::onBeforeChange(EntityHandle& entity, HierarchyComponent& hierarchy)
     {
         Scene* scene = entity.getScene();
-        ASSERT(scene);
+        PTH_ASSERT(scene);
 
         EntityHandle parent(scene, hierarchy.m_parent);
         EntityHandle nextSibling(scene, hierarchy.m_nextSibling);
@@ -158,7 +158,7 @@ namespace PantheonCore::ECS
     void ComponentTraits::onChange(EntityHandle& entity, HierarchyComponent& hierarchy)
     {
         Scene* scene = entity.getScene();
-        ASSERT(scene);
+        PTH_ASSERT(scene);
 
         EntityHandle parent(scene, hierarchy.m_parent);
 

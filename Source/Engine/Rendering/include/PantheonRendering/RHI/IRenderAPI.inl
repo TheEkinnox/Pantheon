@@ -7,7 +7,7 @@ namespace PantheonRendering::RHI
 {
     inline IRenderAPI& IRenderAPI::getCurrent()
     {
-        ASSERT(s_instance, "No loaded rendering API");
+        PTH_ASSERT(s_instance, "No loaded rendering API");
         return *s_instance;
     }
 }

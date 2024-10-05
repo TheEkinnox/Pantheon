@@ -33,7 +33,7 @@ namespace PantheonApp::Core
         case EGraphicsAPI::OPENGL:
             return std::make_unique<OpenGLContext>(useVsync, sampleCount, refreshRate);
         default:
-            ASSERT(false, "Unable to create context - Unsupported backend");
+            PTH_ASSERT(false, "Unable to create context - Unsupported backend");
             return {};
         }
     }

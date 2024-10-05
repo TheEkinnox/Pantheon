@@ -65,7 +65,7 @@ namespace PantheonRendering::RHI
         case GL_SAMPLER_2D:
             return EShaderDataType::TEXTURE;
         default:
-            ASSERT(false, "Unsupported shader data type");
+            PTH_ASSERT(false, "Unsupported shader data type");
             return EShaderDataType::UNKNOWN;
         }
     }
@@ -76,7 +76,7 @@ namespace PantheonRendering::RHI
         if (other.m_program != 0)
         {
             [[maybe_unused]] const bool result = parseSource();
-            ASSERT(result);
+            PTH_ASSERT(result);
         }
     }
 
@@ -101,7 +101,7 @@ namespace PantheonRendering::RHI
         if (other.m_program != 0)
         {
             [[maybe_unused]] const bool result = parseSource();
-            ASSERT(result);
+            PTH_ASSERT(result);
         }
 
         return *this;
@@ -189,7 +189,7 @@ namespace PantheonRendering::RHI
     {
         const auto it = m_uniforms.find(name);
 
-        ASSERT(it != m_uniforms.end(), "Failed to find uniform with name \"%s\"", name.c_str());
+        PTH_ASSERT(it != m_uniforms.end(), "Failed to find uniform with name \"%s\"", name.c_str());
         return it->second;
     }
 
@@ -471,7 +471,7 @@ namespace PantheonRendering::RHI
             GLenum dataType;
 
             glGetActiveUniform(m_program, i, maxLength, &length, &size, &dataType, nameBuffer.data());
-            ASSERT(length > 0, "Failed to read uniform name");
+            PTH_ASSERT(length > 0, "Failed to read uniform name");
 
             const std::string name = nameBuffer.substr(0, length);
 

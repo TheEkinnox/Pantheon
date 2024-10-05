@@ -21,7 +21,7 @@ namespace PantheonRendering::Core
 
     void Renderer::submit(DrawInfo drawInfo)
     {
-        ASSERT(drawInfo.m_material != nullptr && drawInfo.m_mesh != nullptr);
+        PTH_ASSERT(drawInfo.m_material != nullptr && drawInfo.m_mesh != nullptr);
 
         if (drawInfo.m_layerMask != Layer::NONE)
             m_renderQueue.emplace(std::move(drawInfo));
@@ -29,7 +29,7 @@ namespace PantheonRendering::Core
 
     void Renderer::render(const RenderPass& renderPass)
     {
-        ASSERT(renderPass.m_camera);
+        PTH_ASSERT(renderPass.m_camera);
 
         if (renderPass.m_cullingMask == Layer::NONE)
             return;

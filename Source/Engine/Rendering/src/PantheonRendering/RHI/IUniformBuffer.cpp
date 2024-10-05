@@ -47,7 +47,7 @@ namespace PantheonRendering::RHI
         case EGraphicsAPI::OPENGL:
             return std::make_unique<OpenGLUniformBuffer>(accessMode, bindIndex);
         default:
-            ASSERT(false, "Failed to create uniform buffer - Unsupported graphics api");
+            PTH_ASSERT(false, "Failed to create uniform buffer - Unsupported graphics api");
             return {};
         }
     }

@@ -25,7 +25,7 @@ namespace PantheonRendering::RHI
         case ETextureFilter::LINEAR_MIPMAP_LINEAR:
             return GL_LINEAR_MIPMAP_LINEAR;
         default:
-            ASSERT(false, "Invalid texture filter");
+            PTH_ASSERT(false, "Invalid texture filter");
             return GL_INVALID_ENUM;
         }
     }
@@ -43,7 +43,7 @@ namespace PantheonRendering::RHI
         case ETextureWrapMode::CLAMP_TO_BORDER:
             return GL_CLAMP_TO_BORDER;
         default:
-            ASSERT(false, "Invalid wrap mode");
+            PTH_ASSERT(false, "Invalid wrap mode");
             return GL_INVALID_ENUM;
         }
     }
@@ -61,7 +61,7 @@ namespace PantheonRendering::RHI
         case 4:
             return GL_RGBA;
         default:
-            ASSERT(false, "Invalid channels count. Expected 1-4 but received \"%d\".", channels);
+            PTH_ASSERT(false, "Invalid channels count. Expected 1-4 but received \"%d\".", channels);
             return GL_INVALID_ENUM;
         }
     }

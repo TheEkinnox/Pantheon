@@ -60,7 +60,7 @@ namespace PantheonApp::Platform
 
         const auto it = s_windowsMap.find(index);
 
-        ASSERT(it != s_windowsMap.end(), "Attempted to destroy a window not created by a null context");
+        PTH_ASSERT(it != s_windowsMap.end(), "Attempted to destroy a window not created by a null context");
 
         s_windowsMap.erase(it);
         handle = nullptr;

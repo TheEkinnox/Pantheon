@@ -28,7 +28,7 @@ namespace PantheonRendering::Enums
         case EProjectionType::ORTHOGRAPHIC:
             return "orthographic";
         default:
-            ASSERT(false, "Unsupported projection type");
+            PTH_ASSERT(false, "Unsupported projection type");
             return {};
         }
     }
@@ -48,7 +48,7 @@ namespace PantheonRendering::Enums
         if (type == "orthographic")
             return EProjectionType::ORTHOGRAPHIC;
 
-        ASSERT(false, "Unsupported projection type");
+        PTH_ASSERT(false, "Unsupported projection type");
         return EProjectionType::PERSPECTIVE;
     }
 }

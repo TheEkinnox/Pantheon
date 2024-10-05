@@ -34,7 +34,7 @@ namespace PantheonRendering::Enums
         case ELightType::SPOT:
             return "spot";
         default:
-            ASSERT(false, "Unsupported light type");
+            PTH_ASSERT(false, "Unsupported light type");
             return {};
         }
     }
@@ -60,7 +60,7 @@ namespace PantheonRendering::Enums
         if (type == "spot")
             return ELightType::SPOT;
 
-        ASSERT(false, "Unsupported light type");
+        PTH_ASSERT(false, "Unsupported light type");
         return ELightType::AMBIENT;
     }
 }

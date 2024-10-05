@@ -23,7 +23,7 @@ namespace PantheonRendering::RHI
             s_instance = std::make_unique<OpenGLAPI>();
             break;
         default:
-            ASSERT(false, "Failed to create render API - Unsupported backend");
+            PTH_ASSERT(false, "Failed to create render API - Unsupported backend");
             break;
         }
 

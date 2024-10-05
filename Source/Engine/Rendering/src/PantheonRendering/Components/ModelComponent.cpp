@@ -170,7 +170,7 @@ namespace PantheonRendering::Components
 
     Material& ModelComponent::getMaterial(const size_t index)
     {
-        ASSERT(index < m_materialInstances.size());
+        PTH_ASSERT(index < m_materialInstances.size());
         std::optional<Material>& instance = m_materialInstances[index];
 
         return instance.has_value() ? instance.value() : getSharedMaterial(index);

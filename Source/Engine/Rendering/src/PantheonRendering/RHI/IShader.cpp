@@ -28,7 +28,7 @@ namespace PantheonCore::Resources
         case EGraphicsAPI::OPENGL:
             return new OpenGLShader();
         default:
-            ASSERT(false, "Failed to create shader - Unsupported graphics api");
+            PTH_ASSERT(false, "Failed to create shader - Unsupported graphics api");
             return nullptr;
         }
     }

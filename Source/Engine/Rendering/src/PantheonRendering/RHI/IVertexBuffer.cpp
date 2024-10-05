@@ -17,7 +17,7 @@ namespace PantheonRendering::RHI
         case EGraphicsAPI::OPENGL:
             return std::make_unique<OpenGLVertexBuffer>(vertices, count);
         default:
-            ASSERT(false, "Failed to create vertex buffer - Unsupported graphics api");
+            PTH_ASSERT(false, "Failed to create vertex buffer - Unsupported graphics api");
             return {};
         }
     }

@@ -20,7 +20,7 @@ namespace PantheonCore::Assets
     AssetBundle::AssetBundle(const std::string& path)
     {
         [[maybe_unused]] const bool result = load(path);
-        ASSERT(result);
+        PTH_ASSERT(result);
     }
 
     bool AssetBundle::load(const std::string& path)
@@ -266,7 +266,7 @@ namespace PantheonCore::Assets
         // decompress block
         fileSize = decompressData(fileBuffer.data(), fileSize, blockBuffer.data(), blockSize, m_compressionMode);
 
-        ASSERT(fileSize > 0, "Decompressed size of a non-empty block should be greater than 0");
+        PTH_ASSERT(fileSize > 0, "Decompressed size of a non-empty block should be greater than 0");
         fileBuffer.resize(fileSize);
 
         return fileBuffer;

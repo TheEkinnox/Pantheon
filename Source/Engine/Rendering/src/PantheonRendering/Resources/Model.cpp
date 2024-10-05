@@ -148,7 +148,7 @@ namespace PantheonRendering::Resources
 
     const Mesh& Model::getMesh(const size_t index) const
     {
-        ASSERT(index < m_meshes.size());
+        PTH_ASSERT(index < m_meshes.size());
         return m_meshes[index];
     }
 

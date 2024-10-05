@@ -166,7 +166,7 @@ namespace PantheonRendering::RHI
         case EPixelDataFormat::NONE:
             return GL_NONE;
         default:
-            ASSERT(false, "Invalid pixel data format");
+            PTH_ASSERT(false, "Invalid pixel data format");
             return GL_INVALID_ENUM;
         }
     }
@@ -214,7 +214,7 @@ namespace PantheonRendering::RHI
         case EPixelDataType::UNSIGNED_INT_2_10_10_10_REV:
             return GL_UNSIGNED_INT_2_10_10_10_REV;
         default:
-            ASSERT(false, "Invalid pixel data type");
+            PTH_ASSERT(false, "Invalid pixel data type");
             return GL_INVALID_ENUM;
         }
     }
@@ -248,7 +248,7 @@ namespace PantheonRendering::RHI
         case EPrimitiveType::PATCHES:
             return GL_PATCHES;
         default:
-            ASSERT(false, "Invalid primitive type");
+            PTH_ASSERT(false, "Invalid primitive type");
             return GL_INVALID_ENUM;
         }
     }
@@ -278,7 +278,7 @@ namespace PantheonRendering::RHI
         case ERenderingCapability::MULTISAMPLE:
             return GL_MULTISAMPLE;
         default:
-            ASSERT(false, "Invalid rendering capability");
+            PTH_ASSERT(false, "Invalid rendering capability");
             return GL_INVALID_ENUM;
         }
     }
@@ -304,7 +304,7 @@ namespace PantheonRendering::RHI
         case ECompareAlgorithm::ALWAYS:
             return GL_ALWAYS;
         default:
-            ASSERT(false, "Invalid compare algorithm");
+            PTH_ASSERT(false, "Invalid compare algorithm");
             return GL_INVALID_ENUM;
         }
     }
@@ -320,7 +320,7 @@ namespace PantheonRendering::RHI
         case ECullFace::FRONT_AND_BACK:
             return GL_FRONT_AND_BACK;
         default:
-            ASSERT(false, "Invalid cull face");
+            PTH_ASSERT(false, "Invalid cull face");
             return GL_INVALID_ENUM;
         }
     }
@@ -358,7 +358,7 @@ namespace PantheonRendering::RHI
         case EBlendFactor::ONE_MINUS_CONSTANT_ALPHA:
             return GL_ONE_MINUS_CONSTANT_ALPHA;
         default:
-            ASSERT(false, "Invalid blend factor");
+            PTH_ASSERT(false, "Invalid blend factor");
             return GL_INVALID_ENUM;
         }
     }
@@ -386,7 +386,7 @@ namespace PantheonRendering::RHI
         case EAccessMode::STATIC_COPY:
             return GL_STATIC_COPY;
         default:
-            ASSERT(false, "Invalid access specifier");
+            PTH_ASSERT(false, "Invalid access specifier");
             return GL_INVALID_ENUM;
         }
     }
@@ -395,7 +395,7 @@ namespace PantheonRendering::RHI
     {
         const int version = gladLoadGL(glfwGetProcAddress);
 
-        ASSERT(version != 0, "Failed to initialize GLAD");
+        PTH_ASSERT(version != 0, "Failed to initialize GLAD");
         DEBUG_LOG("Successfuly initialized OpenGL %d.%d", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
 
         if (enableDebug)

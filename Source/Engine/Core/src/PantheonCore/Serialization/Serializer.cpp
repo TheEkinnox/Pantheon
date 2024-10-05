@@ -2,7 +2,7 @@
 
 #include <rapidjson/istreamwrapper.h>
 
-#if defined(_DEBUG) || defined(PTH_VERBOSE_LOG)
+#if PTH_USE_ASSERTION
 #include <rapidjson/error/en.h>
 #endif
 

@@ -88,7 +88,7 @@ namespace PantheonTest
 
         workingDir = getWorkingDirectory();
         DEBUG_LOG("Current working directory: \"%s\"", workingDir.c_str());
-        ASSERT(workingDir == appDir, "Invalid working directory - Expected: \"%s\"", appDir);
+        PTH_ASSERT(workingDir == appDir, "Invalid working directory - Expected: \"%s\"", appDir);
 
         m_resourceManager->addSearchPath("assets");
 
@@ -103,32 +103,32 @@ namespace PantheonTest
         // TODO: Move following code to its own test files
         {
             [[maybe_unused]] const ResourceRef tmp = m_resourceManager->load<IShader>("tmp", "shaders/Basic.glsl");
-            ASSERT(tmp, "Failed to load shader");
+            PTH_ASSERT(tmp, "Failed to load shader");
 
-            ASSERT(!m_resourceManager->load<ITexture>("tmp", "shaders/Basic.glsl"), "Invalid resource conversion");
+            PTH_ASSERT(!m_resourceManager->load<ITexture>("tmp", "shaders/Basic.glsl"), "Invalid resource conversion");
 
-            ASSERT(!m_resourceManager->load<ITexture>("tmp", "textures/grid.tga"), "Invalid resource conversion");
+            PTH_ASSERT(!m_resourceManager->load<ITexture>("tmp", "textures/grid.tga"), "Invalid resource conversion");
         }
 
-        ASSERT(m_resourceManager->load<ITexture>("tmp", "textures/grid.tga"), "Valid resource conversion failed");
+        PTH_ASSERT(m_resourceManager->load<ITexture>("tmp", "textures/grid.tga"), "Valid resource conversion failed");
 
         [[maybe_unused]] const ResourceRef shader = m_resourceManager->load<IShader>("unlit", "shaders/Unlit.glsl");
-        ASSERT(shader, "Failed to load shader");
+        PTH_ASSERT(shader, "Failed to load shader");
 
 #ifdef PTH_HEADLESS_TEST
         [[maybe_unused]] const ResourceRef castShader = m_resourceManager->load<NullShader>("unlit", "shaders/Unlit.glsl");
 #else
         [[maybe_unused]] const ResourceRef castShader = m_resourceManager->load<OpenGLShader>("unlit", "shaders/Unlit.glsl");
 #endif
-        ASSERT(castShader, "Failed to reload resource with compatible type");
-        ASSERT(castShader.getOrDefault() == shader.getOrDefault(),
+        PTH_ASSERT(castShader, "Failed to reload resource with compatible type");
+        PTH_ASSERT(castShader.getOrDefault() == shader.getOrDefault(),
             "Reloading resource with compatible type should preserve address");
 
         [[maybe_unused]] const ResourceRef model = m_resourceManager->load<Model>("cube", "meshes/primitives/cube.obj");
-        ASSERT(model, "Failed to load model");
+        PTH_ASSERT(model, "Failed to load model");
 
         [[maybe_unused]] const ResourceRef<Material> material("container", "materials/unlit.pthmat");
-        ASSERT(material, "Failed to load material");
+        PTH_ASSERT(material, "Failed to load material");
     }
 
     void TestApplication::preUpdate()

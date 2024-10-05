@@ -48,7 +48,7 @@ namespace PantheonRendering::RHI
         case EGraphicsAPI::OPENGL:
             return std::make_unique<OpenGLShaderStorageBuffer>(accessMode, bindIndex);
         default:
-            ASSERT(false, "Failed to create shader storage buffer - Unsupported graphics api");
+            PTH_ASSERT(false, "Failed to create shader storage buffer - Unsupported graphics api");
             return {};
         }
     }

@@ -8,7 +8,7 @@ namespace PantheonApp::Core
 {
     void IApplication::run(const int argc, char* argv[])
     {
-        ASSERT(m_context && m_context->isInitialized(), "Unable to run application - context is undefined");
+        PTH_ASSERT(m_context && m_context->isInitialized(), "Unable to run application - context is undefined");
 
         Timer& timer = m_context->m_timer;
         timer.reset();
@@ -41,7 +41,7 @@ namespace PantheonApp::Core
 
     IContext& IApplication::getContext() const
     {
-        ASSERT(m_context);
+        PTH_ASSERT(m_context);
         return *m_context;
     }
 }

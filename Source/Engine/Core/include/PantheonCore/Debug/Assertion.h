@@ -4,10 +4,12 @@
 #include "PantheonCore/Debug/Logger.h"
 #include "PantheonCore/Debug/DebugBreak.h"
 
-#ifndef ASSERT
-#if defined(_DEBUG) || defined(PTH_VERBOSE_LOG)
+#define PTH_USE_ASSERTION defined(_DEBUG) || defined(PTH_VERBOSE_LOG)
 
-#define ASSERT(condition, ...) if (!(condition))      \
+#ifndef PTH_ASSERT
+#if PTH_USE_ASSERTION
+
+#define PTH_ASSERT(condition, ...) if (!(condition))      \
 {                                                     \
     DEBUG_LOG_ERROR("Assertion failed: " #condition   \
     __VA_OPT__( "\n%s", PantheonCore::Utility::formatString(__VA_ARGS__).c_str()) \
@@ -18,13 +20,13 @@
 
 #else
 
-#define ASSERT(condition, ...) ((void)0)
+#define PTH_ASSERT(condition, ...) ((void)0)
 
-#endif // _DEBUG || PTH_VERBOSE_LOG
-#endif // !ASSERT
+#endif // PTH_USE_ASSERTION
+#endif // !PTH_ASSERT
 
 #ifndef CHECK
-#if defined(_DEBUG) || defined(PTH_VERBOSE_LOG)
+#if PTH_USE_ASSERTION
 
 #define CHECK(condition, ...) [&]() -> bool             \
 {                                                       \
@@ -46,11 +48,11 @@
     return b;                                          \
 }(condition)
 
-#endif // _DEBUG || PTH_VERBOSE_LOG
+#endif // PTH_USE_ASSERTION
 #endif // !CHECK
 
 #ifndef ASSUME
-#if defined(_DEBUG) || defined(PTH_VERBOSE_LOG)
+#if PTH_USE_ASSERTION
 
 #define ASSUME(condition, ...) CHECK(condition __VA_OPT__(,) __VA_ARGS__)
 
@@ -58,11 +60,11 @@
 
 #define ASSUME(condition, ...) true
 
-#endif // _DEBUG || PTH_VERBOSE_LOG
+#endif // PTH_USE_ASSERTION
 #endif // !ASSUME
 
 #ifndef ASSUME_FALSE
-#if defined(_DEBUG) || defined(PTH_VERBOSE_LOG)
+#if PTH_USE_ASSERTION
 
 #define ASSUME_FALSE(condition, ...) !CHECK(!(condition) __VA_OPT__(,) __VA_ARGS__)
 
@@ -70,5 +72,5 @@
 
 #define ASSUME_FALSE(condition, ...) false
 
-#endif // _DEBUG || PTH_VERBOSE_LOG
+#endif // PTH_USE_ASSERTION
 #endif // !ASSUME_FALSE

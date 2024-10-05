@@ -29,7 +29,7 @@ namespace PantheonCore::Utility
         template <typename T>
         static T& get()
         {
-            ASSERT(s_services.contains(typeid(T).hash_code()));
+            PTH_ASSERT(s_services.contains(typeid(T).hash_code()));
             return *static_cast<T*>(s_services[typeid(T).hash_code()]);
         }
 

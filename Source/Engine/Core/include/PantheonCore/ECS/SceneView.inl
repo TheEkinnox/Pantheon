@@ -21,7 +21,7 @@ namespace PantheonCore::ECS
     template <class... Components>
     typename SceneView<Components...>::SceneRef SceneView<Components...>::getScene() const
     {
-        ASSERT(m_scene != nullptr);
+        PTH_ASSERT(m_scene != nullptr);
         return *m_scene;
     }
 

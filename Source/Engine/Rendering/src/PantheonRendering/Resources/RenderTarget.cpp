@@ -28,8 +28,8 @@ namespace PantheonRendering::Resources
     {
         m_frameBuffer = RHI::IFrameBuffer::create();
 
-        ASSERT(m_colorFormat >= Enums::EPixelDataFormat::RED || m_colorFormat == Enums::EPixelDataFormat::NONE);
-        ASSERT(m_depthFormat < Enums::EPixelDataFormat::RED);
+        PTH_ASSERT(m_colorFormat >= Enums::EPixelDataFormat::RED || m_colorFormat == Enums::EPixelDataFormat::NONE);
+        PTH_ASSERT(m_depthFormat < Enums::EPixelDataFormat::RED);
 
         if (m_colorFormat != Enums::EPixelDataFormat::NONE)
         {
@@ -59,7 +59,7 @@ namespace PantheonRendering::Resources
                 attachment = Enums::EFrameBufferAttachment::DEPTH_STENCIL;
                 break;
             default:
-                ASSERT(false, "Invalid depth texture format");
+                PTH_ASSERT(false, "Invalid depth texture format");
                 return false;
             }
 
@@ -123,7 +123,7 @@ namespace PantheonRendering::Resources
 
     RHI::IFrameBuffer& RenderTarget::getFrameBuffer() const
     {
-        ASSERT(m_frameBuffer, "Uninitialized render target");
+        PTH_ASSERT(m_frameBuffer, "Uninitialized render target");
         return *m_frameBuffer;
     }
 

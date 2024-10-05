@@ -15,7 +15,7 @@ namespace PantheonRendering::RHI
         case EGraphicsAPI::OPENGL:
             return std::make_unique<OpenGLIndexBuffer>(indices, count);
         default:
-            ASSERT(false, "Failed to create index buffer - Unsupported graphics api");
+            PTH_ASSERT(false, "Failed to create index buffer - Unsupported graphics api");
             return {};
         }
     }

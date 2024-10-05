@@ -131,7 +131,7 @@ namespace PantheonCore::ECS
             return getInParent<T>();
         }
         default:
-            ASSERT(false, "Invalid component search origin");
+            PTH_ASSERT(false, "Invalid component search origin");
             return nullptr;
         }
     }
@@ -160,7 +160,7 @@ namespace PantheonCore::ECS
             return getInParent<T>();
         }
         default:
-            ASSERT(false, "Invalid component search origin");
+            PTH_ASSERT(false, "Invalid component search origin");
             return nullptr;
         }
     }
@@ -168,14 +168,14 @@ namespace PantheonCore::ECS
     template <typename T>
     T& EntityHandle::set(const T& instance)
     {
-        ASSERT(*this);
+        PTH_ASSERT(*this);
         return m_scene->set<T>(m_entity, instance);
     }
 
     template <typename T, typename... Args>
     T& EntityHandle::make(Args&&... args)
     {
-        ASSERT(*this);
+        PTH_ASSERT(*this);
         return m_scene->make<T>(m_entity, std::forward<Args>(args)...);
     }
 

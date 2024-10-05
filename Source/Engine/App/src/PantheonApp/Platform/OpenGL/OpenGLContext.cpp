@@ -20,7 +20,7 @@ namespace PantheonApp::Platform
         m_useVsync(useVsync)
     {
         // Initialize and configure glfw
-#if defined(_DEBUG) || defined(PTH_VERBOSE_LOG)
+#if PTH_USE_ASSERTION
         const auto errorCallback = [](const int error, const char* description)
         {
             DEBUG_LOG_ERROR("GLFW Error %d: %s", error, description);
@@ -30,7 +30,7 @@ namespace PantheonApp::Platform
 #endif
 
         [[maybe_unused]] const auto result = glfwInit();
-        ASSERT(result == GLFW_TRUE, "Failed to initialize GLFW");
+        PTH_ASSERT(result == GLFW_TRUE, "Failed to initialize GLFW");
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, PANTHEON_OPENGL_VERSION_MAJOR);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, PANTHEON_OPENGL_VERSION_MINOR);
@@ -93,7 +93,7 @@ namespace PantheonApp::Platform
 
     Window* OpenGLContext::getInstance(void* handle)
     {
-        ASSERT(handle, "Attempted to get the window linked to a null handle");
+        PTH_ASSERT(handle, "Attempted to get the window linked to a null handle");
 
         const auto it = s_windowsMap.find(static_cast<GLFWwindow*>(handle));
         return it != s_windowsMap.end() ? it->second : nullptr;
@@ -184,7 +184,7 @@ namespace PantheonApp::Platform
     {
         GLFWwindow* handle = glfwCreateWindow(settings.m_width, settings.m_height, settings.m_title, nullptr, nullptr);
 
-        ASSERT(handle != nullptr, "Failed to create GLFW window");
+        PTH_ASSERT(handle != nullptr, "Failed to create GLFW window");
 
         s_windowsMap[handle] = window;
         bindEvents(handle);
@@ -199,7 +199,7 @@ namespace PantheonApp::Platform
 
         const auto it = s_windowsMap.find(static_cast<GLFWwindow*>(handle));
 
-        ASSERT(it != s_windowsMap.end(), "Attempted to destroy a window not created by an OpenGL context");
+        PTH_ASSERT(it != s_windowsMap.end(), "Attempted to destroy a window not created by an OpenGL context");
 
         s_windowsMap.erase(it);
         glfwDestroyWindow(static_cast<GLFWwindow*>(handle));
@@ -222,14 +222,14 @@ namespace PantheonApp::Platform
 
     void OpenGLContext::setTitle(void* handle, const char* title)
     {
-        ASSERT(handle, "Attempted to set title of null window");
+        PTH_ASSERT(handle, "Attempted to set title of null window");
 
         glfwSetWindowTitle(static_cast<GLFWwindow*>(handle), title);
     }
 
     void OpenGLContext::setFullScreen(void* handle, bool shouldEnable)
     {
-        ASSERT(handle, "Attempted to set fullscreen mode of null window");
+        PTH_ASSERT(handle, "Attempted to set fullscreen mode of null window");
 
         const Window* window = getInstance(handle);
 
@@ -302,7 +302,7 @@ namespace PantheonApp::Platform
         case ECursorMode::DISABLED:
             return GLFW_CURSOR_DISABLED;
         default:
-            ASSERT(false, "Invalid cursor mode");
+            PTH_ASSERT(false, "Invalid cursor mode");
             return GLFW_INVALID_ENUM;
         }
     }

@@ -33,7 +33,7 @@ namespace PantheonCore::ECS
     inline void Entity::bumpVersion()
     {
         const Version version = getVersion();
-        ASSERT(version < VERSION_MASK);
+        PTH_ASSERT(version < VERSION_MASK);
         m_id = make(getIndex(), version + 1);
     }
 

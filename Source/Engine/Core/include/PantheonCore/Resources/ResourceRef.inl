@@ -44,7 +44,7 @@ namespace PantheonCore::Resources
         static_assert(std::is_same_v<T, U> || std::is_base_of_v<T, U> || std::is_base_of_v<U, T>,
             "Attempted to convert to an incompatible resource type");
 
-        ASSERT((void*)other.m_resource == (void*)m_resource, "Attempted to convert to an incompatible resource type");
+        PTH_ASSERT((void*)other.m_resource == (void*)m_resource, "Attempted to convert to an incompatible resource type");
 
         if (m_refCount)
             ++(*m_refCount);
@@ -59,7 +59,7 @@ namespace PantheonCore::Resources
         static_assert(std::is_same_v<T, U> || std::is_base_of_v<T, U> || std::is_base_of_v<U, T>,
             "Attempted to convert to an incompatible resource type");
 
-        ASSERT((void*)other.m_resource == (void*)m_resource, "Attempted to convert to an incompatible resource type");
+        PTH_ASSERT((void*)other.m_resource == (void*)m_resource, "Attempted to convert to an incompatible resource type");
 
         other.m_resource = nullptr;
         other.m_refCount = nullptr;
@@ -274,7 +274,7 @@ namespace PantheonCore::Resources
         std::string type, const std::string& key, const std::string& path, IResource* resource)
         : ResourceRef(key, path, resource), m_type(std::move(type))
     {
-        ASSERT(!m_resource || m_resource->getTypeName() == m_type,
+        PTH_ASSERT(!m_resource || m_resource->getTypeName() == m_type,
             "Attempted to make generic resource ref with resource of a different type");
     }
 
@@ -299,7 +299,7 @@ namespace PantheonCore::Resources
     GenericResourceRef::GenericResourceRef(const ResourceRef<T>& other, std::string type)
         : ResourceRef(other), m_type(std::move(type))
     {
-        ASSERT(!m_resource || m_resource->getTypeName() == m_type,
+        PTH_ASSERT(!m_resource || m_resource->getTypeName() == m_type,
             "Attempted to convert resource ref to generic resource ref of a different type");
     }
 
@@ -307,7 +307,7 @@ namespace PantheonCore::Resources
     GenericResourceRef::GenericResourceRef(ResourceRef<T>&& other, std::string type) noexcept
         : ResourceRef(std::move(other)), m_type(std::move(type))
     {
-        ASSERT(!m_resource || m_resource->getTypeName() == m_type,
+        PTH_ASSERT(!m_resource || m_resource->getTypeName() == m_type,
             "Attempted to convert resource ref to generic resource ref of a different type");
     }
 

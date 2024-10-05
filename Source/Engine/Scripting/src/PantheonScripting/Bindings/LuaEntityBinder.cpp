@@ -200,7 +200,7 @@ namespace PantheonScripting::Bindings
                     return getInParent(self, type);
                 }
                 default:
-                    ASSERT(false, "Invalid component search origin");
+                    PTH_ASSERT(false, "Invalid component search origin");
                     return {};
                 }
             },

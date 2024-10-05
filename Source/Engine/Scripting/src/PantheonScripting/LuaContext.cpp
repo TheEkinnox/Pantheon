@@ -55,7 +55,7 @@ namespace PantheonScripting
                 continue;
 
             m_isValid = tryCall(m_scripts[i - 1].m_table, ScriptingFunctions::DESTROY) != ELuaCallResult::FAILURE;
-            ASSERT(m_isValid);
+            PTH_ASSERT(m_isValid);
 
             m_scripts[i - 1].m_table = sol::nil;
         }

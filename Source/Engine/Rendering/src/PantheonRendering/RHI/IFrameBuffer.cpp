@@ -15,7 +15,7 @@ namespace PantheonRendering::RHI
         case EGraphicsAPI::OPENGL:
             return std::make_unique<OpenGLFrameBuffer>();
         default:
-            ASSERT(false, "Failed to create frame buffer - Unsupported graphics api");
+            PTH_ASSERT(false, "Failed to create frame buffer - Unsupported graphics api");
             return {};
         }
     }
@@ -31,7 +31,7 @@ namespace PantheonRendering::RHI
             OpenGLFrameBuffer::bindDefault();
             break;
         default:
-            ASSERT(false, "Failed to bind default frame buffer - Unsupported graphics api");
+            PTH_ASSERT(false, "Failed to bind default frame buffer - Unsupported graphics api");
             break;
         }
     }

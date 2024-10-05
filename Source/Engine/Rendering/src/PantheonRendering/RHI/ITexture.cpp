@@ -11,7 +11,7 @@
 #include <rapidjson/istreamwrapper.h>
 
 #define STB_IMAGE_IMPLEMENTATION
-#define STBI_ASSERT(x) ASSERT(x)
+#define STBI_ASSERT(x) PTH_ASSERT(x)
 #include <stb_image.h>
 
 using namespace PantheonCore::Serialization;
@@ -31,7 +31,7 @@ namespace PantheonCore::Resources
         case EGraphicsAPI::OPENGL:
             return new OpenGLTexture();
         default:
-            ASSERT(false, "Failed to create texture - Unsupported graphics api");
+            PTH_ASSERT(false, "Failed to create texture - Unsupported graphics api");
             return nullptr;
         }
     }
@@ -130,7 +130,7 @@ namespace PantheonRendering::RHI
             return OpenGLTexture::getDefault();
         }
 
-        ASSERT(false, "Unsupported render api");
+        PTH_ASSERT(false, "Unsupported render api");
         static NullTexture unreachable;
         return unreachable;
     }
@@ -316,7 +316,7 @@ namespace PantheonRendering::RHI
         case EGraphicsAPI::OPENGL:
             return std::make_shared<OpenGLTexture>(width, height, format);
         default:
-            ASSERT(false, "Failed to create texture - Unsupported graphics api");
+            PTH_ASSERT(false, "Failed to create texture - Unsupported graphics api");
             return {};
         }
     }

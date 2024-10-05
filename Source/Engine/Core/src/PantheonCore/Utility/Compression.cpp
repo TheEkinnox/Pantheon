@@ -53,7 +53,7 @@ namespace PantheonCore::Utility
             return compressedSize;
         }
         default:
-            ASSERT(false, "Unsupported compression mode");
+            PTH_ASSERT(false, "Unsupported compression mode");
             return 0;
         }
     }
@@ -98,7 +98,7 @@ namespace PantheonCore::Utility
             return result >= 0 ? result : 0;
         }
         default:
-            ASSERT(false, "Unsupported compression mode");
+            PTH_ASSERT(false, "Unsupported compression mode");
             return 0;
         }
     }
