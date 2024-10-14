@@ -14,6 +14,7 @@ namespace PantheonTest
         WindowTest();
         explicit WindowTest(const std::string& name);
 
+    protected:
         void onStart() override;
 
     private:

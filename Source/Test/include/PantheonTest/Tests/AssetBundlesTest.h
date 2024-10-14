@@ -11,6 +11,7 @@ namespace PantheonTest
         AssetBundlesTest();
         explicit AssetBundlesTest(const std::string& name);
 
+    protected:
         void onStart() override;
 
     private:

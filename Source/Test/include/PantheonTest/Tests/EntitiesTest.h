@@ -11,6 +11,7 @@ namespace PantheonTest
         EntitiesTest();
         explicit EntitiesTest(const std::string& name);
 
+    protected:
         void onStart() override;
 
     private:

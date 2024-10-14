@@ -11,6 +11,7 @@ namespace PantheonTest
         explicit ThreadPoolTest(size_t taskCount = 50, size_t taskDuration = 200);
         explicit ThreadPoolTest(const std::string& name, size_t taskCount = 50, size_t taskDuration = 200);
 
+    protected:
         void onStart() override;
 
     private:
