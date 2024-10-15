@@ -4,10 +4,12 @@
 #include "PantheonCore/Debug/Logger.h"
 #include "PantheonCore/Debug/DebugBreak.h"
 
-#define PTH_USE_ASSERTION defined(_DEBUG) || defined(PTH_VERBOSE_LOG)
+#if defined(_DEBUG) || defined(PTH_VERBOSE_LOG)
+#define PTH_USE_ASSERTION
+#endif
 
 #ifndef PTH_ASSERT
-#if PTH_USE_ASSERTION
+#ifdef PTH_USE_ASSERTION
 
 #define PTH_ASSERT(condition, ...) if (!(condition))      \
 {                                                     \
@@ -26,7 +28,7 @@
 #endif // !PTH_ASSERT
 
 #ifndef CHECK
-#if PTH_USE_ASSERTION
+#ifdef PTH_USE_ASSERTION
 
 #define CHECK(condition, ...) [&]() -> bool             \
 {                                                       \
@@ -52,7 +54,7 @@
 #endif // !CHECK
 
 #ifndef ASSUME
-#if PTH_USE_ASSERTION
+#ifdef PTH_USE_ASSERTION
 
 #define ASSUME(condition, ...) CHECK(condition __VA_OPT__(,) __VA_ARGS__)
 
@@ -64,7 +66,7 @@
 #endif // !ASSUME
 
 #ifndef ASSUME_FALSE
-#if PTH_USE_ASSERTION
+#ifdef PTH_USE_ASSERTION
 
 #define ASSUME_FALSE(condition, ...) !CHECK(!(condition) __VA_OPT__(,) __VA_ARGS__)
 

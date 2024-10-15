@@ -20,7 +20,7 @@ namespace PantheonApp::Platform
         m_useVsync(useVsync)
     {
         // Initialize and configure glfw
-#if PTH_USE_ASSERTION
+#ifdef PTH_USE_ASSERTION
         const auto errorCallback = [](const int error, const char* description)
         {
             DEBUG_LOG_ERROR("GLFW Error %d: %s", error, description);

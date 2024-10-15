@@ -2,7 +2,7 @@
 
 #include <rapidjson/istreamwrapper.h>
 
-#if PTH_USE_ASSERTION
+#ifdef PTH_USE_ASSERTION
 #include <rapidjson/error/en.h>
 #endif
 

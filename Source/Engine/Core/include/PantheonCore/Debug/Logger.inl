@@ -58,7 +58,7 @@ namespace PantheonCore::Debug
     {
         std::string message = Utility::formatString(format, args...);
 
-#if PTH_USE_ASSERTION
+#ifdef PTH_USE_ASSERTION
         message = Utility::formatString("%s(%d): %s\n", file, line, message.c_str());
 #else
         message += '\n';
