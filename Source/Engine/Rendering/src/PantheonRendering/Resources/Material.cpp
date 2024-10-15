@@ -177,7 +177,7 @@ namespace PantheonRendering::Resources
     {
         IShader* shader = m_shader.getOrDefault();
 
-        ASSERT(shader, "Couldn't load shader with key \"%s\" or path \"%s\". Make sure the resource exists",
+        PTH_ASSERT(shader, "Couldn't load shader with key \"%s\" or path \"%s\". Make sure the resource exists",
             m_shader.getKey().c_str(), m_shader.getPath().c_str());
 
         return *shader;
@@ -204,14 +204,14 @@ namespace PantheonRendering::Resources
     const Material::Property& Material::getProperty(const std::string& name) const
     {
         const auto it = m_properties.find(name);
-        ASSERT(it != m_properties.end(), "Unable to find material property \"%s\"", name.c_str());
+        PTH_ASSERT(it != m_properties.end(), "Unable to find material property \"%s\"", name.c_str());
         return it->second;
     }
 
     Material::Property& Material::getProperty(const std::string& name)
     {
         const auto it = m_properties.find(name);
-        ASSERT(it != m_properties.end(), "Unable to find material property \"%s\"", name.c_str());
+        PTH_ASSERT(it != m_properties.end(), "Unable to find material property \"%s\"", name.c_str());
         return it->second;
     }
 
@@ -229,7 +229,7 @@ namespace PantheonRendering::Resources
     {
         IShader* shader = m_shader.getOrDefault();
 
-        ASSERT(shader != nullptr, "Failed to bind material - Missing shader");
+        PTH_ASSERT(shader != nullptr, "Failed to bind material - Missing shader");
         shader->bind();
 
         for (const auto& [name, property] : m_properties)
@@ -262,14 +262,14 @@ namespace PantheonRendering::Resources
             return ResourceRef<ITexture>();
         case EShaderDataType::UNKNOWN:
         default:
-            ASSERT(false, "Failed to get default value - Unkown data type");
+            PTH_ASSERT(false, "Failed to get default value - Unkown data type");
             return {};
         }
     }
 
     void Material::bindProperty(IShader* shader, const std::string& name, const Property& property)
     {
-        ASSERT(shader, "Unable to bind material property - No shader");
+        PTH_ASSERT(shader, "Unable to bind material property - No shader");
 
         switch (property.m_type)
         {
@@ -307,7 +307,7 @@ namespace PantheonRendering::Resources
         }
         case EShaderDataType::UNKNOWN:
         default:
-            ASSERT(false, "Unknown uniform type");
+            PTH_ASSERT(false, "Unknown uniform type");
             return;
         }
     }
@@ -540,7 +540,7 @@ namespace PantheonRendering::Resources
             return std::any_cast<const ResourceRef<ITexture>&>(property.m_value).toBinary(output);
         case EShaderDataType::UNKNOWN:
         default:
-            ASSERT(false, "Unable to serialize material property - Unknown/Invalid type");
+            PTH_ASSERT(false, "Unable to serialize material property - Unknown/Invalid type");
             return false;
         }
     }

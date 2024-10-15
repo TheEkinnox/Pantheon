@@ -178,7 +178,7 @@ namespace PantheonRendering::Components
 
     const Material& ModelComponent::getMaterial(const size_t index) const
     {
-        ASSERT(index < m_materialInstances.size());
+        PTH_ASSERT(index < m_materialInstances.size());
         const std::optional<Material>& instance = m_materialInstances[index];
 
         return instance.has_value() ? instance.value() : getSharedMaterial(index);
@@ -186,7 +186,7 @@ namespace PantheonRendering::Components
 
     Material& ModelComponent::instantiateMaterial(const size_t index)
     {
-        ASSERT(index < m_materials.size());
+        PTH_ASSERT(index < m_materials.size());
 
         m_materialInstances[index] = getSharedMaterial(index);
         return m_materialInstances[index].value();
@@ -194,13 +194,13 @@ namespace PantheonRendering::Components
 
     void ModelComponent::resetMaterialInstance(const size_t index)
     {
-        ASSERT(index < m_materialInstances.size());
+        PTH_ASSERT(index < m_materialInstances.size());
         m_materialInstances[index] = std::nullopt;
     }
 
     Material& ModelComponent::getSharedMaterial(const size_t index) const
     {
-        ASSERT(index < m_materials.size());
+        PTH_ASSERT(index < m_materials.size());
 
         static Material defaultMat;
         Material*       ptr = m_materials[index].getOrDefault();
@@ -210,7 +210,7 @@ namespace PantheonRendering::Components
 
     void ModelComponent::setSharedMaterial(const size_t index, const MaterialRef& material)
     {
-        ASSERT(index < m_materials.size());
+        PTH_ASSERT(index < m_materials.size());
 
         m_materials[index] = material;
         resetMaterialInstance(index);
