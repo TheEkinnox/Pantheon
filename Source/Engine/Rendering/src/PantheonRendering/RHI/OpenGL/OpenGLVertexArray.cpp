@@ -1,5 +1,6 @@
 #include "PantheonRendering/RHI/OpenGL/OpenGLVertexArray.h"
 
+#if USING(PTH_FEATURE_OPENGL)
 #include <glad/gl.h>
 
 using namespace LibMath;
@@ -76,3 +77,4 @@ namespace PantheonRendering::RHI
         glBindVertexArray(0);
     }
 }
+#endif

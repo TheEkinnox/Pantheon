@@ -1,5 +1,11 @@
 #include "PantheonRendering/RHI/OpenGL/OpenGLShader.h"
 
+#if USING(PTH_FEATURE_OPENGL)
+#include "PantheonCore/Preprocessing/Preprocessor.h"
+#include "PantheonCore/Preprocessing/PreprocessorSettings.h"
+
+#include "PantheonRendering/RHI/IRenderAPI.h"
+
 #include <PantheonCore/Debug/Assertion.h>
 #include <PantheonCore/Debug/Logger.h>
 #include <PantheonCore/Resources/ResourceManager.h>
@@ -18,7 +24,7 @@ using namespace PantheonRendering::Enums;
 
 namespace PantheonRendering::RHI
 {
-    GLenum toGLEnum(const EShaderType shaderType)
+    static GLenum toGLEnum(const EShaderType shaderType)
     {
         switch (shaderType)
         {
@@ -40,7 +46,7 @@ namespace PantheonRendering::RHI
         }
     }
 
-    EShaderDataType getDataType(GLenum dataType)
+    static EShaderDataType getDataType(const GLenum dataType)
     {
         switch (dataType)
         {
@@ -486,3 +492,4 @@ namespace PantheonRendering::RHI
         m_uniforms.clear();
     }
 }
+#endif

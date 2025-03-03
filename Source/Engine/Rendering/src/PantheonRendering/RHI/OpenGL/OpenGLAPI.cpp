@@ -1,4 +1,5 @@
 #include "PantheonRendering/RHI/OpenGL/OpenGLAPI.h"
+#if USING(PTH_FEATURE_OPENGL)
 
 #include "PantheonRendering/Enums/EAccessMode.h"
 
@@ -554,3 +555,4 @@ namespace PantheonRendering::RHI
         return getGLString(GL_SHADING_LANGUAGE_VERSION);
     }
 }
+#endif

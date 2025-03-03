@@ -1,5 +1,6 @@
 #include "PantheonRendering/RHI/OpenGL/OpenGLVertexBuffer.h"
 
+#if USING(PTH_FEATURE_OPENGL)
 #include <glad/gl.h>
 
 using namespace PantheonRendering::Geometry;
@@ -49,3 +50,4 @@ namespace PantheonRendering::RHI
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 }
+#endif

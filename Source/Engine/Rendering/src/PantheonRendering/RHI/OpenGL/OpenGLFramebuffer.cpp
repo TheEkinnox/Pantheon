@@ -1,6 +1,8 @@
-#include "glad/gl.h"
-
 #include "PantheonRendering/RHI/OpenGL/OpenGLFrameBuffer.h"
+
+#if USING(PTH_FEATURE_OPENGL)
+#include <glad/gl.h>
+
 #include "PantheonRendering/RHI/OpenGL/OpenGLTexture.h"
 
 using namespace PantheonRendering::Enums;
@@ -146,3 +148,4 @@ namespace PantheonRendering::RHI
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 }
+#endif

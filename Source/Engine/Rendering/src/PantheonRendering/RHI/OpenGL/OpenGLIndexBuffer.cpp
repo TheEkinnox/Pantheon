@@ -1,5 +1,6 @@
 #include "PantheonRendering/RHI/OpenGL/OpenGLIndexBuffer.h"
 
+#if USING(PTH_FEATURE_OPENGL)
 #include <glad/gl.h>
 
 namespace PantheonRendering::RHI
@@ -47,3 +48,4 @@ namespace PantheonRendering::RHI
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 }
+#endif

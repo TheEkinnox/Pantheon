@@ -1,4 +1,6 @@
-﻿#include "PantheonTest/TestApplication.h"
+﻿#include "PantheonCore/Utility/CoreDefines.h"
+
+#include "PantheonTest/TestApplication.h"
 
 #include "PantheonTest/ComponentRegistrations.h"
 #include "PantheonTest/ResourceRegistrations.h"
@@ -41,7 +43,7 @@ using namespace PantheonScripting;
 namespace PantheonTest
 {
     TestApplication::TestApplication()
-#ifdef PTH_HEADLESS_TEST
+#if USING(PTH_TARGET_HEADLESS)
         : IApplication(IContext::create(EGraphicsAPI::NONE, true, 4)),
 #else
         : IApplication(IContext::create(EGraphicsAPI::OPENGL, true, 4)),
@@ -67,7 +69,7 @@ namespace PantheonTest
         ServiceLocator::provide<ThreadPool>(*m_threadPool);
         ServiceLocator::provide<ResourceManager>(*m_resourceManager);
 
-#ifndef PTH_HEADLESS_TEST
+#if !USING(PTH_TARGET_HEADLESS)
         m_tests.emplace_back(std::make_unique<WindowTest>());
 #endif
 
@@ -115,7 +117,7 @@ namespace PantheonTest
         [[maybe_unused]] const ResourceRef shader = m_resourceManager->load<IShader>("unlit", "shaders/Unlit.glsl");
         PTH_ASSERT(shader, "Failed to load shader");
 
-#ifdef PTH_HEADLESS_TEST
+#if USING(PTH_TARGET_HEADLESS)
         [[maybe_unused]] const ResourceRef castShader = m_resourceManager->load<NullShader>("unlit", "shaders/Unlit.glsl");
 #else
         [[maybe_unused]] const ResourceRef castShader = m_resourceManager->load<OpenGLShader>("unlit", "shaders/Unlit.glsl");
@@ -248,7 +250,7 @@ namespace PantheonTest
 
     bool TestApplication::isRunning() const
     {
-#ifdef PTH_HEADLESS_TEST
+#if USING(PTH_TARGET_HEADLESS)
         const auto isInProgress = [](const std::unique_ptr<ITest>& test)
         {
             return !test->isDone();

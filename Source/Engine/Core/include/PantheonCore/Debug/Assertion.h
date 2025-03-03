@@ -3,13 +3,9 @@
 
 #include "PantheonCore/Debug/Logger.h"
 #include "PantheonCore/Debug/DebugBreak.h"
+#include "PantheonCore/Utility/CoreDefines.h"
 
-#if defined(_DEBUG) || defined(PTH_VERBOSE_LOG)
-#define PTH_USE_ASSERTION
-#endif
-
-#ifndef PTH_ASSERT
-#ifdef PTH_USE_ASSERTION
+#if USING(PTH_FEATURE_ASSERTION)
 
 #define PTH_ASSERT(condition, ...) if (!(condition))      \
 {                                                     \
@@ -19,16 +15,6 @@
     DEBUG_BREAK();                                    \
     abort();                                          \
 } ((void)0)
-
-#else
-
-#define PTH_ASSERT(condition, ...) ((void)0)
-
-#endif // PTH_USE_ASSERTION
-#endif // !PTH_ASSERT
-
-#ifndef CHECK
-#ifdef PTH_USE_ASSERTION
 
 #define CHECK(condition, ...) [&]() -> bool             \
 {                                                       \
@@ -43,36 +29,19 @@
     return true;                                        \
 }()
 
-#else
-
-#define CHECK(condition, ...) [](const bool b) -> bool \
-{                                                      \
-    return b;                                          \
-}(condition)
-
-#endif // PTH_USE_ASSERTION
-#endif // !CHECK
-
-#ifndef ASSUME
-#ifdef PTH_USE_ASSERTION
-
 #define ASSUME(condition, ...) CHECK(condition __VA_OPT__(,) __VA_ARGS__)
-
-#else
-
-#define ASSUME(condition, ...) true
-
-#endif // PTH_USE_ASSERTION
-#endif // !ASSUME
-
-#ifndef ASSUME_FALSE
-#ifdef PTH_USE_ASSERTION
-
 #define ASSUME_FALSE(condition, ...) !CHECK(!(condition) __VA_OPT__(,) __VA_ARGS__)
 
 #else
 
+#define PTH_ASSERT(condition, ...) ((void)0)
+
+#define CHECK(condition, ...) [](const bool b) -> bool \
+{                                                      \
+    return b;                                          \
+} (condition)
+
+#define ASSUME(condition, ...) true
 #define ASSUME_FALSE(condition, ...) false
 
-#endif // PTH_USE_ASSERTION
-#endif // !ASSUME_FALSE
+#endif // #if USING(PTH_FEATURE_ASSERTION)

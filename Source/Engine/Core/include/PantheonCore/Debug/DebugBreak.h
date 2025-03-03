@@ -1,16 +1,16 @@
 #pragma once
+#include "PantheonCore/Utility/CoreDefines.h"
 
-#ifdef _DEBUG
-    #if defined(_WIN32)
+#if USING(PTH_CONFIG_DEBUG)
+    #if USING(PTH_PLATFORM_WINDOWS)
         #include "PantheonCore/Utility/LeanWin.h"
 
         inline bool isDebuggerPresent()
         {
             return IsDebuggerPresent();
         }
-
         #define DEBUG_BREAK_IMPL() (((void)0), __debugbreak())
-    #elif defined(__unix__)
+    #elif USING(PTH_PLATFORM_LINUX)
         #include <fstream>
         #include <string>
         #include <sstream>
@@ -39,7 +39,7 @@
         }
 
         #define DEBUG_BREAK_IMPL() raise(SIGTRAP)
-    #elif defined(__APPLE__)
+    #elif USING(PTH_PLATFORM_APPLE)
         #include <TargetConditionals.h>
 
         inline bool isDebuggerPresent()

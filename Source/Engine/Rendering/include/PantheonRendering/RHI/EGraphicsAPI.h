@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <PantheonCore/Utility/CoreDefines.h>
 
 namespace PantheonRendering::RHI
 {
@@ -9,6 +10,8 @@ namespace PantheonRendering::RHI
     enum class EGraphicsAPI : uint8_t
     {
         NONE,
+#if USING(PTH_FEATURE_OPENGL)
         OPENGL
+#endif
     };
 }

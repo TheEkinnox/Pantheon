@@ -1,4 +1,5 @@
 #pragma once
+#include "PantheonCore/Utility/CoreDefines.h"
 #include "PantheonCore/Debug/Logger.h"
 #include "PantheonCore/Utility/utility.h"
 
@@ -58,13 +59,13 @@ namespace PantheonCore::Debug
     {
         std::string message = Utility::formatString(format, args...);
 
-#ifdef PTH_USE_ASSERTION
+#if USING(PTH_FEATURE_ASSERTION)
         message = Utility::formatString("%s(%d): %s\n", file, line, message.c_str());
 #else
         message += '\n';
         (void)sizeof(file);
         (void)sizeof(line);
-#endif // PTH_USE_ASSERTION
+#endif // #if USING(PTH_FEATURE_ASSERTION)
 
         print(message.c_str(), type);
     }

@@ -1,4 +1,6 @@
-#if defined(_DEBUG) && defined(_MSC_VER)
+#include "PantheonCore/Utility/CoreDefines.h"
+
+#if USING(PTH_TARGET_DEBUG) && USING(PTH_COMPILER_MSVC)
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 #endif
@@ -7,9 +9,9 @@
 
 using namespace PantheonTest;
 
-int main(int argc, char* argv[])
+int main(const int argc, char* argv[])
 {
-#if defined(_DEBUG) && defined(_MSC_VER)
+#if USING(PTH_TARGET_DEBUG) && USING(PTH_COMPILER_MSVC)
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 

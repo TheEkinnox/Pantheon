@@ -1,16 +1,35 @@
 #pragma once
+#include "PantheonCore/Utility/CoreDefines.h"
 
-#ifdef _WIN32
+#if USING(PTH_PLATFORM_WINDOWS)
 
+// Disable less common MFC features
+#ifndef VC_EXTRALEAN
+#define VC_EXTRALEAN
+#endif
+
+// Disable unnecessary windows features
 #ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN	// Disables unnecessary windows features
+#define WIN32_LEAN_AND_MEAN
 #endif
 
+// Disable windows defined min and max macros
 #ifndef NOMINMAX
-#define NOMINMAX			// Avoids conflicts with LibMath's min and max
+#define NOMINMAX
 #endif
 
-#undef APIENTRY				// Avoids conflicts with some other libs (e.g: GLFW)
-#include <windows.h>
+// Avoids conflicts with some other libs (e.g: GLFW)
+#undef APIENTRY
 
-#endif // _WIN32
+#if USING(PTH_COMPILER_MSVC)
+__pragma( warning( push ) )
+__pragma( warning( disable : 4201 ) ) // nonstandard extension used: nameless struct/union
+#endif // _MSC_VER
+
+#include <Windows.h>
+
+#if USING(PTH_COMPILER_MSVC)
+__pragma( warning( pop ) )
+#endif // _MSC_VER
+
+#endif // #if USING(PTH_PLATFORM_WINDOWS)

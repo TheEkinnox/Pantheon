@@ -1,11 +1,12 @@
+#include "PantheonCore/Utility/CoreDefines.h"
 #include "PantheonCore/Utility/FileSystem.h"
 
 #include "PantheonCore/Debug/Logger.h"
 #include "PantheonCore/Utility/Copy.h"
 
 // Platform specific defines to handle getApplicationDirectory()
-#if defined(_WIN32)
-#if __cplusplus
+#if USING(PTH_PLATFORM_WINDOWS)
+#ifdef __cplusplus
 extern "C"
 {
 #endif
@@ -17,14 +18,14 @@ extern "C"
 }
 #endif
 
-#elif defined(__linux__)
+#elif USING(PTH_PLATFORM_LINUX)
 #include <unistd.h>
-#elif defined(__APPLE__)
+#elif USING(PTH_PLATFORM_APPLE)
 #include <sys/syslimits.h>
 #include <mach-o/dyld.h>
 #endif // OSs
 
-#if defined(_WIN32)
+#if USING(PTH_PLATFORM_WINDOWS)
 #include <direct.h>     // Required for: _chdir()
 #define CHDIR _chdir
 #define MAX_PATH 260
@@ -38,7 +39,7 @@ extern "C"
 #endif
 
 #ifndef PATH_SEPARATOR
-#if defined(_WIN32)
+#if USING(PTH_PLATFORM_WINDOWS)
 #define PATH_SEPARATOR '\\'
 #else
 #define PATH_SEPARATOR '/'
@@ -73,11 +74,11 @@ namespace PantheonCore::Utility
         static char appDir[MAX_PATH_LENGTH] = { 0 };
         memset(appDir, 0, MAX_PATH_LENGTH);
 
-#if defined(_WIN32)
+#if USING(PTH_PLATFORM_WINDOWS)
         using length_t = int;
-        length_t len = 0;
+        length_t len   = 0;
 
-#if defined(UNICODE)
+#if USING(PTH_FEATURE_UNICODE)
         unsigned short widePath[MAX_PATH];
         len = static_cast<length_t>(GetModuleFileNameW(nullptr, widePath, MAX_PATH));
         len = WideCharToMultiByte(0, 0, widePath, len, appDir, MAX_PATH, nullptr, nullptr);
@@ -85,11 +86,11 @@ namespace PantheonCore::Utility
         len = static_cast<length_t>(GetModuleFileNameA(nullptr, appDir, MAX_PATH));
 #endif
 
-#elif defined(__linux__)
+#elif USING(PTH_PLATFORM_LINUX)
         using length_t = ssize_t;
         unsigned int size = MAX_PATH_LENGTH;
         length_t len = readlink("/proc/self/exe", appDir, size);
-#elif defined(__APPLE__)
+#elif USING(PTH_PLATFORM_APPLE)
         using length_t = int;
         uint32_t size = MAX_PATH_LENGTH;
         length_t len = 0;

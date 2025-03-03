@@ -1,5 +1,6 @@
 #include "PantheonRendering/RHI/OpenGL/OpenGLUniformBuffer.h"
 
+#if USING(PTH_FEATURE_OPENGL)
 #include "PantheonRendering/Enums/EAccessMode.h"
 #include "PantheonRendering/RHI/OpenGL/OpenGLAPI.h"
 
@@ -69,3 +70,4 @@ namespace PantheonRendering::RHI
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
 }
+#endif

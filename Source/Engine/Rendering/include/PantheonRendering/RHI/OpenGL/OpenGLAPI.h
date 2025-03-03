@@ -1,4 +1,7 @@
 #pragma once
+#include <PantheonCore/Utility/CoreDefines.h>
+
+#if USING(PTH_FEATURE_OPENGL)
 #include "PantheonRendering/Enums/EAccessMode.h"
 #include "PantheonRendering/RHI/IRenderAPI.h"
 
@@ -57,3 +60,4 @@ namespace PantheonRendering::RHI
         static unsigned toGLEnum(Enums::EAccessMode accessSpecifier);
     };
 }
+#endif

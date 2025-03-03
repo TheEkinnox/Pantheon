@@ -1,4 +1,5 @@
 #pragma once
+#include "PantheonCore/Utility/CoreDefines.h"
 #include "PantheonCore/Utility/DynamicTypeInfo.h"
 #include "PantheonCore/Utility/TypeRegistry.h"
 
@@ -23,7 +24,7 @@ namespace PantheonCore::Resources
         decltype(&getDefaultResource<IResource>) getDefault;
     };
 
-#ifdef PTH_EDITOR
+#if USING(PTH_TARGET_EDITOR)
     class ResourceRegistry final : public Utility::TypeRegistry<Utility::DynamicTypeInfo<ResourceTypeInfo>>
 #else
     class ResourceRegistry final : public Utility::TypeRegistry<ResourceTypeInfo>

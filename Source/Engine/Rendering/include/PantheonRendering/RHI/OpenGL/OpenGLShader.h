@@ -1,4 +1,7 @@
 #pragma once
+#include <PantheonCore/Utility/CoreDefines.h>
+
+#if USING(PTH_FEATURE_OPENGL)
 #include "PantheonRendering/RHI/IShader.h"
 
 namespace PantheonRendering::RHI
@@ -258,3 +261,4 @@ namespace PantheonRendering::RHI
         void reset();
     };
 }
+#endif

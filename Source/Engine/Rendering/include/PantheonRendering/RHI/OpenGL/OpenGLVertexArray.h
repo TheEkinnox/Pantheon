@@ -1,4 +1,7 @@
 #pragma once
+#include <PantheonCore/Utility/CoreDefines.h>
+
+#if USING(PTH_FEATURE_OPENGL)
 #include "PantheonRendering/RHI/IVertexArray.h"
 
 namespace PantheonRendering::RHI
@@ -55,3 +58,4 @@ namespace PantheonRendering::RHI
         uint32_t m_id = 0;
     };
 }
+#endif

@@ -1,5 +1,6 @@
 #include "PantheonRendering/RHI/OpenGL/OpenGLTexture.h"
 
+#if USING(PTH_FEATURE_OPENGL)
 #include "PantheonRendering/RHI/OpenGL/OpenGLAPI.h"
 
 #include <glad/gl.h>
@@ -226,3 +227,4 @@ namespace PantheonRendering::RHI
         return m_id;
     }
 }
+#endif
