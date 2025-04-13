@@ -1,5 +1,6 @@
 #include "PantheonApp/Platform/OpenGL/OpenGLContext.h"
 
+#if USING(PTH_FEATURE_OPENGL)
 #include "PantheonApp/Windowing/Window.h"
 
 #include <PantheonCore/Debug/Logger.h>
@@ -20,7 +21,7 @@ namespace PantheonApp::Platform
         m_useVsync(useVsync)
     {
         // Initialize and configure glfw
-#ifdef PTH_USE_ASSERTION
+#if USING(PTH_FEATURE_ASSERTION)
         const auto errorCallback = [](const int error, const char* description)
         {
             PTH_LOG_ERROR("GLFW Error %d: %s", error, description);
@@ -38,7 +39,7 @@ namespace PantheonApp::Platform
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
         glfwWindowHint(GLFW_SAMPLES, sampleCount);
 
-#ifdef __APPLE__
+#if USING(PTH_PLATFORM_APPLE)
         // required to compile on OS X
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
@@ -322,3 +323,4 @@ namespace PantheonApp::Platform
         glfwSetWindowShouldClose(static_cast<GLFWwindow*>(handle), shouldClose);
     }
 }
+#endif

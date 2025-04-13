@@ -1,4 +1,7 @@
 #pragma once
+#include <PantheonCore/Utility/CoreDefines.h>
+
+#if USING(PTH_FEATURE_OPENGL)
 #include "PantheonApp/Core/IContext.h"
 
 struct GLFWwindow;
@@ -185,3 +188,4 @@ namespace PantheonApp::Platform
         void setShouldClose(void* handle, bool shouldClose) override;
     };
 }
+#endif
