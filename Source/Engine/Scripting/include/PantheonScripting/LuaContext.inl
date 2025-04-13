@@ -19,7 +19,7 @@ namespace PantheonScripting
         if (!result.valid())
         {
             [[maybe_unused]] const sol::error err = result;
-            CHECK(false, "Call to lua script function %s failed - %s", name.c_str(), err.what());
+            (void)CHECK(false, "Call to lua script function %s failed - %s", name.c_str(), err.what());
             return ELuaCallResult::FAILURE;
         }
 

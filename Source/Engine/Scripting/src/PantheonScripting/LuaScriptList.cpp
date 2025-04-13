@@ -176,100 +176,10 @@ namespace PantheonScripting
         case sol::type::function:
         case sol::type::poly:
         default:
-            CHECK(false, "Unable to deserialize lua object - Unsupported type");
+            PTH_ASSERT(false, "Unable to deserialize lua object - Unsupported type");
             return sol::nullopt;
         }
     }
-
-    sol::optional<sol::object> luaObjectFromBinary(
-        lua_State* luaState, const char* data, size_t length, size_t& readBytes, Scene* scene)
-    {
-        readBytes = 0;
-
-        if (!CHECK(luaState, "Unable to deserialize lua object - No lua state"))
-            return sol::nullopt;
-
-        if (!CHECK(data != nullptr && length > 0, "Unable to deserialize lua object - Empty buffer"))
-            return sol::nullopt;
-
-        sol::type objectType;
-        readBytes = IByteSerializable::readNumber(objectType, data, length);
-
-        if (!CHECK(readBytes > 0, "Failed to read lua object type"))
-            return sol::nullopt;
-
-        if (!CHECK(length >= readBytes, "Unable to deserialize lua object - Invalid offset"))
-            return sol::nullopt;
-
-        switch (objectType)
-        {
-        case sol::type::lua_nil:
-        {
-            return sol::make_object(luaState, sol::nil);
-        }
-        case sol::type::string:
-        {
-            std::string out;
-
-            const size_t offset = IByteSerializable::deserializeString(out, data + readBytes, length - readBytes);
-
-            if (!CHECK(offset > 0, "Failed to deserialize lua string"))
-                return sol::nullopt;
-
-            readBytes += offset;
-            return sol::make_object(luaState, out);
-        }
-        case sol::type::number:
-        {
-            double out;
-
-            const size_t offset = IByteSerializable::readNumber(out, data + readBytes, length - readBytes);
-
-            if (!CHECK(offset > 0, "Failed to deserialize lua number"))
-                return sol::nullopt;
-
-            readBytes += offset;
-            return sol::make_object(luaState, out);
-        }
-        case sol::type::boolean:
-        {
-            bool out;
-
-            const size_t offset = IByteSerializable::readNumber(out, data + readBytes, length - readBytes);
-
-            if (!CHECK(offset > 0, "Failed to deserialize lua bool"))
-                return sol::nullopt;
-
-            readBytes += offset;
-            return sol::make_object(luaState, out);
-        }
-        case sol::type::table:
-        {
-            sol::table table(luaState, sol::create);
-
-            const size_t offset = ComponentRegistry::fromBinary(table, data + readBytes, length - readBytes, scene);
-
-            if (offset == 0)
-                return sol::nullopt;
-
-            readBytes += offset;
-            return table;
-        }
-        case sol::type::userdata:
-        case sol::type::lightuserdata:
-        {
-            std::string typeString;
-            size_t      offset = IByteSerializable::deserializeString(typeString, data + readBytes, length - readBytes);
-
-            if (!CHECK(offset > 0, "Unable to deserialize lua user type - Failed to read type string"))
-                return sol::nullopt;
-
-            readBytes += offset;
-
-            const auto& luaTypes = LuaTypeRegistry::getInstance();
-
-            if (!CHECK(luaTypes.contains(typeString), "Unable to deserialize unregistered lua user type %s", typeString.c_str()))
-                return sol::nullopt;
 
             if (!CHECK(length >= readBytes, "Unable to deserialize lua user type data - Invalid offset"))
                 return sol::nullopt;

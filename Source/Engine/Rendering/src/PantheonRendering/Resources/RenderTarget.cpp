@@ -108,16 +108,15 @@ namespace PantheonRendering::Resources
         return CHECK(false, "TODO: render target to json");
     }
 
-    bool RenderTarget::toBinary(std::vector<char>& output) const
+    bool RenderTarget::toBinary(std::vector<char>& /*output*/) const
     {
-        // TODO: render target to binary
-        return CHECK(false, "TODO: render target to json") && m_loadInfo.toBinary(output);
+        PTH_DEPRECATED();
+        return false;
     }
 
     size_t RenderTarget::fromBinary(const char* /*data*/, size_t /*length*/)
     {
-        // TODO: render target from binary
-        CHECK(false, "TODO: render target to json");
+        PTH_DEPRECATED();
         return 0;
     }
 

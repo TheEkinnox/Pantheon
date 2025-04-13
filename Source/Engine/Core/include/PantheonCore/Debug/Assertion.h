@@ -36,10 +36,7 @@
 
 #define PTH_ASSERT(condition, ...) ((void)0)
 
-#define CHECK(condition, ...) [](const bool b) -> bool \
-{                                                      \
-    return b;                                          \
-} (condition)
+#define CHECK(condition, ...) (condition)
 
 #define ASSUME(condition, ...) true
 #define ASSUME_FALSE(condition, ...) false

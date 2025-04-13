@@ -89,8 +89,7 @@ namespace PantheonScripting
         if (!result.valid())
         {
             [[maybe_unused]] const sol::error err = result;
-            CHECK(false, "Failed to register script \"%s\" - %s", handle.m_script.getPath().c_str(), err.what());
-            return (m_isValid = false);
+            return (m_isValid = CHECK(false, "Failed to register script \"%s\" - %s", handle.m_script.getPath().c_str(), err.what()));
         }
 
         if (!CHECK(result.return_count() == 1 && result[0].is<sol::table>(),
