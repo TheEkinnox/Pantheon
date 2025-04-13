@@ -11,9 +11,9 @@
 {                                                     \
     DEBUG_LOG_ERROR("Assertion failed: " #condition   \
     __VA_OPT__( "\n%s", PantheonCore::Utility::formatString(__VA_ARGS__).c_str()) \
-    );                                                \
-    DEBUG_BREAK();                                    \
-    abort();                                          \
+    );                                                  \
+    DEBUG_BREAK();                                      \
+    IF_DEBUG(abort();)                                  \
 } ((void)0)
 
 #define CHECK(condition, ...) [&]() -> bool             \

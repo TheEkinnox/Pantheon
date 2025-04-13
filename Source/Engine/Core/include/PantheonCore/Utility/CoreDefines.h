@@ -46,8 +46,10 @@
 // ===========
 #if defined(_DEBUG) || defined(DEBUG)
 #define PTH_CONFIG_DEBUG IN_USE
+#define IF_DEBUG(x) x
 #else
 #define PTH_CONFIG_DEBUG NOT_IN_USE
+#define IF_DEBUG(x)
 #endif
 
 // =============
@@ -95,10 +97,12 @@
 // ============
 // = FEATURES =
 // ============
-#if defined(_DEBUG) || defined(PTH_VERBOSE_LOG)
+#if USING(PTH_CONFIG_DEBUG) || defined(PTH_VERBOSE_LOG)
 #define PTH_FEATURE_ASSERTION IN_USE
+#define IF_ASSERT(x) x
 #else
 #define PTH_FEATURE_ASSERTION NOT_IN_USE
+#define IF_ASSERT(x)
 #endif
 
 #if defined(UNICODE) || defined(_UNICODE)
