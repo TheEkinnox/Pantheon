@@ -1,9 +1,10 @@
 #pragma once
+#include "PantheonCore/Utility/CoreDefines.h"
 #include "PantheonCore/ECS/Entity.h"
 #include "PantheonCore/Serialization/Serializer.h"
 #include "PantheonCore/Utility/TypeRegistry.h"
 
-#ifdef PTH_EDITOR
+#if USING(PTH_TARGET_EDITOR)
 #include "PantheonCore/Utility/DynamicTypeInfo.h"
 #endif
 
@@ -25,7 +26,7 @@ namespace PantheonCore::ECS
         std::shared_ptr<IComponentStorage> (*makeStorage)(Scene*);
     };
 
-#ifdef PTH_EDITOR
+#if USING(PTH_TARGET_EDITOR)
     class ComponentRegistry final : public Utility::TypeRegistry<Utility::DynamicTypeInfo<ComponentTypeInfo>>
 #else
     class ComponentRegistry final : public Utility::TypeRegistry<ComponentTypeInfo>
