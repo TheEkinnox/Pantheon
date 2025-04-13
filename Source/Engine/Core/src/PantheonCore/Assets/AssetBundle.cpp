@@ -49,7 +49,7 @@ namespace PantheonCore::Assets
         m_compressionMode    = static_cast<ECompressionMode>(readBits(headerData, COMPRESSION_MODE_BITS, 0));
         m_compressedDataSize = readBits(headerData, DATA_SIZE_BITS, COMPRESSION_MODE_BITS);
 
-        DEBUG_LOG("Header: %d | Compression Mode: %d | Compressed Size: %d", headerData, static_cast<int>(m_compressionMode),
+        PTH_LOG("Header: %d | Compression Mode: %d | Compressed Size: %d", headerData, static_cast<int>(m_compressionMode),
             m_compressedDataSize);
 
         const std::ifstream::off_type offset = static_cast<std::ifstream::off_type>(m_compressedDataSize + sizeof(headerData));
@@ -63,7 +63,7 @@ namespace PantheonCore::Assets
             ifs >> bundleAsset;
             auto& asset = *bundleAsset.getAsset();
 
-            DEBUG_LOG("\nLoaded bundle asset :\n"
+            PTH_LOG("\nLoaded bundle asset :\n"
                 "\t- Offset: %s\n"
                 "\t- Compressed Size: %s\n"
                 "\t- Uncompressed Size: %s\n"
@@ -82,7 +82,7 @@ namespace PantheonCore::Assets
         m_path = path;
 
         ifs.close();
-        DEBUG_LOG("Successfully loaded asset bundle");
+        PTH_LOG("Successfully loaded asset bundle");
 
         return true;
     }

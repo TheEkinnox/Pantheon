@@ -56,7 +56,7 @@ namespace PantheonCore::Utility
 
         if (!fs.is_open())
         {
-            DEBUG_LOG_ERROR("Unable to open file at path \"%s\"", fileName.c_str());
+            PTH_LOG_ERROR("Unable to open file at path \"%s\"", fileName.c_str());
             return {};
         }
 

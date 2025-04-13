@@ -23,7 +23,7 @@ namespace PantheonApp::Platform
 #ifdef PTH_USE_ASSERTION
         const auto errorCallback = [](const int error, const char* description)
         {
-            DEBUG_LOG_ERROR("GLFW Error %d: %s", error, description);
+            PTH_LOG_ERROR("GLFW Error %d: %s", error, description);
         };
 
         glfwSetErrorCallback(errorCallback);

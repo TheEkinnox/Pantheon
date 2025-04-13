@@ -24,32 +24,32 @@ namespace PantheonTest
     {
         const auto onAddEntity = [](const Entity entity)
         {
-            DEBUG_LOG("Created entity %d:%d", entity.getIndex(), entity.getVersion());
+            PTH_LOG("Created entity %d:%d", entity.getIndex(), entity.getVersion());
         };
 
         const auto onRemoveEntity = [](const Entity entity)
         {
-            DEBUG_LOG("Removed entity %d:%d", entity.getIndex(), entity.getVersion());
+            PTH_LOG("Removed entity %d:%d", entity.getIndex(), entity.getVersion());
         };
 
         const auto onAddInt = [](const Entity owner, const int& val)
         {
-            DEBUG_LOG("Added int %d to entity %d:%d", val, owner.getIndex(), owner.getVersion());
+            PTH_LOG("Added int %d to entity %d:%d", val, owner.getIndex(), owner.getVersion());
         };
 
         const auto onBeforeChangeInt = [](const Entity owner, const int& val)
         {
-            DEBUG_LOG("Changing int %d of entity %d:%d", owner.getIndex(), owner.getVersion(), val);
+            PTH_LOG("Changing int %d of entity %d:%d to %d", owner.getIndex(), owner.getVersion(), curVal, newVal);
         };
 
         const auto onChangeInt = [](const Entity owner, const int& val)
         {
-            DEBUG_LOG("Changed int of entity %d:%d to %d", owner.getIndex(), owner.getVersion(), val);
+            PTH_LOG("Changed int of entity %d:%d to %d", owner.getIndex(), owner.getVersion(), val);
         };
 
         const auto onRemoveInt = [](const Entity owner, const int& val)
         {
-            DEBUG_LOG("Removed int %d from entity %d:%d", val, owner.getIndex(), owner.getVersion());
+            PTH_LOG("Removed int %d from entity %d:%d", val, owner.getIndex(), owner.getVersion());
         };
 
         Scene scene;
@@ -279,7 +279,7 @@ namespace PantheonTest
 
     void EntitiesTest::testJsonSerialization()
     {
-        DEBUG_LOG("\n= Starting json serialization tests =");
+        PTH_LOG("\n= Starting json serialization tests =");
 
         const Scene toSerialize = makeScene();
 
@@ -318,7 +318,7 @@ namespace PantheonTest
 
     void EntitiesTest::testBinarySerialization()
     {
-        DEBUG_LOG("\n= Starting binary serialization tests =");
+        PTH_LOG("\n= Starting binary serialization tests =");
 
         const Scene toSerialize = makeScene();
 

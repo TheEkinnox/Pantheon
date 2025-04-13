@@ -397,7 +397,7 @@ namespace PantheonRendering::RHI
         const int version = gladLoadGL(glfwGetProcAddress);
 
         PTH_ASSERT(version != 0, "Failed to initialize GLAD");
-        DEBUG_LOG("Successfuly initialized OpenGL %d.%d", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
+        PTH_LOG("Successfuly initialized OpenGL %d.%d", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
 
         if (enableDebug)
         {

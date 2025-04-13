@@ -95,7 +95,7 @@ namespace PantheonTest
             const auto assets = m_assetBundle.getAssets();
 
             std::string bundlePath = modeName + ".pthbundle";
-            DEBUG_LOG("\nCompression mode: %s", modeName.c_str());
+            PTH_LOG("\nCompression mode: %s", modeName.c_str());
 
             TEST_CHECK(m_assetBundle.save(bundlePath.c_str(), compressionMode),
                 "Unbale to save asset bundle at path \"%s\"", bundlePath.c_str());
@@ -111,14 +111,14 @@ namespace PantheonTest
             TEST_CHECK(m_assetBundle.load(bundlePath),
                 "Unbale to load asset bundle at path \"%s\"", bundlePath.c_str());
 
-            DEBUG_LOG("TEST PATHS");
+            PTH_LOG("TEST PATHS");
             for (const auto& asset : assets)
                 testAssetAtPath(m_assetBundle, asset);
 
             auto         readEnd  = std::chrono::system_clock::now();
             const double readTime = std::chrono::duration_cast<std::chrono::duration<double>>(readEnd - writeEnd).count();
 
-            DEBUG_LOG("TEST GUIDS");
+            PTH_LOG("TEST GUIDS");
             for (const auto& asset : assets)
                 testAssetWithGuid(m_assetBundle, asset);
 
@@ -127,7 +127,7 @@ namespace PantheonTest
             auto         end          = std::chrono::system_clock::now();
             const double testDuration = std::chrono::duration_cast<std::chrono::duration<double>>(end - start).count();
 
-            DEBUG_LOG("\n%s\t- Test completed in %fs\n"
+            PTH_LOG("\n%s\t- Test completed in %fs\n"
                 "\t- Write: %fs | Write avg.: %fs\n"
                 "\t- Read: %fs | Read avg.: %fs\n"
                 "\t- Bundle Size: %s | Compression Ratio: %f\n"
@@ -148,9 +148,9 @@ namespace PantheonTest
         asset->getData(assetData);
 
         if (compareBuffers(assetData, bundleData))
-            DEBUG_LOG("\"%s\": %s", asset->getPath(), "OK");
+            PTH_LOG("\"%s\": %s", asset->getPath(), "OK");
         else
-            DEBUG_LOG_ERROR("\"%s\": %s", asset->getPath(), "INVALID");
+            PTH_LOG_ERROR("\"%s\": %s", asset->getPath(), "INVALID");
     }
 
     void AssetBundlesTest::testAssetWithGuid(const AssetBundle& bundle, const std::shared_ptr<const Asset>& asset)
@@ -161,8 +161,8 @@ namespace PantheonTest
         asset->getData(assetData);
 
         if (compareBuffers(assetData, bundleData))
-            DEBUG_LOG("\"%s\": %s", asset->getGuid(), "OK");
+            PTH_LOG("\"%s\": %s", asset->getGuid(), "OK");
         else
-            DEBUG_LOG_ERROR("\"%s\": %s", asset->getGuid(), "INVALID");
+            PTH_LOG_ERROR("\"%s\": %s", asset->getGuid(), "INVALID");
     }
 }

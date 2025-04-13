@@ -380,7 +380,7 @@ namespace PantheonRendering::RHI
         {
             char infoLog[INFO_LOG_SIZE];
             glGetShaderInfoLog(shaderId, INFO_LOG_SIZE, nullptr, infoLog);
-            DEBUG_LOG_ERROR("ERROR::SHADER::%s::COMPILATION_FAILED\n%s", getTokenFromType(shaderType).c_str(), infoLog);
+            PTH_LOG_ERROR("ERROR::SHADER::%s::COMPILATION_FAILED\n%s", getTokenFromType(shaderType).c_str(), infoLog);
             glDeleteShader(shaderId);
             return 0;
         }
@@ -434,7 +434,7 @@ namespace PantheonRendering::RHI
         {
             char infoLog[INFO_LOG_SIZE];
             glGetProgramInfoLog(m_program, INFO_LOG_SIZE, nullptr, infoLog);
-            DEBUG_LOG_ERROR("ERROR::SHADER::PROGRAM::LINKING_FAILED\n%s", infoLog);
+            PTH_LOG_ERROR("ERROR::SHADER::PROGRAM::LINKING_FAILED\n%s", infoLog);
             return false;
         }
 
@@ -445,7 +445,7 @@ namespace PantheonRendering::RHI
         {
             char infoLog[INFO_LOG_SIZE];
             glGetProgramInfoLog(m_program, INFO_LOG_SIZE, nullptr, infoLog);
-            DEBUG_LOG_ERROR("ERROR::SHADER::PROGRAM::VALIDATION_FAILED\n%s", infoLog);
+            PTH_LOG_ERROR("ERROR::SHADER::PROGRAM::VALIDATION_FAILED\n%s", infoLog);
             return false;
         }
 

@@ -94,7 +94,7 @@ namespace PantheonCore::Assets
 
         if (!file.is_open())
         {
-            DEBUG_LOG_ERROR("Unable to get asset data - Failed to open file at path \"%s\"", m_path.c_str());
+            PTH_LOG_ERROR("Unable to get asset data - Failed to open file at path \"%s\"", m_path.c_str());
             return false;
         }
 

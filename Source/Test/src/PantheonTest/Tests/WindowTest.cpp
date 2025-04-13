@@ -41,7 +41,7 @@ namespace PantheonTest
         auto&     context     = m_window->getContext();
         const int refreshRate = context.getRefreshRate();
 
-        DEBUG_LOG("Window title: %s | Aspect: %f | Refresh rate: %d", title.c_str(), aspect, refreshRate);
+        PTH_LOG("Window title: %s | Aspect: %f | Refresh rate: %d", title.c_str(), aspect, refreshRate);
 
         m_window->setTitle(title);
         TEST_CHECK(m_window->getTitle() == title, "Window title shouldn't have changed");
@@ -71,7 +71,7 @@ namespace PantheonTest
         const Window::DimensionsT minSize    = m_window->getMinSize();
         const Window::DimensionsT maxSize    = m_window->getMaxSize();
 
-        DEBUG_LOG("Window size: %s | Min size: %s | Max size: %s", windowSize.string().c_str(),
+        PTH_LOG("Window size: %s | Min size: %s | Max size: %s", windowSize.string().c_str(),
             minSize.string().c_str(), maxSize.string().c_str());
 
         TEST_CHECK(windowSize.m_x >= minSize.m_x && windowSize.m_y >= minSize.m_y,
@@ -115,7 +115,7 @@ namespace PantheonTest
     void WindowTest::testPosition()
     {
         const Window::PosT windowPos = m_window->getPosition();
-        DEBUG_LOG("Window pos: %s", windowPos.string().c_str());
+        PTH_LOG("Window pos: %s", windowPos.string().c_str());
 
         m_window->setPosition(windowPos);
         TEST_CHECK(m_window->getPosition() == windowPos, "Window position shouldn't have changed");
@@ -132,7 +132,7 @@ namespace PantheonTest
     {
         const Window::PosT windowPos    = m_window->getPosition();
         const bool         isFullscreen = m_window->isFullScreen();
-        DEBUG_LOG("Window fullscreen: %s", isFullscreen ? "on" : "off");
+        PTH_LOG("Window fullscreen: %s", isFullscreen ? "on" : "off");
 
         m_window->setFullScreen(isFullscreen);
         TEST_CHECK(m_window->isFullScreen() == isFullscreen, "Window fullscreen mode shouldn't have changed");
@@ -150,7 +150,7 @@ namespace PantheonTest
     void WindowTest::testCursorPosition()
     {
         const Window::CursorPosT cursorPos = m_window->getCursorPosition();
-        DEBUG_LOG("Cursor pos: %s", cursorPos.string().c_str());
+        PTH_LOG("Cursor pos: %s", cursorPos.string().c_str());
 
         m_window->setCursorPosition(cursorPos);
         TEST_CHECK(m_window->getCursorPosition() == cursorPos, "Cursor position shouldn't have changed");

@@ -18,7 +18,7 @@ namespace PantheonTest
 
     void ThreadPoolTest::onStart()
     {
-        DEBUG_LOG("Testing thread pool - Executing %llu tasks of %llums", m_taskCount, m_taskDuration);
+        PTH_LOG("Testing thread pool - Executing %llu tasks of %llums", m_taskCount, m_taskDuration);
         const auto start = std::chrono::high_resolution_clock::now();
 
         std::vector<std::future<void>> tasks;
@@ -38,7 +38,7 @@ namespace PantheonTest
             task.wait();
 
         const auto end = std::chrono::high_resolution_clock::now();
-        DEBUG_LOG("Multi thread: %dms", std::chrono::duration_cast<std::chrono::milliseconds>(end - start));
+        PTH_LOG("Multi thread: %dms", std::chrono::duration_cast<std::chrono::milliseconds>(end - start));
 
         complete();
     }

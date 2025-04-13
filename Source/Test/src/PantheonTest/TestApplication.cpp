@@ -87,11 +87,11 @@ namespace PantheonTest
         const char* appDir     = getApplicationDirectory();
         std::string workingDir = getWorkingDirectory();
 
-        DEBUG_LOG("Changing working directory from \"%s\" to \"%s\"", workingDir.c_str(), appDir);
+        PTH_LOG("Changing working directory from \"%s\" to \"%s\"", workingDir.c_str(), appDir);
         changeDirectory(appDir);
 
         workingDir = getWorkingDirectory();
-        DEBUG_LOG("Current working directory: \"%s\"", workingDir.c_str());
+        PTH_LOG("Current working directory: \"%s\"", workingDir.c_str());
         PTH_ASSERT(workingDir == appDir, "Invalid working directory - Expected: \"%s\"", appDir);
 
         m_resourceManager->addSearchPath("assets");
@@ -188,7 +188,7 @@ namespace PantheonTest
             .m_cullingMode = ECullingMode::MODEL,
             .m_onDraw = [](const Renderer::DrawInfo& drawInfo)
             {
-                DEBUG_LOG("DRAWING ELEMENT %d", reinterpret_cast<intptr_t>(drawInfo.m_extra));
+                PTH_LOG("DRAWING ELEMENT %d", reinterpret_cast<intptr_t>(drawInfo.m_extra));
             }
         };
 
@@ -246,12 +246,12 @@ namespace PantheonTest
 
         if (passedCount == m_tests.size())
         {
-            DEBUG_LOG("All %llu tests passed | Total time: %dms | Avg.: %fs (%d fps) | Min.: %fs (%d fps) | Max.: %fs (%d fps)",
+            PTH_LOG("All %llu tests passed | Total time: %dms | Avg.: %fs (%d fps) | Min.: %fs (%d fps) | Max.: %fs (%d fps)",
                 passedCount, elapsedTime, averageFrameTime, averageFrameRate, m_minFrameTime, minFrameRate, m_maxFrameTime, maxFrameRate);
         }
         else
         {
-            DEBUG_LOG_ERROR("%llu/%llu Tests passed | Total time: %dms | Avg.: %fs (%d fps) | Min.: %fs (%d fps) | Max.: %fs (%d fps)",
+            PTH_LOG_ERROR("%llu/%llu Tests passed | Total time: %dms | Avg.: %fs (%d fps) | Min.: %fs (%d fps) | Max.: %fs (%d fps)",
                 passedCount, m_tests.size(), elapsedTime, averageFrameTime, averageFrameRate, m_minFrameTime, minFrameRate, m_maxFrameTime,
                 maxFrameRate);
 

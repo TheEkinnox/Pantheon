@@ -7,9 +7,9 @@
 
 #if USING(PTH_FEATURE_ASSERTION)
 
-#define PTH_ASSERT(condition, ...) if (!(condition))      \
-{                                                     \
-    DEBUG_LOG_ERROR("Assertion failed: " #condition   \
+#define PTH_ASSERT(condition, ...) if (!(condition))    \
+{                                                       \
+    PTH_LOG_ERROR("Assertion failed: " #condition       \
     __VA_OPT__( "\n%s", PantheonCore::Utility::formatString(__VA_ARGS__).c_str()) \
     );                                                  \
     DEBUG_BREAK();                                      \
@@ -20,7 +20,7 @@
 {                                                       \
     if (!(condition))                                   \
     {                                                   \
-        DEBUG_LOG_ERROR("Check failed: " #condition     \
+        PTH_LOG_ERROR("Check failed: " #condition       \
         __VA_OPT__( "\n%s", PantheonCore::Utility::formatString(__VA_ARGS__).c_str()) \
         );                                              \
         DEBUG_BREAK();                                  \

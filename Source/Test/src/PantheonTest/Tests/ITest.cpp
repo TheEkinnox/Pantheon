@@ -104,9 +104,9 @@ namespace PantheonTest
         m_isSuccess = m_passedCount == m_executedCount;
 
         if (m_isSuccess)
-            DEBUG_LOG("= %s tests completed succesfully =", m_name.c_str());
+            PTH_LOG("= %s tests completed succesfully =", m_name.c_str());
         else
-            DEBUG_LOG_ERROR("= %s tests failed =\n- %d executed\n- %d passed\n- %d failed",
+            PTH_LOG_ERROR("= %s tests failed =\n- %d executed\n- %d passed\n- %d failed",
             m_name.c_str(), m_executedCount, m_passedCount, m_failedCount);
     }
 }

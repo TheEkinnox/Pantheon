@@ -4,11 +4,11 @@
 
 #include <filesystem>
 
-#ifndef DEBUG_LOG
-#define DEBUG_LOG(format, ...) PantheonCore::Debug::Logger::getInstance().debugLog(__FILE__, __LINE__, format, PantheonCore::Debug::ELogType::LOG_INFO __VA_OPT__(,) __VA_ARGS__)
-#define DEBUG_LOG_WARNING(format, ...) PantheonCore::Debug::Logger::getInstance().debugLog(__FILE__, __LINE__, format, PantheonCore::Debug::ELogType::LOG_WARNING __VA_OPT__(,) __VA_ARGS__)
-#define DEBUG_LOG_ERROR(format, ...) PantheonCore::Debug::Logger::getInstance().debugLog(__FILE__, __LINE__, format, PantheonCore::Debug::ELogType::LOG_ERROR __VA_OPT__(,) __VA_ARGS__)
-#endif //DEBUG_LOG
+#ifndef PTH_LOG
+#define PTH_LOG(format, ...) PantheonCore::Debug::Logger::getInstance().debugLog(__FILE__, __LINE__, format, PantheonCore::Debug::ELogType::LOG_INFO __VA_OPT__(,) __VA_ARGS__)
+#define PTH_LOG_WARNING(format, ...) PantheonCore::Debug::Logger::getInstance().debugLog(__FILE__, __LINE__, format, PantheonCore::Debug::ELogType::LOG_WARNING __VA_OPT__(,) __VA_ARGS__)
+#define PTH_LOG_ERROR(format, ...) PantheonCore::Debug::Logger::getInstance().debugLog(__FILE__, __LINE__, format, PantheonCore::Debug::ELogType::LOG_ERROR __VA_OPT__(,) __VA_ARGS__)
+#endif //PTH_LOG
 
 namespace PantheonCore::Debug
 {
