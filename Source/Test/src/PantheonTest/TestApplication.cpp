@@ -1,4 +1,4 @@
-﻿#include "PantheonCore/Utility/CoreDefines.h"
+﻿#include <PantheonCore/Utility/CoreDefines.h>
 
 #include "PantheonTest/TestApplication.h"
 
@@ -53,7 +53,9 @@ namespace PantheonTest
         m_threadPool(std::make_unique<ThreadPool>()),
         m_resourceManager(std::make_unique<ResourceManager>()),
         m_renderer(std::make_unique<Renderer>()),
-        m_startTime(std::chrono::high_resolution_clock::now())
+        m_startTime(std::chrono::high_resolution_clock::now()),
+        m_minFrameTime(FLT_MAX),
+        m_maxFrameTime(0)
     {
         m_window->makeMain();
 
@@ -203,8 +205,14 @@ namespace PantheonTest
         m_inputManager->update();
     }
 
-    void TestApplication::onUpdate(const float)
+    void TestApplication::onUpdate(const float deltaTime)
     {
+        if (deltaTime > 0)
+        {
+            m_minFrameTime = min(deltaTime, m_minFrameTime);
+            m_maxFrameTime = max(deltaTime, m_maxFrameTime);
+        }
+
         preUpdate();
         update();
         postUpdate();
@@ -218,9 +226,11 @@ namespace PantheonTest
 
     void TestApplication::onStop()
     {
-        const auto& timer = getContext().m_timer;
-        const double averageFrameTime = static_cast<double>(timer.getUnscaledTime()) / static_cast<double>(timer.getFrameCount());
+        const auto&     timer            = getContext().m_timer;
+        const double    averageFrameTime = static_cast<double>(timer.getUnscaledTime()) / static_cast<double>(timer.getFrameCount());
         const long long averageFrameRate = static_cast<long long>(1. / averageFrameTime);
+        const long long minFrameRate     = static_cast<long long>(1. / static_cast<double>(m_minFrameTime));
+        const long long maxFrameRate     = static_cast<long long>(1. / static_cast<double>(m_maxFrameTime));
 
         size_t passedCount = 0;
         for (const auto& test : m_tests)
@@ -236,13 +246,14 @@ namespace PantheonTest
 
         if (passedCount == m_tests.size())
         {
-            DEBUG_LOG("All %llu tests passed | Total execution time: %dms | Avg. frame time: %fs (%dfps)",
-                passedCount, elapsedTime, averageFrameTime, averageFrameRate);
+            DEBUG_LOG("All %llu tests passed | Total time: %dms | Avg.: %fs (%d fps) | Min.: %fs (%d fps) | Max.: %fs (%d fps)",
+                passedCount, elapsedTime, averageFrameTime, averageFrameRate, m_minFrameTime, minFrameRate, m_maxFrameTime, maxFrameRate);
         }
         else
         {
-            DEBUG_LOG_ERROR("%llu/%llu Tests passed | Total execution time: %dms | Avg. frame time: %fs (%dfps)",
-                passedCount, m_tests.size(), elapsedTime, averageFrameTime, averageFrameRate);
+            DEBUG_LOG_ERROR("%llu/%llu Tests passed | Total time: %dms | Avg.: %fs (%d fps) | Min.: %fs (%d fps) | Max.: %fs (%d fps)",
+                passedCount, m_tests.size(), elapsedTime, averageFrameTime, averageFrameRate, m_minFrameTime, minFrameRate, m_maxFrameTime,
+                maxFrameRate);
 
             std::quick_exit(-1);
         }

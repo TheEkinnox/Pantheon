@@ -41,5 +41,7 @@ namespace PantheonTest
         std::vector<std::unique_ptr<ITest>> m_tests;
 
         std::chrono::high_resolution_clock::time_point m_startTime;
+        float                                          m_minFrameTime;
+        float                                          m_maxFrameTime;
     };
 }
