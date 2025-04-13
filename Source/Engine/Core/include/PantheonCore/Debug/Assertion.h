@@ -45,3 +45,7 @@
 #define ASSUME_FALSE(condition, ...) false
 
 #endif // #if USING(PTH_FEATURE_ASSERTION)
+
+#define PTH_UNREACHABLE() PTH_ASSERT(false, "Unreachable")
+#define PTH_NOT_IMPLEMENTED() PTH_ASSERT(false, "Not implemented")
+#define PTH_DEPRECATED() PTH_ASSERT(false, "Deprecated")
