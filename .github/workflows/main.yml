@@ -31,7 +31,7 @@ jobs:
           os: ${{ matrix.info.os }}
       - name: Configure CMake
         run: >
-          cmake -S "${{ github.workspace }}" -B "${{ github.workspace }}/build" -G Ninja
+          cmake -S "${{ github.workspace }}" -B "${{ github.workspace }}/build" -G Ninja -Wno-dev
           -DCMAKE_BUILD_TYPE=${{ matrix.type }}
           -DCMAKE_CXX_COMPILER=${{ matrix.info.cxx }}
           -DCMAKE_C_COMPILER=${{ matrix.info.cc }}
