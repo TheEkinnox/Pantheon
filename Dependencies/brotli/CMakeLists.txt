@@ -18,5 +18,5 @@ set(CMAKE_FOLDER ${CMAKE_FOLDER}/brotli)
 
 FetchContent_MakeAvailable(brotli)
 
-set(BROTLI_LIBRARIES brotlicommon-static brotlienc-static brotlidec-static PARENT_SCOPE)
+set(BROTLI_LIBRARIES brotlicommon brotlienc brotlidec PARENT_SCOPE)
 set(BROTLI_INCLUDE_DIRS ${BROTLI_INCLUDE_DIRS} PARENT_SCOPE)
