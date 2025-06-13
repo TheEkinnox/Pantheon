@@ -2,8 +2,7 @@
 FetchContent_Declare(
 	soloud
 	GIT_REPOSITORY https://github.com/jarikomppa/soloud
-	GIT_TAG origin/master
-	GIT_SHALLOW ON
+	GIT_TAG e82fd32c1f62183922f08c14c814a02b58db1873
 )
 
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
