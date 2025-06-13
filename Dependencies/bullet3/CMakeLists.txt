@@ -2,8 +2,7 @@
 FetchContent_Declare(
 	bullet3
 	GIT_REPOSITORY https://github.com/bulletphysics/bullet3.git
-	GIT_TAG 3.25
-	GIT_SHALLOW ON
+	GIT_TAG d1a4256b3a019117f2bb6cb8c63d6367aaf512e2
 )
 
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
