@@ -2,8 +2,7 @@
 FetchContent_Declare(
 	RapidJSON
 	GIT_REPOSITORY https://github.com/Tencent/rapidjson
-	GIT_TAG origin/master
-	GIT_SHALLOW ON
+	GIT_TAG 24b5e7a8b27f42fa16b96fc70aade9106cf7102f
 )
 
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
