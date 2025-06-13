@@ -2,7 +2,7 @@
 FetchContent_Declare(
 	sol
 	GIT_REPOSITORY https://github.com/ThePhD/sol2.git
-	GIT_TAG v3.3.1
+	GIT_TAG v3.5.0
 	GIT_SHALLOW ON
 )
 
