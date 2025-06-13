@@ -2,7 +2,7 @@
 FetchContent_Declare(
 	brotli
 	GIT_REPOSITORY https://github.com/google/brotli
-	GIT_TAG v1.0.9
+	GIT_TAG v1.1.0
 	GIT_SHALLOW ON
 )
 
