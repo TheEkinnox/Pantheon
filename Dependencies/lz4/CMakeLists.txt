@@ -2,7 +2,7 @@
 FetchContent_Declare(
 	lz4
 	GIT_REPOSITORY https://github.com/lz4/lz4
-	GIT_TAG v1.9.4
+	GIT_TAG v1.10.0
 	GIT_SHALLOW ON
 )
 
