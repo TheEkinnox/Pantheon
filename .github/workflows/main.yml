@@ -39,6 +39,6 @@ jobs:
           -DPANTHEON_HEADLESS_TEST=ON
           -DGLFW_BUILD_WAYLAND=OFF
       - name: Build
-        run: cmake --build "${{ github.workspace }}/build" --config ${{ matrix.type }}
+        run: cmake --build "${{ github.workspace }}/build" --config ${{ matrix.type }} --clean-first
       - name: Test
         run: ctest --output-on-failure --test-dir "${{ github.workspace }}/build" -C ${{ matrix.type }}
