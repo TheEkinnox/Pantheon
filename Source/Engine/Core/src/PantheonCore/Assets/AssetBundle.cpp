@@ -1,12 +1,14 @@
 ﻿#include "PantheonCore/Assets/AssetBundle.h"
 
-#include <fstream>
-
 #include "PantheonCore/Assets/BundleAsset.h"
 #include "PantheonCore/Debug/Assertion.h"
 #include "PantheonCore/Debug/Logger.h"
 #include "PantheonCore/Utility/ByteOrder.h"
 #include "PantheonCore/Utility/Compression.h"
+
+#include <cinttypes>
+#include <cstring>
+#include <fstream>
 
 using namespace PantheonCore::Utility;
 
@@ -28,19 +30,13 @@ namespace PantheonCore::Assets
         // Reset the bundle's data before loading
         *this = AssetBundle();
 
-        if (path.empty())
-        {
-            DEBUG_LOG_ERROR("Unable to load asset bundle - empty path");
+        if (!CHECK(!path.empty(), "Unable to load asset bundle - empty path"))
             return false;
-        }
 
         std::ifstream ifs(path, std::ifstream::in | std::ifstream::binary);
 
-        if (!ifs.is_open())
-        {
-            DEBUG_LOG_ERROR("Unable to load asset bundle - couldn't open file");
+        if (!CHECK(ifs.is_open(), "Unable to load asset bundle - couldn't open file"))
             return false;
-        }
 
         header_t headerData;
         ifs.read(reinterpret_cast<char*>(&headerData), HEADER_SIZE);
@@ -96,11 +92,8 @@ namespace PantheonCore::Assets
 
         std::ofstream ofs(path, std::ifstream::out | std::ifstream::trunc | std::ifstream::binary);
 
-        if (!ofs.is_open())
-        {
-            DEBUG_LOG_ERROR("Unable to save asset bundle - couldn't open file");
+        if (!CHECK(ofs.is_open(), "Unable to save asset bundle - couldn't open file"))
             return false;
-        }
 
         header_t header = 0;
 
