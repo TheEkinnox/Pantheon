@@ -104,7 +104,7 @@ namespace PantheonScripting::Bindings
             "worldRotation", sol::property(&Transform::getWorldRotation, &Transform::setWorldRotation),
             "worldScale", sol::property(&Transform::getWorldScale, &Transform::setWorldScale),
             "worldMatrix", sol::property(&Transform::getWorldMatrix, &Transform::setWorldMatrix),
-            "worldInverse", sol::readonly_property(&Transform::inverseWorld),
+            "worldInverse", sol::readonly_property(&Transform::worldInverse),
             "getWorldEuler", [](const Transform& self, const ERotationOrder order)
             -> std::tuple<Radian, Radian, Radian>
             {
