@@ -120,10 +120,12 @@ namespace PantheonTest
         PTH_ASSERT(shader, "Failed to load shader");
 
 #if USING(PTH_TARGET_HEADLESS)
-        [[maybe_unused]] const ResourceRef castShader = m_resourceManager->load<NullShader>("unlit", "shaders/Unlit.glsl");
+        using ShaderT = NullShader;
 #else
-        [[maybe_unused]] const ResourceRef castShader = m_resourceManager->load<OpenGLShader>("unlit", "shaders/Unlit.glsl");
+        using ShaderT = OpenGLShader;
 #endif
+
+        [[maybe_unused]] const ResourceRef castShader = m_resourceManager->load<ShaderT>("unlit", "shaders/Unlit.glsl");
         PTH_ASSERT(castShader, "Failed to reload resource with compatible type");
         PTH_ASSERT(castShader.getOrDefault() == shader.getOrDefault(),
             "Reloading resource with compatible type should preserve address");
