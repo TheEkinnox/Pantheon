@@ -26,7 +26,7 @@ namespace PantheonScripting
             -> sol::userdata
             {
                 if (!object)
-                    return make_object_userdata(luaState, sol::nil);
+                    return make_object_userdata(luaState, sol::lua_nil);
 
                 return sol::make_object_userdata(luaState, *static_cast<T*>(object));
             },

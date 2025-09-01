@@ -57,7 +57,7 @@ namespace PantheonScripting
             m_isValid = tryCall(m_scripts[i - 1].m_table, ScriptingFunctions::DESTROY) != ELuaCallResult::FAILURE;
             PTH_ASSERT(m_isValid);
 
-            m_scripts[i - 1].m_table = sol::nil;
+            m_scripts[i - 1].m_table = sol::lua_nil;
         }
 
         if (m_state)
@@ -98,7 +98,7 @@ namespace PantheonScripting
 
         sol::table resultTable = result[0].as<sol::table>();
 
-        if (handle.m_table != sol::nil)
+        if (handle.m_table != sol::lua_nil)
             for (auto& [key, value] : handle.m_table)
                 resultTable[key] = value;
 
@@ -165,7 +165,7 @@ namespace PantheonScripting
         {
             m_isValid = tryCall(it->m_table, ScriptingFunctions::DESTROY) != ELuaCallResult::FAILURE;
 
-            it->m_table = sol::nil;
+            it->m_table = sol::lua_nil;
             m_scripts.erase(it);
         }
     }

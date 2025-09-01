@@ -70,7 +70,7 @@ namespace PantheonScripting
          * \param hint The added script's base table
          * \return A handle to the added script on success. An empty handle otherwise
          */
-        LuaScriptHandle add(std::string script, const sol::table& hint = sol::nil);
+        LuaScriptHandle add(std::string script, const sol::table& hint = sol::lua_nil);
 
         /**
          * \brief Removes the given lua script from the list

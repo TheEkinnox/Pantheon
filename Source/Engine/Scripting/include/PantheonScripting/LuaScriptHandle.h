@@ -12,7 +12,7 @@ namespace PantheonScripting
     {
         PantheonCore::Resources::ResourceRef<LuaScript> m_script;
         PantheonCore::ECS::EntityHandle                 m_owner;
-        sol::table                                      m_table = sol::nil;
+        sol::table                                      m_table = sol::lua_nil;
 
         /**
          * \brief Checks whether this script handle should be ordered before the given one or not

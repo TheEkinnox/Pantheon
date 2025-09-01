@@ -130,7 +130,7 @@ namespace PantheonScripting::Bindings
             sol::meta_function::index, [&luaState](const ComponentHandle& self, const sol::object& index) -> sol::object
             {
                 if (!self.m_owner)
-                    return sol::nil;
+                    return sol::lua_nil;
 
                 void* component = self.get();
                 return LuaTypeRegistry::getInstance().getTypeInfo(self.m_typeId).toLua(component, luaState)[index];
@@ -183,10 +183,10 @@ namespace PantheonScripting::Bindings
             sol::meta_function::index, [](const LuaScriptHandle& self, const sol::object& index) -> sol::object
             {
                 if (!self)
-                    return sol::nil;
+                    return sol::lua_nil;
 
                 const sol::optional<sol::object> out = self.m_table[index];
-                return out.value_or(sol::nil);
+                return out.value_or(sol::lua_nil);
             },
             sol::meta_function::new_index, [](LuaScriptHandle& self, const sol::object& key, sol::object value)
             {

@@ -111,7 +111,7 @@ namespace PantheonScripting
             if (!CHECK(it->value.IsNull(), "Unable to deserialize lua object - Expected null value"))
                 return sol::nullopt;
 
-            return sol::make_object(luaState, sol::nil);
+            return sol::make_object(luaState, sol::lua_nil);
         }
         case sol::type::string:
         {
@@ -419,7 +419,7 @@ namespace PantheonCore::ECS
 
             sol::optional key = luaObjectFromJson(out.lua_state(), it->value, scene);
 
-            if (!key.has_value() || !CHECK(*key != sol::nil, "Unable to deserialize lua table member - Nil key"))
+            if (!key.has_value() || !CHECK(*key != sol::lua_nil, "Unable to deserialize lua table member - Nil key"))
                 return false;
 
             it = elem.FindMember("value");
