@@ -60,7 +60,7 @@ namespace PantheonTest
     {
     }
 
-    bool ITest::compareBuffers(const std::vector<char>& buffer1, const std::vector<char>& buffer2)
+    bool ITest::compareBuffers(const std::span<const char> buffer1, const std::span<const char> buffer2)
     {
         if (buffer1.empty() != buffer2.empty())
             return false;
