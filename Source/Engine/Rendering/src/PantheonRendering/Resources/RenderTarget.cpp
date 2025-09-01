@@ -43,37 +43,37 @@ namespace PantheonRendering::Resources
             m_frameBuffer->attach(*m_colorTexture, Enums::EFrameBufferAttachment::COLOR);
         }
 
-        if (m_depthFormat != Enums::EPixelDataFormat::NONE)
+        if (m_depthFormat == Enums::EPixelDataFormat::NONE)
+            return true;
+
+        Enums::EFrameBufferAttachment attachment;
+
+        switch (m_depthFormat)
         {
-            Enums::EFrameBufferAttachment attachment;
-
-            switch (m_depthFormat)
-            {
-            case Enums::EPixelDataFormat::STENCIL_INDEX:
-                attachment = Enums::EFrameBufferAttachment::STENCIL;
-                break;
-            case Enums::EPixelDataFormat::DEPTH_COMPONENT:
-                attachment = Enums::EFrameBufferAttachment::DEPTH;
-                break;
-            case Enums::EPixelDataFormat::DEPTH_STENCIL:
-                attachment = Enums::EFrameBufferAttachment::DEPTH_STENCIL;
-                break;
-            default:
-                PTH_ASSERT(false, "Invalid depth texture format");
-                return false;
-            }
-
-            m_depthTexture = RHI::ITexture::create(m_width, m_height, m_depthFormat);
-            m_depthTexture->setMinFilter(m_loadInfo.m_minFilter);
-            m_depthTexture->setMagFilter(m_loadInfo.m_magFilter);
-            m_depthTexture->setWrapModeU(m_loadInfo.m_wrapModeU);
-            m_depthTexture->setWrapModeV(m_loadInfo.m_wrapModeV);
-
-            if (m_loadInfo.m_generateMipmap)
-                m_depthTexture->generateMipmap();
-
-            m_frameBuffer->attach(*m_depthTexture, attachment);
+        case Enums::EPixelDataFormat::STENCIL_INDEX:
+            attachment = Enums::EFrameBufferAttachment::STENCIL;
+            break;
+        case Enums::EPixelDataFormat::DEPTH_COMPONENT:
+            attachment = Enums::EFrameBufferAttachment::DEPTH;
+            break;
+        case Enums::EPixelDataFormat::DEPTH_STENCIL:
+            attachment = Enums::EFrameBufferAttachment::DEPTH_STENCIL;
+            break;
+        default:
+            PTH_ASSERT(false, "Invalid depth texture format");
+            return false;
         }
+
+        m_depthTexture = RHI::ITexture::create(m_width, m_height, m_depthFormat);
+        m_depthTexture->setMinFilter(m_loadInfo.m_minFilter);
+        m_depthTexture->setMagFilter(m_loadInfo.m_magFilter);
+        m_depthTexture->setWrapModeU(m_loadInfo.m_wrapModeU);
+        m_depthTexture->setWrapModeV(m_loadInfo.m_wrapModeV);
+
+        if (m_loadInfo.m_generateMipmap)
+            m_depthTexture->generateMipmap();
+
+        m_frameBuffer->attach(*m_depthTexture, attachment);
 
         return true;
     }

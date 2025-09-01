@@ -188,7 +188,7 @@ namespace PantheonRendering::Resources
         m_shader = shader;
         m_properties.clear();
 
-        for (auto [name, uniform] : m_shader->getUniforms())
+        for (const auto& [name, uniform] : m_shader->getUniforms())
         {
             if (name.starts_with(ENGINE_UNIFORM_PREFIX))
                 continue;
@@ -262,7 +262,7 @@ namespace PantheonRendering::Resources
             return ResourceRef<ITexture>();
         case EShaderDataType::UNKNOWN:
         default:
-            PTH_ASSERT(false, "Failed to get default value - Unkown data type");
+            PTH_ASSERT(false, "Failed to get default value - Unknown data type");
             return {};
         }
     }

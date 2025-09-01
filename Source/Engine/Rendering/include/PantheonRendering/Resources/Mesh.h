@@ -24,8 +24,7 @@ namespace PantheonRendering::Resources
          * \param primitiveType The mesh's primitive type
          * \param materialIndex The mesh's material index
          */
-        Mesh(std::vector<Geometry::Vertex> vertices, std::vector<uint32_t> indices,
-             Enums::EPrimitiveType         primitiveType, uint32_t         materialIndex);
+        Mesh(std::vector<Geometry::Vertex> vertices, std::vector<uint32_t> indices, Enums::EPrimitiveType primitiveType, uint32_t materialIndex);
 
         /**
          * \brief Creates a copy of the given mesh

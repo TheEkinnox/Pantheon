@@ -9,8 +9,8 @@ namespace PantheonRendering::Components
     class ModelComponent
     {
     public:
-        using ModelRef = PantheonCore::Resources::ResourceRef<Resources::Model>;
-        using MaterialRef = PantheonCore::Resources::ResourceRef<Resources::Material>;
+        using ModelRef     = PantheonCore::Resources::ResourceRef<Resources::Model>;
+        using MaterialRef  = PantheonCore::Resources::ResourceRef<Resources::Material>;
         using MaterialList = std::vector<MaterialRef>;
 
         /**
