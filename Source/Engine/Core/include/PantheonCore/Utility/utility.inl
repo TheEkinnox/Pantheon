@@ -8,7 +8,7 @@
 namespace PantheonCore::Utility
 {
     template <typename... Args>
-    std::string formatString(const std::string& format, Args&&... args)
+    std::string formatString(const char* format, Args&&... args)
     {
         // If no template parameters are passed
         // return the format string as is to avoid unnecessary allocation
@@ -19,7 +19,7 @@ namespace PantheonCore::Utility
         else
         {
             // get the formatted text's size
-            const int bufferSize = std::snprintf(nullptr, 0, format.c_str(), std::forward<Args>(args)...) + 1;
+            const int bufferSize = std::snprintf(nullptr, 0, format, std::forward<Args>(args)...) + 1;
 
             assert(bufferSize > 0 && "Unable to format string.");
 
@@ -28,7 +28,7 @@ namespace PantheonCore::Utility
             message.resize(bufferSize, 0);
 
             // Write the formatted string in the buffer
-            message.resize(std::snprintf(message.data(), bufferSize, format.c_str(), std::forward<Args>(args)...));
+            message.resize(std::snprintf(message.data(), bufferSize, format, std::forward<Args>(args)...));
 
             return message;
         }
