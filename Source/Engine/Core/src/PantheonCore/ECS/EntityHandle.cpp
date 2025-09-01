@@ -18,6 +18,11 @@ namespace PantheonCore::ECS
         return m_entity == other.m_entity && m_scene == other.m_scene;
     }
 
+    bool EntityHandle::operator==(const Entity entity) const
+    {
+        return m_entity == entity;
+    }
+
     EntityHandle::operator bool() const
     {
         return m_scene && m_scene->isValid(m_entity);
@@ -88,14 +93,14 @@ namespace PantheonCore::ECS
         return { m_scene, hierarchy ? hierarchy->getPreviousSibling() : NULL_ENTITY };
     }
 
-    size_t EntityHandle::getChildCount() const
+    Entity::Index EntityHandle::getChildCount() const
     {
         const HierarchyComponent* hierarchy = get<HierarchyComponent>();
 
         return hierarchy ? hierarchy->getChildCount() : 0;
     }
 
-    EntityHandle EntityHandle::getChild(size_t index) const
+    EntityHandle EntityHandle::getChild(Entity::Index index) const
     {
         const HierarchyComponent* hierarchy = get<HierarchyComponent>();
 
@@ -172,7 +177,7 @@ namespace PantheonCore::ECS
 
         if (entity != NULL_ENTITY)
         {
-            const auto it = toSerialized.find(entity);
+            const auto it = toSerialized.find(entity.getIndex());
 
             if (!CHECK(it != toSerialized.end(), "Unable to serialize entity handle - Entity is not serialized"))
                 return false;
@@ -180,7 +185,7 @@ namespace PantheonCore::ECS
             entity = it->second;
         }
 
-        return CHECK(IByteSerializable::writeNumber(entity, out), "Failed to write entity handle's enity");
+        return CHECK(IByteSerializable::writeNumber(entity.getIndex(), out), "Failed to write entity handle's entity");
     }
 
     template <>
@@ -191,7 +196,7 @@ namespace PantheonCore::ECS
 
         Entity entity;
 
-        const size_t readBytes = IByteSerializable::readNumber<Entity, Entity::Id>(entity, data, length);
+        const size_t readBytes = IByteSerializable::readNumber<Entity, Entity::Index>(entity, data, length);
 
         if (!CHECK(readBytes != 0, "Failed to read entity handle's entity"))
             return 0;
@@ -207,7 +212,7 @@ namespace PantheonCore::ECS
 
         if (entity != NULL_ENTITY)
         {
-            const auto it = toSerialized.find(entity);
+            const auto it = toSerialized.find(entity.getIndex());
 
             if (!CHECK(it != toSerialized.end(), "Unable to serialize entity handle - Entity is not serialized"))
                 return false;
@@ -215,16 +220,16 @@ namespace PantheonCore::ECS
             entity = it->second;
         }
 
-        return writer.Uint64(entity);
+        return writer.Uint64(entity.getIndex());
     }
 
     template <>
     bool ComponentRegistry::fromJson(EntityHandle& out, const JsonValue& json, Scene* scene)
     {
-        if (!CHECK(json.Is<Entity::Id>(), "Unable to deserialize entity handle - Json value should be castable to Entity::Id"))
+        if (!CHECK(json.Is<Entity::Index>(), "Unable to deserialize entity handle - Json value should be castable to Entity::Index"))
             return false;
 
-        out = { scene, Entity(json.Get<Entity::Id>()) };
+        out = { scene, Entity(json.Get<Entity::Index>()) };
         return true;
     }
 }

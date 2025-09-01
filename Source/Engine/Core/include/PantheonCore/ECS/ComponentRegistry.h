@@ -33,7 +33,7 @@ namespace PantheonCore::ECS
 #endif
     {
     public:
-        using EntitiesMap = std::unordered_map<Entity::Id, Entity>;
+        using EntitiesMap = std::unordered_map<Entity::Index, Entity>;
 
         /**
          * \brief Gets the current component registry instance

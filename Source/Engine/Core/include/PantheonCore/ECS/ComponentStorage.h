@@ -13,7 +13,7 @@ namespace PantheonCore::ECS
     class IComponentStorage
     {
     public:
-        using EntitiesMap = std::unordered_map<Entity::Id, Entity>;
+        using EntitiesMap = std::unordered_map<Entity::Index, Entity>;
 
         /**
          * \brief Creates a copy of the given component storage
@@ -97,13 +97,13 @@ namespace PantheonCore::ECS
          * \brief Reserves the given number of components
          * \param count The number of components to reserve
          */
-        virtual void reserve(Entity::Id count) = 0;
+        virtual void reserve(Entity::Index count) = 0;
 
         /**
          * \brief Gets the current number of entities
          * \return The current number of entities
          */
-        virtual Entity::Id size() const = 0;
+        virtual Entity::Index size() const = 0;
 
         /**
          * \brief Serializes the component storage to a byte array
@@ -247,13 +247,13 @@ namespace PantheonCore::ECS
          * \brief Reserves the given number of entities
          * \param count The number of entities to reserve
          */
-        void reserve(Entity::Id count) override;
+        void reserve(Entity::Index count) override;
 
         /**
          * \brief Gets the current number of entities
          * \return The current number of entities
          */
-        Entity::Id size() const override;
+        Entity::Index size() const override;
 
         /**
          * \brief Checks if the given entity owns a component in the storage
@@ -360,10 +360,10 @@ namespace PantheonCore::ECS
         bool fromJson(const Serialization::JsonValue& json) override;
 
     private:
-        std::vector<ComponentT>                m_components;
-        std::unordered_map<Entity::Id, size_t> m_entityToComponent;
-        std::unordered_map<size_t, Entity>     m_componentToEntity;
-        Scene*                                 m_scene;
+        std::vector<ComponentT>                   m_components;
+        std::unordered_map<Entity, Entity::Index> m_entityToComponent;
+        std::unordered_map<Entity::Index, Entity> m_componentToEntity;
+        Scene*                                    m_scene;
     };
 }
 

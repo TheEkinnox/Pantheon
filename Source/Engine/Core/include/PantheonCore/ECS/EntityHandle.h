@@ -62,6 +62,13 @@ namespace PantheonCore::ECS
         bool operator==(const EntityHandle& other) const;
 
         /**
+         * \brief Checks whether this handle references the given entity
+         * \param entity The compared entity
+         * \return True if this handle references the given entity. False otherwise
+         */
+        bool operator==(Entity entity) const;
+
+        /**
          * \brief Checks whether the entity is valid or not
          * \return True if the entity is valid. False otherwise.
          */
@@ -118,14 +125,14 @@ namespace PantheonCore::ECS
          * \brief Gets the entity's child count
          * \return The entity's child count
          */
-        size_t getChildCount() const;
+        Entity::Index getChildCount() const;
 
         /**
          * \brief Gets the entity's child at the given index
          * \param index The target child's index
          * \return A handle to the child if found or to NULL_ENTITY otherwise
          */
-        EntityHandle getChild(size_t index) const;
+        EntityHandle getChild(Entity::Index index) const;
 
         /**
          * \brief Gets the entity's children

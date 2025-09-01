@@ -48,8 +48,8 @@ namespace PantheonTest
 
         for (size_t i = 0; i < m_testScriptsCount; ++i)
         {
-            EntityHandle entity                = m_scene.create();
-            m_toSerialized[entity.getEntity()] = Entity(i);
+            EntityHandle entity                           = m_scene.create();
+            m_toSerialized[entity.getEntity().getIndex()] = Entity(i);
 
             testComponent = &entity.make<LuaScriptList>();
             testComponent->add("scripts/test.lua");

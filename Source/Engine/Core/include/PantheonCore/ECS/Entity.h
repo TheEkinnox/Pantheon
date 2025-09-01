@@ -1,4 +1,6 @@
 #pragma once
+#include "PantheonCore/Utility/TypeTraits.h"
+
 #include <climits>
 #include <cstdint>
 #include <ostream>
@@ -9,13 +11,18 @@ namespace PantheonCore::ECS
     {
     public:
         using Id = uint64_t;
-        using Version = uint32_t;
 
         static constexpr uint8_t VERSION_BITS = 24;
         static constexpr uint8_t INDEX_BITS   = sizeof(Id) * CHAR_BIT - VERSION_BITS;
 
-        static constexpr Version VERSION_MASK = (Version{ 1 } << VERSION_BITS) - 1;
-        static constexpr Id      INDEX_MASK   = (Id{ 1 } << INDEX_BITS) - 1;
+        using Version = Utility::SmallestUInt<VERSION_BITS>;
+        using Index   = Utility::SmallestUInt<INDEX_BITS>;
+
+        static constexpr Version VERSION_MASK = (~Version{ 0 }) >> (sizeof(Version) * CHAR_BIT - VERSION_BITS);
+        static constexpr Index   INDEX_MASK   = (~Index{ 0 }) >> (sizeof(Index) * CHAR_BIT - INDEX_BITS);
+
+        static constexpr Version TOMBSTONE_VERSION = VERSION_MASK;
+        static constexpr Index   TOMBSTONE_INDEX   = INDEX_MASK;
 
         /**
          * \brief Creates a default entity
@@ -33,10 +40,10 @@ namespace PantheonCore::ECS
          * \param index The entity's index
          * \param version The entity's version
          */
-        constexpr Entity(Id index, Version version);
+        constexpr Entity(Index index, Version version);
 
         /**
-         * \brief Implicitly converts an entity to it's index
+         * \brief Implicitly converts an entity to it's id
          */
         constexpr operator Id() const;
 
@@ -50,7 +57,7 @@ namespace PantheonCore::ECS
          * \brief Gets the entity's index
          * \return The entity's index
          */
-        constexpr Id getIndex() const;
+        constexpr Index getIndex() const;
 
         /**
          * \brief Increments the entity's version
@@ -82,5 +89,5 @@ namespace PantheonCore::ECS
 
 namespace PantheonCore::ECS
 {
-    static constexpr Entity NULL_ENTITY{ Entity::INDEX_MASK, Entity::VERSION_MASK };
+    static constexpr Entity NULL_ENTITY{ Entity::TOMBSTONE_INDEX, Entity::TOMBSTONE_VERSION };
 }

@@ -111,11 +111,11 @@ namespace PantheonCore::ECS
          * \brief Gets the current number of entities
          * \return The current number of entities
          */
-        Entity::Id size() const;
+        Entity::Index size() const;
 
     private:
         std::vector<Entity> m_entities;
-        Entity::Id          m_count = 0;
+        Entity::Index       m_count = 0;
         Scene*              m_scene = nullptr;
     };
 }

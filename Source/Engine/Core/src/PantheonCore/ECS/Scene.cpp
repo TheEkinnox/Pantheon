@@ -179,10 +179,10 @@ namespace PantheonCore::ECS
         if (!CHECK(it != json.MemberEnd() && it->value.IsUint64(), "Unable to deserialize scene - Invalid entities count"))
             return false;
 
-        const Entity::Id entityCount = it->value.GetUint64();
+        const Entity::Index entityCount = static_cast<Entity::Index>(it->value.GetUint64());
         m_entities.reserve(entityCount);
 
-        for (Entity::Id id = 0; id < entityCount; ++id)
+        for (Entity::Index id = 0; id < entityCount; ++id)
         {
             [[maybe_unused]] Entity entity = create();
             if (!ASSUME(entity.getIndex() == id))
@@ -271,12 +271,12 @@ namespace PantheonCore::ECS
         return { view.begin(), view.end() };
     }
 
-    Entity::Id Scene::getComponentCount(const Entity entity) const
+    Entity::Index Scene::getComponentCount(const Entity entity) const
     {
         if (!contains(entity))
             return 0;
 
-        Entity::Id count = 0;
+        Entity::Index count = 0;
 
         for (const auto& storage : m_components | std::views::values)
         {

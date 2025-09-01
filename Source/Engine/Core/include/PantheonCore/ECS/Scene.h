@@ -249,7 +249,7 @@ namespace PantheonCore::ECS
          * \param entity The target entity
          * \return The number of components owned by the entity
          */
-        Entity::Id getComponentCount(Entity entity) const;
+        Entity::Index getComponentCount(Entity entity) const;
 
         /**
          * \brief Gets the ids of all the component types owned by the given entity

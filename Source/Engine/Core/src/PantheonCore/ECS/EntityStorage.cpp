@@ -82,7 +82,7 @@ namespace PantheonCore::ECS
         return m_entities.end() - static_cast<const_iterator::difference_type>(m_entities.size() - m_count);
     }
 
-    Entity::Id EntityStorage::size() const
+    Entity::Index EntityStorage::size() const
     {
         return m_count;
     }

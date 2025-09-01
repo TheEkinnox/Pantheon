@@ -38,7 +38,7 @@ namespace PantheonCore::ECS
         return m_nextSibling;
     }
 
-    size_t HierarchyComponent::getChildCount() const
+    Entity::Index HierarchyComponent::getChildCount() const
     {
         return m_childCount;
     }
@@ -213,7 +213,7 @@ namespace PantheonCore::ECS
 
         if (parent != NULL_ENTITY)
         {
-            const auto it = toSerialized.find(parent);
+            const auto it = toSerialized.find(parent.getIndex());
 
             if (!CHECK(it != toSerialized.end(), "Unable to serialize hierarchy component - Parent is not serialized"))
                 return false;
@@ -221,7 +221,7 @@ namespace PantheonCore::ECS
             parent = it->second;
         }
 
-        return CHECK(IByteSerializable::writeNumber(parent, out), "Unable to serialize hierarchy's parent");
+        return CHECK(IByteSerializable::writeNumber(parent.getIndex(), out), "Unable to serialize hierarchy's parent");
     }
 
     template <>
@@ -230,7 +230,7 @@ namespace PantheonCore::ECS
         if (!CHECK(data != nullptr && length > 0, "Unable to deserialize hierarchy - Empty buffer"))
             return 0;
 
-        return IByteSerializable::readNumber<Entity, Entity::Id>(out.m_parent, data, length);
+        return IByteSerializable::readNumber<Entity, Entity::Index>(out.m_parent, data, length);
     }
 
     template <>
@@ -263,10 +263,10 @@ namespace PantheonCore::ECS
             return false;
 
         const auto it = json.FindMember("parent");
-        if (!CHECK(it != json.MemberEnd() && it->value.Is<Entity::Id>(), "Unable to deserialize hierarchy - Invalid parent"))
+        if (!CHECK(it != json.MemberEnd() && it->value.Is<Entity::Index>(), "Unable to deserialize hierarchy - Invalid parent"))
             return false;
 
-        out.setParent(Entity(it->value.Get<Entity::Id>()));
+        out.setParent(Entity(it->value.Get<Entity::Index>()));
         return true;
     }
 }

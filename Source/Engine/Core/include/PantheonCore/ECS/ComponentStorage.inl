@@ -17,7 +17,7 @@ namespace PantheonCore::ECS
     template <class T>
     bool ComponentStorage<T>::contains(const Entity entity) const
     {
-        return m_entityToComponent.contains(entity);
+        return m_entityToComponent.contains(entity.getIndex());
     }
 
     template <class T>
@@ -54,7 +54,7 @@ namespace PantheonCore::ECS
         }
 
         ComponentT&  component = m_components.emplace_back(instance);
-        const size_t index     = m_components.size() - 1;
+        const auto index     = static_cast<Entity::Index>(m_components.size() - 1);
 
         m_componentToEntity[index] = owner;
         m_entityToComponent[owner] = index;
@@ -87,7 +87,7 @@ namespace PantheonCore::ECS
         }
 
         ComponentT&  component = m_components.emplace_back(std::forward<Args>(args)...);
-        const size_t index     = m_components.size() - 1;
+        const auto index     = static_cast<Entity::Index>(m_components.size() - 1);
 
         m_componentToEntity[index] = owner;
         m_entityToComponent[owner] = index;
@@ -154,15 +154,15 @@ namespace PantheonCore::ECS
     }
 
     template <class T>
-    void ComponentStorage<T>::reserve(const Entity::Id count)
+    void ComponentStorage<T>::reserve(const Entity::Index count)
     {
         m_components.reserve(count);
     }
 
     template <class T>
-    Entity::Id ComponentStorage<T>::size() const
+    Entity::Index ComponentStorage<T>::size() const
     {
-        return static_cast<Entity::Id>(m_components.size());
+        return static_cast<Entity::Index>(m_components.size());
     }
 
     template <class T>
@@ -207,11 +207,11 @@ namespace PantheonCore::ECS
     template <class T>
     Entity ComponentStorage<T>::getOwner(const T& component) const
     {
-        size_t index = 0;
+        Entity::Index index = 0;
 
-        while (index < m_components.size())
+        for (const auto& current : m_components)
         {
-            if (&m_components[index] == &component)
+            if (&component == &current)
                 break;
 
             ++index;
@@ -278,8 +278,8 @@ namespace PantheonCore::ECS
         if (!CHECK(data != nullptr && length > 0, "Failed to deserialize component storage - Empty buffer"))
             return 0;
 
-        Entity::Id count;
-        size_t     offset = IByteSerializable::readNumber(count, data, length);
+        Entity::Index count;
+        size_t        offset = IByteSerializable::readNumber(count, data, length);
 
         if (!CHECK(offset > 0, "Failed to read component storage size"))
             return 0;
@@ -288,8 +288,8 @@ namespace PantheonCore::ECS
 
         for (size_t i = 0; i < count; ++i)
         {
-            Entity::Id id        = NULL_ENTITY;
-            size_t     readBytes = length >= offset ? IByteSerializable::readNumber(id, data + offset, length - offset) : 0;
+            Entity entity    = NULL_ENTITY;
+            size_t readBytes = length >= offset ? IByteSerializable::readNumber<Entity, Entity::Index>(entity, data + offset, length - offset) : 0;
 
             if (!CHECK(readBytes > 0, "Failed to read component owner"))
                 return false;
@@ -301,7 +301,7 @@ namespace PantheonCore::ECS
             if (readBytes == 0)
                 return false;
 
-            set(Entity(id), component);
+            set(entity, component);
             offset += readBytes;
         }
 

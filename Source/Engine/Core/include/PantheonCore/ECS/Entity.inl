@@ -10,7 +10,7 @@ namespace PantheonCore::ECS
     {
     }
 
-    constexpr Entity::Entity(const Id index, const Version version)
+    constexpr Entity::Entity(const Index index, const Version version)
         : Entity(make(index, version))
     {
     }
@@ -22,18 +22,18 @@ namespace PantheonCore::ECS
 
     constexpr Entity::Version Entity::getVersion() const
     {
-        return m_id >> INDEX_BITS & VERSION_MASK;
+        return static_cast<Version>(m_id >> INDEX_BITS & VERSION_MASK);
     }
 
-    constexpr Entity::Id Entity::getIndex() const
+    constexpr Entity::Index Entity::getIndex() const
     {
-        return m_id & INDEX_MASK;
+        return static_cast<Index>(m_id & INDEX_MASK);
     }
 
     inline void Entity::bumpVersion()
     {
         const Version version = getVersion();
-        PTH_ASSERT(version < VERSION_MASK);
+        PTH_ASSERT(getVersion() < TOMBSTONE_VERSION);
         m_id = make(getIndex(), version + 1);
     }
 
