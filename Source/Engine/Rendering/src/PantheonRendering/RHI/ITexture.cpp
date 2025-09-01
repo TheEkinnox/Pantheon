@@ -200,7 +200,7 @@ namespace PantheonRendering::RHI
 
         if (!writeNumber(bufferSize, output))
         {
-            DEBUG_LOG_ERROR("Unable to serialize texture - Failed to write buffer size");
+            PTH_LOG_ERROR("Unable to serialize texture - Failed to write buffer size");
             return false;
         }
 
