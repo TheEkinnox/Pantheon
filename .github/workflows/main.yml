@@ -20,6 +20,7 @@ jobs:
         info:
           - { os: windows, cxx: cl, cc: cl }
           - { os: linux, cxx: g++, cc: gcc }
+          - { os: linux, cxx: clang++, cc: clang }
 
     runs-on:
       - self-hosted
