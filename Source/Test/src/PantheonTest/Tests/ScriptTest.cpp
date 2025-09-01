@@ -133,7 +133,7 @@ namespace PantheonTest
         };
 
         static constexpr const char* expectedName = "scripts.testRequired";
-        static const std::string expectedPath = std::filesystem::path("assets/scripts/testRequired.lua").make_preferred().string();
+        static const std::string     expectedPath = std::filesystem::path("assets/scripts/testRequired.lua").make_preferred().string();
 
         for (const auto& module : modules)
         {
@@ -223,10 +223,10 @@ namespace PantheonTest
 
         LuaScriptList script;
         TEST_CHECK(!ComponentRegistry::fromBinary(script, invalidArray.data(), invalidArray.size(), &m_scene),
-            "Script deserialization from invalid memory buffer should have failed");
+            "Component deserialization from invalid memory buffer should have failed");
 
         TEST_CHECK(ComponentRegistry::fromBinary(script, validArray.data(), validArray.size(), &m_scene),
-            "Script deserialization from valid memory buffer failed");
+            "Component deserialization from valid memory buffer failed");
 
         m_scene.create().set(script);
     }
