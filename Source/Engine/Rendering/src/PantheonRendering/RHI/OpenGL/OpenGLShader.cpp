@@ -1,9 +1,6 @@
 #include "PantheonRendering/RHI/OpenGL/OpenGLShader.h"
 
 #if USING(PTH_FEATURE_OPENGL)
-#include "PantheonCore/Preprocessing/Preprocessor.h"
-#include "PantheonCore/Preprocessing/PreprocessorSettings.h"
-
 #include "PantheonRendering/RHI/IRenderAPI.h"
 
 #include <PantheonCore/Debug/Assertion.h>
