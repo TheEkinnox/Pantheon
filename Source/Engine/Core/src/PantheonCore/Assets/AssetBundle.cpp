@@ -14,6 +14,9 @@ using namespace PantheonCore::Utility;
 
 namespace PantheonCore::Assets
 {
+    using sentinel_t                            = char[4];
+    static constexpr sentinel_t BUNDLE_SENTINEL = { 0x0B, 0x4E, 0x0D, 0x4C };
+
     AssetBundle::AssetBundle()
         : m_compressionMode(ECompressionMode::NONE), m_compressedDataSize(0)
     {
@@ -36,6 +39,12 @@ namespace PantheonCore::Assets
         std::ifstream ifs(path, std::ifstream::in | std::ifstream::binary);
 
         if (!CHECK(ifs.is_open(), "Unable to load asset bundle - couldn't open file"))
+            return false;
+
+        sentinel_t sentinel = {};
+        ifs.read(sentinel, sizeof(sentinel_t));
+
+        if (!CHECK(memcmp(sentinel, BUNDLE_SENTINEL, sizeof(sentinel_t)) == 0, "Invalid bundle header - Unexpected sentinel"))
             return false;
 
         header_t headerData;
@@ -94,6 +103,8 @@ namespace PantheonCore::Assets
 
         if (!CHECK(ofs.is_open(), "Unable to save asset bundle - couldn't open file"))
             return false;
+
+        ofs.write(BUNDLE_SENTINEL, sizeof(sentinel_t));
 
         header_t header = 0;
 
