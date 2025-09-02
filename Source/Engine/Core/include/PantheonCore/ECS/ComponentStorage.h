@@ -214,7 +214,7 @@ namespace PantheonCore::ECS
          * \param instance The added component instance
          * \return A reference to the created or modified component
          */
-        T& set(Entity owner, const ComponentT& instance);
+        T& set(Entity owner, ComponentT instance);
 
         /**
          * \brief Creates or modifies the given entity's component of the given type

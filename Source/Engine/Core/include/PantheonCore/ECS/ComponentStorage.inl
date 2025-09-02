@@ -33,36 +33,9 @@ namespace PantheonCore::ECS
     }
 
     template <class T>
-    T& ComponentStorage<T>::set(const Entity owner, const ComponentT& instance)
+    T& ComponentStorage<T>::set(const Entity owner, ComponentT instance)
     {
-        const auto   it = m_entityToComponent.find(owner);
-        EntityHandle handle(m_scene, owner);
-
-        if (it != m_entityToComponent.end())
-        {
-            ComponentT& component = m_components[it->second];
-
-            ComponentTraits::onBeforeChange<ComponentT>(handle, component);
-            m_onBeforeChange.invoke(handle, component);
-
-            component = instance;
-
-            ComponentTraits::onChange<ComponentT>(handle, component);
-            m_onChange.invoke(handle, component);
-
-            return component;
-        }
-
-        ComponentT&  component = m_components.emplace_back(instance);
-        const auto index     = static_cast<Entity::Index>(m_components.size() - 1);
-
-        m_componentToEntity[index] = owner;
-        m_entityToComponent[owner] = index;
-
-        ComponentTraits::onAdd<ComponentT>(handle, component);
-        m_onAdd.invoke(handle, component);
-
-        return component;
+        return construct(owner, std::move(instance));
     }
 
     template <class T>
