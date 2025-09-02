@@ -12,7 +12,7 @@ namespace PantheonCore::ECS
     public:
         using Id = uint64_t;
 
-        static constexpr uint8_t VERSION_BITS = 24;
+        static constexpr uint8_t VERSION_BITS = 32;
         static constexpr uint8_t INDEX_BITS   = sizeof(Id) * CHAR_BIT - VERSION_BITS;
 
         using Version = Utility::SmallestUInt<VERSION_BITS>;
