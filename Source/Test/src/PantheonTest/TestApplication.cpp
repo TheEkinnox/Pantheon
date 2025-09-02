@@ -22,6 +22,7 @@
 
 #include <PantheonScripting/LuaContext.h>
 
+#include <cfloat>
 #include <cstdlib>
 
 using namespace LibMath;
