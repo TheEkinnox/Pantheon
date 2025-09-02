@@ -76,12 +76,12 @@ namespace PantheonScripting
         m_executionOrder = p_executionOrder;
     }
 
-    bool LuaScript::loadMeta(const std::string& p_path)
+    bool LuaScript::loadMeta(const std::string& path)
     {
-        if (!pathExists(p_path))
+        if (!pathExists(path))
             return true;
 
-        JsonDocument json = loadJsonFile(p_path);
+        JsonDocument json = loadJsonFile(path);
 
         const auto it = json.FindMember("order");
 
@@ -96,11 +96,11 @@ namespace PantheonScripting
         return true;
     }
 
-    bool LuaScript::saveMeta(const std::string& p_path) const
+    bool LuaScript::saveMeta(const std::string& path) const
     {
-        std::ofstream fs(p_path);
+        std::ofstream fs(path);
 
-        if (!CHECK(fs.is_open(), "Unable to open lua script meta file at path \"%s\"", p_path.c_str()))
+        if (!CHECK(fs.is_open(), "Unable to open lua script meta file at path \"%s\"", path.c_str()))
             return false;
 
         JsonOStream    jos(fs);
@@ -114,6 +114,6 @@ namespace PantheonScripting
         if (!writer.EndObject() || !ASSUME(writer.IsComplete(), "Failed to save lua script meta - Generated json is incomplete"))
             return false;
 
-        return CHECK(!fs.bad(), "Failed to write lua script meta data to \"%s\"", p_path.c_str());
+        return CHECK(!fs.bad(), "Failed to write lua script meta data to \"%s\"", path.c_str());
     }
 }

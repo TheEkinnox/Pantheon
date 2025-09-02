@@ -32,8 +32,18 @@ namespace PantheonScripting
     class LuaTypeRegistry final : public PantheonCore::Utility::TypeRegistry<LuaTypeInfo>
     {
     public:
+        /**
+         * \brief Gets the current lua type registry
+         * \return A reference to the current lua type registry
+         */
         static LuaTypeRegistry& getInstance();
 
+        /**
+         * \brief Registers the given type to the lua type registry with the given name
+         * \tparam T The registered type
+         * \param name The name under which the type should be registered
+         * \return The registered type's information
+         */
         template <typename T>
         LuaTypeInfo& registerType(const std::string& name);
     };

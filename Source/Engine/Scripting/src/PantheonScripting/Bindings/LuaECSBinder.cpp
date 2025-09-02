@@ -135,7 +135,8 @@ namespace PantheonScripting::Bindings
                 void* component = self.get();
                 return LuaTypeRegistry::getInstance().getTypeInfo(self.m_typeId).toLua(component, luaState)[index];
             },
-            sol::meta_function::new_index, [&luaState](const ComponentHandle& self, const sol::object& key, sol::object value)
+            sol::meta_function::new_index,
+            [&luaState](const ComponentHandle& self, const sol::object& key, const sol::object& value)
             {
                 if (!self.m_owner)
                     return;
@@ -188,7 +189,7 @@ namespace PantheonScripting::Bindings
                 const sol::optional<sol::object> out = self.m_table[index];
                 return out.value_or(sol::lua_nil);
             },
-            sol::meta_function::new_index, [](LuaScriptHandle& self, const sol::object& key, sol::object value)
+            sol::meta_function::new_index, [](LuaScriptHandle& self, const sol::object& key, const sol::object& value)
             {
                 if (self)
                     self.m_table[key] = value;

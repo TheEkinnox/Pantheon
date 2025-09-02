@@ -198,7 +198,7 @@ namespace PantheonScripting
         case sol::type::function:
         case sol::type::poly:
         default:
-            CHECK(false, "Unable to deserialize lua object - Unsupported type");
+            PTH_ASSERT(false, "Unable to deserialize lua object - Unsupported type");
             return sol::nullopt;
         }
     }
@@ -390,7 +390,7 @@ namespace PantheonCore::ECS
             writer.StartObject();
 
             writer.Key("key");
-            if (!CHECK(key != sol::nil, "Unable to serialize lua table - Nil key") || !toJson(key, writer, toSerialized))
+            if (!CHECK(key != sol::lua_nil, "Unable to serialize lua table - Nil key") || !toJson(key, writer, toSerialized))
                 return false;
 
             writer.Key("value");
@@ -490,7 +490,7 @@ namespace PantheonCore::ECS
 
             sol::optional key = luaObjectFromBinary(out.lua_state(), data + offset, length - offset, readBytes, scene);
 
-            if (!key.has_value() || readBytes == 0 || !CHECK(*key != sol::nil, "Unable to deserialize lua table member - Nil key"))
+            if (!key.has_value() || readBytes == 0 || !CHECK(*key != sol::lua_nil, "Unable to deserialize lua table member - Nil key"))
                 return 0;
 
             offset += readBytes;

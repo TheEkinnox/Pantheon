@@ -145,14 +145,14 @@ namespace PantheonTest
         }
     }
 
-    void ScriptTest::testJsonSerialization(const LuaScriptList& testComponent)
+    void ScriptTest::testJsonSerialization(const LuaScriptList& testScriptList)
     {
         // TODO: Remove temporary json scene file creation
         {
             rapidjson::StringBuffer buffer;
             rapidjson::Writer       writer(buffer);
-            TEST_CHECK(m_scene.toJson(writer), "Script json serialization failed");
-            TEST_CHECK(writer.IsComplete(), "Script json serialization failed - Produced json is incomplete");
+            TEST_CHECK(m_scene.toJson(writer), "Script list json serialization failed");
+            TEST_CHECK(writer.IsComplete(), "Script list json serialization failed - Produced json is incomplete");
 
             const std::string validJsonStr(buffer.GetString(), buffer.GetSize());
 
@@ -162,8 +162,8 @@ namespace PantheonTest
 
         rapidjson::StringBuffer buffer;
         rapidjson::Writer       writer(buffer);
-        TEST_CHECK(ComponentRegistry::toJson(testComponent, writer, m_toSerialized), "Script json serialization failed");
-        TEST_CHECK(writer.IsComplete(), "Script json serialization failed - Produced json is incomplete");
+        TEST_CHECK(ComponentRegistry::toJson(testScriptList, writer, m_toSerialized), "Script list json serialization failed");
+        TEST_CHECK(writer.IsComplete(), "Script list json serialization failed - Produced json is incomplete");
 
         const std::string validJsonStr(buffer.GetString(), buffer.GetSize());
 
@@ -202,21 +202,21 @@ namespace PantheonTest
         m_scene.create().set(script);
     }
 
-    void ScriptTest::testBinarySerialization(const LuaScriptList& testComponent)
+    void ScriptTest::testBinarySerialization(const LuaScriptList& testScriptList)
     {
         // TODO: Remove temporary binary scene file creation
         {
             std::vector<char> out;
-            TEST_CHECK(m_scene.toBinary(out), "Script binary serialization failed");
-            TEST_CHECK(!out.empty(), "Script binary serialization failed - Nothing was written in the output buffer");
+            TEST_CHECK(m_scene.toBinary(out), "Script list binary serialization failed");
+            TEST_CHECK(!out.empty(), "Script list binary serialization failed - Nothing was written in the output buffer");
 
             std::ofstream file("tmp.pthscene.bin");
             file.write(out.data(), static_cast<std::streamsize>(out.size()));
         }
 
         std::vector<char> validArray;
-        TEST_CHECK(ComponentRegistry::toBinary(testComponent, validArray, m_toSerialized), "Script binary serialization failed");
-        TEST_CHECK(!validArray.empty(), "Script binary serialization failed - Nothing was written in the output buffer");
+        TEST_CHECK(ComponentRegistry::toBinary(testScriptList, validArray, m_toSerialized), "Script list binary serialization failed");
+        TEST_CHECK(!validArray.empty(), "Script list binary serialization failed - Nothing was written in the output buffer");
 
         std::vector<char> invalidArray = validArray;
         invalidArray.resize(invalidArray.size() / 2);

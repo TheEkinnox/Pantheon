@@ -108,16 +108,16 @@ namespace PantheonScripting
 
         /**
          * \brief Loads the lua script's meta data from the given path
-         * \param p_path The lua script's meta path
+         * \param path The lua script's meta path
          * \return True on success. False otherwise
          */
-        bool loadMeta(const std::string& p_path);
+        bool loadMeta(const std::string& path);
 
         /**
          * \brief Saves the lua script's meta data to the given path
-         * \param p_path The lua script's meta path
+         * \param path The lua script's meta path
          * \return True on success. False otherwise
          */
-        bool saveMeta(const std::string& p_path) const;
+        bool saveMeta(const std::string& path) const;
     };
 }

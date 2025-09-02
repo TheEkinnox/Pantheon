@@ -54,7 +54,7 @@ namespace PantheonCore::ECS
         if (offset == 0)
             return 0;
 
-        if (!CHECK(length >= offset, "Unable to deserilize lua script handle's script - Invalid offset"))
+        if (!CHECK(length >= offset, "Unable to deserialize lua script handle's script - Invalid offset"))
             return 0;
 
         size_t readBytes = out.m_script.fromBinary(data + offset, length - offset);
@@ -64,7 +64,7 @@ namespace PantheonCore::ECS
 
         offset += readBytes;
 
-        if (!CHECK(length >= offset, "Unable to deserilize lua script handle's table - Invalid offset"))
+        if (!CHECK(length >= offset, "Unable to deserialize lua script handle's table - Invalid offset"))
             return 0;
 
         readBytes = fromBinary(out.m_table, data + offset, length - offset, scene);

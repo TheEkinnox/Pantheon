@@ -1,6 +1,4 @@
 #pragma once
-#include "PantheonCore/Resources/ResourceRef.h"
-
 #include "PantheonScripting/LuaTypeRegistry.h"
 
 namespace PantheonScripting
@@ -15,7 +13,6 @@ namespace PantheonScripting
     LuaTypeInfo& LuaTypeRegistry::registerType(const std::string& name)
     {
         using namespace PantheonCore::ECS;
-        using namespace PantheonCore::Resources;
         using namespace PantheonCore::Serialization;
 
         using EntitiesMap = LuaTypeInfo::EntitiesMap;

@@ -34,7 +34,7 @@ namespace PantheonTest
         size_t m_destroyedScriptsCount;
 
         void testModuleUtility();
-        void testJsonSerialization(const PantheonScripting::LuaScriptList& testComponent);
-        void testBinarySerialization(const PantheonScripting::LuaScriptList& testComponent);
+        void testJsonSerialization(const PantheonScripting::LuaScriptList& testScriptList);
+        void testBinarySerialization(const PantheonScripting::LuaScriptList& testScriptList);
     };
 }
