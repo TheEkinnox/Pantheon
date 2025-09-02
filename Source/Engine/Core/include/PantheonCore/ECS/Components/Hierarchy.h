@@ -114,7 +114,7 @@ namespace PantheonCore::ECS
     void ComponentTraits::onRemove(EntityHandle&, HierarchyComponent&);
 
     template <>
-    void ComponentTraits::onBeforeChange(EntityHandle&, HierarchyComponent&);
+    void ComponentTraits::onBeforeChange(EntityHandle&, HierarchyComponent&, HierarchyComponent&);
 
     template <>
     void ComponentTraits::onChange(EntityHandle&, HierarchyComponent&);

@@ -48,11 +48,12 @@ namespace PantheonCore::ECS
         if (it != m_entityToComponent.end())
         {
             ComponentT& component = m_components[it->second];
+            ComponentT newVal(std::forward<Args>(args)...);
 
-            ComponentTraits::onBeforeChange<ComponentT>(handle, component);
-            m_onBeforeChange.invoke(handle, component);
+            ComponentTraits::onBeforeChange<ComponentT>(handle, component, newVal);
+            m_onBeforeChange.invoke(handle, component, newVal);
 
-            component = *new(&component) ComponentT(std::forward<Args>(args)...);
+            component = *new(&component) ComponentT(std::move(newVal));
 
             ComponentTraits::onChange<ComponentT>(handle, component);
             m_onChange.invoke(handle, component);

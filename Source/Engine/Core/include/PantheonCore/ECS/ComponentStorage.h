@@ -151,10 +151,10 @@ namespace PantheonCore::ECS
         using iterator = typename std::vector<ComponentT>::iterator;
         using const_iterator = typename std::vector<ComponentT>::const_iterator;
 
-        Eventing::Event<EntityHandle, T&> m_onAdd;
-        Eventing::Event<EntityHandle, T&> m_onRemove;
-        Eventing::Event<EntityHandle, T&> m_onBeforeChange;
-        Eventing::Event<EntityHandle, T&> m_onChange;
+        Eventing::Event<EntityHandle, T&>     m_onAdd;
+        Eventing::Event<EntityHandle, T&>     m_onRemove;
+        Eventing::Event<EntityHandle, T&, T&> m_onBeforeChange;
+        Eventing::Event<EntityHandle, T&>     m_onChange;
 
         /**
          * \brief Creates an empty component storage

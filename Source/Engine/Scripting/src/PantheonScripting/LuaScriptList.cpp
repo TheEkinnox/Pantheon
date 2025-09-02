@@ -226,7 +226,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    void ComponentTraits::onBeforeChange(EntityHandle& entity, LuaScriptList& component)
+    void ComponentTraits::onBeforeChange(EntityHandle& entity, LuaScriptList& component, LuaScriptList&)
     {
         onRemove(entity, component);
     }

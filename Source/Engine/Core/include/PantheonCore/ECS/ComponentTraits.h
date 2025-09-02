@@ -33,9 +33,11 @@ namespace PantheonCore::ECS
          * \tparam T The updated component's type
          * \param entity The component's owner
          * \param component The updated component
+         * \param newValue The component's new value
          */
         template <class T>
-        static void onBeforeChange([[maybe_unused]] EntityHandle& entity, [[maybe_unused]] T& component)
+        static void onBeforeChange(
+            [[maybe_unused]] EntityHandle& entity, [[maybe_unused]] T& component, [[maybe_unused]] T& newValue)
         {
         }
 

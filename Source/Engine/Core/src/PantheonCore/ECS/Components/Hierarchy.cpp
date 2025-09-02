@@ -106,7 +106,10 @@ namespace PantheonCore::ECS
     template <>
     void ComponentTraits::onRemove(EntityHandle& entity, HierarchyComponent& hierarchy)
     {
-        onBeforeChange(entity, hierarchy);
+        {
+            HierarchyComponent discard;
+            onBeforeChange(entity, hierarchy, discard);
+        }
 
         EntityHandle child(entity.getScene(), hierarchy.m_firstChild);
 
@@ -126,7 +129,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    void ComponentTraits::onBeforeChange(EntityHandle& entity, HierarchyComponent& hierarchy)
+    void ComponentTraits::onBeforeChange(EntityHandle& entity, HierarchyComponent& hierarchy, HierarchyComponent&)
     {
         Scene* scene = entity.getScene();
         PTH_ASSERT(scene);
