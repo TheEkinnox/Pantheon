@@ -17,7 +17,7 @@ namespace PantheonCore::ECS
     template <class T>
     bool ComponentStorage<T>::contains(const Entity entity) const
     {
-        return m_entityToComponent.contains(entity.getIndex());
+        return m_entityToComponent.contains(entity);
     }
 
     template <class T>
