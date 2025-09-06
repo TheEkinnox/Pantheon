@@ -2,8 +2,6 @@
 
 #include <PantheonCore/Debug/Logger.h>
 
-#include <cstring>
-
 namespace PantheonTest
 {
     void ITest::start()
@@ -58,20 +56,6 @@ namespace PantheonTest
     ITest::ITest(std::string name)
         : m_executedCount(0), m_passedCount(0), m_failedCount(0), m_name(std::move(name)), m_isDone(false), m_isSuccess(false)
     {
-    }
-
-    bool ITest::compareBuffers(const std::span<const char> buffer1, const std::span<const char> buffer2)
-    {
-        if (buffer1.empty() != buffer2.empty())
-            return false;
-
-        if (buffer1.data() == buffer2.data())
-            return true;
-
-        if (buffer1.size() != buffer2.size())
-            return false;
-
-        return memcmp(buffer1.data(), buffer2.data(), buffer1.size()) == 0;
     }
 
     void ITest::onStart()

@@ -107,4 +107,18 @@ namespace PantheonCore::Utility
 
         return oss.str();
     }
+
+    bool compareBuffers(const std::span<const char> buffer1, const std::span<const char> buffer2)
+    {
+        if (buffer1.empty() != buffer2.empty())
+            return false;
+
+        if (buffer1.size() != buffer2.size())
+            return false;
+
+        if (buffer1.data() == buffer2.data())
+            return true;
+
+        return memcmp(buffer1.data(), buffer2.data(), buffer1.size()) == 0;
+    }
 }

@@ -1,7 +1,6 @@
 #pragma once
 #include <PantheonCore/Debug/Assertion.h>
 
-#include <span>
 #include <string>
 
 #define TEST_CHECK(...) ++m_executedCount; CHECK(__VA_ARGS__) ? ++m_passedCount : ++m_failedCount
@@ -35,8 +34,6 @@ namespace PantheonTest
         int m_failedCount;
 
         explicit ITest(std::string name);
-
-        static bool compareBuffers(std::span<const char> buffer1, std::span<const char> buffer2);
 
         virtual void onStart();
 

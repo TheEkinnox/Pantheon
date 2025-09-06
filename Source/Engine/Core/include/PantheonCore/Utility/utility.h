@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <span>
 #include <string>
 #include <vector>
 
@@ -107,6 +108,14 @@ namespace PantheonCore::Utility
      * \return A string representation of the given size
      */
     std::string sizeToStr(double size, bool addInitialValue = false);
+
+    /**
+     * \brief Checks whether the contents of two buffers are identical
+     * \param buffer1 The first buffer to compare
+     * \param buffer2 The second buffer to compare
+     * \return True if the buffers contain the same data, false otherwise
+     */
+    bool compareBuffers(std::span<const char> buffer1, std::span<const char> buffer2);
 }
 
 #include "PantheonCore/Utility/utility.inl"
