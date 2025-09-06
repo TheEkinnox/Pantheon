@@ -138,7 +138,7 @@ namespace PantheonCore::ECS
      * \param component The added component
      */
     template <>
-    void ComponentTraits::onBeforeChange(EntityHandle& entity, PantheonScripting::LuaScriptList& component);
+    void ComponentTraits::onBeforeChange(EntityHandle& entity, PantheonScripting::LuaScriptList& component, PantheonScripting::LuaScriptList&);
 
     /**
      * \brief The action to perform after a lua script component was changed

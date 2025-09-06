@@ -37,7 +37,7 @@ namespace PantheonTest
             PTH_LOG("Added int %d to entity %d:%d", val, owner.getIndex(), owner.getVersion());
         };
 
-        const auto onBeforeChangeInt = [](const Entity owner, const int& val)
+        const auto onBeforeChangeInt = [](const Entity owner, const int& curVal, const int& newVal)
         {
             PTH_LOG("Changing int %d of entity %d:%d to %d", owner.getIndex(), owner.getVersion(), curVal, newVal);
         };
