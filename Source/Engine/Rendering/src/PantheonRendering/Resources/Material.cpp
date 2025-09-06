@@ -12,6 +12,18 @@ using namespace PantheonRendering::RHI;
 
 namespace PantheonRendering::Resources
 {
+    static std::any getDefaultValue(EShaderDataType dataType);
+
+    static void bindProperty(IShader*, const std::string& name, const Material::Property&);
+
+    static bool serializePropertyValue(IWriter&, const Material::Property&);
+
+    static bool deserializeProperties(const JsonValue&, std::unordered_map<std::string, Material::Property>&);
+
+    static bool deserializePropertyValue(const JsonValue&, Material::Property&);
+
+    static size_t deserializeProperty(Material::Property&, const char*, size_t);
+
     Material::Material(const ResourceRef<IShader>& shader)
     {
         setShader(shader);
@@ -190,7 +202,7 @@ namespace PantheonRendering::Resources
 
         for (const auto& [name, uniform] : m_shader->getUniforms())
         {
-            if (name.starts_with(ENGINE_UNIFORM_PREFIX))
+            if (IShader::isEngineUniform(name))
                 continue;
 
             m_properties[name] =
@@ -236,7 +248,7 @@ namespace PantheonRendering::Resources
             bindProperty(shader, name, property);
     }
 
-    std::any Material::getDefaultValue(const EShaderDataType dataType)
+    static std::any getDefaultValue(const EShaderDataType dataType)
     {
         switch (dataType)
         {
@@ -267,7 +279,7 @@ namespace PantheonRendering::Resources
         }
     }
 
-    void Material::bindProperty(IShader* shader, const std::string& name, const Property& property)
+    static void bindProperty(IShader* shader, const std::string& name, const Material::Property& property)
     {
         PTH_ASSERT(shader, "Unable to bind material property - No shader");
 
@@ -312,7 +324,7 @@ namespace PantheonRendering::Resources
         }
     }
 
-    bool Material::serializePropertyValue(JsonWriter& writer, const Property& property)
+    static bool serializePropertyValue(IWriter& writer, const Material::Property& property)
     {
         switch (property.m_type)
         {
@@ -357,9 +369,9 @@ namespace PantheonRendering::Resources
         }
     }
 
-    bool Material::deserializeProperties(const JsonValue& json)
+    static bool deserializeProperties(const JsonValue& json, std::unordered_map<std::string, Material::Property>& out)
     {
-        m_properties.clear();
+        out.clear();
 
         if (!CHECK(json.IsArray(), "Unable to deserialize material properties - Json value should be an object"))
             return false;
@@ -372,7 +384,7 @@ namespace PantheonRendering::Resources
 
             std::string name = it->value.GetString();
 
-            Property property;
+            Material::Property property;
             it = jsonProperty.FindMember("type");
             if (!CHECK(it != jsonProperty.MemberEnd() && it->value.IsUint(), "Unable to deserialize material property type"))
                 return false;
@@ -383,13 +395,13 @@ namespace PantheonRendering::Resources
             if (!deserializePropertyValue(it->value, property))
                 return false;
 
-            m_properties[name] = property;
+            out[name] = property;
         }
 
         return true;
     }
 
-    bool Material::deserializePropertyValue(const JsonValue& json, Property& out)
+    static bool deserializePropertyValue(const JsonValue& json, Material::Property& out)
     {
         switch (out.m_type)
         {
@@ -506,7 +518,7 @@ namespace PantheonRendering::Resources
         }
     }
 
-    bool Material::serializeProperty(const Property& property, std::vector<char>& output)
+    static bool serializeProperty(const Material::Property& property, std::vector<char>& output)
     {
         size_t offset = output.size();
         output.resize(offset + 1);
@@ -521,21 +533,21 @@ namespace PantheonRendering::Resources
             output[offset] = *reinterpret_cast<const char*>(std::any_cast<bool>(&property.m_value));
             return true;
         case EShaderDataType::INT:
-            return writeNumber(std::any_cast<int>(property.m_value), output);
+            return IByteSerializable::writeNumber(std::any_cast<int>(property.m_value), output);
         case EShaderDataType::UNSIGNED_INT:
-            return writeNumber(std::any_cast<uint32_t>(property.m_value), output);
+            return IByteSerializable::writeNumber(std::any_cast<uint32_t>(property.m_value), output);
         case EShaderDataType::FLOAT:
-            return writeNumber(std::any_cast<float>(property.m_value), output);
+            return IByteSerializable::writeNumber(std::any_cast<float>(property.m_value), output);
         case EShaderDataType::VEC2:
-            return serializeVector2(std::any_cast<Vector2>(property.m_value), output);
+            return IByteSerializable::serializeVector2(std::any_cast<Vector2>(property.m_value), output);
         case EShaderDataType::VEC3:
-            return serializeVector3(std::any_cast<Vector3>(property.m_value), output);
+            return IByteSerializable::serializeVector3(std::any_cast<Vector3>(property.m_value), output);
         case EShaderDataType::VEC4:
-            return serializeVector4(std::any_cast<Vector4>(property.m_value), output);
+            return IByteSerializable::serializeVector4(std::any_cast<Vector4>(property.m_value), output);
         case EShaderDataType::MAT3:
-            return serializeMatrix(std::any_cast<Matrix3>(property.m_value), output);
+            return IByteSerializable::serializeMatrix(std::any_cast<Matrix3>(property.m_value), output);
         case EShaderDataType::MAT4:
-            return serializeMatrix(std::any_cast<Matrix4>(property.m_value), output);
+            return IByteSerializable::serializeMatrix(std::any_cast<Matrix4>(property.m_value), output);
         case EShaderDataType::TEXTURE:
             return std::any_cast<const ResourceRef<ITexture>&>(property.m_value).toBinary(output);
         case EShaderDataType::UNKNOWN:
@@ -545,7 +557,7 @@ namespace PantheonRendering::Resources
         }
     }
 
-    size_t Material::deserializeProperty(Property& out, const char* data, const size_t length)
+    static size_t deserializeProperty(Material::Property& out, const char* data, const size_t length)
     {
         if (!CHECK(data != nullptr && length > 0, "Unable to deserialize material property - Empty buffer"))
             return 0;
@@ -569,7 +581,7 @@ namespace PantheonRendering::Resources
         case EShaderDataType::INT:
         {
             int          val;
-            const size_t readBytes = readNumber(val, data + offset, length - offset);
+            const size_t readBytes = IByteSerializable::readNumber(val, data + offset, length - offset);
 
             if (!CHECK(readBytes > 0, "Failed to deserialize integer material property"))
                 return 0;
@@ -580,7 +592,7 @@ namespace PantheonRendering::Resources
         case EShaderDataType::UNSIGNED_INT:
         {
             uint32_t     val;
-            const size_t readBytes = readNumber(val, data + offset, length - offset);
+            const size_t readBytes = IByteSerializable::readNumber(val, data + offset, length - offset);
 
             if (!CHECK(readBytes > 0, "Failed to deserialize unsigned integer material property"))
                 return 0;
@@ -591,7 +603,7 @@ namespace PantheonRendering::Resources
         case EShaderDataType::FLOAT:
         {
             float        val;
-            const size_t readBytes = readNumber(val, data + offset, length - offset);
+            const size_t readBytes = IByteSerializable::readNumber(val, data + offset, length - offset);
 
             if (!CHECK(readBytes > 0, "Failed to deserialize float material property"))
                 return 0;
@@ -602,7 +614,7 @@ namespace PantheonRendering::Resources
         case EShaderDataType::VEC2:
         {
             Vector2      val;
-            const size_t readBytes = deserializeVector2(val, data + offset, length - offset);
+            const size_t readBytes = IByteSerializable::deserializeVector2(val, data + offset, length - offset);
 
             if (!CHECK(readBytes > 0, "Failed to deserialize Vector2 material property"))
                 return 0;
@@ -613,7 +625,7 @@ namespace PantheonRendering::Resources
         case EShaderDataType::VEC3:
         {
             Vector3      val;
-            const size_t readBytes = deserializeVector3(val, data + offset, length - offset);
+            const size_t readBytes = IByteSerializable::deserializeVector3(val, data + offset, length - offset);
 
             if (!CHECK(readBytes > 0, "Failed to deserialize Vector3 material property"))
                 return 0;
@@ -624,7 +636,7 @@ namespace PantheonRendering::Resources
         case EShaderDataType::VEC4:
         {
             Vector4      val;
-            const size_t readBytes = deserializeVector4(val, data + offset, length - offset);
+            const size_t readBytes = IByteSerializable::deserializeVector4(val, data + offset, length - offset);
 
             if (!CHECK(readBytes > 0, "Failed to deserialize Vector4 material property"))
                 return 0;
@@ -635,7 +647,7 @@ namespace PantheonRendering::Resources
         case EShaderDataType::MAT3:
         {
             Matrix3      val;
-            const size_t readBytes = deserializeMatrix(val, data + offset, length - offset);
+            const size_t readBytes = IByteSerializable::deserializeMatrix(val, data + offset, length - offset);
 
             if (!CHECK(readBytes > 0, "Failed to deserialize Matrix3 material property"))
                 return 0;
@@ -646,7 +658,7 @@ namespace PantheonRendering::Resources
         case EShaderDataType::MAT4:
         {
             Matrix4      val;
-            const size_t readBytes = deserializeMatrix(val, data + offset, length - offset);
+            const size_t readBytes = IByteSerializable::deserializeMatrix(val, data + offset, length - offset);
 
             if (!CHECK(readBytes > 0, "Failed to deserialize Matrix4 material property"))
                 return 0;

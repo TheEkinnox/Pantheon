@@ -12,6 +12,9 @@ using namespace PantheonCore::Resources;
 
 namespace PantheonTest
 {
+    static void testAssetAtPath(const AssetBundle& bundle, const std::shared_ptr<const Asset>& asset);
+    static void testAssetWithGuid(const AssetBundle& bundle, const std::shared_ptr<const Asset>& asset);
+
     AssetBundlesTest::AssetBundlesTest()
         : AssetBundlesTest("Asset bundles")
     {
@@ -140,7 +143,7 @@ namespace PantheonTest
         }
     }
 
-    void AssetBundlesTest::testAssetAtPath(const AssetBundle& bundle, const std::shared_ptr<const Asset>& asset)
+    static void testAssetAtPath(const AssetBundle& bundle, const std::shared_ptr<const Asset>& asset)
     {
         const std::vector<char> bundleData = bundle.getAssetAtPath(asset->getPath());
 
@@ -153,7 +156,7 @@ namespace PantheonTest
             PTH_LOG_ERROR("\"%s\": %s", asset->getPath(), "INVALID");
     }
 
-    void AssetBundlesTest::testAssetWithGuid(const AssetBundle& bundle, const std::shared_ptr<const Asset>& asset)
+    static void testAssetWithGuid(const AssetBundle& bundle, const std::shared_ptr<const Asset>& asset)
     {
         const std::vector<char> bundleData = bundle.getAssetWithGuid(asset->getGuid());
 

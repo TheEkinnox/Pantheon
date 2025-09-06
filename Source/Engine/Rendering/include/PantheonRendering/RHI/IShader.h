@@ -191,6 +191,12 @@ namespace PantheonRendering::RHI
         const std::unordered_map<std::string, UniformInfo>& getUniforms() const;
 
         /**
+         * \brief Checks whether the given uniform name refers to an engine uniform
+         * \param name The name of the uniform
+         */
+        static bool isEngineUniform(const std::string& name);
+
+        /**
          * \brief Converts a shader type token string to its corresponding enum value
          * \param shaderType The target shader type
          * \return The type enum value corresponding to the given shader type token

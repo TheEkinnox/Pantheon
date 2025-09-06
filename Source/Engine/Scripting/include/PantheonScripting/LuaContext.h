@@ -154,28 +154,10 @@ namespace PantheonScripting
         static const std::string& getModulePath(const std::string& module);
 
     private:
-        static constexpr const char* EXTENSIONS[] = { ".lua", ".lc" };
-
-        inline static std::unordered_map<std::string, std::string> s_moduleNames;
-        inline static std::unordered_map<std::string, std::string> s_modulePaths;
-
         std::unique_ptr<sol::state>  m_state;
         std::vector<LuaScriptHandle> m_scripts;
 
         bool m_isValid, m_hasStarted;
-
-        /**
-         * \brief Loads a module from the given lua state
-         * \param L The calling lua state
-         * \return The number of elements left in the stack
-         */
-        static int loadModule(lua_State* L);
-
-        /**
-         * \brief Binds the necessary custom types
-         * \param luaState The lua state to bind to
-         */
-        static void bindUserTypes(sol::state& luaState);
     };
 }
 

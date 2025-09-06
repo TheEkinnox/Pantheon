@@ -4,6 +4,10 @@
 
 namespace PantheonApp::Platform
 {
+    static std::unordered_map<size_t, Windowing::Window*> s_windowsMap;
+
+    static size_t s_currentIndex = 1;
+
     NullContext::NullContext(bool, int, int)
     {
         m_isInitialized = true;

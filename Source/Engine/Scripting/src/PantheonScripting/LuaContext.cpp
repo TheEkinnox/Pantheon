@@ -15,6 +15,14 @@ using namespace PantheonCore::Utility;
 
 namespace PantheonScripting
 {
+    inline constexpr const char* EXTENSIONS[] = { ".lua", ".lc" };
+
+    static std::unordered_map<std::string, std::string> s_moduleNames;
+    static std::unordered_map<std::string, std::string> s_modulePaths;
+
+    static int  loadModule(lua_State*);
+    static void bindUserTypes(sol::state&);
+
     LuaContext::LuaContext()
         : m_isValid(false), m_hasStarted(false)
     {
@@ -280,9 +288,9 @@ namespace PantheonScripting
         return empty;
     }
 
-    int LuaContext::loadModule(lua_State* L)
+    static int loadModule(lua_State* L)
     {
-        const std::string& module = getModulePath(sol::stack::get<std::string>(L, 1));
+        const std::string& module = LuaContext::getModulePath(sol::stack::get<std::string>(L, 1));
 
         if (module.empty())
             return 1;
@@ -291,14 +299,14 @@ namespace PantheonScripting
 
         if (!script.empty() && luaL_loadbuffer(L, script.data(), script.size(), module.c_str()) == LUA_OK)
         {
-            sol::stack::push(L, getModuleName(module).c_str());
+            sol::stack::push(L, LuaContext::getModuleName(module).c_str());
             return 2;
         }
 
         return 1;
     }
 
-    void LuaContext::bindUserTypes(sol::state& luaState)
+    static void bindUserTypes(sol::state& luaState)
     {
         Bindings::LuaECSBinder::bind(luaState);
         Bindings::LuaMathBinder::bind(luaState);

@@ -21,6 +21,8 @@ using namespace PantheonRendering::Enums;
 
 namespace PantheonRendering::RHI
 {
+    inline constexpr int INFO_LOG_SIZE = 512;
+
     static GLenum toGLEnum(const EShaderType shaderType)
     {
         switch (shaderType)
@@ -293,7 +295,7 @@ namespace PantheonRendering::RHI
         return out;
     }
 
-    bool OpenGLShader::processIncludes(std::string& source)
+    static bool processIncludes(std::string& source)
     {
         if (source.empty())
             return true;
@@ -338,28 +340,7 @@ namespace PantheonRendering::RHI
         return true;
     }
 
-    uint32_t OpenGLShader::processSource(std::string& source)
-    {
-        if (source.empty())
-            return 0;
-
-        std::istringstream iStrStream(source);
-        std::string        token;
-
-        iStrStream >> token;
-        const EShaderType shaderType = getTypeFromToken(token);
-
-        if (shaderType == EShaderType::UNKNOWN)
-            return 0;
-
-        std::string firstLine;
-        std::getline(iStrStream, firstLine);
-        source.erase(0, token.size() + firstLine.size());
-
-        return compileSource(shaderType, source);
-    }
-
-    GLuint OpenGLShader::compileSource(const EShaderType shaderType, std::string& source)
+    static GLuint compileSource(const EShaderType shaderType, std::string& source)
     {
         const GLuint shaderId = glCreateShader(toGLEnum(shaderType));
 
@@ -377,12 +358,33 @@ namespace PantheonRendering::RHI
         {
             char infoLog[INFO_LOG_SIZE];
             glGetShaderInfoLog(shaderId, INFO_LOG_SIZE, nullptr, infoLog);
-            PTH_LOG_ERROR("ERROR::SHADER::%s::COMPILATION_FAILED\n%s", getTokenFromType(shaderType).c_str(), infoLog);
+            PTH_LOG_ERROR("ERROR::SHADER::%s::COMPILATION_FAILED\n%s", OpenGLShader::getTokenFromType(shaderType).c_str(), infoLog);
             glDeleteShader(shaderId);
             return 0;
         }
 
         return shaderId;
+    }
+
+    static uint32_t processSource(std::string& source)
+    {
+        if (source.empty())
+            return 0;
+
+        std::istringstream iStrStream(source);
+        std::string        token;
+
+        iStrStream >> token;
+        const EShaderType shaderType = OpenGLShader::getTypeFromToken(token);
+
+        if (shaderType == EShaderType::UNKNOWN)
+            return 0;
+
+        std::string firstLine;
+        std::getline(iStrStream, firstLine);
+        source.erase(0, token.size() + firstLine.size());
+
+        return compileSource(shaderType, source);
     }
 
     bool OpenGLShader::parseSource()

@@ -170,65 +170,8 @@ namespace PantheonRendering::Resources
         void bind() const;
 
     private:
-        static constexpr const char* ENGINE_UNIFORM_PREFIX = "pth_";
-
         PantheonCore::Resources::ResourceRef<RHI::IShader> m_shader;
         std::unordered_map<std::string, Property>          m_properties;
-
-        /**
-         * \brief Gets the default value for the given data type
-         * \param dataType The values data type
-         * \return The data type's default value
-         */
-        static std::any getDefaultValue(Enums::EShaderDataType dataType);
-
-        /**
-         * \brief Binds the given property to the given shader
-         * \param shader The target shader
-         * \param name The target property's name
-         * \param property The target property
-         */
-        static void bindProperty(RHI::IShader* shader, const std::string& name, const Property& property);
-
-        /**
-         * \brief Serializes the material to json
-         * \param writer The output json writer
-         * \param property The property to serialize
-         * \return True on success. False otherwise.
-         */
-        static bool serializePropertyValue(PantheonCore::Serialization::JsonWriter& writer, const Property& property);
-
-        /**
-         * \brief Deserializes the material's properties from json
-         * \param json The input json data
-         * \return True on success. False otherwise.
-         */
-        bool deserializeProperties(const PantheonCore::Serialization::JsonValue& json);
-
-        /**
-         * \brief Deserializes the material property from json
-         * \param json The input json data
-         * \param out The output property
-         * \return True on success. False otherwise.
-         */
-        static bool deserializePropertyValue(const PantheonCore::Serialization::JsonValue& json, Property& out);
-
-        /**
-         * \brief Writes the given property into the given memory buffer
-         * \param property The property to serialize
-         * \param output The output memory buffer
-         * \return True on success. False otherwise.
-         */
-        static bool serializeProperty(const Property& property, std::vector<char>& output);
-
-        /**
-         * \brief Deserializes the given material property from the given memory buffer
-         * \param out The output property
-         * \param data The input memory buffer
-         * \param length The memory buffer's length
-         * \return The number of read bytes on success. 0 otherwise.
-         */
-        static size_t deserializeProperty(Property& out, const char* data, size_t length);
     };
 
     template <typename T>

@@ -63,6 +63,11 @@ namespace PantheonRendering::RHI
         return m_uniforms;
     }
 
+    bool IShader::isEngineUniform(const std::string& name)
+    {
+        return name.starts_with("pth_");
+    }
+
     EShaderType IShader::getTypeFromToken(std::string shaderType)
     {
         toLowerInPlace(shaderType);

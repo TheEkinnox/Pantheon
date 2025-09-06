@@ -204,7 +204,7 @@ namespace PantheonRendering::RHI
          * \brief Gets the current render api
          * \return A reference to the current render api
          */
-        inline static IRenderAPI& getCurrent();
+        static IRenderAPI& getCurrent();
 
         /**
          * \brief Sets the current render api from the given backend
@@ -212,10 +212,5 @@ namespace PantheonRendering::RHI
          * \return A reference to the current render api
          */
         static IRenderAPI& setCurrent(EGraphicsAPI backend);
-
-    private:
-        static std::unique_ptr<IRenderAPI> s_instance;
     };
 }
-
-#include "PantheonRendering/RHI/IRenderAPI.inl"

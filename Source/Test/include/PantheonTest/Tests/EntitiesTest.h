@@ -20,8 +20,6 @@ namespace PantheonTest
         void testComponents();
         void testScene();
 
-        static PantheonCore::ECS::Scene makeScene();
-
         void testJsonSerialization();
         void testBinarySerialization();
     };

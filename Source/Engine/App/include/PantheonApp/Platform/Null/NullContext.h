@@ -51,10 +51,6 @@ namespace PantheonApp::Platform
         void update() override;
 
     private:
-        inline static std::unordered_map<size_t, Windowing::Window*> s_windowsMap;
-
-        inline static size_t s_currentIndex = 1;
-
         size_t m_mainWindow;
         bool   m_isInitialized;
 

@@ -214,30 +214,6 @@ namespace PantheonRendering::RHI
         std::string m_source;
         uint32_t    m_program = 0;
 
-        static constexpr int INFO_LOG_SIZE = 512;
-
-        /**
-         * \brief Compiles the given shader source
-         * \param shaderType The type of shader to compile
-         * \param source The source of the shader to compile
-         * \return The compiled shader's handle
-         */
-        static uint32_t compileSource(Enums::EShaderType shaderType, std::string& source);
-
-        /**
-         * \brief Processes includes for the given shader source
-         * \param source The shader source for which includes should be processed
-         * \return True on success. False otherwise
-         */
-        static bool processIncludes(std::string& source);
-
-        /**
-         * \brief
-         * \param source The shader source to process
-         * \return The created shader id
-         */
-        static uint32_t processSource(std::string& source);
-
         /**
          * \brief Parses the shader's source and create the appropriate shader types
          * \return True if at least one type of shader was extracted. False otherwise

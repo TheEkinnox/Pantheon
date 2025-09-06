@@ -164,7 +164,7 @@ namespace PantheonTest
         }
     }
 
-    Scene EntitiesTest::makeScene()
+    static Scene makeScene()
     {
         Scene scene;
         scene.clear();

@@ -16,6 +16,11 @@ using namespace PantheonCore::Utility;
 
 namespace PantheonApp::Platform
 {
+    inline constexpr unsigned int PANTHEON_OPENGL_VERSION_MAJOR = 4;
+    inline constexpr unsigned int PANTHEON_OPENGL_VERSION_MINOR = 6;
+
+    inline static std::unordered_map<GLFWwindow*, Window*> s_windowsMap;
+
     OpenGLContext::OpenGLContext(const bool useVsync, const int sampleCount, const int refreshRate)
         : m_mainWindow(nullptr), m_refreshRate(refreshRate != WindowSettings::DONT_CARE ? refreshRate : GLFW_DONT_CARE),
         m_useVsync(useVsync)
@@ -92,7 +97,7 @@ namespace PantheonApp::Platform
         glfwPollEvents();
     }
 
-    Window* OpenGLContext::getInstance(void* handle)
+    static Window* getInstance(void* handle)
     {
         PTH_ASSERT(handle, "Attempted to get the window linked to a null handle");
 
@@ -100,7 +105,7 @@ namespace PantheonApp::Platform
         return it != s_windowsMap.end() ? it->second : nullptr;
     }
 
-    void OpenGLContext::bindEvents(GLFWwindow* handle)
+    static void bindEvents(GLFWwindow* handle)
     {
         if (!handle)
             return;

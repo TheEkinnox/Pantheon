@@ -10,9 +10,6 @@ namespace PantheonApp::Platform
 {
     class OpenGLContext final : public Core::IContext
     {
-        static constexpr unsigned int PANTHEON_OPENGL_VERSION_MAJOR = 4;
-        static constexpr unsigned int PANTHEON_OPENGL_VERSION_MINOR = 6;
-
     public:
         OpenGLContext(bool useVsync, int sampleCount, int refreshRate);
         ~OpenGLContext() override;
@@ -59,25 +56,10 @@ namespace PantheonApp::Platform
         void update() override;
 
     private:
-        inline static std::unordered_map<GLFWwindow*, Windowing::Window*> s_windowsMap;
-
         GLFWwindow* m_mainWindow;
         int         m_refreshRate;
         bool        m_useVsync;
         bool        m_isInitialized;
-
-        /**
-         * \brief Finds the window linked to the given handle
-         * \param handle The searched window's handle
-         * \return A pointer to the found window on success. nullptr otherwise
-         */
-        static Windowing::Window* getInstance(void* handle);
-
-        /**
-         * \brief Binds the handle's events to the window's events
-         * \param handle The target glfw handle
-         */
-        static void bindEvents(GLFWwindow* handle);
 
         /**
          * \brief Creates a window handle with the given settings

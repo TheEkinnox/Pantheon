@@ -7,7 +7,13 @@
 
 namespace PantheonRendering::RHI
 {
-    std::unique_ptr<IRenderAPI> IRenderAPI::s_instance{};
+    static std::unique_ptr<IRenderAPI> s_instance{};
+
+    IRenderAPI& IRenderAPI::getCurrent()
+    {
+        PTH_ASSERT(s_instance, "No loaded rendering API");
+        return *s_instance;
+    }
 
     IRenderAPI& IRenderAPI::setCurrent(const EGraphicsAPI backend)
     {

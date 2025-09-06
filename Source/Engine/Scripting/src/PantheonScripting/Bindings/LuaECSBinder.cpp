@@ -13,6 +13,12 @@ using namespace PantheonCore::Utility;
 
 namespace PantheonScripting::Bindings
 {
+    static void bindTag(sol::state&);
+    static void bindScene(sol::state&);
+    static void bindComponent(sol::state&);
+    static void bindScriptHandle(sol::state&);
+    static void bindComponentSearchOrigin(sol::state&);
+
     void LuaECSBinder::bind(sol::state& luaState)
     {
         bindTag(luaState);
@@ -23,7 +29,7 @@ namespace PantheonScripting::Bindings
         bindComponentSearchOrigin(luaState);
     }
 
-    void LuaECSBinder::bindTag(sol::state& luaState)
+    static void bindTag(sol::state& luaState)
     {
         static constexpr const char* typeName = "Tag";
 
@@ -62,7 +68,7 @@ namespace PantheonScripting::Bindings
         return (void)typeInfo;
     }
 
-    void LuaECSBinder::bindScene(sol::state& luaState)
+    static void bindScene(sol::state& luaState)
     {
         static constexpr const char* typeName = "Scene";
 
@@ -120,7 +126,7 @@ namespace PantheonScripting::Bindings
         return (void)typeInfo;
     }
 
-    void LuaECSBinder::bindComponent(sol::state& luaState)
+    static void bindComponent(sol::state& luaState)
     {
         static constexpr const char* typeName = "Component";
 
@@ -174,7 +180,7 @@ namespace PantheonScripting::Bindings
         return (void)typeInfo;
     }
 
-    void LuaECSBinder::bindScriptHandle(sol::state& luaState)
+    static void bindScriptHandle(sol::state& luaState)
     {
         static constexpr const char* typeName = "Script";
 
@@ -202,7 +208,7 @@ namespace PantheonScripting::Bindings
         return (void)typeInfo;
     }
 
-    void LuaECSBinder::bindComponentSearchOrigin(sol::state& luaState)
+    static void bindComponentSearchOrigin(sol::state& luaState)
     {
         using ESearchOrigin = EntityHandle::EComponentSearchOrigin;
         static constexpr const char* typeName = "EComponentSearchOrigin";
