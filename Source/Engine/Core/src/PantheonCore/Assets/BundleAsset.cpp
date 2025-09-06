@@ -1,6 +1,7 @@
 ﻿#include "PantheonCore/Assets/BundleAsset.h"
 
 #include "PantheonCore/Resources/ResourceAsset.h"
+#include "PantheonCore/Utility/ByteOrder.h"
 #include "PantheonCore/Utility/utility.h"
 
 #include <climits>
