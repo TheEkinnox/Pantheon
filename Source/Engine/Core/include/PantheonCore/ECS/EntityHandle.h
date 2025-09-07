@@ -6,9 +6,18 @@ namespace PantheonCore::ECS
 {
     class Scene;
 
+    template <bool>
+    class EntityHandleIterator;
+
     class EntityHandle final
     {
     public:
+        using iterator       = EntityHandleIterator<false>;
+        using const_iterator = iterator;
+
+        using reverse_iterator       = EntityHandleIterator<true>;
+        using const_reverse_iterator = reverse_iterator;
+
         enum class EComponentSearchOrigin : uint8_t
         {
             ROOT,
@@ -133,6 +142,30 @@ namespace PantheonCore::ECS
          * \return A handle to the child if found or to NULL_ENTITY otherwise
          */
         EntityHandle getChild(Entity::Index index) const;
+
+        /**
+         * \brief gets an iterator to the entity's first child
+         * \return An iterator to the entity's first child
+         */
+        iterator begin() const;
+
+        /**
+         * \brief gets an iterator to the end of the entity's children
+         * \return An iterator to the end of the entity's children
+         */
+        iterator end() const;
+
+        /**
+         * \brief Gets an iterator to the entity's first child
+         * \return An iterator to the entity's first child
+         */
+        reverse_iterator rbegin() const;
+
+        /**
+         * \brief gets an iterator to the end of the entity's children
+         * \return An iterator to the end of the entity's children
+         */
+        reverse_iterator rend() const;
 
         /**
          * \brief Gets the entity's children

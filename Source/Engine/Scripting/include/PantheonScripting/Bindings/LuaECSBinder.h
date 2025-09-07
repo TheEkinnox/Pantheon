@@ -1,8 +1,14 @@
 #pragma once
+#include <PantheonCore/ECS/EntityHandle.h>
+
+#include <sol/types.hpp>
 
 namespace sol
 {
-    class state;
+    template <>
+    struct is_container<PantheonCore::ECS::EntityHandle> : std::false_type
+    {
+    };
 }
 
 namespace PantheonScripting::Bindings

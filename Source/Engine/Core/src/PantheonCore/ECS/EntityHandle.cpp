@@ -1,5 +1,6 @@
 #include "PantheonCore/ECS/EntityHandle.h"
 
+#include "PantheonCore/ECS/EntityHandleIterator.h"
 #include "PantheonCore/ECS/Scene.h"
 #include "PantheonCore/ECS/Components/Hierarchy.h"
 
@@ -114,23 +115,29 @@ namespace PantheonCore::ECS
         return child;
     }
 
+    EntityHandle::iterator EntityHandle::begin() const
+    {
+        return { getChild(0) };
+    }
+
+    EntityHandle::iterator EntityHandle::end() const
+    {
+        return { { m_scene, NULL_ENTITY } };
+    }
+
+    EntityHandle::reverse_iterator EntityHandle::rbegin() const
+    {
+        return { getChild(getChildCount() - 1) };
+    }
+
+    EntityHandle::reverse_iterator EntityHandle::rend() const
+    {
+        return { { m_scene, NULL_ENTITY } };
+    }
+
     std::vector<EntityHandle> EntityHandle::getChildren() const
     {
-        const HierarchyComponent* hierarchy = get<HierarchyComponent>();
-
-        if (!hierarchy || hierarchy->getChildCount() == 0)
-            return {};
-
-        std::vector<EntityHandle> children;
-        EntityHandle              child = { m_scene, hierarchy->getFirstChild() };
-
-        while (child)
-        {
-            children.push_back(child);
-            child = child.getNextSibling();
-        }
-
-        return children;
+        return { begin(), end() };
     }
 
     EntityHandle EntityHandle::copy() const

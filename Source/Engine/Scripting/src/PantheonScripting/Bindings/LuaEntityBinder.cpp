@@ -4,8 +4,6 @@
 
 #include <PantheonCore/ECS/ComponentHandle.h>
 
-#include <sol/state.hpp>
-
 using namespace PantheonCore::ECS;
 
 namespace PantheonScripting::Bindings

@@ -47,9 +47,7 @@ namespace PantheonCore::ECS
     {
         std::vector<Transform*> linkedTransforms;
 
-        const std::vector<EntityHandle> children = entity.getChildren();
-
-        for (EntityHandle child : children)
+        for (EntityHandle child : entity)
         {
             if (Transform* childTransform = child.get<Transform>())
             {
