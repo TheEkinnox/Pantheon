@@ -140,12 +140,6 @@ namespace PantheonCore::ECS
     }
 
     template <class T>
-    bool ComponentStorage<T>::has(const Entity owner) const
-    {
-        return m_entityToComponent.contains(owner);
-    }
-
-    template <class T>
     void* ComponentStorage<T>::getOrCreateRaw(const Entity owner)
     {
         void* out = findRaw(owner);

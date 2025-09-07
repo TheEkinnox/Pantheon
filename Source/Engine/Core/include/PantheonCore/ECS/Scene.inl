@@ -13,7 +13,7 @@ namespace PantheonCore::ECS
         if (it == m_components.end())
             return false;
 
-        return reinterpret_cast<ComponentStorage<T>*>(it->second.get())->has(owner);
+        return reinterpret_cast<ComponentStorage<T>*>(it->second.get())->contains(owner);
     }
 
     template <typename T>

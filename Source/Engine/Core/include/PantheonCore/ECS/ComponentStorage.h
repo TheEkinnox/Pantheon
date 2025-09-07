@@ -256,13 +256,6 @@ namespace PantheonCore::ECS
         Entity::Index size() const override;
 
         /**
-         * \brief Checks if the given entity owns a component in the storage
-         * \param owner The searched component's owner
-         * \return True if the entity owns a component of in the storage. False otherwise
-         */
-        bool has(Entity owner) const;
-
-        /**
          * \brief Finds or assigns a default component instance to the given entity
          * \param owner The component's owner
          * \return True on success. False otherwise
