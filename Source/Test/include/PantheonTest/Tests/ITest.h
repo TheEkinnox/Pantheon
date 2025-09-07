@@ -1,9 +1,12 @@
 #pragma once
 #include <PantheonCore/Debug/Assertion.h>
+#include <PantheonCore/Utility/macros.h>
 
 #include <string>
 
 #define TEST_CHECK(...) ++m_executedCount; CHECK(__VA_ARGS__) ? ++m_passedCount : ++m_failedCount
+#define TEST_REQUIRE(condition, ...) ++m_executedCount; const bool UNIQUE_VAR(result) = CHECK(condition, __VA_ARGS__); \
+    UNIQUE_VAR(result) ? ++m_passedCount : ++m_failedCount; if (!UNIQUE_VAR(result)) return
 
 namespace PantheonTest
 {
