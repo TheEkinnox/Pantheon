@@ -114,6 +114,12 @@ namespace PantheonCore::ECS
         EntityHandle getParent() const;
 
         /**
+         * \brief Gets the entity's display name
+         * \return The entity's display name
+         */
+        std::string getDisplayName() const;
+
+        /**
          * \brief Sets the linked entity's parent
          * \param parent The entity's new parent
          */

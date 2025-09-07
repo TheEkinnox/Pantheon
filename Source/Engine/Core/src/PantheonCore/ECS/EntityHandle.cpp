@@ -4,6 +4,7 @@
 #include "PantheonCore/ECS/EntityHandleIterator.h"
 #include "PantheonCore/ECS/Scene.h"
 #include "PantheonCore/ECS/Components/Hierarchy.h"
+#include "PantheonCore/ECS/Components/TagComponent.h"
 
 using namespace PantheonCore::Serialization;
 using namespace PantheonCore::Utility;
@@ -64,6 +65,20 @@ namespace PantheonCore::ECS
         const HierarchyComponent* hierarchy = get<HierarchyComponent>();
 
         return { m_scene, hierarchy ? hierarchy->getParent() : NULL_ENTITY };
+    }
+
+    std::string EntityHandle::getDisplayName() const
+    {
+        if (!*this)
+            return "None";
+
+        std::ostringstream str;
+        if (const TagComponent* tag = get<TagComponent>(); tag && !tag->m_tag.empty())
+            str << tag->m_tag << " (" << m_entity << ")";
+        else
+            str << "Entity " << m_entity;
+
+        return str.str();
     }
 
     void EntityHandle::setParent(const EntityHandle parent)
