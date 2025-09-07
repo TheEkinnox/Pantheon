@@ -126,6 +126,13 @@ namespace PantheonCore::ECS
         void setParent(EntityHandle parent);
 
         /**
+         * \brief Sets the linked entity's parent
+         * \param parent The entity's new parent
+         * \param keepWorld Whether the entity should keep its current world transform
+         */
+        void setParent(EntityHandle parent, bool keepWorld);
+
+        /**
          * \brief Gets the entity's next sibling
          * \return A handle to the entity's next sibling if found or to NULL_ENTITY otherwise
          */
@@ -136,6 +143,11 @@ namespace PantheonCore::ECS
          * \return A handle to the entity's previous sibling if found or to NULL_ENTITY otherwise
          */
         EntityHandle getPreviousSibling() const;
+
+        /**
+         * \brief Adds a new child entity to this one
+         */
+        EntityHandle addChild() const;
 
         /**
          * \brief Gets the entity's child count

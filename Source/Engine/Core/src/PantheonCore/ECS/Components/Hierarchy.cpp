@@ -18,11 +18,6 @@ namespace PantheonCore::ECS
         return m_parent;
     }
 
-    void HierarchyComponent::setParent(const Entity parent)
-    {
-        m_parent = parent;
-    }
-
     Entity HierarchyComponent::getFirstChild() const
     {
         return m_firstChild;
@@ -69,14 +64,14 @@ namespace PantheonCore::ECS
         Transform* transform       = entity.get<Transform>();
 
         if (transform)
-            transform->setParent(parentTransform, parentTransform == nullptr);
+            transform->setParent(parentTransform, !parentTransform);
 
         const std::vector<Transform*> childTransforms = getChildTransforms(entity);
 
         for (Transform* childTransform : childTransforms)
         {
             Transform* newParent = transform ? transform : parentTransform;
-            childTransform->setParent(newParent, parentTransform == nullptr);
+            childTransform->setParent(newParent, !newParent);
         }
     }
 
@@ -91,29 +86,30 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    void ComponentTraits::onAdd(EntityHandle& owner, HierarchyComponent& hierarchy)
+    void ComponentTraits::onAdd(EntityHandle& entity, HierarchyComponent& component)
     {
-        PTH_ASSERT(hierarchy.m_firstChild == NULL_ENTITY, "Adding a pre-existing hierarchy is not supported");
-        PTH_ASSERT(hierarchy.m_previousSibling == NULL_ENTITY, "Adding a pre-existing hierarchy is not supported");
-        PTH_ASSERT(hierarchy.m_nextSibling == NULL_ENTITY, "Adding a pre-existing hierarchy is not supported");
-        PTH_ASSERT(hierarchy.m_childCount == 0, "Adding a pre-existing hierarchy is not supported");
+        PTH_ASSERT(component.m_firstChild == NULL_ENTITY, "Adding a pre-existing hierarchy is not supported");
+        PTH_ASSERT(component.m_previousSibling == NULL_ENTITY, "Adding a pre-existing hierarchy is not supported");
+        PTH_ASSERT(component.m_nextSibling == NULL_ENTITY, "Adding a pre-existing hierarchy is not supported");
+        PTH_ASSERT(component.m_childCount == 0, "Adding a pre-existing hierarchy is not supported");
 
-        onChange(owner, hierarchy);
+        onChange(entity, component);
     }
 
     template <>
-    void ComponentTraits::onRemove(EntityHandle& entity, HierarchyComponent& hierarchy)
+    void ComponentTraits::onRemove(EntityHandle& entity, HierarchyComponent& component)
     {
         {
             HierarchyComponent discard;
-            onBeforeChange(entity, hierarchy, discard);
+            onBeforeChange(entity, component, discard);
         }
 
-        EntityHandle child(entity.getScene(), hierarchy.m_firstChild);
+        EntityHandle child(entity.getScene(), component.m_firstChild);
 
-        hierarchy.m_parent          = NULL_ENTITY;
-        hierarchy.m_nextSibling     = NULL_ENTITY;
-        hierarchy.m_previousSibling = NULL_ENTITY;
+        // Technically the component gets deleted but events, which get called after this, might need the info to be accurate
+        component.m_parent          = NULL_ENTITY;
+        component.m_nextSibling     = NULL_ENTITY;
+        component.m_previousSibling = NULL_ENTITY;
 
         while (child)
         {
@@ -122,19 +118,25 @@ namespace PantheonCore::ECS
             child = nextChild;
         }
 
-        hierarchy.m_childCount = 0;
+        component.m_childCount = 0;
         unlinkTransforms(entity);
     }
 
     template <>
-    void ComponentTraits::onBeforeChange(EntityHandle& entity, HierarchyComponent& hierarchy, HierarchyComponent&)
+    void ComponentTraits::onBeforeChange(EntityHandle& entity, HierarchyComponent& component, HierarchyComponent& newValue)
     {
         Scene* scene = entity.getScene();
         PTH_ASSERT(scene);
 
-        EntityHandle parent(scene, hierarchy.m_parent);
-        EntityHandle nextSibling(scene, hierarchy.m_nextSibling);
-        EntityHandle prevSibling(scene, hierarchy.m_previousSibling);
+        if (newValue.m_parent == entity)
+            newValue.m_parent = component.m_parent;
+
+        newValue.m_firstChild = component.m_firstChild;
+        newValue.m_childCount = component.m_childCount;
+
+        EntityHandle parent(scene, component.m_parent);
+        EntityHandle nextSibling(scene, component.m_nextSibling);
+        EntityHandle prevSibling(scene, component.m_previousSibling);
 
         if (HierarchyComponent* parentHierarchy = parent.get<HierarchyComponent>())
         {
@@ -150,28 +152,28 @@ namespace PantheonCore::ECS
         if (HierarchyComponent* nextHierarchy = nextSibling.get<HierarchyComponent>())
             nextHierarchy->m_previousSibling = prevSibling;
 
-        hierarchy.m_parent          = NULL_ENTITY;
-        hierarchy.m_nextSibling     = NULL_ENTITY;
-        hierarchy.m_previousSibling = NULL_ENTITY;
+        // Technically the component gets overwritten but events, which get called after this, might need the info to be accurate
+        component.m_parent          = NULL_ENTITY;
+        component.m_nextSibling     = newValue.m_nextSibling     = NULL_ENTITY;
+        component.m_previousSibling = newValue.m_previousSibling = NULL_ENTITY;
     }
 
     template <>
-    void ComponentTraits::onChange(EntityHandle& entity, HierarchyComponent& hierarchy)
+    void ComponentTraits::onChange(EntityHandle& entity, HierarchyComponent& component)
     {
         Scene* scene = entity.getScene();
         PTH_ASSERT(scene);
 
-        EntityHandle parent(scene, hierarchy.m_parent);
+        if (component.m_parent == entity)
+            component.m_parent = NULL_ENTITY;
 
-        if (EntityHandle firstChild(scene, hierarchy.m_firstChild); firstChild && !firstChild.has<HierarchyComponent>())
-            firstChild.make<HierarchyComponent>(entity);
-
-        if (!parent)
-            return;
+        EntityHandle parent(scene, component.m_parent);
+        EntityHandle firstChild(scene, component.m_firstChild);
 
         if (HierarchyComponent* parentHierarchy = parent.get<HierarchyComponent>())
         {
-            EntityHandle nextSibling(scene, hierarchy.m_nextSibling = parentHierarchy->m_firstChild);
+            component.m_nextSibling = parentHierarchy->m_firstChild;
+            EntityHandle nextSibling(scene, component.m_nextSibling);
 
             if (nextSibling)
                 nextSibling.get<HierarchyComponent>()->m_previousSibling = entity;
@@ -179,14 +181,41 @@ namespace PantheonCore::ECS
             parentHierarchy->m_firstChild = entity;
             ++parentHierarchy->m_childCount;
         }
-        else
+        else if (parent)
         {
             parentHierarchy               = &parent.make<HierarchyComponent>(NULL_ENTITY);
             parentHierarchy->m_firstChild = entity;
             parentHierarchy->m_childCount = 1;
         }
 
+        if (firstChild && !firstChild.has<HierarchyComponent>())
+            firstChild.make<HierarchyComponent>(entity);
+
         linkTransforms(entity);
+    }
+
+    template <>
+    HierarchyComponent ComponentTraits::copy(EntityHandle&, HierarchyComponent& source, EntityHandle& to)
+    {
+        PTH_ASSERT(to);
+        Scene* scene = to.getScene();
+
+        to.setParent({ scene, source.m_parent }, true);
+
+        const EntityHandle firstChild(scene, source.m_firstChild);
+        EntityHandle       child = firstChild;
+
+        while (child)
+        {
+            const EntityHandle nextSibling = child.getNextSibling();
+
+            EntityHandle copy = child.copy();
+            copy.setParent(to, true);
+
+            child = nextSibling;
+        }
+
+        return *to.get<HierarchyComponent>();
     }
 
     template <>

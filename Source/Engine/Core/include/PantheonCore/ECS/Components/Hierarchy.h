@@ -53,12 +53,6 @@ namespace PantheonCore::ECS
         Entity getParent() const;
 
         /**
-         * \brief Sets the hierarchy owner's parent entity
-         * \param parent The owner's new parent
-         */
-        void setParent(Entity parent);
-
-        /**
          * \brief Gets the hierarchy owner's first child
          * \return The owner's first child
          */
@@ -118,6 +112,9 @@ namespace PantheonCore::ECS
 
     template <>
     void ComponentTraits::onChange(EntityHandle&, HierarchyComponent&);
+
+    template <>
+    HierarchyComponent ComponentTraits::copy(EntityHandle&, HierarchyComponent&, EntityHandle&);
 
     template <>
     void ComponentTraits::onAdd(EntityHandle&, LibMath::Transform&);

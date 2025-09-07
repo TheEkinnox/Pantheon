@@ -83,16 +83,28 @@ namespace PantheonCore::ECS
 
     void EntityHandle::setParent(const EntityHandle parent)
     {
-        HierarchyComponent* hierarchy = get<HierarchyComponent>();
+        make<HierarchyComponent>(parent);
+    }
 
-        if (!hierarchy)
+    void EntityHandle::setParent(const EntityHandle parent, const bool keepWorld)
+    {
+        LibMath::Transform* transform = get<LibMath::Transform>();
+
+        if (!transform)
+            return setParent(parent);
+
+        if (keepWorld)
         {
-            make<HierarchyComponent>(parent);
-            return;
+            const LibMath::Matrix4 world = transform->getWorldMatrix();
+            setParent(parent);
+            transform->setWorldMatrix(world);
         }
-
-        hierarchy->setParent(parent);
-        set<HierarchyComponent>(*hierarchy);
+        else
+        {
+            const LibMath::Matrix4 local = transform->getMatrix();
+            setParent(parent);
+            transform->setMatrix(local);
+        }
     }
 
     EntityHandle EntityHandle::getNextSibling() const
@@ -107,6 +119,16 @@ namespace PantheonCore::ECS
         const HierarchyComponent* hierarchy = get<HierarchyComponent>();
 
         return { m_scene, hierarchy ? hierarchy->getPreviousSibling() : NULL_ENTITY };
+    }
+
+    EntityHandle EntityHandle::addChild() const
+    {
+        if (!*this)
+            return {};
+
+        EntityHandle child = m_scene->create();
+        child.setParent(*this);
+        return child;
     }
 
     Entity::Index EntityHandle::getChildCount() const
