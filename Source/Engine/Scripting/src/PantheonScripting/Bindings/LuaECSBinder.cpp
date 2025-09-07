@@ -80,6 +80,13 @@ namespace PantheonScripting::Bindings
                 sol::resolve<EntityHandle(Entity)>(&Scene::create),
                 [](Scene& self, const EntityHandle& hint)
                 {
+                    if (hint.getScene() != &self)
+                    {
+                        const std::string displayName = hint.getDisplayName();
+                        PTH_LOG_ERROR("Failed to copy entity %s - Invalid scene", displayName.c_str());
+                        return EntityHandle();
+                    }
+
                     return self.create(hint);
                 }
             ),
@@ -235,7 +242,7 @@ namespace PantheonScripting::Bindings
 
     static void bindComponentSearchOrigin(sol::state& luaState)
     {
-        using ESearchOrigin = EntityHandle::EComponentSearchOrigin;
+        using ESearchOrigin                   = EntityHandle::EComponentSearchOrigin;
         static constexpr const char* typeName = "EComponentSearchOrigin";
 
         luaState.new_enum(typeName,
