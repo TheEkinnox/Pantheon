@@ -51,5 +51,19 @@ namespace PantheonCore::ECS
         static void onChange([[maybe_unused]] EntityHandle& entity, [[maybe_unused]] T& component)
         {
         }
+
+        /**
+         * \brief The action to perform before a component of the given type is copied
+         * \tparam T The updated component's type
+         * \param from The source component's owner
+         * \param source The copied component
+         * \param to The copied component's owner
+         * \return The component copy
+         */
+        template <class T>
+        static T copy([[maybe_unused]] EntityHandle& from, [[maybe_unused]] T& source, [[maybe_unused]] EntityHandle& to)
+        {
+            return source;
+        }
     };
 }
