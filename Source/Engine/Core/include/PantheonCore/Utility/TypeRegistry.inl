@@ -3,7 +3,6 @@
 #include "PantheonCore/Utility/TypeRegistry.h"
 
 #include <ranges>
-#include <type_traits>
 
 namespace PantheonCore::Utility
 {
@@ -94,6 +93,17 @@ namespace PantheonCore::Utility
     const TypeInfo& TypeRegistry<TypeInfo>::getTypeInfo() const
     {
         return getTypeInfo(getTypeId<T>());
+    }
+
+    template <class TypeInfo>
+    TypeId TypeRegistry<TypeInfo>::getRegisteredTypeId(const std::string& type) const
+    {
+        const auto it = m_typeIds.find(type);
+
+        if (CHECK(it != m_typeIds.end(), "Couldn't find registered id of type \"%s\"", type.c_str()))
+            return it->second;
+
+        return 0;
     }
 
     template <typename TypeInfo>

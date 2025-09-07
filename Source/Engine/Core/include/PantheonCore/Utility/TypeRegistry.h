@@ -136,6 +136,13 @@ namespace PantheonCore::Utility
         const TypeInfo& getTypeInfo() const;
 
         /**
+         * \brief Gets the registered type id for the given type name
+         * \param type The target type's registered name
+         * \return The registered name for the given component type
+         */
+        TypeId getRegisteredTypeId(const std::string& type) const;
+
+        /**
          * \brief Gets the registered name for the given type id
          * \param typeId The component type's id
          * \return The registered name for the given component type
