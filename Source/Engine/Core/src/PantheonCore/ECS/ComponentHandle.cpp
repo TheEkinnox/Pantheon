@@ -14,6 +14,14 @@ namespace PantheonCore::ECS
         return m_owner && m_owner.getScene()->getStorage(m_typeId).contains(m_owner);
     }
 
+    void ComponentHandle::destroy()
+    {
+        if (m_typeId == 0)
+            return;
+
+        m_owner.remove(m_typeId);
+    }
+
     template <>
     bool ComponentRegistry::toBinary(const ComponentHandle& value, std::vector<char>& out, const EntitiesMap& toSerialized)
     {

@@ -5,6 +5,8 @@
 
 namespace PantheonCore::ECS
 {
+    struct ComponentHandle;
+
     template <class T>
     class ComponentStorage;
     class IComponentStorage;
@@ -271,6 +273,13 @@ namespace PantheonCore::ECS
          * \return The components owned by the given entity
          */
         std::vector<std::pair<Utility::TypeId, void*>> getComponents(Entity owner) const;
+
+        /**
+         * \brief Gets handles to all the components owned by the given entity
+         * \param owner The components' owner
+         * \return Handles to the components owned by the given entity
+         */
+        std::vector<ComponentHandle> getComponentHandles(Entity owner) const;
 
     private:
         EntityStorage                                                                   m_entities;

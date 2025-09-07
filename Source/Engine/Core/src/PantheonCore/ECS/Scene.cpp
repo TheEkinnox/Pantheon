@@ -1,5 +1,6 @@
 #include "PantheonCore/ECS/Scene.h"
 
+#include "PantheonCore/ECS/ComponentHandle.h"
 #include "PantheonCore/ECS/ComponentRegistry.h"
 
 #include <ranges>
@@ -304,6 +305,22 @@ namespace PantheonCore::ECS
         }
 
         return ids;
+    }
+
+    std::vector<ComponentHandle> Scene::getComponentHandles(Entity owner) const
+    {
+        std::vector<ComponentHandle> components;
+        components.reserve(m_components.size());
+
+        EntityHandle handle(const_cast<Scene*>(this), owner);
+
+        for (const auto& [id, storage] : m_components)
+        {
+            if (storage->contains(owner))
+                components.emplace_back(handle, id);
+        }
+
+        return components;
     }
 
     std::vector<std::pair<TypeId, void*>> Scene::getComponents(const Entity owner) const

@@ -22,6 +22,11 @@ namespace PantheonCore::ECS
         operator bool() const;
 
         /**
+         * \brief Removes the component from its owner
+         */
+        void destroy();
+
+        /**
          * \brief Gets the handled component cast to the given type
          * \tparam T The expected component type
          * \return The found component cast to the given type on success. Nullptr otherwise

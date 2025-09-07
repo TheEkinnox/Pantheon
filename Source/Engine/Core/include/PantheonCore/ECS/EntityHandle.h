@@ -4,6 +4,7 @@
 
 namespace PantheonCore::ECS
 {
+    struct ComponentHandle;
     class Scene;
 
     template <bool>
@@ -293,6 +294,55 @@ namespace PantheonCore::ECS
         void remove(const T& instance);
 
         /**
+         * \brief Checks if the linked entity owns a component of the given type
+         * \param type The component's type id
+         * \return True if the entity owns a component of the given type. False otherwise
+         */
+        bool has(Utility::TypeId type) const;
+
+        /**
+         * \brief Finds the component of the given type owned by the linked entity
+         * \param type The component's type id
+         * \return A handle to the found component on success. An empty handle otherwise
+         */
+        ComponentHandle get(Utility::TypeId type) const;
+
+        /**
+         * \brief Finds the component of the given type owned by the entity or one of it's parents
+         * \param type The component's type id
+         * \return A handle to the found component on success. An empty handle otherwise
+         */
+        ComponentHandle getInParent(Utility::TypeId type) const;
+
+        /**
+         * \brief Finds the component of the given type owned by the entity or one of it's children
+         * \tparam T The component's type
+         * \return A handle to the found component on success. An empty handle otherwise
+         */
+        ComponentHandle getInChildren(Utility::TypeId type) const;
+
+        /**
+         * \brief Finds the component of the given type owned by an entity in the linked entity's hierarchy
+         * \param type The component's type id
+         * \param searchOrigin The point at which the search should start
+         * \return A handle to the found component on success. An empty handle otherwise
+         */
+        ComponentHandle getInHierarchy(Utility::TypeId type, EComponentSearchOrigin searchOrigin) const;
+
+        /**
+         * \brief Finds or creates the component of the given type owned by the linked entity
+         * \param type The component's type id
+         * \return A handle to the created component on success. An empty handle otherwise
+         */
+        ComponentHandle getOrCreate(Utility::TypeId type) const;
+
+        /**
+         * \brief Removes the component of the given type from the linked entity
+         * \param type The component's type
+         */
+        void remove(Utility::TypeId type) const;
+
+        /**
          * \brief Gets the number of components owned by the linked entity
          * \return The number of components owned by the entity
          */
@@ -309,6 +359,12 @@ namespace PantheonCore::ECS
          * \return The components owned by the entity
          */
         std::vector<std::pair<Utility::TypeId, void*>> getComponents() const;
+
+        /**
+         * \brief gets handles to all the components owned by the linked entity
+         * \return Handles to the components owned by the entity
+         */
+        std::vector<ComponentHandle> getComponentHandles() const;
 
     private:
         Scene* m_scene;

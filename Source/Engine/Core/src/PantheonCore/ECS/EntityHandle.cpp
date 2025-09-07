@@ -1,5 +1,6 @@
 #include "PantheonCore/ECS/EntityHandle.h"
 
+#include "PantheonCore/ECS/ComponentHandle.h"
 #include "PantheonCore/ECS/EntityHandleIterator.h"
 #include "PantheonCore/ECS/Scene.h"
 #include "PantheonCore/ECS/Components/Hierarchy.h"
@@ -156,6 +157,101 @@ namespace PantheonCore::ECS
         m_entity = NULL_ENTITY;
     }
 
+    bool EntityHandle::has(const TypeId type) const
+    {
+        if (!m_scene)
+            return false;
+
+        return m_scene->getStorage(type).contains(m_entity);
+    }
+
+    ComponentHandle EntityHandle::get(const TypeId type) const
+    {
+        if (m_scene)
+            return { *this, type };
+
+        return {};
+    }
+
+    ComponentHandle EntityHandle::getInParent(const TypeId type) const
+    {
+        ComponentHandle current{ *this, type };
+
+        if (current)
+            return current;
+
+        EntityHandle parent = getParent();
+
+        while (parent)
+        {
+            if ((current = { parent, type }))
+                return current;
+
+            parent = parent.getParent();
+        }
+
+        return {};
+    }
+
+    ComponentHandle EntityHandle::getInChildren(const TypeId type) const
+    {
+        if (const ComponentHandle component = get(type))
+            return component;
+
+        for (const EntityHandle& child : *this)
+        {
+            if (const ComponentHandle component = child.getInChildren(type))
+                return component;
+        }
+
+        return {};
+    }
+
+    ComponentHandle EntityHandle::getInHierarchy(const TypeId type, const EComponentSearchOrigin searchOrigin) const
+    {
+        switch (searchOrigin)
+        {
+        case EComponentSearchOrigin::ROOT:
+        {
+            return getRoot().getInChildren(type);
+        }
+        case EComponentSearchOrigin::PARENT:
+        {
+            if (const ComponentHandle component = getInParent(type))
+                return component;
+
+            return getInChildren(type);
+        }
+        case EComponentSearchOrigin::CHILDREN:
+        {
+            if (const ComponentHandle component = getInChildren(type))
+                return component;
+
+            return getInParent(type);
+        }
+        default:
+            PTH_ASSERT(false, "Invalid component search origin");
+            return {};
+        }
+    }
+
+    ComponentHandle EntityHandle::getOrCreate(const TypeId type) const
+    {
+        if (!m_scene)
+            return {};
+
+        if (m_scene->getStorage(type).getOrCreateRaw(m_entity))
+            return { *this, type };
+
+        return {};
+    }
+
+    void EntityHandle::remove(const TypeId type) const
+    {
+        if (m_scene)
+            m_scene->getStorage(type).remove(m_entity);
+    }
+
     Entity::Id EntityHandle::getComponentCount() const
     {
         return m_scene ? m_scene->getComponentCount(m_entity) : 0;
@@ -169,6 +265,11 @@ namespace PantheonCore::ECS
     std::vector<std::pair<TypeId, void*>> EntityHandle::getComponents() const
     {
         return m_scene ? m_scene->getComponents(m_entity) : std::vector<std::pair<TypeId, void*>>();
+    }
+
+    std::vector<ComponentHandle> EntityHandle::getComponentHandles() const
+    {
+        return m_scene ? m_scene->getComponentHandles(m_entity) : std::vector<ComponentHandle>{};
     }
 
     std::ostream& operator<<(std::ostream& stream, const EntityHandle& handle)
