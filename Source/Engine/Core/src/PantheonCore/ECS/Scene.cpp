@@ -221,6 +221,11 @@ namespace PantheonCore::ECS
         return { this, entity };
     }
 
+    EntityHandle Scene::find(const Entity::Index index)
+    {
+        return { this, m_entities.find(index) };
+    }
+
     void Scene::destroy(const Entity entity)
     {
         for (const auto& componentStorage : m_components | std::views::values)

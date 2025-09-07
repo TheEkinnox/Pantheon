@@ -73,6 +73,13 @@ namespace PantheonCore::ECS
         bool has(Entity entity) const;
 
         /**
+         * \brief Finds the entity with the given index
+         * \param index The entity's index
+         * \return The entity with the given index on success. NULL_ENTITY otherwise
+         */
+        Entity find(Entity::Index index) const;
+
+        /**
          * \brief Removes all entities from the manager
          */
         void clear();

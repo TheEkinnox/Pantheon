@@ -120,6 +120,13 @@ namespace PantheonCore::ECS
         EntityHandle create(Entity source);
 
         /**
+         * \brief Finds the entity with the given index
+         * \param index The entity's index
+         * \return A handle to the entity with the given index on success. An empty handle otherwise
+         */
+        EntityHandle find(Entity::Index index);
+
+        /**
          * \brief Destroys the given entity
          * \param entity The entity to destroy
          */

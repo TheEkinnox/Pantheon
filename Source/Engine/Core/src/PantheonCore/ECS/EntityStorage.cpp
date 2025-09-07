@@ -43,6 +43,19 @@ namespace PantheonCore::ECS
         return std::ranges::find(*this, entity) != end();
     }
 
+    Entity EntityStorage::find(const Entity::Index index) const
+    {
+        if (index >= Entity::TOMBSTONE_INDEX)
+            return NULL_ENTITY;
+
+        const auto it = std::ranges::find_if(*this, [index](const Entity entity)
+        {
+            return entity.getIndex() == index;
+        });
+
+        return it != end() ? *it : NULL_ENTITY;
+    }
+
     void EntityStorage::clear()
     {
         for (size_t i = m_count; i > 0; --i)
