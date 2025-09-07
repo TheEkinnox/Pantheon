@@ -10,7 +10,7 @@ namespace PantheonCore::ECS
     class EntityStorage
     {
     public:
-        using iterator = std::vector<Entity>::iterator;
+        using iterator       = std::vector<Entity>::iterator;
         using const_iterator = std::vector<Entity>::const_iterator;
 
         Eventing::Event<EntityHandle> m_onAdd;

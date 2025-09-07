@@ -1,7 +1,10 @@
 #pragma once
 #include "PantheonCore/Utility/CoreDefines.h"
-#include "PantheonCore/Utility/DynamicTypeInfo.h"
 #include "PantheonCore/Utility/TypeRegistry.h"
+
+#if USING(PTH_TARGET_EDITOR)
+#include "PantheonCore/Utility/DynamicTypeInfo.h"
+#endif
 
 #include <cstdint>
 

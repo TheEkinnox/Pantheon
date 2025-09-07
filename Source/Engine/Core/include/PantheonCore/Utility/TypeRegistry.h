@@ -151,9 +151,9 @@ namespace PantheonCore::Utility
         const std::string& getRegisteredTypeName() const;
 
     private:
-        using TypeMap = std::unordered_map<TypeId, TypeInfo>;
+        using TypeMap     = std::unordered_map<TypeId, TypeInfo>;
         using TypeNameMap = std::unordered_map<TypeId, std::string>;
-        using TypeIdMap = std::unordered_map<std::string, TypeId>;
+        using TypeIdMap   = std::unordered_map<std::string, TypeId>;
 
         TypeMap     m_typeInfos;
         TypeNameMap m_typeNames;

@@ -84,7 +84,7 @@ namespace PantheonCore::Utility
         static union
         {
             uint32_t integer;
-            uint8_t bytes[4];
+            uint8_t  bytes[4];
         } tmp = { 0x01020304 };
 
         return tmp.bytes[0] == 1;

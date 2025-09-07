@@ -16,7 +16,7 @@ namespace PantheonCore::Resources
         static_assert(std::is_same_v<IResource, T> || std::is_base_of_v<IResource, T>);
 
     public:
-        using KeySizeT = uint8_t;
+        using KeySizeT  = uint8_t;
         using PathSizeT = uint8_t;
         using RefCountT = uint32_t;
 

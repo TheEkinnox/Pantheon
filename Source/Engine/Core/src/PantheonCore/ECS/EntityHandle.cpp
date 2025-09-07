@@ -52,8 +52,7 @@ namespace PantheonCore::ECS
         {
             root   = parent;
             parent = parent.getParent();
-        }
-        while (parent);
+        } while (parent);
 
         return root;
     }

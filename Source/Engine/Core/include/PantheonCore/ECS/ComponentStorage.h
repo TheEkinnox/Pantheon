@@ -147,8 +147,8 @@ namespace PantheonCore::ECS
     class ComponentStorage final : public IComponentStorage
     {
     public:
-        using ComponentT = std::remove_const_t<T>;
-        using iterator = typename std::vector<ComponentT>::iterator;
+        using ComponentT     = std::remove_const_t<T>;
+        using iterator       = typename std::vector<ComponentT>::iterator;
         using const_iterator = typename std::vector<ComponentT>::const_iterator;
 
         Eventing::Event<EntityHandle, T&>     m_onAdd;

@@ -16,8 +16,8 @@ namespace PantheonCore::Resources
     class ResourceManager
     {
         using ResourceMap = std::unordered_map<std::string, std::unique_ptr<ResourceRef<IResource>>>;
-        using KeyMap = std::unordered_map<std::string, std::string>;
-        using BundlesMap = std::unordered_map<std::string, Assets::AssetBundle>;
+        using KeyMap      = std::unordered_map<std::string, std::string>;
+        using BundlesMap  = std::unordered_map<std::string, Assets::AssetBundle>;
 
     public:
         /**

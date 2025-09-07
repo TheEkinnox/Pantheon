@@ -35,7 +35,7 @@ namespace PantheonCore::ECS
         if (offset == 0)
             return 0;
 
-        if (!CHECK(length >= offset, "Unable to deserilize lua component handle's type - Invalid offset"))
+        if (!CHECK(length >= offset, "Unable to deserialize lua component handle's type - Invalid offset"))
             return 0;
 
         std::string  typeName;
@@ -52,7 +52,7 @@ namespace PantheonCore::ECS
 
         ComponentRegistry& instance = getInstance();
 
-        if (!CHECK(instance.contains(typeName), "Unable to deserilize lua component handle - Unkown type \"%s\"", typeName.c_str()))
+        if (!CHECK(instance.contains(typeName), "Unable to deserialize lua component handle - Unknown type \"%s\"", typeName.c_str()))
             return 0;
 
         out.m_typeId = instance.getTypeInfo(typeName).m_typeId;
@@ -110,14 +110,14 @@ namespace PantheonCore::ECS
             return true;
         }
 
-        if (!CHECK(it->value.IsString(), "Unable to deserilize lua component handle type name - Json value should be a string"))
+        if (!CHECK(it->value.IsString(), "Unable to deserialize component handle type name - Json value should be a string"))
             return false;
 
         const std::string typeName(it->value.GetString(), it->value.GetStringLength());
 
         ComponentRegistry& instance = getInstance();
 
-        if (!CHECK(instance.contains(typeName), "Unable to deserilize lua component handle - Unkown type \"%s\"", typeName.c_str()))
+        if (!CHECK(instance.contains(typeName), "Unable to deserialize component handle - Unknown type \"%s\"", typeName.c_str()))
             return false;
 
         out.m_typeId = instance.getTypeInfo(typeName).m_typeId;

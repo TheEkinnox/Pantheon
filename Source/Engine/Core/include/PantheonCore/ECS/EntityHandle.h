@@ -168,7 +168,7 @@ namespace PantheonCore::ECS
         T* get();
 
         /**
-         * \brief Finds the component owned by the linked entity
+         * \brief Finds the component of the given type owned by the linked entity
          * \tparam T The component's type
          * \return A constant pointer to the found component on success. Nullptr otherwise
          */

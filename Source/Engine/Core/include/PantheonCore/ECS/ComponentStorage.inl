@@ -174,8 +174,7 @@ namespace PantheonCore::ECS
     template <class T>
     const T* ComponentStorage<T>::find(const Entity owner) const
     {
-        const auto it = m_entityToComponent.find(owner);
-        return it != m_entityToComponent.end() ? &m_components[it->second] : nullptr;
+        return const_cast<ComponentStorage*>(this)->find(owner);
     }
 
     template <class T>
