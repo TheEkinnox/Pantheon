@@ -168,6 +168,21 @@ namespace PantheonCore::Resources
     }
 
     template <class T>
+    std::string ResourceRef<T>::getFullPath() const
+    {
+        return PTH_SERVICE(ResourceManager).getFullPath(m_path);
+    }
+
+    template <class T>
+    bool ResourceRef<T>::reload()
+    {
+        if constexpr (!std::is_same_v<IResource, T>)
+            return (*this) = PTH_SERVICE(ResourceManager).getOrCreate<T>(m_key, m_path);
+        else
+            return (*this) = PTH_SERVICE(ResourceManager).get<T>(m_key);
+    }
+
+    template <class T>
     void ResourceRef<T>::reset()
     {
         if (m_refCount && --(*m_refCount) == 0)

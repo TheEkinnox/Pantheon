@@ -143,6 +143,17 @@ namespace PantheonCore::Resources
         std::string getPath() const;
 
         /**
+         * \brief Gets the referenced resource's path including it's search path
+         * \return The referenced resource's full path
+         */
+        std::string getFullPath() const;
+
+        /**
+         * \brief Reloads the resource reference
+         */
+        virtual bool reload();
+
+        /**
          * \brief Resets the resource reference
          */
         void reset();
