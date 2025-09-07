@@ -138,10 +138,10 @@ namespace PantheonCore::ECS
         writer.StartArray();
 
         IComponentStorage::EntitiesMap entitiesMap;
-        Entity::Id                     index = 0;
+        Entity::Index                  index = 0;
 
         for (const auto entity : m_entities)
-            entitiesMap[entity] = Entity(index++);
+            entitiesMap[entity.getIndex()] = Entity(index++);
 
         for (const auto& [typeId, storage] : m_components)
         {
