@@ -47,4 +47,22 @@ namespace PantheonCore::Utility
 
     template <typename T>
     using SmallestUIntT = SmallestUInt<sizeof(T) * CHAR_BIT>;
+
+    namespace Detail
+    {
+        template <class T, bool = std::is_enum_v<T>>
+        struct UnderlyingType
+        {
+            using type = std::underlying_type_t<T>;
+        };
+
+        template <class T>
+        struct UnderlyingType<T, false>
+        {
+            using type = T;
+        };
+    }
+
+    template <class T>
+    using UnderlyingT = typename Detail::UnderlyingType<T>::type; // Hack to silently fallback to T when not an enum
 }

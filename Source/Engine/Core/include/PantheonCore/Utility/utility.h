@@ -1,5 +1,7 @@
 #pragma once
 
+#include "TypeTraits.h"
+
 #include <cstdint>
 #include <span>
 #include <string>
@@ -100,6 +102,14 @@ namespace PantheonCore::Utility
      * \return The extracted bits
      */
     constexpr uint64_t readBits(uint64_t data, int bitCount, int offset);
+
+    /**
+     * \brief Converts the given value to its underlying type
+     * \param value The value to convert
+     * \return The value converted to its underlying type
+     */
+    template <typename T>
+    constexpr UnderlyingT<T> underlying(T value);
 
     /**
      * \brief Creates a string representation of the given size

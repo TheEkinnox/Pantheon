@@ -58,4 +58,10 @@ namespace PantheonCore::Utility
         const uint64_t mask = (1LLU << bitCount) - 1;
         return data >> offset & mask;
     }
+
+    template <typename T>
+    constexpr UnderlyingT<T> underlying(const T value)
+    {
+        return static_cast<UnderlyingT<T>>(value);
+    }
 }
