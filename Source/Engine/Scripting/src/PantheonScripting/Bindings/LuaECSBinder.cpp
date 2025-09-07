@@ -159,19 +159,29 @@ namespace PantheonScripting::Bindings
                 data[key] = value;
                 typeInfo.fromLua(component, data);
             },
-            "set", [](const ComponentHandle& self, const sol::userdata& value)
-            {
-                if (!self.m_owner)
-                    return;
+            "owner", sol::readonly_property(
+                [](const ComponentHandle& self)
+                {
+                    return self ? self.m_owner : EntityHandle{};
+                }
+            ),
+            "self", sol::property(
+                [&luaState](const ComponentHandle& self) -> sol::userdata
+                {
+                    if (!self.m_owner)
+                        return make_object_userdata(luaState, sol::lua_nil);
 
-                void* component = self.m_owner.getScene()->getStorage(self.m_typeId).findRaw(self.m_owner);
+                    return LuaTypeRegistry::getInstance().getTypeInfo(self.m_typeId).toLua(self.get(), luaState);
+                },
+                [](const ComponentHandle& self, const sol::userdata& value)
+                {
+                    if (!self)
+                        return;
 
-                if (!component)
-                    return;
-
-                const LuaTypeInfo& typeInfo = LuaTypeRegistry::getInstance().getTypeInfo(self.m_typeId);
-                typeInfo.fromLua(component, value);
-            }
+                    LuaTypeRegistry::getInstance().getTypeInfo(self.m_typeId).fromLua(self.get(), value);
+                }
+            ),
+            "destroy", &ComponentHandle::destroy
         );
 
         componentType["__type"]["name"] = typeName;
@@ -199,7 +209,22 @@ namespace PantheonScripting::Bindings
             {
                 if (self)
                     self.m_table[key] = value;
-            }
+            },
+            "owner", sol::readonly_property(
+                [](const LuaScriptHandle& self)
+                {
+                    return self ? self.m_owner : EntityHandle{};
+                }
+            ),
+            "self", sol::readonly_property(
+                [](const LuaScriptHandle& self) -> sol::table
+                {
+                    if (!self)
+                        return sol::lua_nil;
+
+                    return self.m_table;
+                }
+            )
         );
 
         componentType["__type"]["name"] = typeName;
