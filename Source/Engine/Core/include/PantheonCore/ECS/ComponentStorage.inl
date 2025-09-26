@@ -86,7 +86,7 @@ namespace PantheonCore::ECS
         ComponentTraits::onRemove<ComponentT>(handle, component);
         m_onRemove.invoke(handle, component);
 
-        const Entity::Index lastIndex = m_components.size() - 1;
+        const Entity::Index lastIndex = static_cast<Entity::Index>(m_components.size() - 1);
 
         m_componentToEntity[it->second] = m_componentToEntity[lastIndex];
         std::swap(component, m_components[lastIndex]);
@@ -106,7 +106,7 @@ namespace PantheonCore::ECS
     template <class T>
     void ComponentStorage<T>::clear()
     {
-        for (Entity::Index i = m_components.size(); i > 0; --i)
+        for (Entity::Index i = static_cast<Entity::Index>(m_components.size()); i > 0; --i)
         {
             if (i > m_components.size())
                 continue;
