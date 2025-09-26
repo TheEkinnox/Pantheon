@@ -297,7 +297,7 @@ namespace PantheonCore::ECS
         if (!CHECK(it != json.MemberEnd() && it->value.Is<Entity::Index>(), "Unable to deserialize hierarchy - Invalid parent"))
             return false;
 
-        out.setParent(Entity(it->value.Get<Entity::Index>()));
+        out.m_parent = Entity(it->value.Get<Entity::Index>());
         return true;
     }
 }
