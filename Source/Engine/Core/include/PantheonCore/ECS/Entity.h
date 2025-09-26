@@ -5,6 +5,10 @@
 #include <cstdint>
 #include <ostream>
 
+// IMPORTANT: MAKE SURE THESE DEFINES MATCH VERSION_BITS AND INDEX_BITS
+#define ENT_VER_FMT PRIu32
+#define ENT_IDX_FMT PRIu32
+
 namespace PantheonCore::ECS
 {
     class Entity

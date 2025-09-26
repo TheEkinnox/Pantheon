@@ -86,7 +86,7 @@ namespace PantheonCore::ECS
         ComponentTraits::onRemove<ComponentT>(handle, component);
         m_onRemove.invoke(handle, component);
 
-        const size_t lastIndex = m_components.size() - 1;
+        const Entity::Index lastIndex = m_components.size() - 1;
 
         m_componentToEntity[it->second] = m_componentToEntity[lastIndex];
         std::swap(component, m_components[lastIndex]);
@@ -106,7 +106,7 @@ namespace PantheonCore::ECS
     template <class T>
     void ComponentStorage<T>::clear()
     {
-        for (size_t i = m_components.size(); i > 0; --i)
+        for (Entity::Index i = m_components.size(); i > 0; --i)
         {
             if (i > m_components.size())
                 continue;
@@ -222,9 +222,9 @@ namespace PantheonCore::ECS
 
         for (const auto [index, entity] : m_componentToEntity)
         {
-            const auto it = entitiesMap.find(entity);
+            const auto it = entitiesMap.find(entity.getIndex());
 
-            if (!CHECK(it != entitiesMap.end(), "Failed to serialize component storage - Entity %d not found", entity.getIndex()))
+            if (!CHECK(it != entitiesMap.end(), "Failed to serialize component storage - Entity %" ENT_IDX_FMT " not found", entity.getIndex()))
                 return false;
 
             if (!CHECK(Serialization::IByteSerializable::writeNumber(it->second, output), "Failed to write component owner"))
@@ -282,9 +282,9 @@ namespace PantheonCore::ECS
 
         for (const auto [index, entity] : m_componentToEntity)
         {
-            const auto it = entitiesMap.find(entity);
+            const auto it = entitiesMap.find(entity.getIndex());
 
-            if (!CHECK(it != entitiesMap.end(), "Failed to serialize component storage - Entity %d not found", entity.getIndex()))
+            if (!CHECK(it != entitiesMap.end(), "Failed to serialize component storage - Entity %" ENT_IDX_FMT " not found", entity.getIndex()))
                 return false;
 
             writer.StartObject();

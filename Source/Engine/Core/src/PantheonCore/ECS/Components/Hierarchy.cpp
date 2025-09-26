@@ -270,7 +270,7 @@ namespace PantheonCore::ECS
 
         if (parent != NULL_ENTITY)
         {
-            const auto it = toSerialized.find(parent);
+            const auto it = toSerialized.find(parent.getIndex());
 
             if (!CHECK(it != toSerialized.end(), "Unable to serialize hierarchy component - Parent is not serialized"))
                 return false;

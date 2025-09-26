@@ -59,10 +59,10 @@ namespace PantheonCore::ECS
             return false;
 
         IComponentStorage::EntitiesMap entitiesMap;
-        Entity::Id                     index = 0;
+        Entity::Index                  index = 0;
 
         for (const auto entity : m_entities)
-            entitiesMap[entity] = Entity(index++);
+            entitiesMap[entity.getIndex()] = Entity(index++, 0);
 
         const ElemCountT storageCount = static_cast<ElemCountT>(m_components.size());
         if (!CHECK(writeNumber(storageCount, output), "Unable to write scene entity count to memory buffer"))
@@ -92,7 +92,7 @@ namespace PantheonCore::ECS
         if (data == nullptr || length == 0)
             return 0;
 
-        Entity::Id entityCount = 0;
+        Entity::Index entityCount = 0;
         size_t     offset      = readNumber(entityCount, data, length);
 
         if (!CHECK(offset != 0, "Unable to deserialize scene - Failed to read entity count"))
@@ -100,7 +100,7 @@ namespace PantheonCore::ECS
 
         m_entities.reserve(entityCount);
 
-        for (Entity::Id id = 0; id < entityCount; ++id)
+        for (Entity::Index id = 0; id < entityCount; ++id)
         {
             [[maybe_unused]] Entity entity = create();
             if (!ASSUME(entity.getIndex() == id))
@@ -142,7 +142,7 @@ namespace PantheonCore::ECS
         Entity::Index                  index = 0;
 
         for (const auto entity : m_entities)
-            entitiesMap[entity.getIndex()] = Entity(index++);
+            entitiesMap[entity.getIndex()] = Entity(index++, 0);
 
         for (const auto& [typeId, storage] : m_components)
         {
