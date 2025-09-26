@@ -1,6 +1,7 @@
 #include "PantheonCore/ECS/Components/Hierarchy.h"
 
 #include "PantheonCore/ECS/EntityHandle.h"
+#include "PantheonCore/ECS/EntityHandleIterator.h"
 #include "PantheonCore/ECS/SceneView.h"
 
 using namespace LibMath;
