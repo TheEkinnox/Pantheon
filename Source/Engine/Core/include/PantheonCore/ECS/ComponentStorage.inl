@@ -227,7 +227,7 @@ namespace PantheonCore::ECS
             if (!CHECK(it != entitiesMap.end(), "Failed to serialize component storage - Entity %" ENT_IDX_FMT " not found", entity.getIndex()))
                 return false;
 
-            if (!CHECK(Serialization::IByteSerializable::writeNumber(it->second, output), "Failed to write component owner"))
+            if (!CHECK(Serialization::IByteSerializable::writeNumber(it->second.getIndex(), output), "Failed to write component owner"))
                 return false;
 
             if (!ComponentRegistry::toBinary(m_components[index], output, entitiesMap))

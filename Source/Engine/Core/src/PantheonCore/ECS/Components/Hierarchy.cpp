@@ -282,7 +282,10 @@ namespace PantheonCore::ECS
         writer.StartObject();
 
         writer.Key("parent");
-        writer.Uint64(parent);
+        if constexpr (sizeof(Entity::Index) <= sizeof(uint32_t))
+            writer.Uint(parent.getIndex());
+        else
+            writer.Uint64(parent.getIndex());
 
         return writer.EndObject();
     }
