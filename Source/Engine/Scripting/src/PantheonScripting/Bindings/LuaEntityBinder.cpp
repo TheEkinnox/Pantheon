@@ -3,6 +3,7 @@
 #include "PantheonScripting/Bindings/LuaECSBinder.h"
 
 #include <PantheonCore/ECS/ComponentHandle.h>
+#include <PantheonCore/ECS/EntityHandleIterator.h>
 
 using namespace PantheonCore::ECS;
 
