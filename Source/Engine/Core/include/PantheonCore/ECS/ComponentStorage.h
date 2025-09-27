@@ -353,10 +353,10 @@ namespace PantheonCore::ECS
         bool fromJson(const Serialization::JsonValue& json) override;
 
     private:
-        std::vector<ComponentT>                   m_components;
-        std::unordered_map<Entity, Entity::Index> m_entityToComponent;
-        std::unordered_map<Entity::Index, Entity> m_componentToEntity;
-        Scene*                                    m_scene;
+        std::vector<ComponentT>                       m_components;
+        std::unordered_map<Entity::Id, Entity::Index> m_entityToComponent;
+        std::unordered_map<Entity::Index, Entity>     m_componentToEntity;
+        Scene*                                        m_scene;
     };
 }
 
