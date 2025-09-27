@@ -48,7 +48,7 @@ namespace PantheonCore::ECS
         if (it != m_entityToComponent.end())
         {
             ComponentT& component = m_components[it->second];
-            ComponentT newVal(std::forward<Args>(args)...);
+            ComponentT  newVal(std::forward<Args>(args)...);
 
             ComponentTraits::onBeforeChange<ComponentT>(handle, component, newVal);
             m_onBeforeChange.invoke(handle, component, newVal);
@@ -60,8 +60,8 @@ namespace PantheonCore::ECS
             return component;
         }
 
-        ComponentT&  component = m_components.emplace_back(std::forward<Args>(args)...);
-        const auto index     = static_cast<Entity::Index>(m_components.size() - 1);
+        ComponentT& component = m_components.emplace_back(std::forward<Args>(args)...);
+        const auto  index     = static_cast<Entity::Index>(m_components.size() - 1);
 
         m_componentToEntity[index] = owner;
         m_entityToComponent[owner] = index;
