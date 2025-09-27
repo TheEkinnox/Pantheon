@@ -34,7 +34,7 @@ namespace PantheonRendering::Components
             && CHECK(IByteSerializable::writeNumber(m_orthographicFar, out));
     }
 
-    size_t CameraComponent::fromBinary(const char* data, size_t length)
+    size_t CameraComponent::fromBinary(const char* data, const size_t length)
     {
         if (!CHECK(data != nullptr && length > 0, "Unable to deserialize camera component - Empty buffer"))
             return 0;
@@ -360,7 +360,7 @@ namespace PantheonRendering::Components
         return m_cullingMode;
     }
 
-    CameraComponent& CameraComponent::setCullingMode(ECullingMode cullingMode)
+    CameraComponent& CameraComponent::setCullingMode(const ECullingMode cullingMode)
     {
         m_cullingMode = cullingMode;
         m_isDirty     = true;
@@ -405,7 +405,7 @@ namespace PantheonRendering::Components
         clearStencil = m_clearMask & CLEAR_STENCIL_BIT;
     }
 
-    CameraComponent& CameraComponent::setClearMask(bool clearColor, bool clearDepth, bool clearStencil)
+    CameraComponent& CameraComponent::setClearMask(const bool clearColor, const bool clearDepth, const bool clearStencil)
     {
         m_clearMask = static_cast<uint8_t>(
             clearColor << CLEAR_COLOR_OFFSET |

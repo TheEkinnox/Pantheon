@@ -44,7 +44,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    size_t ComponentRegistry::fromBinary(LuaScriptHandle& out, const char* data, size_t length, Scene* scene)
+    size_t ComponentRegistry::fromBinary(LuaScriptHandle& out, const char* data, const size_t length, Scene* scene)
     {
         if (!CHECK(data && length > 0, "Unable to deserialize lua script handle - Empty buffer"))
             return 0;

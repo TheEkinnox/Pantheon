@@ -59,7 +59,7 @@ namespace PantheonRendering::Components
         return true;
     }
 
-    size_t ModelComponent::fromBinary(const char* data, size_t length)
+    size_t ModelComponent::fromBinary(const char* data, const size_t length)
     {
         if (!CHECK(data != nullptr && length > 0, "Unable to deserialize model component - Empty buffer"))
             return 0;
@@ -221,7 +221,7 @@ namespace PantheonRendering::Components
         return m_layerMask;
     }
 
-    void ModelComponent::setLayerMask(LayerMask layerMask)
+    void ModelComponent::setLayerMask(const LayerMask layerMask)
     {
         m_layerMask = layerMask;
     }

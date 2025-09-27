@@ -31,7 +31,7 @@ namespace PantheonRendering::Resources
         return CHECK(IByteSerializable::writeNumber(textureInfo, out), "Unable to serialize texture - Failed to write load info");
     }
 
-    size_t TextureMetaData::fromBinary(const char* data, size_t length)
+    size_t TextureMetaData::fromBinary(const char* data, const size_t length)
     {
         HeaderT textureInfo;
 

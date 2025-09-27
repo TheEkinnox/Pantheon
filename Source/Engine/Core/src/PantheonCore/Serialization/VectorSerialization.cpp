@@ -13,7 +13,7 @@ namespace PantheonCore::Serialization
     }
 
     template <>
-    size_t fromBinary(Vector2& out, const char* data, size_t length)
+    size_t fromBinary(Vector2& out, const char* data, const size_t length)
     {
         const size_t offset = IByteSerializable::deserializeVector2(out, data, length);
         return CHECK(offset != 0, "Failed to deserialize Vector2") ? offset : 0;
@@ -45,7 +45,7 @@ namespace PantheonCore::Serialization
     }
 
     template <>
-    size_t fromBinary(Vector3& out, const char* data, size_t length)
+    size_t fromBinary(Vector3& out, const char* data, const size_t length)
     {
         const size_t offset = IByteSerializable::deserializeVector3(out, data, length);
         return CHECK(offset != 0, "Failed to deserialize Vector3") ? offset : 0;
@@ -77,7 +77,7 @@ namespace PantheonCore::Serialization
     }
 
     template <>
-    size_t fromBinary(Vector4& out, const char* data, size_t length)
+    size_t fromBinary(Vector4& out, const char* data, const size_t length)
     {
         const size_t offset = IByteSerializable::deserializeVector4(out, data, length);
         return CHECK(offset != 0, "Failed to deserialize Vector4") ? offset : 0;

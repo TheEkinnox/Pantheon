@@ -256,7 +256,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    size_t ComponentRegistry::fromBinary(HierarchyComponent& out, const char* data, size_t length, Scene*)
+    size_t ComponentRegistry::fromBinary(HierarchyComponent& out, const char* data, const size_t length, Scene*)
     {
         if (!CHECK(data != nullptr && length > 0, "Unable to deserialize hierarchy - Empty buffer"))
             return 0;

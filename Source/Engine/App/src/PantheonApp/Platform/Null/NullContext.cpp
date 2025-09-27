@@ -127,7 +127,7 @@ namespace PantheonApp::Platform
         return it != m_shouldClose.end() && it->second;
     }
 
-    void NullContext::setShouldClose(void* handle, bool shouldClose)
+    void NullContext::setShouldClose(void* handle, const bool shouldClose)
     {
         m_shouldClose[reinterpret_cast<size_t>(handle)] = shouldClose;
     }

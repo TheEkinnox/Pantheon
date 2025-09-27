@@ -238,7 +238,7 @@ namespace PantheonCore::ECS
     }
 
     template <class T>
-    size_t ComponentStorage<T>::fromBinary(const char* data, size_t length)
+    size_t ComponentStorage<T>::fromBinary(const char* data, const size_t length)
     {
         using Serialization::IByteSerializable;
 

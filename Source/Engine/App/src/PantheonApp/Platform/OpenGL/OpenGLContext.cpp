@@ -233,7 +233,7 @@ namespace PantheonApp::Platform
         glfwSetWindowTitle(static_cast<GLFWwindow*>(handle), title);
     }
 
-    void OpenGLContext::setFullScreen(void* handle, bool shouldEnable)
+    void OpenGLContext::setFullScreen(void* handle, const bool shouldEnable)
     {
         PTH_ASSERT(handle, "Attempted to set fullscreen mode of null window");
 
@@ -323,7 +323,7 @@ namespace PantheonApp::Platform
         return glfwWindowShouldClose(static_cast<GLFWwindow*>(handle));
     }
 
-    void OpenGLContext::setShouldClose(void* handle, bool shouldClose)
+    void OpenGLContext::setShouldClose(void* handle, const bool shouldClose)
     {
         glfwSetWindowShouldClose(static_cast<GLFWwindow*>(handle), shouldClose);
     }

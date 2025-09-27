@@ -13,7 +13,7 @@ namespace PantheonCore::Serialization
     }
 
     template <>
-    size_t fromBinary(TagComponent& out, const char* data, size_t length)
+    size_t fromBinary(TagComponent& out, const char* data, const size_t length)
     {
         if (!CHECK(data != nullptr && length > 0, "Unable to deserialize tag - Empty buffer"))
             return 0;

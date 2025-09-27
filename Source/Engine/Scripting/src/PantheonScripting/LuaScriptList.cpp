@@ -182,7 +182,7 @@ namespace PantheonScripting
     }
 
     sol::optional<sol::object> luaObjectFromBinary(
-        lua_State* luaState, const char* data, size_t length, size_t& readBytes, Scene* scene)
+        lua_State* luaState, const char* data, const size_t length, size_t& readBytes, Scene* scene)
     {
         readBytes = 0;
 
@@ -414,7 +414,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    size_t ComponentRegistry::fromBinary(LuaScriptList& out, const char* data, size_t length, Scene* scene)
+    size_t ComponentRegistry::fromBinary(LuaScriptList& out, const char* data, const size_t length, Scene* scene)
     {
         out.clear();
 
@@ -562,7 +562,7 @@ namespace PantheonCore::ECS
     }
 
     template <>
-    size_t ComponentRegistry::fromBinary(sol::table& out, const char* data, size_t length, Scene* scene)
+    size_t ComponentRegistry::fromBinary(sol::table& out, const char* data, const size_t length, Scene* scene)
     {
         IByteSerializable::ElemCountT count;
 

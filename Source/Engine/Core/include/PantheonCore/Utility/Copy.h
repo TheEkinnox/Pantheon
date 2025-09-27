@@ -5,7 +5,7 @@ namespace PantheonCore::Utility
 {
 #if __STDC_WANT_SECURE_LIB__
 
-    inline bool memCopy(void* destination, const size_t destinationSize, const void* source, size_t sourceSize)
+    inline bool memCopy(void* destination, const size_t destinationSize, const void* source, const size_t sourceSize)
     {
         return memcpy_s(destination, destinationSize, source, sourceSize) == 0;
     }

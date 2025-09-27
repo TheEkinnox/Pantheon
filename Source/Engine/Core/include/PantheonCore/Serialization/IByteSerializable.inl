@@ -178,7 +178,7 @@ namespace PantheonCore::Serialization
         return Utility::memCopy(output.data() + startSize, output.size() - startSize, vec4.getArray(), sizeof(LibMath::Vector4));
     }
 
-    inline size_t IByteSerializable::deserializeVector4(LibMath::Vector4& out, const char* data, size_t length)
+    inline size_t IByteSerializable::deserializeVector4(LibMath::Vector4& out, const char* data, const size_t length)
     {
         if (data == nullptr || length < sizeof(LibMath::Vector4))
             return 0;
@@ -249,7 +249,7 @@ namespace PantheonCore::Serialization
     }
 
     template <LibMath::length_t Rows, LibMath::length_t Cols, typename DataT>
-    size_t IByteSerializable::deserializeMatrix(LibMath::TMatrix<Rows, Cols, DataT>& out, const char* data, size_t length)
+    size_t IByteSerializable::deserializeMatrix(LibMath::TMatrix<Rows, Cols, DataT>& out, const char* data, const size_t length)
     {
         using MatT = LibMath::TMatrix<Rows, Cols, DataT>;
 

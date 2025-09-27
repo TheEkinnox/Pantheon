@@ -46,7 +46,7 @@ namespace PantheonRendering::Components
         }
     }
 
-    size_t LightComponent::fromBinary(const char* data, size_t length)
+    size_t LightComponent::fromBinary(const char* data, const size_t length)
     {
         const size_t offset = IByteSerializable::readNumber(m_type, data, length);
 
@@ -133,7 +133,7 @@ namespace PantheonRendering::Components
         return CHECK(IByteSerializable::serializeVector4(light.m_color, out));
     }
 
-    size_t deserializeAmbient(Core::Light& out, const char* data, size_t length)
+    size_t deserializeAmbient(Core::Light& out, const char* data, const size_t length)
     {
         Vector4      colorVec4;
         const size_t readBytes = IByteSerializable::deserializeVector4(colorVec4, data, length);
@@ -183,7 +183,7 @@ namespace PantheonRendering::Components
             && CHECK(IByteSerializable::serializeVector3(light.m_direction, out ));
     }
 
-    size_t deserializeDirectional(Core::DirectionalLight& out, const char* data, size_t length)
+    size_t deserializeDirectional(Core::DirectionalLight& out, const char* data, const size_t length)
     {
         Vector4      colorVec4;
         const size_t offset = IByteSerializable::deserializeVector4(colorVec4, data, length);
@@ -301,7 +301,7 @@ namespace PantheonRendering::Components
             && CHECK(IByteSerializable::serializeVector3(attenuationVec, out));
     }
 
-    size_t deserializePoint(Core::PointLight& out, const char* data, size_t length)
+    size_t deserializePoint(Core::PointLight& out, const char* data, const size_t length)
     {
         Vector4 colorVec4;
         size_t  offset = IByteSerializable::deserializeVector4(colorVec4, data, length);
@@ -438,7 +438,7 @@ namespace PantheonRendering::Components
             && CHECK(IByteSerializable::serializeVector2(cutoff, out));
     }
 
-    size_t deserializeSpot(Core::SpotLight& out, const char* data, size_t length)
+    size_t deserializeSpot(Core::SpotLight& out, const char* data, const size_t length)
     {
         Vector4 colorVec4;
         size_t  offset = IByteSerializable::deserializeVector4(colorVec4, data, length);

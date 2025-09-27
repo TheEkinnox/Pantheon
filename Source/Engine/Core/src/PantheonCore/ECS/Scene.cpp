@@ -307,7 +307,7 @@ namespace PantheonCore::ECS
         return ids;
     }
 
-    std::vector<ComponentHandle> Scene::getComponentHandles(Entity owner) const
+    std::vector<ComponentHandle> Scene::getComponentHandles(const Entity owner) const
     {
         std::vector<ComponentHandle> components;
         components.reserve(m_components.size());
@@ -361,7 +361,7 @@ namespace PantheonCore::ECS
         return true;
     }
 
-    size_t Scene::deserializeStorage(const char* data, size_t length)
+    size_t Scene::deserializeStorage(const char* data, const size_t length)
     {
         if (!CHECK(data != nullptr && length > 0, "Unable to deserialize component storage - Empty buffer"))
             return 0;
