@@ -64,7 +64,7 @@ namespace PantheonTest
         }
 
         {
-            Asset assets[] =
+            const Asset assets[] =
             {
                 { "Text", "30507b5d-74b5-4514-a517-736d2197a6cc", "assets/shaders/Basic.glsl" },
                 { "Binary", "c94e335e-5be6-4699-b9cc-4e537c75a812", "assets/textures/container2.png" }
