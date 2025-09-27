@@ -4,6 +4,8 @@
 #include "PantheonRendering/RHI/Null/NullUniformBuffer.h"
 #include "PantheonRendering/RHI/OpenGL/OpenGLUniformBuffer.h"
 
+#include <PantheonCore/Debug/Assertion.h>
+
 using namespace PantheonRendering::Enums;
 
 namespace PantheonRendering::RHI

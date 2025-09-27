@@ -4,6 +4,8 @@
 #include "PantheonRendering/RHI/Null/NullVertexBuffer.h"
 #include "PantheonRendering/RHI/OpenGL/OpenGLVertexBuffer.h"
 
+#include <PantheonCore/Debug/Assertion.h>
+
 using namespace PantheonRendering::Geometry;
 
 namespace PantheonRendering::RHI

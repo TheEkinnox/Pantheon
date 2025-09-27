@@ -1,8 +1,10 @@
 #include "PantheonRendering/RHI/IFrameBuffer.h"
 
 #include "PantheonRendering/RHI/IRenderAPI.h"
-#include "PantheonRendering/RHI/OpenGL/OpenGLFrameBuffer.h"
 #include "PantheonRendering/RHI/Null/NullFrameBuffer.h"
+#include "PantheonRendering/RHI/OpenGL/OpenGLFrameBuffer.h"
+
+#include <PantheonCore/Debug/Assertion.h>
 
 namespace PantheonRendering::RHI
 {

@@ -4,6 +4,8 @@
 #include "PantheonRendering/RHI/Null/NullVertexArray.h"
 #include "PantheonRendering/RHI/OpenGL/OpenGLVertexArray.h"
 
+#include <PantheonCore/Debug/Assertion.h>
+
 namespace PantheonRendering::RHI
 {
     std::unique_ptr<IVertexArray> IVertexArray::create(const IVertexBuffer& vbo, const IIndexBuffer& ebo)

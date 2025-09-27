@@ -4,6 +4,8 @@
 #include "PantheonRendering/RHI/Null/NullShaderStorageBuffer.h"
 #include "PantheonRendering/RHI/OpenGL/OpenGLShaderStorageBuffer.h"
 
+#include <PantheonCore/Debug/Assertion.h>
+
 using namespace PantheonRendering::Enums;
 
 namespace PantheonRendering::RHI
