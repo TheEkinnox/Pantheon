@@ -1,7 +1,7 @@
 set(BASE_FOLDER ${CMAKE_FOLDER})
 
 if (MSVC)
-  add_compile_options(/Zc:preprocessor)
+  add_compile_options(/Zc:preprocessor /Zc:u8EscapeEncoding)
 endif()
 
 option(PANTHEON_BUILD_TEST "Enable to include engine test application" OFF)
