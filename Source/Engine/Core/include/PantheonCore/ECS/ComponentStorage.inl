@@ -262,7 +262,7 @@ namespace PantheonCore::ECS
                 return false;
 
             offset += readBytes;
-            ComponentT component;
+            ComponentT component{};
             readBytes = length >= offset ? ComponentRegistry::fromBinary(component, data + offset, length - offset, m_scene) : 0;
 
             if (readBytes == 0)
