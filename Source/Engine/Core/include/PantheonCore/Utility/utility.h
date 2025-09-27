@@ -17,7 +17,7 @@ namespace PantheonCore::Utility
      * \return The formatted string
      */
     template <class... Args>
-    std::string formatString(const std::string& format, Args&&... args);
+    std::string formatString(const char* format, Args&&... args);
 
     /**
      * \brief Splits the given string using the given delimiter

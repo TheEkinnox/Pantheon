@@ -11,24 +11,19 @@ namespace PantheonCore::Utility
     std::string formatString(const char* format, Args&&... args)
     {
         // If no template parameters are passed
-        // return the format string as is to avoid unnecessary allocation
+        // return the format string as is to avoid unnecessary calls to snprintf
         if constexpr (sizeof...(Args) == 0)
         {
             return format;
         }
         else
         {
-            // get the formatted text's size
             const int bufferSize = std::snprintf(nullptr, 0, format, std::forward<Args>(args)...) + 1;
-
             assert(bufferSize > 0 && "Unable to format string.");
 
-            // Create a buffer of the computed size
             std::string message;
             message.resize(bufferSize, 0);
-
-            // Write the formatted string in the buffer
-            message.resize(std::snprintf(message.data(), bufferSize, format, std::forward<Args>(args)...));
+            (void)std::snprintf(message.data(), bufferSize, format, std::forward<Args>(args)...);
 
             return message;
         }
