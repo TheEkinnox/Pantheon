@@ -189,25 +189,25 @@ namespace PantheonCore::ECS
     }
 
     template <class T>
-    typename ComponentStorage<T>::iterator ComponentStorage<T>::begin()
+    ComponentStorage<T>::iterator ComponentStorage<T>::begin()
     {
         return m_components.begin();
     }
 
     template <class T>
-    typename ComponentStorage<T>::iterator ComponentStorage<T>::end()
+    ComponentStorage<T>::iterator ComponentStorage<T>::end()
     {
         return m_components.end();
     }
 
     template <class T>
-    typename ComponentStorage<T>::const_iterator ComponentStorage<T>::begin() const
+    ComponentStorage<T>::const_iterator ComponentStorage<T>::begin() const
     {
         return m_components.begin();
     }
 
     template <class T>
-    typename ComponentStorage<T>::const_iterator ComponentStorage<T>::end() const
+    ComponentStorage<T>::const_iterator ComponentStorage<T>::end() const
     {
         return m_components.end();
     }

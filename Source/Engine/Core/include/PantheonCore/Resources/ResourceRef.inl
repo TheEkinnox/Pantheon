@@ -150,7 +150,7 @@ namespace PantheonCore::Resources
     }
 
     template <class T>
-    typename ResourceRef<T>::RefCountT ResourceRef<T>::getReferenceCount() const
+    ResourceRef<T>::RefCountT ResourceRef<T>::getReferenceCount() const
     {
         return m_refCount ? *m_refCount : 0;
     }

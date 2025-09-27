@@ -19,7 +19,7 @@ namespace PantheonCore::ECS
     }
 
     template <class... Components>
-    typename SceneView<Components...>::SceneRef SceneView<Components...>::getScene() const
+    SceneView<Components...>::SceneRef SceneView<Components...>::getScene() const
     {
         PTH_ASSERT(m_scene != nullptr);
         return *m_scene;
@@ -76,28 +76,28 @@ namespace PantheonCore::ECS
     }
 
     template <class... Components>
-    typename SceneView<Components...>::iterator SceneView<Components...>::begin()
+    SceneView<Components...>::iterator SceneView<Components...>::begin()
     {
         EntityStorageRef entities = m_scene->template getStorage<Entity>();
         return iterator(entities.begin(), entities.end(), m_storages);
     }
 
     template <class... Components>
-    typename SceneView<Components...>::iterator SceneView<Components...>::end()
+    SceneView<Components...>::iterator SceneView<Components...>::end()
     {
         EntityStorageRef entities = m_scene->template getStorage<Entity>();
         return iterator(entities.end(), entities.end(), m_storages);
     }
 
     template <class... Components>
-    typename SceneView<Components...>::const_iterator SceneView<Components...>::begin() const
+    SceneView<Components...>::const_iterator SceneView<Components...>::begin() const
     {
         const EntityStorage& entities = m_scene->template getStorage<Entity>();
         return const_iterator(entities.begin(), entities.end(), m_storages);
     }
 
     template <class... Components>
-    typename SceneView<Components...>::const_iterator SceneView<Components...>::end() const
+    SceneView<Components...>::const_iterator SceneView<Components...>::end() const
     {
         const EntityStorage& entities = m_scene->template getStorage<Entity>();
         return const_iterator(entities.end(), entities.end(), m_storages);

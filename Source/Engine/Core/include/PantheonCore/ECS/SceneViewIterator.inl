@@ -25,13 +25,13 @@ namespace PantheonCore::ECS
     }
 
     template <bool IsConst, class... Components>
-    typename SceneViewIterator<IsConst, Components...>::reference SceneViewIterator<IsConst, Components...>::operator*() const
+    SceneViewIterator<IsConst, Components...>::reference SceneViewIterator<IsConst, Components...>::operator*() const
     {
         return *m_iterator;
     }
 
     template <bool IsConst, class... Components>
-    typename SceneViewIterator<IsConst, Components...>::pointer SceneViewIterator<IsConst, Components...>::operator->() const
+    SceneViewIterator<IsConst, Components...>::pointer SceneViewIterator<IsConst, Components...>::operator->() const
     {
         return &operator*();
     }

@@ -16,13 +16,13 @@ namespace PantheonCore::ECS
     }
 
     template <bool IsReverse>
-    typename EntityHandleIterator<IsReverse>::reference EntityHandleIterator<IsReverse>::operator*() const
+    EntityHandleIterator<IsReverse>::reference EntityHandleIterator<IsReverse>::operator*() const
     {
         return const_cast<reference>(m_entity);
     }
 
     template <bool IsReverse>
-    typename EntityHandleIterator<IsReverse>::pointer EntityHandleIterator<IsReverse>::operator->() const
+    EntityHandleIterator<IsReverse>::pointer EntityHandleIterator<IsReverse>::operator->() const
     {
         return const_cast<pointer>(&m_entity);
     }

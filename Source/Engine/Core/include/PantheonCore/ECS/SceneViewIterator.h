@@ -16,10 +16,10 @@ namespace PantheonCore::ECS
 
     public:
         using iterator_category = std::forward_iterator_tag;
-        using value_type = typename iterator_type::value_type;
-        using difference_type = typename iterator_type::difference_type;
-        using pointer = typename iterator_type::pointer;
-        using reference = typename iterator_type::reference;
+        using value_type        = iterator_type::value_type;
+        using difference_type   = iterator_type::difference_type;
+        using pointer           = iterator_type::pointer;
+        using reference         = iterator_type::reference;
 
         /**
          * \brief Creates a default scene view iterator

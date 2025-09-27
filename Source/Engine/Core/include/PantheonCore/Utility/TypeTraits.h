@@ -64,5 +64,5 @@ namespace PantheonCore::Utility
     }
 
     template <class T>
-    using UnderlyingT = typename Detail::UnderlyingType<T>::type; // Hack to silently fallback to T when not an enum
+    using UnderlyingT = Detail::UnderlyingType<T>::type; // Hack to silently fallback to T when not an enum
 }

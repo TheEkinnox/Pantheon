@@ -19,7 +19,7 @@ namespace PantheonCore::Eventing
          * \return The subscribed event's listener id on success, 0 otherwise.
          */
         template <typename EventType>
-        IEvent::ListenerId subscribe(typename EventType::Action action);
+        IEvent::ListenerId subscribe(EventType::Action action);
 
         /**
          * \brief Unsubscribes the listener with the given id from the event with the given type
