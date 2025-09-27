@@ -13,15 +13,13 @@ using namespace PantheonRendering::RHI;
 namespace PantheonRendering::Resources
 {
     static std::any getDefaultValue(EShaderDataType dataType);
+    static void     bindProperty(IShader*, const std::string& name, const Material::Property&);
 
-    static void bindProperty(IShader*, const std::string& name, const Material::Property&);
-
-    static bool serializePropertyValue(IWriter&, const Material::Property&);
-
+    static bool serializePropertyValue(JsonWriter&, const Material::Property&);
     static bool deserializeProperties(const JsonValue&, std::unordered_map<std::string, Material::Property>&);
-
     static bool deserializePropertyValue(const JsonValue&, Material::Property&);
 
+    static bool   serializeProperty(const Material::Property& property, std::vector<char>& output);
     static size_t deserializeProperty(Material::Property&, const char*, size_t);
 
     Material::Material(const ResourceRef<IShader>& shader)
@@ -109,7 +107,7 @@ namespace PantheonRendering::Resources
 
         it = json.FindMember("properties");
         return CHECK(it != json.MemberEnd(), "Unable to deserialize material - Missing properties") &&
-            deserializeProperties(it->value);
+            deserializeProperties(it->value, m_properties);
     }
 
     bool Material::toBinary(std::vector<char>& output) const
@@ -324,7 +322,7 @@ namespace PantheonRendering::Resources
         }
     }
 
-    static bool serializePropertyValue(IWriter& writer, const Material::Property& property)
+    static bool serializePropertyValue(JsonWriter& writer, const Material::Property& property)
     {
         switch (property.m_type)
         {
