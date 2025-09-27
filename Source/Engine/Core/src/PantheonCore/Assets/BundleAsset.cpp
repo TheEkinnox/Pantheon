@@ -2,6 +2,7 @@
 
 #include "PantheonCore/Resources/ResourceAsset.h"
 #include "PantheonCore/Utility/ByteOrder.h"
+#include "PantheonCore/Utility/macros.h"
 #include "PantheonCore/Utility/utility.h"
 
 #include <climits>

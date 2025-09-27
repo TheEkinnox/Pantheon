@@ -5,6 +5,7 @@
 #include "PantheonCore/Debug/Logger.h"
 #include "PantheonCore/Utility/ByteOrder.h"
 #include "PantheonCore/Utility/Compression.h"
+#include "PantheonCore/Utility/macros.h"
 
 #include <cinttypes>
 #include <cstring>
@@ -16,6 +17,8 @@ namespace PantheonCore::Assets
 {
     using sentinel_t                            = char[4];
     static constexpr sentinel_t BUNDLE_SENTINEL = { 0x0B, 0x4E, 0x0D, 0x4C };
+    static constexpr uint8_t    HEADER_SIZE     = ALIGN(AssetBundle::COMPRESSION_MODE_BITS + AssetBundle::DATA_SIZE_BITS, CHAR_BIT) / CHAR_BIT;
+    static constexpr uint8_t    DATA_START      = HEADER_SIZE + sizeof(sentinel_t);
 
     AssetBundle::AssetBundle()
         : m_compressionMode(ECompressionMode::NONE), m_compressedDataSize(0)
@@ -57,7 +60,7 @@ namespace PantheonCore::Assets
         PTH_LOG("Header: %d | Compression Mode: %d | Compressed Size: %d", headerData, static_cast<int>(m_compressionMode),
             m_compressedDataSize);
 
-        const std::ifstream::off_type offset = static_cast<std::ifstream::off_type>(m_compressedDataSize + sizeof(headerData));
+        const std::ifstream::off_type offset = static_cast<std::ifstream::off_type>(DATA_START + m_compressedDataSize);
 
         ifs.seekg(offset, std::ifstream::beg);
 
@@ -142,8 +145,8 @@ namespace PantheonCore::Assets
         ofs << std::flush;
 
         header = toBigEndian(static_cast<uint8_t>(compressionMode) | (m_compressedDataSize << COMPRESSION_MODE_BITS));
-        ofs.seekp(0, std::ofstream::beg);
-        ofs.write(reinterpret_cast<char*>(&header), 8);
+        ofs.seekp(sizeof(sentinel_t), std::ofstream::beg);
+        ofs.write(reinterpret_cast<char*>(&header), HEADER_SIZE);
 
         ofs.close();
 
@@ -244,7 +247,7 @@ namespace PantheonCore::Assets
         if (!fs.good())
             return {};
 
-        const std::streamoff       blockStart = static_cast<std::streamoff>(HEADER_SIZE + bundleAsset.getBlockStart());
+        const std::streamoff       blockStart = static_cast<std::streamoff>(DATA_START + bundleAsset.getBlockStart());
         const BundleAsset::block_t blockSize  = bundleAsset.getBlockSize();
 
         if (blockSize == 0)
