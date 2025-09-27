@@ -180,14 +180,14 @@ namespace PantheonCore::ECS
     }
 
     template <typename T>
-    void EntityHandle::remove()
+    void EntityHandle::remove() const
     {
         if (m_scene)
             m_scene->remove<T>(m_entity);
     }
 
     template <typename T>
-    void EntityHandle::remove(const T& instance)
+    void EntityHandle::remove(const T& instance) const
     {
         if (m_scene)
             m_scene->remove<T>(instance);

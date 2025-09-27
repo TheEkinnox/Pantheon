@@ -301,7 +301,7 @@ namespace PantheonCore::ECS
          * \tparam T The component's type
          */
         template <typename T>
-        void remove();
+        void remove() const;
 
         /**
          * \brief Removes the given component instance from the linked entity
@@ -309,7 +309,7 @@ namespace PantheonCore::ECS
          * \param instance The component instance to remove
          */
         template <typename T>
-        void remove(const T& instance);
+        void remove(const T& instance) const;
 
         /**
          * \brief Checks if the linked entity owns a component of the given type

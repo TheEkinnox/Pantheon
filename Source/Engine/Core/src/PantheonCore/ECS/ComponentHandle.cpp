@@ -20,6 +20,7 @@ namespace PantheonCore::ECS
             return;
 
         m_owner.remove(m_typeId);
+        m_typeId = 0;
     }
 
     template <>
