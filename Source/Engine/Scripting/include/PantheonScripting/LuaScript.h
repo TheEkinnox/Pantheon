@@ -98,23 +98,23 @@ namespace PantheonScripting
 
         /**
          * \brief Sets the lua script's execution order
-         * \param p_executionOrder The script's new execution order
+         * \param executionOrder The script's new execution order
          */
-        void SetExecutionOrder(OrderT p_executionOrder);
+        void SetExecutionOrder(OrderT executionOrder);
 
     private:
         std::string m_source;
         OrderT      m_executionOrder;
 
         /**
-         * \brief Loads the lua script's meta data from the given path
+         * \brief Loads the lua script's metadata from the given path
          * \param path The lua script's meta path
          * \return True on success. False otherwise
          */
         bool loadMeta(const std::string& path);
 
         /**
-         * \brief Saves the lua script's meta data to the given path
+         * \brief Saves the lua script's metadata to the given path
          * \param path The lua script's meta path
          * \return True on success. False otherwise
          */

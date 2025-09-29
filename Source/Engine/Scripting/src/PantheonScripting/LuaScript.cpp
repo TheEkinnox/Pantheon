@@ -71,9 +71,9 @@ namespace PantheonScripting
         return m_executionOrder;
     }
 
-    void LuaScript::SetExecutionOrder(const OrderT p_executionOrder)
+    void LuaScript::SetExecutionOrder(const OrderT executionOrder)
     {
-        m_executionOrder = p_executionOrder;
+        m_executionOrder = executionOrder;
     }
 
     bool LuaScript::loadMeta(const std::string& path)
