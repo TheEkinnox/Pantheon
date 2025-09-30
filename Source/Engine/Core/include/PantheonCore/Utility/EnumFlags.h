@@ -48,8 +48,8 @@ namespace PantheonCore::Utility
         constexpr operator uint32_t() const;
         constexpr operator uint64_t() const;
 
-        EnumFlags&     Set(EnumT value, bool state);
-        constexpr bool IsSet(EnumT value) const;
+        EnumFlags&     set(EnumT value, bool state);
+        constexpr bool isSet(EnumT value) const;
 
         constexpr friend EnumFlags operator&(const EnumT a, const EnumFlags& b)
         {
