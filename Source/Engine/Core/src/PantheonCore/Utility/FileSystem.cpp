@@ -71,7 +71,7 @@ namespace PantheonCore::Utility
 
     const char* getApplicationDirectory()
     {
-        static char appDir[MAX_PATH_LENGTH] = { 0 };
+        static char appDir[MAX_PATH_LENGTH] = {};
         memset(appDir, 0, MAX_PATH_LENGTH);
 
 #if USING(PTH_PLATFORM_WINDOWS)
