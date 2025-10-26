@@ -49,11 +49,5 @@ target_link_libraries(${TARGET_NAME}
 	${LIBMATH_NAME} ${ZSTD_NAME} ${BROTLI_LIBS} ${LZ4_NAME}
 )
 
-if(MSVC)
-	target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
-else()
-	target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
-endif()
-
 set(CORE_NAME ${TARGET_NAME} PARENT_SCOPE)
 set(CORE_INCLUDE_DIR ${TARGET_INCLUDE_DIR} PARENT_SCOPE)

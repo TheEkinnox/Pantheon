@@ -50,11 +50,5 @@ PUBLIC
 	${SOL_NAME}
 )
 
-if(MSVC)
-	target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
-else()
-	target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
-endif()
-
 set(SCRIPTING_NAME ${TARGET_NAME} PARENT_SCOPE)
 set(SCRIPTING_INCLUDE_DIR ${TARGET_INCLUDE_DIR} PARENT_SCOPE)

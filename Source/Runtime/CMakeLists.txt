@@ -47,10 +47,4 @@ target_link_libraries(${TARGET_NAME}
 	${ENGINE_TARGETS}
 )
 
-if(MSVC)
-	target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
-else()
-	target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
-endif()
-
 set(RUNTIME_NAME ${TARGET_NAME} PARENT_SCOPE)

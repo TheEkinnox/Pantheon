@@ -53,12 +53,6 @@ if (PANTHEON_HEADLESS_TEST)
 	target_compile_definitions(${TARGET_NAME} PRIVATE PTH_HEADLESS_TEST)
 endif()
 
-if(MSVC)
-	target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
-else()
-	target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
-endif()
-
 
 ###############################
 #                             #

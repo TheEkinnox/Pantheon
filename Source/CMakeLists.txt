@@ -1,7 +1,12 @@
 set(BASE_FOLDER ${CMAKE_FOLDER})
 
 if (MSVC)
-  add_compile_options(/Zc:preprocessor /Zc:u8EscapeEncoding)
+	add_compile_options(/W4 /WX)
+	if (NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+		add_compile_options(/Zc:preprocessor /Zc:u8EscapeEncoding)
+	endif()
+else()
+	add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 endif()
 
 option(PANTHEON_BUILD_TEST "Enable to include engine test application" OFF)
